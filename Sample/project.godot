@@ -1,0 +1,82 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "MarginContainer",
+"class": "AchievementsList",
+"language": "GDScript",
+"path": "res://Scenes/AchievementsView/AchievementsList.gd"
+}, {
+"base": "Reference",
+"class": "AchievementsView",
+"language": "GDScript",
+"path": "res://Scenes/AchievementsView/AchievementsView.gd"
+}, {
+"base": "Reference",
+"class": "DeveloperLogin",
+"language": "GDScript",
+"path": "res://Scenes/LoginView/DeveloperLogin.gd"
+}, {
+"base": "Reference",
+"class": "EOS",
+"language": "GDScript",
+"path": "res://EOS/EOS.gd"
+}, {
+"base": "Reference",
+"class": "LoginView",
+"language": "GDScript",
+"path": "res://Scenes/LoginView/LoginView.gd"
+}, {
+"base": "VBoxContainer",
+"class": "LogsView",
+"language": "GDScript",
+"path": "res://Scenes/LogsView/LogsView.gd"
+}, {
+"base": "MarginContainer",
+"class": "NetworkImage",
+"language": "GDScript",
+"path": "res://Scenes/UI/NetworkImage.gd"
+}, {
+"base": "Reference",
+"class": "ViewManager",
+"language": "GDScript",
+"path": "res://ViewManager.gd"
+} ]
+_global_script_class_icons={
+"AchievementsList": "",
+"AchievementsView": "",
+"DeveloperLogin": "",
+"EOS": "",
+"LoginView": "",
+"LogsView": "",
+"NetworkImage": "",
+"ViewManager": ""
+}
+
+[application]
+
+config/name="Epic Online Services Godot"
+run/main_scene="res://Main.tscn"
+config/icon="res://logo.png"
+
+[autoload]
+
+Env="*res://Env.gd"
+State="*res://State.gd"
+IEOS="*res://EOS/IEOS.cs"
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_clear_color=Color( 0.121569, 0.121569, 0.121569, 1 )
+environment/default_environment="res://default_env.tres"

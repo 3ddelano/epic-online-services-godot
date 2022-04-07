@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/AchievementsView/AchievementsView.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Scenes/AchievementsView/AchievementsList.gd" type="Script" id=4]
+
+[node name="AchievementsView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Achievements"
+
+[node name="RR" type="ReferenceRect" parent="."]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+border_color = Color( 1, 0, 0, 0 )
+
+[node name="AchievementsList" type="MarginContainer" parent="RR"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SC" type="ScrollContainer" parent="RR/AchievementsList"]
+margin_right = 1024.0
+margin_bottom = 558.0
+
+[node name="VB" type="VBoxContainer" parent="RR/AchievementsList/SC"]
+custom_constants/separation = 12
+__meta__ = {
+"_edit_use_anchors_": false
+}

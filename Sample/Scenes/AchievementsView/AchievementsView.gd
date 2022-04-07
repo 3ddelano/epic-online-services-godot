@@ -1,0 +1,81 @@
+class_name AchievementsView
+extends VBoxContainer
+
+
+var achievement_definitions = []
+var player_achievements = []
+
+
+func _ready() -> void:
+	# Achievements callbacks
+	var _c = EOS.get_instance().connect("achievements_interface_achievements_unlocked_callback", self, "_on_achievements_interface_achievements_unlocked_callback")
+	_c = EOS.get_instance().connect("achievements_interface_unlock_achievements_complete_callback", self, "_on_achievements_interface_unlock_achievements_complete_callback")
+
+	_c = State.connect("login_success", self, "_on_login_success")
+
+
+func _on_login_success():
+	var query_options = EOS.Achievements.QueryDefinitionsOptions.new()
+	query_options.local_user_id = State.product_user_id
+	EOS.Achievements.AchievementsInterface.query_definitions(query_options)
+	yield(EOS.get_instance(), "achievements_interface_query_definitions_complete_callback")
+
+	var definition_count_options = EOS.Achievements.GetAchievementDefinitionCountOptions.new()
+	var definition_count = EOS.Achievements.AchievementsInterface.get_achievement_definition_count(definition_count_options)
+	print("Achievement Definition Count: ", definition_count)
+
+	for i in definition_count:
+		var copy_by_index_options = EOS.Achievements.CopyAchievementDefinitionV2ByIndexOptions.new()
+		copy_by_index_options.achievement_index = i
+		achievement_definitions.append(EOS.Achievements.AchievementsInterface.copy_achievement_definition_v2_by_index(copy_by_index_options).definition_v2)
+		# print(JSON.print(achievement_definitions[i], "\t", true))
+
+	$RR/AchievementsList.from_achievements_data(achievement_definitions)
+
+	var player_query_options = EOS.Achievements.QueryPlayerAchievementsOptions.new()
+	player_query_options.local_user_id = State.product_user_id
+	player_query_options.target_user_id = State.product_user_id
+	EOS.Achievements.AchievementsInterface.query_player_achievements(player_query_options)
+	yield(EOS.get_instance(), "achievements_interface_query_player_achievements_complete_callback")
+	print("Done query player achievements")
+
+#	var unlock_options = EOS.Achievements.UnlockAchievementsOptions.new()
+#	unlock_options.user_id = State.product_user_id
+#	unlock_options.achievement_ids = ["achievement_stat_min_100", "achievement_stat_sum_150"]
+#	EOS.Achievements.AchievementsInterface.unlock_achievements(unlock_options)
+
+#	var player_achievement_count_options = EOS.Achievements.GetPlayerAchievementCountOptions.new()
+#	player_achievement_count_options.user_id = State.product_user_id
+#	var player_achievement_count = EOS.Achievements.AchievementsInterface.get_player_achievement_count(player_achievement_count_options)
+#	print("Player Achievement Count: ", player_achievement_count)
+#
+#	for i in player_achievement_count:
+#		var player_copy_by_index_options = EOS.Achievements.CopyPlayerAchievementByIndexOptions.new()
+#		player_copy_by_index_options.local_user_id = State.product_user_id
+#		player_copy_by_index_options.target_user_id = State.product_user_id
+#		player_copy_by_index_options.achievement_index = i
+#
+#		player_achievements.append(EOS.Achievements.AchievementsInterface.copy_player_achievement_by_index(player_copy_by_index_options).player_achievement)
+#		print(JSON.print(player_achievements[i], "\t", true))
+
+#	var player_copy_by_index_options = EOS.Achievements.CopyPlayerAchievementByIndexOptions.new()
+#	player_copy_by_index_options.achievement_index = 0
+#	player_copy_by_index_options.target_user_id = State.product_user_id
+#	player_copy_by_index_options.local_user_id = State.product_user_id
+#	print("Player Achievement By Index: ", EOS.Achievements.AchievementsInterface.copy_player_achievement_by_index(player_copy_by_index_options).player_achievement.achievement_id)
+
+#	var player_copy_by_id_options = EOS.Achievements.CopyPlayerAchievementByAchievementIdOptions.new()
+#	player_copy_by_id_options.achievement_id = "achievement_hidden_min_300"
+#	player_copy_by_id_options.target_user_id = State.product_user_id
+#	player_copy_by_id_options.local_user_id = State.product_user_id
+#	print("Player Achievement By Id: ", EOS.Achievements.AchievementsInterface.copy_player_achievement_by_achievement_id(player_copy_by_id_options).player_achievement.achievement_id)
+
+
+func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary):
+	print("--- Auth: Achievements Unlocked Callback")
+	print(data)
+
+
+func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
+	print("--- Auth: Unlock Achievements Complete Callback")
+	print(data)

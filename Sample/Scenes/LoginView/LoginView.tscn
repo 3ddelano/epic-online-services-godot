@@ -1,0 +1,232 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Scenes/LoginView/LoginView.gd" type="Script" id=3]
+[ext_resource path="res://Fonts/roboto-16b.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Scenes/LoginView/DeveloperLogin.gd" type="Script" id=5]
+[ext_resource path="res://logo.png" type="Texture" id=6]
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.203922, 0.623529, 0.235294, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=3]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.145098, 0.454902, 0.164706, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.164706, 0.505882, 0.188235, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=8]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.631373, 0.631373, 0.258824, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=9]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.47, 0.47, 0.1927, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=7]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.529412, 0.529412, 0.219608, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=10]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.6, 0.294118, 0.247059, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=11]
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.529412, 0.258824, 0.215686, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="LoginView" type="CenterContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HB" type="HBoxContainer" parent="."]
+margin_left = 158.0
+margin_top = 159.0
+margin_right = 866.0
+margin_bottom = 441.0
+custom_constants/separation = 8
+
+[node name="Left" type="VBoxContainer" parent="HB"]
+margin_right = 400.0
+margin_bottom = 282.0
+rect_min_size = Vector2( 400, 0 )
+custom_constants/separation = 8
+
+[node name="TextureRect" type="TextureRect" parent="HB/Left"]
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+size_flags_horizontal = 0
+texture = ExtResource( 6 )
+expand = true
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="HB/Left"]
+margin_top = 136.0
+margin_right = 400.0
+margin_bottom = 174.0
+custom_fonts/font = ExtResource( 1 )
+text = "EOS Godot Sample"
+
+[node name="Desc" type="RichTextLabel" parent="HB/Left"]
+margin_top = 182.0
+margin_right = 400.0
+margin_bottom = 282.0
+custom_fonts/bold_font = ExtResource( 4 )
+bbcode_enabled = true
+bbcode_text = "This sample project demonstrates how to use Epic Online Services SDK in Godot using a SDK wrapper.
+
+[b]This project is not affiliated with Epic Games Inc nor does it endorse Epic Online Services.[/b]
+Use at your own risk."
+text = "This sample project demonstrates how to use Epic Online Services SDK in Godot using a SDK wrapper.
+
+This project is not affiliated with Epic Games Inc nor does it endorse Epic Online Services.
+Use at your own risk."
+fit_content_height = true
+
+[node name="Right" type="VBoxContainer" parent="HB"]
+margin_left = 408.0
+margin_top = 105.0
+margin_right = 708.0
+margin_bottom = 176.0
+rect_min_size = Vector2( 300, 0 )
+size_flags_vertical = 4
+custom_constants/separation = 8
+
+[node name="ChooseMethod" type="VBoxContainer" parent="HB/Right"]
+margin_right = 300.0
+margin_bottom = 38.0
+
+[node name="LoginTypeLabel" type="Label" parent="HB/Right/ChooseMethod"]
+margin_right = 300.0
+margin_bottom = 14.0
+text = "Login Type"
+
+[node name="LoginTypeButton" type="OptionButton" parent="HB/Right/ChooseMethod"]
+margin_top = 18.0
+margin_right = 300.0
+margin_bottom = 38.0
+
+[node name="DeveloperLogin" type="VBoxContainer" parent="HB/Right"]
+visible = false
+margin_top = 46.0
+margin_right = 300.0
+margin_bottom = 134.0
+script = ExtResource( 5 )
+
+[node name="IdLabel" type="Label" parent="HB/Right/DeveloperLogin"]
+margin_right = 300.0
+margin_bottom = 14.0
+text = "Devtool Server URL"
+
+[node name="IdLineEdit" type="LineEdit" parent="HB/Right/DeveloperLogin"]
+margin_top = 18.0
+margin_right = 300.0
+margin_bottom = 42.0
+text = "localhost:8000"
+
+[node name="TokenLabel" type="Label" parent="HB/Right/DeveloperLogin"]
+margin_top = 46.0
+margin_right = 300.0
+margin_bottom = 60.0
+text = "Credential Name"
+
+[node name="TokenLineEdit" type="LineEdit" parent="HB/Right/DeveloperLogin"]
+margin_top = 64.0
+margin_right = 300.0
+margin_bottom = 88.0
+secret = true
+
+[node name="LoginButton" type="Button" parent="HB/Right"]
+margin_top = 46.0
+margin_right = 300.0
+margin_bottom = 71.0
+mouse_default_cursor_shape = 2
+custom_fonts/font = ExtResource( 2 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 1 )
+custom_styles/normal = SubResource( 1 )
+text = "Log in"
+
+[node name="LoginStatus" type="Label" parent="HB/Right"]
+visible = false
+margin_top = 79.0
+margin_right = 300.0
+margin_bottom = 93.0
+text = "Logging in..."
+
+[node name="RetryLoginButton" type="Button" parent="HB/Right"]
+visible = false
+margin_top = 79.0
+margin_right = 300.0
+margin_bottom = 104.0
+mouse_default_cursor_shape = 2
+custom_fonts/font = ExtResource( 2 )
+custom_styles/hover = SubResource( 8 )
+custom_styles/pressed = SubResource( 9 )
+custom_styles/focus = SubResource( 7 )
+custom_styles/normal = SubResource( 7 )
+text = "Retry"
+
+[node name="LogoutButton" type="Button" parent="HB/Right"]
+visible = false
+margin_top = 79.0
+margin_right = 300.0
+margin_bottom = 104.0
+mouse_default_cursor_shape = 2
+custom_fonts/font = ExtResource( 2 )
+custom_styles/hover = SubResource( 10 )
+custom_styles/pressed = SubResource( 10 )
+custom_styles/focus = SubResource( 11 )
+custom_styles/normal = SubResource( 11 )
+text = "Logout"

@@ -1,0 +1,141 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Main.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/LogsView/LogsView.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/LoginView/LoginView.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ViewManager.gd" type="Script" id=8]
+
+[sub_resource type="Theme" id=4]
+default_font = ExtResource( 1 )
+
+[node name="Main" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 4 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+_views_path = NodePath("MC/ViewManager/VSC/VB")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.121569, 0.121569, 0.121569, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MC" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ViewManager" type="VBoxContainer" parent="MC"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 1016.0
+margin_bottom = 592.0
+script = ExtResource( 8 )
+
+[node name="HB" type="HBoxContainer" parent="MC/ViewManager"]
+margin_right = 1008.0
+margin_bottom = 23.0
+custom_constants/separation = 6
+
+[node name="AuthBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_right = 49.0
+text = "Auth"
+
+[node name="AchievementsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 55.0
+margin_right = 170.0
+text = "Achievements"
+
+[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 176.0
+margin_right = 248.0
+text = "Lobbies"
+
+[node name="LeaderboardsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 254.0
+margin_right = 367.0
+text = "Leaderboards"
+
+[node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 373.0
+margin_right = 441.0
+text = "Friends"
+
+[node name="CustomInviteBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 447.0
+margin_right = 568.0
+text = "Custom Invites"
+
+[node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 574.0
+margin_right = 619.0
+text = "P2P"
+
+[node name="PlayerDataBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 625.0
+margin_right = 723.0
+text = "Player Data"
+
+[node name="ReportBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 729.0
+margin_right = 799.0
+text = "Reports"
+
+[node name="StatsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 805.0
+margin_right = 858.0
+text = "Stats"
+
+[node name="TitleStorageBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 864.0
+margin_right = 970.0
+text = "Title Storage"
+
+[node name="VSC" type="VSplitContainer" parent="MC/ViewManager"]
+margin_top = 27.0
+margin_right = 1008.0
+margin_bottom = 584.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/autohide = 0
+split_offset = 120
+
+[node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC"]
+margin_right = 1008.0
+margin_bottom = 422.0
+
+[node name="LoginView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 5 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1008.0
+margin_bottom = 422.0
+
+[node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 2 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 306.0
+margin_right = 1008.0
+margin_bottom = 445.0
+
+[node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 434.0
+margin_right = 1008.0
+margin_bottom = 557.0
