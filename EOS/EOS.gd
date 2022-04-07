@@ -1,8 +1,9 @@
 # Copyright 2022, Delano Lourenco
-# https://github.com/3ddelano
+# https://github.com/3ddelano/epic-online-services-godot
 # MIT License
 
-# Extracted from EOS SDK header files
+# Wrapper for EOS C# SDK
+
 extends Reference
 class_name EOS
 

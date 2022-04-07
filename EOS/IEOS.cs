@@ -1,5 +1,5 @@
 // Copyright 2022, Delano Lourenco
-// https://github.com/3ddelano
+// https://github.com/3ddelano/epic-online-services-godot
 // MIT License
 
 using Godot;
