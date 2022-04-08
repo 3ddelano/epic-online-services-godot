@@ -220,8 +220,6 @@ func _on_connect_interface_login_callback(data: Dictionary):
 #	print(EOS.Connect.ConnectInterface.copy_product_user_info(copy_product_user_info_options))
 
 
-
-
 func _on_retry_login_btn_pressed():
 	set_login_state(States.ChooseMethod)
 

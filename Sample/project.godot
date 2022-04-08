@@ -9,12 +9,22 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "PopupPanel",
+"class": "AchievementPopup",
+"language": "GDScript",
+"path": "res://Scenes/AchievementsView/AchievementPopup.gd"
+}, {
 "base": "MarginContainer",
 "class": "AchievementsList",
 "language": "GDScript",
 "path": "res://Scenes/AchievementsView/AchievementsList.gd"
 }, {
-"base": "Reference",
+"base": "MarginContainer",
+"class": "AchievementsListAchievement",
+"language": "GDScript",
+"path": "res://Scenes/AchievementsView/AchievementsListAchievement.gd"
+}, {
+"base": "VBoxContainer",
 "class": "AchievementsView",
 "language": "GDScript",
 "path": "res://Scenes/AchievementsView/AchievementsView.gd"
@@ -29,7 +39,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://EOS/EOS.gd"
 }, {
-"base": "Reference",
+"base": "CenterContainer",
 "class": "LoginView",
 "language": "GDScript",
 "path": "res://Scenes/LoginView/LoginView.gd"
@@ -50,7 +60,9 @@ _global_script_classes=[ {
 "path": "res://ViewManager.gd"
 } ]
 _global_script_class_icons={
+"AchievementPopup": "",
 "AchievementsList": "",
+"AchievementsListAchievement": "",
 "AchievementsView": "",
 "DeveloperLogin": "",
 "EOS": "",

@@ -51,6 +51,8 @@ margin_right = 64.0
 margin_bottom = 64.0
 rect_rotation = 360.0
 mouse_filter = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false

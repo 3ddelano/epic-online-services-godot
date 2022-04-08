@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Scenes/UI/NetworkImage.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsList.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/AchievementsView/AchievementPopup.gd" type="Script" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=1]
 
 [node name="AchievementsView" type="VBoxContainer"]
 anchor_right = 1.0
@@ -46,3 +51,181 @@ custom_constants/separation = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AchievementPopup" type="PopupPanel" parent="RR"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -274.0
+margin_top = -193.0
+margin_right = 274.0
+margin_bottom = 193.0
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VB" type="VBoxContainer" parent="RR/AchievementPopup"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 544.0
+margin_bottom = 428.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CloseBtn" type="Button" parent="RR/AchievementPopup/VB"]
+margin_left = 521.0
+margin_right = 540.0
+margin_bottom = 20.0
+size_flags_horizontal = 8
+text = "x"
+
+[node name="MC" type="MarginContainer" parent="RR/AchievementPopup/VB"]
+margin_top = 24.0
+margin_right = 540.0
+margin_bottom = 424.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 536.0
+margin_bottom = 396.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_right = 532.0
+margin_bottom = 14.0
+text = "Achievement"
+align = 1
+
+[node name="IdLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 18.0
+margin_right = 532.0
+margin_bottom = 32.0
+text = "Id: "
+
+[node name="FlavorLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 36.0
+margin_right = 532.0
+margin_bottom = 50.0
+text = "Flavor Text:"
+
+[node name="IsVisibleLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 54.0
+margin_right = 532.0
+margin_bottom = 68.0
+text = "Is Visible: Yes"
+
+[node name="IsUnlockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 72.0
+margin_right = 532.0
+margin_bottom = 86.0
+text = "Is Unlocked: Yes"
+
+[node name="MC" type="MarginContainer" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 90.0
+margin_right = 532.0
+margin_bottom = 174.0
+custom_constants/margin_top = 8
+custom_constants/margin_bottom = 8
+
+[node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/MC"]
+margin_top = 8.0
+margin_right = 532.0
+margin_bottom = 76.0
+
+[node name="StatThesholdsLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/MC/VB"]
+margin_right = 532.0
+margin_bottom = 14.0
+text = "Stat Thresholds"
+
+[node name="SC" type="ScrollContainer" parent="RR/AchievementPopup/VB/MC/VB/MC/VB"]
+margin_top = 18.0
+margin_right = 532.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 0, 50 )
+
+[node name="StatThesholdsVB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/MC/VB/SC"]
+
+[node name="HB" type="HBoxContainer" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 178.0
+margin_right = 532.0
+margin_bottom = 362.0
+
+[node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/HB"]
+margin_right = 250.0
+margin_bottom = 184.0
+custom_constants/separation = 8
+
+[node name="LockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB" instance=ExtResource( 3 )]
+margin_left = 93.0
+margin_right = 157.0
+
+[node name="LockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/HB/VB"]
+margin_top = 72.0
+margin_right = 250.0
+margin_bottom = 86.0
+text = "Locked Name"
+
+[node name="LockedDescLabel" type="RichTextLabel" parent="RR/AchievementPopup/VB/MC/VB/HB/VB"]
+margin_top = 94.0
+margin_right = 250.0
+margin_bottom = 184.0
+rect_min_size = Vector2( 250, 0 )
+text = "(LOCK) Desc for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet blandit lectus, ac eleifend erat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+fit_content_height = true
+
+[node name="VS" type="VSeparator" parent="RR/AchievementPopup/VB/MC/VB/HB"]
+margin_left = 254.0
+margin_right = 270.0
+margin_bottom = 184.0
+rect_min_size = Vector2( 16, 0 )
+
+[node name="VB2" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/HB"]
+margin_left = 274.0
+margin_right = 524.0
+margin_bottom = 184.0
+custom_constants/separation = 8
+
+[node name="UnlockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2" instance=ExtResource( 3 )]
+margin_left = 93.0
+margin_right = 157.0
+
+[node name="UnlockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2"]
+margin_top = 72.0
+margin_right = 250.0
+margin_bottom = 86.0
+text = "Unlocked Name"
+
+[node name="UnlockedDescLabel" type="RichTextLabel" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2"]
+margin_top = 94.0
+margin_right = 250.0
+margin_bottom = 184.0
+rect_min_size = Vector2( 250, 0 )
+text = "Desc for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet blandit lectus, ac eleifend erat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+fit_content_height = true
+
+[node name="HSeparator" type="HSeparator" parent="RR/AchievementPopup/VB/MC/VB"]
+margin_top = 366.0
+margin_right = 532.0
+margin_bottom = 370.0
+custom_styles/separator = SubResource( 1 )
+
+[node name="UnlockBtn" parent="RR/AchievementPopup/VB/MC/VB" instance=ExtResource( 5 )]
+margin_left = 472.0
+margin_top = 374.0
+margin_right = 532.0
+margin_bottom = 392.0
+size_flags_horizontal = 8
+text = "Unlock"

@@ -1,9 +1,11 @@
 class_name AchievementsList
 extends MarginContainer
 
-var ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://Scenes/AchievementsView/AchievementsListAchievement.tscn")
+signal achievement_pressed(node)
 
-func from_achievements_data(arr: Array):
+const ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://Scenes/AchievementsView/AchievementsListAchievement.tscn")
+
+func from_achievements_array(arr: Array):
 	# Clear existing achievements
 	for child in $SC/VB.get_children():
 		child.queue_free()
@@ -13,4 +15,9 @@ func from_achievements_data(arr: Array):
 		var achievement = ACHIEVEMENTS_LIST_ACHIEVEMENT.instance()
 		$SC/VB.add_child(achievement)
 
+		achievement.connect("pressed", self, "_on_achievement_pressed")
 		achievement.from_achievement_data(achievement_data)
+
+
+func _on_achievement_pressed(node: AchievementsListAchievement):
+	emit_signal("achievement_pressed", node)

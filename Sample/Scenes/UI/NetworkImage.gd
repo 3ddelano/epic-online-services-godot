@@ -38,7 +38,6 @@ func fetch_image(url: String):
 
 
 func _on_request_completed(result, response_code, headers, body):
-	print("------------ Request completed")
 	var image = Image.new()
 	var image_error = image.load_png_from_buffer(body)
 	if image_error != OK:
