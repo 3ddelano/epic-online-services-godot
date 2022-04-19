@@ -12,7 +12,7 @@ enum States {
 }
 
 var _state = States.Loading
-
+var _url: String
 
 func _ready() -> void:
 	set_state(States.Loading)
@@ -30,6 +30,13 @@ func set_state(new_state: int):
 
 
 func fetch_image(url: String):
+	_url = url
+	if State.network_image_cache.has(url):
+		# Directly set the image
+		texture_rect.texture = State.network_image_cache[url]
+		set_state(States.Loaded)
+		return
+
 	set_state(States.Loading)
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
@@ -46,6 +53,7 @@ func _on_request_completed(result, response_code, headers, body):
 
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
+	State.network_image_cache[_url] = image_texture
 
 	texture_rect.texture = image_texture
 	set_state(States.Loaded)

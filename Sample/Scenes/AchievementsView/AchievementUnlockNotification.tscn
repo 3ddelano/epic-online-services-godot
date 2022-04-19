@@ -1,0 +1,122 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Scenes/UI/NetworkImage.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/AchievementsView/AchievementUnlockNotification.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.878431, 0.886275, 0.207843, 1 )
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Animation" id=2]
+resource_name = "FadeIn"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.35 ),
+"transitions": PoolRealArray( 1, 0.5 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ) ]
+}
+
+[node name="AchievementUnlockNotification" type="MarginContainer"]
+modulate = Color( 0, 0, 0, 1 )
+margin_right = 338.0
+margin_bottom = 80.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BG" type="PanelContainer" parent="."]
+margin_right = 338.0
+margin_bottom = 80.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="MC" type="MarginContainer" parent="."]
+margin_right = 338.0
+margin_bottom = 80.0
+mouse_filter = 2
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="HB" type="HBoxContainer" parent="MC"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 330.0
+margin_bottom = 72.0
+mouse_filter = 2
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UnlockedImage" parent="MC/HB" instance=ExtResource( 1 )]
+size_flags_vertical = 0
+
+[node name="VB" type="VBoxContainer" parent="MC/HB"]
+margin_left = 72.0
+margin_right = 322.0
+margin_bottom = 64.0
+mouse_filter = 2
+
+[node name="Unlocked" type="Label" parent="MC/HB/VB"]
+margin_right = 250.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 250, 0 )
+text = "New Achievement Unlocked!"
+autowrap = true
+
+[node name="NameLabel" type="Label" parent="MC/HB/VB"]
+margin_top = 18.0
+margin_right = 250.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 250, 0 )
+text = "Name here"
+autowrap = true
+
+[node name="IdLabel" type="Label" parent="MC/HB/VB"]
+margin_top = 36.0
+margin_right = 250.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 250, 0 )
+text = "ID: 123"
+autowrap = true
+
+[node name="Anim" type="AnimationPlayer" parent="."]
+anims/FadeIn = SubResource( 2 )
+anims/RESET = SubResource( 3 )
+
+[node name="FadeOutTimer" type="Timer" parent="."]
+wait_time = 7.0
+one_shot = true

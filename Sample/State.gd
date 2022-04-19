@@ -18,3 +18,9 @@ func get_view(view_name: String):
 
 func set_view(view_name: String):
 	return _main_node.get_view_manager().set_view(view_name)
+
+
+# NetworkImage cache
+var network_image_cache = {
+	# url: Texture
+}

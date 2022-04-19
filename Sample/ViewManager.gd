@@ -24,11 +24,15 @@ func get_view(view_name: String):
 	if view_name == "Logs":
 		return $VSC/LogsView
 
+	elif view_name == "Notifications":
+		return $VSC/VB/NotificationsLayer/NotificationsView
+
 	return get_node("VSC/VB/" + view_name + "View")
 
 
 func set_view(view_name: String):
 	for child in $VSC/VB.get_children():
-		child.visible = false
+		if child is CanvasItem:
+			child.visible = false
 
 	get_view(view_name).visible = true

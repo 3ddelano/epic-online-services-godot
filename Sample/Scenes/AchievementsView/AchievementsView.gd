@@ -7,6 +7,8 @@ var achievements = {}
 onready var achievements_list = $RR/AchievementsList
 onready var achievement_popup = $RR/AchievementPopup
 
+onready var AchievementUnlockNotificationScene = preload("res://Scenes/AchievementsView/AchievementUnlockNotification.tscn")
+
 func _ready() -> void:
 	# Achievements callbacks
 	var _c = EOS.get_instance().connect("achievements_interface_achievements_unlocked_callback", self, "_on_achievements_interface_achievements_unlocked_callback")
@@ -94,8 +96,14 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 		achievements[data.achievement_id].unlock_time = data.unlock_time
 	_rebuild_ui()
 
+	# Show achivement unlocked notification
+	var achievement_unlock_notification = AchievementUnlockNotificationScene.instance()
+	State.get_view("Notifications").add_notification(achievement_unlock_notification)
+	achievement_unlock_notification.from_achievement_data(achievements[data.achievement_id])
+
+
 
 func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
 	print("--- Auth: Unlock Achievements Complete Callback")
-	print(data)
+	#print(data)
 	# _rebuild_ui()

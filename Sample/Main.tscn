@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
@@ -6,10 +6,13 @@
 [ext_resource path="res://Scenes/LogsView/LogsView.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scenes/LoginView/LoginView.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/NotificationsView/NotificationsView.gd" type="Script" id=7]
 [ext_resource path="res://ViewManager.gd" type="Script" id=8]
 
 [sub_resource type="Theme" id=4]
 default_font = ExtResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=5]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -19,7 +22,7 @@ script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-_views_path = NodePath("MC/ViewManager/VSC/VB")
+_views_path = NodePath("MC/ViewManager")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -132,6 +135,59 @@ anchor_bottom = 0.0
 margin_top = 306.0
 margin_right = 1008.0
 margin_bottom = 445.0
+
+[node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
+
+[node name="NotificationsView" type="MarginContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer"]
+margin_top = 270.0
+margin_right = 366.0
+margin_bottom = 600.0
+mouse_filter = 2
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SC" type="ScrollContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView"]
+margin_right = 366.0
+margin_bottom = 330.0
+rect_min_size = Vector2( 350, 0 )
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PC" type="PanelContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC"]
+margin_top = 314.0
+margin_right = 366.0
+margin_bottom = 330.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+custom_styles/panel = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MC" type="MarginContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC/PC"]
+margin_right = 366.0
+margin_bottom = 16.0
+mouse_filter = 2
+custom_constants/margin_right = 4
+custom_constants/margin_top = 8
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 8
+
+[node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC/PC/MC"]
+margin_left = 4.0
+margin_top = 8.0
+margin_right = 362.0
+margin_bottom = 8.0
+mouse_filter = 2
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource( 4 )]
 anchor_right = 0.0

@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/AchievementsView/AchievementPopup.gd"
 }, {
+"base": "Control",
+"class": "AchievementUnlockNotification",
+"language": "GDScript",
+"path": "res://Scenes/AchievementsView/AchievementUnlockNotification.gd"
+}, {
 "base": "MarginContainer",
 "class": "AchievementsList",
 "language": "GDScript",
@@ -54,13 +59,19 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/UI/NetworkImage.gd"
 }, {
-"base": "Reference",
+"base": "MarginContainer",
+"class": "NotificationsView",
+"language": "GDScript",
+"path": "res://Scenes/NotificationsView/NotificationsView.gd"
+}, {
+"base": "VBoxContainer",
 "class": "ViewManager",
 "language": "GDScript",
 "path": "res://ViewManager.gd"
 } ]
 _global_script_class_icons={
 "AchievementPopup": "",
+"AchievementUnlockNotification": "",
 "AchievementsList": "",
 "AchievementsListAchievement": "",
 "AchievementsView": "",
@@ -69,6 +80,7 @@ _global_script_class_icons={
 "LoginView": "",
 "LogsView": "",
 "NetworkImage": "",
+"NotificationsView": "",
 "ViewManager": ""
 }
 
