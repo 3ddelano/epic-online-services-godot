@@ -6,6 +6,7 @@ var achievements = {}
 
 onready var achievements_list = $RR/AchievementsList
 onready var achievement_popup = $RR/AchievementPopup
+onready var refresh_btn = $MC/RefreshBtn
 
 onready var AchievementUnlockNotificationScene = preload("res://Scenes/AchievementsView/AchievementUnlockNotification.tscn")
 
@@ -17,7 +18,7 @@ func _ready() -> void:
 	_c = State.connect("login_success", self, "_on_login_success")
 	_c = State.connect("logout_success", self, "_on_logout_success")
 	_c = achievements_list.connect("achievement_pressed", self, "_on_achievement_pressed")
-
+	_c = refresh_btn.connect("pressed", self, "_on_refresh_btn_pressed")
 
 func _on_login_success():
 	var query_options = EOS.Achievements.QueryDefinitionsOptions.new()
@@ -91,7 +92,7 @@ func _on_achievement_pressed(node: AchievementsListAchievement):
 
 func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary):
 	print("--- Auth: Achievements Unlocked Callback")
-	print(data)
+#	print(data)
 	if data.user_id == State.product_user_id:
 		achievements[data.achievement_id].unlock_time = data.unlock_time
 	_rebuild_ui()
@@ -102,8 +103,9 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 	achievement_unlock_notification.from_achievement_data(achievements[data.achievement_id])
 
 
-
 func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
 	print("--- Auth: Unlock Achievements Complete Callback")
 	#print(data)
-	# _rebuild_ui()
+
+func _on_refresh_btn_pressed():
+	_on_login_success()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Scenes/AchievementsView/AchievementsList.gd" type="Script" id=4]
 [ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scenes/AchievementsView/AchievementPopup.gd" type="Script" id=6]
+[ext_resource path="res://Scenes/AchievementsView/AchievementsListAchievement.tscn" type="PackedScene" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -26,8 +27,22 @@ size_flags_vertical = 1
 custom_fonts/font = ExtResource( 2 )
 text = "Achievements"
 
-[node name="RR" type="ReferenceRect" parent="."]
+[node name="MC" type="MarginContainer" parent="."]
 margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 76.0
+custom_constants/margin_top = 8
+custom_constants/margin_bottom = 8
+
+[node name="RefreshBtn" parent="MC" instance=ExtResource( 5 )]
+margin_top = 8.0
+margin_right = 64.0
+margin_bottom = 26.0
+size_flags_horizontal = 0
+text = "Refresh"
+
+[node name="RR" type="ReferenceRect" parent="."]
+margin_top = 80.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
@@ -44,13 +59,21 @@ __meta__ = {
 
 [node name="SC" type="ScrollContainer" parent="RR/AchievementsList"]
 margin_right = 1024.0
-margin_bottom = 558.0
+margin_bottom = 520.0
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementsList/SC"]
+margin_right = 326.0
+margin_bottom = 156.0
 custom_constants/separation = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AchievementsListAchievement" parent="RR/AchievementsList/SC/VB" instance=ExtResource( 7 )]
+
+[node name="AchievementsListAchievement2" parent="RR/AchievementsList/SC/VB" instance=ExtResource( 7 )]
+margin_top = 84.0
+margin_bottom = 156.0
 
 [node name="AchievementPopup" type="PopupPanel" parent="RR"]
 anchor_left = 0.5

@@ -5,10 +5,17 @@ signal achievement_pressed(node)
 
 const ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://Scenes/AchievementsView/AchievementsListAchievement.tscn")
 
-func from_achievements_array(arr: Array):
+func _ready() -> void:
+	_clear()
+
+func _clear() -> void:
 	# Clear existing achievements
 	for child in $SC/VB.get_children():
 		child.queue_free()
+
+
+func from_achievements_array(arr: Array):
+	_clear()
 
 	# Populate new achievements
 	for achievement_data in arr:

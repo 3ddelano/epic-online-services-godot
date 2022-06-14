@@ -146,7 +146,7 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [x] Sample
 - Achievements Interface
   - [x] Implementation
-  - [ ] Sample
+  - [x] Sample
 - Connect Interface
   - [ ] Implementation
   - [ ] Sample

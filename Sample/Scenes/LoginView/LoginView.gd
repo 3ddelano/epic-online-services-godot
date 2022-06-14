@@ -70,7 +70,7 @@ func _ready() -> void:
 
 func _on_auth_interface_login_callback(data: Dictionary):
 	print("--- Auth: Login Callback")
-	print(data)
+#	print(data)
 
 	if data.pending:
 		print("Auth login pending...")
@@ -94,12 +94,12 @@ func _on_auth_interface_login_callback(data: Dictionary):
 		login_options.credentials = credentials
 		EOS.Connect.ConnectInterface.login(login_options)
 
-		print("Logged in accounts count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
-		print("Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
-		print("Get login status: ", EOS.Auth.AuthInterface.get_login_status(State.epic_account_id))
+#		print("Logged in accounts count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
+#		print("Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
+#		print("Get login status: ", EOS.Auth.AuthInterface.get_login_status(State.epic_account_id))
 
-		print("Merged accounts count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(State.epic_account_id))
-		print("Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(State.epic_account_id, 0))
+#		print("Merged accounts count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(State.epic_account_id))
+#		print("Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(State.epic_account_id, 0))
 
 		print("Selected account id: ", EOS.Auth.AuthInterface.get_selected_account_id(State.epic_account_id))
 
@@ -108,10 +108,10 @@ func _on_auth_interface_login_callback(data: Dictionary):
 		# verify_user_auth_options.client_data = Color.red
 		EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
 
-		print("Active country code: ", EOS.Platform.PlatformInterface.get_active_country_code(State.epic_account_id))
-		print("Active local code: ", EOS.Platform.PlatformInterface.get_active_locale_code(State.epic_account_id))
-		print("Override country code: ", EOS.Platform.PlatformInterface.get_override_country_code())
-		print("Override locale code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
+#		print("Active country code: ", EOS.Platform.PlatformInterface.get_active_country_code(State.epic_account_id))
+#		print("Active local code: ", EOS.Platform.PlatformInterface.get_active_locale_code(State.epic_account_id))
+#		print("Override country code: ", EOS.Platform.PlatformInterface.get_override_country_code())
+#		print("Override locale code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
 
 		var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
 		copy_id_token_options.account_id = State.epic_account_id
@@ -144,12 +144,12 @@ func _on_auth_interface_login_callback(data: Dictionary):
 		print("Auth login failed")
 		set_login_state(States.Error)
 		set_login_status("Login Error: " + EOS.print_result(data.result_code))
-		print(data)
+#		print(data)
 
 
 func _on_auth_interface_logout_callback(data: Dictionary):
 	print("--- Auth: Logout Callback ")
-	print(data)
+#	print(data)
 
 	State.epic_account_id = ""
 	State.product_user_id = ""
@@ -159,27 +159,27 @@ func _on_auth_interface_logout_callback(data: Dictionary):
 
 func _on_auth_interface_delete_persistent_auth_callback(data: Dictionary):
 	print("--- Auth: Delete Persistent Auth Callback")
-	print(data)
+#	print(data)
 
 
 func _on_auth_interface_login_status_changed(data: Dictionary):
 	print("--- Auth: Login Status Changed")
-	print(data)
+#	print(data)
 
 
 func _on_auth_interface_query_id_token_callback(data: Dictionary):
 	print("--- Auth: Query Id Token Callback")
-	print(data)
+#	print(data)
 
 
 func _on_auth_interface_verify_user_auth_callback(data: Dictionary):
 	print("--- Auth: Verify User Auth Callback")
-	print(data)
+#	print(data)
 
 
 func _on_connect_interface_login_status_changed(data: Dictionary):
 	print("--- Connect: Login Status Changed")
-	print(data)
+#	print(data)
 
 
 func _on_connect_interface_login_callback(data: Dictionary):
