@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/CustomInvitesView/CustomInvitesView.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
+
+[node name="CustomInvitesView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Custom Invites"
+
+[node name="VB" type="VBoxContainer" parent="."]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 161.0
+
+[node name="PayloadTextEdit" type="TextEdit" parent="VB"]
+margin_right = 250.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 250, 75 )
+size_flags_horizontal = 0
+text = "Enter payload here"
+
+[node name="SetPayloadBtn" parent="VB" instance=ExtResource( 5 )]
+margin_top = 79.0
+margin_right = 89.0
+margin_bottom = 97.0
+size_flags_horizontal = 0
+text = "Set Payload"
+
+[node name="SendInviteBtn" parent="VB" instance=ExtResource( 5 )]
+margin_top = 101.0
+margin_right = 88.0
+margin_bottom = 119.0
+size_flags_horizontal = 0
+text = "Send Invite"

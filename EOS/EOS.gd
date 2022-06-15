@@ -7,48 +7,57 @@
 extends Reference
 class_name EOS
 
+
 class Achievements:
 	class CopyAchievementDefinitionV2ByAchievementIdOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyAchievementDefinitionV2ByAchievementIdOptions"): pass
 
 		var achievement_id: String
 
 	class CopyAchievementDefinitionV2ByIndexOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyAchievementDefinitionV2ByIndexOptions"): pass
 
 		var achievement_index: int
 
 	class CopyPlayerAchievementByAchievementIdOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyPlayerAchievementByAchievementIdOptions"): pass
 
 		var target_user_id: String
 		var achievement_id: String
 		var local_user_id: String
 
 	class CopyPlayerAchievementByIndexOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyPlayerAchievementByIndexOptions"): pass
 
 		var target_user_id: String
 		var achievement_index: int
 		var local_user_id: String
 
 	class GetAchievementDefinitionCountOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("GetAchievementDefinitionCountOptions"): pass
 
 	class QueryDefinitionsOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("QueryDefinitionsOptions"): pass
 
 		var local_user_id = ""
 
 		var client_data = null
 
 	class GetPlayerAchievementCountOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("GetPlayerAchievementCountOptions"): pass
 
 		var user_id: String
 
 	class QueryPlayerAchievementsOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("QueryPlayerAchievementsOptions"): pass
 
 		var target_user_id: String
 		var local_user_id: String
@@ -56,10 +65,11 @@ class Achievements:
 		var client_data = null
 
 	class UnlockAchievementsOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("UnlockAchievementsOptions"): pass
 
 		var user_id: String
-		var achievement_ids = [] # [String]
+		var achievement_ids = []  # [String]
 		var client_data = null
 
 	class AchievementsInterface:
@@ -69,10 +79,16 @@ class Achievements:
 		static func get_achievement_definition_count(options: GetAchievementDefinitionCountOptions) -> int:
 			return IEOS.achievements_interface_get_achievement_definition_count(options)
 
-		static func copy_achievement_definition_v2_by_achievement_id(options: CopyAchievementDefinitionV2ByAchievementIdOptions) -> Dictionary:
-			return IEOS.achievements_interface_copy_achievement_definition_v2_by_achievement_id(options)
+		static func copy_achievement_definition_v2_by_achievement_id(
+			options: CopyAchievementDefinitionV2ByAchievementIdOptions
+		) -> Dictionary:
+			return IEOS.achievements_interface_copy_achievement_definition_v2_by_achievement_id(
+				options
+			)
 
-		static func copy_achievement_definition_v2_by_index(options: CopyAchievementDefinitionV2ByIndexOptions) -> Dictionary:
+		static func copy_achievement_definition_v2_by_index(
+			options: CopyAchievementDefinitionV2ByIndexOptions
+		) -> Dictionary:
 			return IEOS.achievements_interface_copy_achievement_definition_v2_by_index(options)
 
 		static func query_player_achievements(options: QueryPlayerAchievementsOptions) -> void:
@@ -81,7 +97,9 @@ class Achievements:
 		static func get_player_achievement_count(options: GetPlayerAchievementCountOptions) -> int:
 			return IEOS.achievements_interface_get_player_achievement_count(options)
 
-		static func copy_player_achievement_by_achievement_id(options: CopyPlayerAchievementByAchievementIdOptions) -> Dictionary:
+		static func copy_player_achievement_by_achievement_id(
+			options: CopyPlayerAchievementByAchievementIdOptions
+		) -> Dictionary:
 			return IEOS.achievements_interface_copy_player_achievement_by_achievement_id(options)
 
 		static func copy_player_achievement_by_index(options: CopyPlayerAchievementByIndexOptions) -> Dictionary:
@@ -92,53 +110,146 @@ class Achievements:
 
 
 class Connect:
-
 	class Credentials:
-		extends Reference
+		extends BaseClass
+		func _init().("Credentials"): pass
 
-		var token: String
-		var type: int # ExternalCredentialType
+		var type: int  # ExternalCredentialType
+		var token = null
 
 	class UserLoginInfo:
-		extends Reference
+		extends BaseClass
+		func _init().("UserLoginInfo"): pass
 
 		var display_name: String
 
 	class LoginOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("LoginOptions"): pass
 
 		var credentials: Credentials
-		var user_login_info = null # UserLoginInfo
+		var user_login_info = null  # UserLoginInfo
 
 		var client_data = null
 
 	class CopyIdTokenOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyIdTokenOptions"): pass
 
 		var local_user_id: String
 
 	class CopyProductUserExternalAccountByAccountIdOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyProductUserExternalAccountByAccountIdOptions"): pass
 
 		var target_user_id: String
 		var account_id: String
 
 	class CopyProductUserExternalAccountByAccountTypeOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyProductUserExternalAccountByAccountTypeOptions"): pass
 
 		var target_user_id: String
-		var account_id_type: int # ExternalAccountType
+		var account_id_type: int  # ExternalAccountType
 
 	class CopyProductUserExternalAccountByIndexOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyProductUserExternalAccountByIndexOptions"): pass
 
 		var target_user_id: String
 		var external_account_info_index: int
 
 	class CopyProductUserInfoOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyProductUserInfoOptions"): pass
 
 		var target_user_id: String
+
+	class CreateDeviceIdOptions:
+		extends BaseClass
+		func _init().("CreateDeviceIdOptions"): pass
+
+		var device_model: String
+
+		var client_data = null
+
+	class DeleteDeviceIdOptions:
+		extends BaseClass
+		func _init().("DeleteDeviceIdOptions"): pass
+
+		var client_data = null
+
+	class CreateUserOptions:
+		extends BaseClass
+		func _init().("CreateUserOptions"): pass
+
+		var continuance_token: Reference # ContinuanceTokenWrapper
+
+		var client_data = null
+
+	class GetExternalAccountMappingsOptions:
+		extends BaseClass
+		func _init().("GetExternalAccountMappingsOptions"): pass
+
+		var local_user_id: String
+		var account_id_type: int # ExternalAccountType
+		var target_external_user_id: String
+
+	class GetProductUserExternalAccountCountOptions:
+		extends BaseClass
+		func _init().("GetProductUserExternalAccountCountOptions"): pass
+
+		var target_user_id: String
+
+	class GetProductUserIdMappingOptions:
+		extends BaseClass
+		func _init().("GetProductUserIdMappingOptions"): pass
+
+		var local_user_id: String
+		var account_id_type: int # ExternalAccountType
+		var target_product_user_id: String
+
+	class LinkAccountOptions:
+		extends BaseClass
+		func _init().("LinkAccountOptions"): pass
+
+		var continuance_token = null # ContinuanceTokenWrapper
+		var local_user_id = null # String
+
+		var client_data = null
+
+	class IdToken:
+		extends BaseClass
+		func _init().("IdToken"): pass
+
+		var product_user_id: String
+		var json_web_token: String
+
+	class VerifyIdTokenOptions:
+		extends BaseClass
+		func _init().("VerifyIdTokenOptions"): pass
+
+		var id_token: IdToken
+
+		var client_data = null
+
+	class TransferDeviceIdAccountOptions:
+		extends BaseClass
+		func _init().("TransferDeviceIdAccountOptions"): pass
+
+		var primary_local_user_id: String
+		var local_device_user_id: String
+		var product_user_id_to_preserve: String
+
+		var client_data = null
+
+	class UnlinkAccountOptions:
+		extends BaseClass
+		func _init().("UnlinkAccountOptions"): pass
+
+		var local_user_id: String
+
+		var client_data = null
 
 	class ConnectInterface:
 		static func login(options: LoginOptions) -> void:
@@ -147,17 +258,64 @@ class Connect:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_id_token(options)
 
-		static func copy_product_user_external_account_by_account_id(options: CopyProductUserExternalAccountByAccountIdOptions) -> Dictionary:
+		static func copy_product_user_external_account_by_account_id(
+			options: CopyProductUserExternalAccountByAccountIdOptions
+		) -> Dictionary:
 			return IEOS.connect_interface_copy_product_user_external_account_by_account_id(options)
 
-		static func copy_product_user_external_account_by_account_type(options: CopyProductUserExternalAccountByAccountTypeOptions) -> Dictionary:
-			return IEOS.connect_interface_copy_product_user_external_account_by_account_type(options)
+		static func copy_product_user_external_account_by_account_type(
+			options: CopyProductUserExternalAccountByAccountTypeOptions
+		) -> Dictionary:
+			return IEOS.connect_interface_copy_product_user_external_account_by_account_type(
+				options
+			)
 
-		static func copy_product_user_external_account_by_index(options: CopyProductUserExternalAccountByIndexOptions) -> Dictionary:
+		static func copy_product_user_external_account_by_index(
+			options: CopyProductUserExternalAccountByIndexOptions
+		) -> Dictionary:
 			return IEOS.connect_interface_copy_product_user_external_account_by_index(options)
 
 		static func copy_product_user_info(options: CopyProductUserInfoOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_product_user_info(options)
+
+		static func create_device_id(options: CreateDeviceIdOptions) -> Dictionary:
+			return IEOS.connect_interface_create_device_id(options)
+
+		static func create_user(options: CreateUserOptions) -> Dictionary:
+			return IEOS.connect_interface_create_user(options)
+
+		static func delete_device_id(options: DeleteDeviceIdOptions) -> Dictionary:
+			return IEOS.connect_interface_delete_device_id(options)
+
+		static func get_external_account_mapping(options: GetExternalAccountMappingsOptions) -> String:
+			return IEOS.connect_interface_get_external_account_mapping(options)
+
+		static func get_logged_in_user_by_index(index: int) -> String:
+			return IEOS.connect_interface_get_logged_in_user_by_index(index)
+
+		static func get_logged_in_users_count() -> int:
+			return IEOS.connect_interface_get_logged_in_users_count()
+
+		static func get_login_status(local_user_id: String) -> int:
+			return IEOS.connect_interface_get_login_status(local_user_id)
+
+		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions) -> int:
+			return IEOS.connect_interface_get_product_user_external_account_count(options)
+
+		static func get_product_user_id_mapping(options: GetProductUserIdMappingOptions):
+			return IEOS.connect_interface_get_product_user_id_mapping(options)
+
+		static func link_account(options: LinkAccountOptions):
+			return IEOS.connect_interface_link_account(options)
+
+		static func verify_id_token(options: VerifyIdTokenOptions):
+			return IEOS.connect_interface_verify_id_token(options)
+
+		static func transfer_device_id_account(options: TransferDeviceIdAccountOptions):
+			return IEOS.connect_interface_transfer_device_id_account(options)
+
+		static func unlink_account(options: UnlinkAccountOptions):
+			return IEOS.connect_interface_unlink_account(options)
 
 
 class Auth:
@@ -186,7 +344,8 @@ class Auth:
 	}
 
 	class LoginOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("LoginOptions"): pass
 
 		var type: int
 		var credentials: Credentials
@@ -195,35 +354,52 @@ class Auth:
 		var client_data = null
 
 	class LogoutOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("LogoutOptions"): pass
 
 		var local_user_id: String
 
 		var client_data = null
 
 	class Credentials:
-		extends Reference
+		extends BaseClass
+		func _init().("Credentials"): pass
 
 		var type: int  # LoginCredentialType
-		var id = "" # String
-		var token = "" # String
+		var id = null  # String
+		var token = null  # String
+		var external_type = null  # ExternalCredentialType
 
 	class CopyIdTokenOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyIdTokenOptions"): pass
 
 		var account_id: String
 
 	class CopyUserAuthTokenOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CopyUserAuthTokenOptions"): pass
 
 	class DeletePersistentAuthOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("DeletePersistentAuthOptions"): pass
 
 		var refresh_token = null
 		var client_data = null
 
+	class LinkAccountOptions:
+		extends BaseClass
+		func _init().("LinkAccountOptions"): pass
+
+		var link_account_flags: int # LinkAccountFlags
+		var continuance_token: Reference # ContinuanceTokenWrapper
+		var local_user_id: String
+
+		var client_data = null
+
 	class QueryIdTokenOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("QueryIdTokenOptions"): pass
 
 		var local_user_id: String
 		var target_account_id: String
@@ -231,20 +407,23 @@ class Auth:
 		var client_data = null
 
 	class IdToken:
-		extends Reference
+		extends BaseClass
+		func _init().("IdToken"): pass
 
 		var account_id: String
 		var json_web_token: String
 
 	class VerifyIdTokenOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("VerifyIdTokenOptions"): pass
 
 		var id_token: IdToken
 
 		var client_data = null
 
 	class Token:
-		extends Reference
+		extends BaseClass
+		func _init().("Token"): pass
 
 		var app: String
 		var client_id: String
@@ -258,7 +437,8 @@ class Auth:
 		var refresh_expires_at: String
 
 	class VerifyUserAuthOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("VerifyUserAuthOptions"): pass
 
 		var auth_token: Token
 
@@ -290,10 +470,7 @@ class Auth:
 			token.refresh_expires_in = token_dict.refresh_expires_in
 			token.refresh_expires_at = token_dict.refresh_expires_at
 
-			return {
-				user_auth_token = token,
-				result_code = token_dict.result_code
-			}
+			return {user_auth_token = token, result_code = token_dict.result_code}
 
 		static func delete_persistent_auth(options: DeletePersistentAuthOptions) -> void:
 			IEOS.auth_interface_delete_persistent_auth(options)
@@ -316,8 +493,8 @@ class Auth:
 		static func get_selected_account_id(local_user_id: String) -> Dictionary:
 			return IEOS.auth_interface_get_selected_account_id(local_user_id)
 
-#		static func link_account():
-#			return IEOS.link_account()
+		static func link_account(options: LinkAccountOptions):
+			return IEOS.auth_interface_link_account(options)
 
 		static func query_id_token(options: QueryIdTokenOptions) -> void:
 			IEOS.auth_interface_query_id_token(options)
@@ -327,6 +504,45 @@ class Auth:
 
 		static func verify_user_auth(options: VerifyUserAuthOptions) -> void:
 			IEOS.auth_interface_verify_user_auth(options)
+
+
+class CustomInvites:
+
+	class SetCustomInviteOptions:
+		extends BaseClass
+		func _init().("SetCustomInviteOptions"): pass
+
+		var local_user_id: String
+		var payload: String
+
+	class SendCustomInviteOptions:
+		extends BaseClass
+		func _init().("SendCustomInviteOptions"): pass
+
+		var local_user_id: String
+		var target_user_ids = [] # [String]
+		var client_data = null
+
+	class FinalizeInviteOptions:
+		extends BaseClass
+		func _init().("FinalizeInviteOptions"): pass
+
+		var target_user_id: String
+		var local_user_id: String
+		var custom_invite_id: String
+		var processing_result: int # Result
+
+	class CustomInvitesInterface:
+		static func set_custom_invite(options: SetCustomInviteOptions) -> int:
+			return IEOS.custom_invites_interface_set_custom_invite(options)
+
+		static func send_custom_invite(options: SendCustomInviteOptions) -> void:
+			IEOS.custom_invites_interface_send_custom_invite(options)
+
+		static func finalize_invite(options: FinalizeInviteOptions) -> int:
+			return IEOS.custom_invites_interface_finalize_invite(options)
+
+
 
 
 class Platform:
@@ -342,13 +558,15 @@ class Platform:
 	}
 
 	class InitializeOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("InitializeOptions"): pass
 
 		var product_name: String
 		var product_version: String
 
 	class CreateOptions:
-		extends Reference
+		extends BaseClass
+		func _init().("CreateOptions"): pass
 
 		var product_id: String
 		var sandbox_id: String
@@ -701,7 +919,8 @@ class Logging:
 	}
 
 	class LogMessage:
-		extends Reference
+		extends BaseClass
+		func _init().("LogMessage"): pass
 
 		var category: String
 		var level: int  # LogLevel enum
@@ -724,9 +943,10 @@ class Logging:
 static func get_instance() -> IEOS:
 	return IEOS
 
+
 static func print_result(result: int) -> String:
-	var result_keys = Result.keys()
-	return result_keys[result_keys.find(result)]
+	return Result.keys()[Result.values().find(result)]
+
 
 #static class AccountFeatureRestrictedInfo:
 #	var verificationURI
@@ -944,6 +1164,7 @@ enum ExternalAccountType {
 	Steam = 1,
 	Psn = 2,
 	Xbl = 3,
+	Discord = 4,
 	Gog = 5,
 	Nintendo = 6,
 	Uplay = 7,

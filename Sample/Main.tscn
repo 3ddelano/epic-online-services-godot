@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
@@ -7,7 +7,8 @@
 [ext_resource path="res://Scenes/LoginView/LoginView.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/NotificationsView/NotificationsView.gd" type="Script" id=7]
-[ext_resource path="res://ViewManager.gd" type="Script" id=8]
+[ext_resource path="res://Scripts/ViewManager.gd" type="Script" id=8]
+[ext_resource path="res://Scenes/CustomInvitesView/CustomInvitesView.tscn" type="PackedScene" id=9]
 
 [sub_resource type="Theme" id=4]
 default_font = ExtResource( 1 )
@@ -64,25 +65,25 @@ margin_left = 55.0
 margin_right = 170.0
 text = "Achievements"
 
-[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+[node name="CustomInvitesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 176.0
-margin_right = 248.0
+margin_right = 297.0
+text = "Custom Invites"
+
+[node name="LobbiesBtn2" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 303.0
+margin_right = 375.0
 text = "Lobbies"
 
 [node name="LeaderboardsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 254.0
-margin_right = 367.0
+margin_left = 381.0
+margin_right = 494.0
 text = "Leaderboards"
 
 [node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 373.0
-margin_right = 441.0
-text = "Friends"
-
-[node name="CustomInviteBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 447.0
+margin_left = 500.0
 margin_right = 568.0
-text = "Custom Invites"
+text = "Friends"
 
 [node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 574.0
@@ -120,20 +121,28 @@ split_offset = 120
 
 [node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC"]
 margin_right = 1008.0
-margin_bottom = 162.0
+margin_bottom = 422.0
 
 [node name="LoginView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 5 )]
-visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1008.0
 margin_bottom = 422.0
 
 [node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 2 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 306.0
+margin_right = 1008.0
+margin_bottom = 445.0
+
+[node name="CustomInvitesView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 9 )]
+visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1008.0
-margin_bottom = 162.0
+margin_bottom = 205.0
 
 [node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
 
@@ -191,6 +200,6 @@ __meta__ = {
 [node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource( 4 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 174.0
+margin_top = 434.0
 margin_right = 1008.0
 margin_bottom = 557.0

@@ -13,6 +13,9 @@ using Epic.OnlineServices.Platform;
 using Epic.OnlineServices.Auth;
 using Epic.OnlineServices.Connect;
 using Epic.OnlineServices.Achievements;
+using Epic.OnlineServices.CustomInvites;
+using Epic.OnlineServices.Stats;
+using Epic.OnlineServices.Leaderboards;
 
 
 public class IEOS : Node
@@ -33,9 +36,11 @@ public class IEOS : Node
     [Signal]
     public delegate void auth_interface_query_id_token_callback(Dictionary callback_data);
     [Signal]
+    public delegate void auth_interface_verify_id_token_callback(Dictionary callback_data);
+    [Signal]
     public delegate void auth_interface_verify_user_auth_callback(Dictionary callback_data);
-    // [Signal]
-    // public delegate void auth_interface_link_account_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void auth_interface_link_account_callback(Dictionary callback_data);
     [Signal]
     public delegate void connect_interface_login_callback(Dictionary callback_data);
     [Signal]
@@ -44,14 +49,18 @@ public class IEOS : Node
     public delegate void connect_interface_login_status_changed(Dictionary callback_data);
     [Signal]
     public delegate void connect_interface_create_device_id_callback(Dictionary callback_data);
-
-    // ------------------------
-    // Public Functions
-    // ------------------------
-
-    // -----
-    // Logging Interface
-    // -----
+    [Signal]
+    public delegate void connect_interface_delete_device_id_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void connect_interface_create_user_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void connect_interface_link_account_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void connect_interface_verify_id_token_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void connect_interface_transfer_device_id_account_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void connect_interface_unlink_account_callback(Dictionary callback_data);
     [Signal]
     public delegate void achievements_interface_achievements_unlocked_callback(Dictionary callback_data);
     [Signal]
@@ -60,6 +69,20 @@ public class IEOS : Node
     public delegate void achievements_interface_query_player_achievements_complete_callback(Dictionary callback_data);
     [Signal]
     public delegate void achievements_interface_unlock_achievements_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void custom_invites_interface_custom_invite_accepted_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void custom_invites_interface_custom_invite_received_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void custom_invites_interface_send_custom_invite_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void stats_interface_ingest_stat_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void stats_interface_query_stats_complete_callback(Dictionary callback_data);
+
+    // ------------------------
+    // Public Functions
+    // ------------------------
 
     public Result logging_interface_set_log_level(int category, int level)
     {
@@ -68,13 +91,13 @@ public class IEOS : Node
     // -----
     // Platform Interface
     // -----
-    public Result platform_interface_initialize(Reference p_initialize_options)
+    public Result platform_interface_initialize(Reference p_options)
     {
         // Initialize the EOS SDK
         var initializeOptions = new InitializeOptions()
         {
-            ProductName = (string)p_initialize_options.Get("product_name"),
-            ProductVersion = (string)p_initialize_options.Get("product_version"),
+            ProductName = (string)p_options.Get("product_name"),
+            ProductVersion = (string)p_options.Get("product_version"),
         };
 
         var initializeResult = PlatformInterface.Initialize(initializeOptions);
@@ -187,7 +210,31 @@ public class IEOS : Node
                 EmitSignal(nameof(achievements_interface_achievements_unlocked_callback), ret);
             });
 
-        return true;
+        s_CustomInvitesInterface = s_PlatformInterface.GetCustomInvitesInterface();
+        s_CustomInvitesInterface.AddNotifyCustomInviteAccepted(new AddNotifyCustomInviteAcceptedOptions(), null, (OnCustomInviteAcceptedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"target_user_id", data.TargetUserId.ToString()},
+                {"local_user_id", data.LocalUserId.ToString()},
+            };
+
+            if (data.CustomInviteId != null) ret.Add("custom_invite_id", data.CustomInviteId);
+            if (data.Payload != null) ret.Add("payload", data.Payload);
+            EmitSignal(nameof(custom_invites_interface_custom_invite_accepted_callback), ret);
+        });
+        s_CustomInvitesInterface.AddNotifyCustomInviteReceived(new AddNotifyCustomInviteReceivedOptions(), null, (OnCustomInviteReceivedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"target_user_id", data.TargetUserId.ToString()},
+                {"local_user_id", data.LocalUserId.ToString()},
+            };
+
+            if (data.CustomInviteId != null) ret.Add("custom_invite_id", data.CustomInviteId);
+            if (data.Payload != null) ret.Add("payload", data.Payload);
+            EmitSignal(nameof(custom_invites_interface_custom_invite_received_callback), ret);
+        });
+
+        return true; // platform created successfully
     }
     public Result platform_interface_check_for_launcher_and_restart()
     {
@@ -265,25 +312,38 @@ public class IEOS : Node
     // -----
     // Auth Interface
     // -----
-    public void auth_interface_login(Reference p_login_options)
+    public void auth_interface_login(Reference p_options)
     {
-        var p_credentials = (Reference)p_login_options.Get("credentials");
+        var p_credentials = (Reference)p_options.Get("credentials");
+
+        var credentials = new Epic.OnlineServices.Auth.Credentials()
+        {
+            Type = (LoginCredentialType)p_credentials.Get("type")
+        };
+
+        if (p_credentials.Get("id") != null)
+        {
+            credentials.Id = (string)p_credentials.Get("id");
+        }
+        if (p_credentials.Get("token") != null)
+        {
+            credentials.Token = (string)p_credentials.Get("token");
+        }
+        if (p_credentials.Get("external_type") != null)
+        {
+            credentials.ExternalType = (ExternalCredentialType)p_credentials.Get("external_type");
+        }
 
         var loginOptions = new Epic.OnlineServices.Auth.LoginOptions()
         {
-            Credentials = new Epic.OnlineServices.Auth.Credentials()
-            {
-                Type = (LoginCredentialType)p_credentials.Get("type"),
-                Id = (string)p_credentials.Get("id"),
-                Token = (string)p_credentials.Get("token"),
-            },
-            ScopeFlags = (AuthScopeFlags)p_login_options.Get("scope_flags"),
+            Credentials = credentials,
+            ScopeFlags = (AuthScopeFlags)p_options.Get("scope_flags"),
         };
 
         object client_data = null;
-        if (p_login_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_login_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
         s_AuthInterface.Login(loginOptions, client_data, (Epic.OnlineServices.Auth.LoginCallbackInfo loginCallbackInfo) =>
@@ -298,7 +358,8 @@ public class IEOS : Node
             }
             if (loginCallbackInfo.ContinuanceToken != null)
             {
-                ret.Add("continuance_token", loginCallbackInfo.ContinuanceToken.ToString());
+                ContinuanceTokenWrapper ctw = new ContinuanceTokenWrapper(loginCallbackInfo.ContinuanceToken);
+                ret.Add("continuance_token", ctw);
             }
             if (loginCallbackInfo.LocalUserId != null)
             {
@@ -342,17 +403,17 @@ public class IEOS : Node
             EmitSignal(nameof(auth_interface_login_callback), ret);
         });
     }
-    public void auth_interface_logout(Reference p_logout_options)
+    public void auth_interface_logout(Reference p_options)
     {
         var logoutOptions = new LogoutOptions()
         {
-            LocalUserId = EpicAccountId.FromString((string)p_logout_options.Get("local_user_id"))
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id"))
         };
 
         object client_data = null;
-        if (p_logout_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_logout_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
         s_AuthInterface.Logout(logoutOptions, client_data, (LogoutCallbackInfo logoutCallbackInfo) =>
@@ -372,11 +433,11 @@ public class IEOS : Node
             EmitSignal(nameof(auth_interface_logout_callback), ret);
         });
     }
-    public Dictionary auth_interface_copy_id_token(Reference p_copy_id_token_options)
+    public Dictionary auth_interface_copy_id_token(Reference p_options)
     {
         var options = new Epic.OnlineServices.Auth.CopyIdTokenOptions()
         {
-            AccountId = EpicAccountId.FromString((string)p_copy_id_token_options.Get("account_id")),
+            AccountId = EpicAccountId.FromString((string)p_options.Get("account_id")),
         };
 
         Epic.OnlineServices.Auth.IdToken token;
@@ -394,7 +455,7 @@ public class IEOS : Node
             {"result_code", res}
         };
     }
-    public Dictionary auth_interface_copy_user_auth_token(Reference p_copy_user_auth_token_options, string p_local_user_id)
+    public Dictionary auth_interface_copy_user_auth_token(Reference p_options, string p_local_user_id)
     {
         var options = new CopyUserAuthTokenOptions() { };
 
@@ -421,16 +482,16 @@ public class IEOS : Node
             {"result_code", res}
         };
     }
-    public void auth_interface_delete_persistent_auth(Reference p_delete_persistent_auth_options)
+    public void auth_interface_delete_persistent_auth(Reference p_options)
     {
         var options = new DeletePersistentAuthOptions()
         {
-            RefreshToken = (string)p_delete_persistent_auth_options.Get("refresh_token")
+            RefreshToken = (string)p_options.Get("refresh_token")
         };
         object client_data = null;
-        if (p_delete_persistent_auth_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_delete_persistent_auth_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
         s_AuthInterface.DeletePersistentAuth(options, client_data, (DeletePersistentAuthCallbackInfo data) =>
         {
@@ -486,18 +547,18 @@ public class IEOS : Node
         }
         return ret;
     }
-    public void auth_interface_query_id_token(Reference p_query_id_token_options)
+    public void auth_interface_query_id_token(Reference p_options)
     {
         var options = new QueryIdTokenOptions()
         {
-            LocalUserId = EpicAccountId.FromString((string)p_query_id_token_options.Get("local_user_id")),
-            TargetAccountId = EpicAccountId.FromString((string)p_query_id_token_options.Get("target_account_id")),
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetAccountId = EpicAccountId.FromString((string)p_options.Get("target_account_id")),
         };
 
         object client_data = null;
-        if (p_query_id_token_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_query_id_token_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
         s_AuthInterface.QueryIdToken(options, client_data, (QueryIdTokenCallbackInfo data) =>
@@ -520,9 +581,9 @@ public class IEOS : Node
             EmitSignal(nameof(auth_interface_query_id_token_callback), ret);
         });
     }
-    public void auth_interface_verify_id_token(Reference p_verify_id_token_options)
+    public void auth_interface_verify_id_token(Reference p_options)
     {
-        var id_token = (Reference)p_verify_id_token_options.Get("id_token");
+        var id_token = (Reference)p_options.Get("id_token");
 
         var options = new Epic.OnlineServices.Auth.VerifyIdTokenOptions()
         {
@@ -533,9 +594,9 @@ public class IEOS : Node
             }
         };
         object client_data = null;
-        if (p_verify_id_token_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_verify_id_token_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
         s_AuthInterface.VerifyIdToken(options, client_data, (Epic.OnlineServices.Auth.VerifyIdTokenCallbackInfo data) =>
@@ -563,65 +624,63 @@ public class IEOS : Node
             {
                 ret.Add("deployment_id", data.DeploymentId.ToString());
             }
+            EmitSignal(nameof(auth_interface_verify_id_token_callback), ret);
         });
 
     }
-    // public void auth_interface_link_account(Reference p_link_account_options)
-    // {
 
-    //     object client_data = null;
-    //     if (p_link_account_options.Get("client_data") != null)
-    //     {
-    //         client_data = p_link_account_options.Get("client_data");
-    //     }
-
-
-    //     var linkAccountOptions = new LinkAccountOptions()
-    //     {
-    //         LinkAccountFlags = (LinkAccountFlags)p_link_account_options.Get("link_account_flags"),
-    //         // TODO: how to make ContinuanceToken?
-    //     };
-    //     if (p_link_account_options.Get("local_user_id") == null)
-    //     {
-    //         linkAccountOptions.LocalUserId = null;
-    //     }
-    //     else
-    //     {
-    //         linkAccountOptions.LocalUserId = EpicAccountId.FromString((string)p_link_account_options.Get("local_user_id"));
-    //     }
-    //     authInterface.LinkAccount(linkAccountOptions, client_data, (LinkAccountCallbackInfo data) =>
-    //     {
-    //         Dictionary<string, object> ret = new Dictionary<string, object>(){
-    //             {"result_code", data.ResultCode},
-    //         };
-    //         if (data.ClientData != null)
-    //         {
-    //             ret.Add("client_data", data.ClientData);
-    //         }
-    //         if (data.LocalUserId != null)
-    //         {
-    //             ret.Add("local_user_id", data.LocalUserId.ToString());
-    //         }
-    //         if (data.SelectedAccountId != null)
-    //         {
-    //             ret.Add("selected_account_id", data.SelectedAccountId.ToString());
-    //         }
-    //         if (data.PinGrantInfo != null)
-    //         {
-    //             Dictionary pin_grant_info = new Dictionary();
-    //             pin_grant_info.Add("user_code", data.PinGrantInfo.UserCode);
-    //             pin_grant_info.Add("verification_uri", data.PinGrantInfo.VerificationURI);
-    //             pin_grant_info.Add("expires_in", data.PinGrantInfo.ExpiresIn);
-    //             pin_grant_info.Add("verification_uri_complete", data.PinGrantInfo.VerificationURIComplete);
-    //             ret.Add("pin_grant_info", pin_grant_info);
-    //         }
-
-    //         EmitSignal(nameof(auth_interface_link_account_callback), ret);
-    //     });
-    // }
-    public void auth_interface_verify_user_auth(Reference p_verify_user_auth_options)
+    public void auth_interface_link_account(Reference p_options)
     {
-        var p_auth_token = (Reference)p_verify_user_auth_options.Get("auth_token");
+        var ctw = (ContinuanceTokenWrapper)p_options.Get("continuance_token");
+        var options = new Epic.OnlineServices.Auth.LinkAccountOptions()
+        {
+            LinkAccountFlags = (LinkAccountFlags)p_options.Get("link_account_flags"),
+            ContinuanceToken = ctw._internalToken
+        };
+        if (p_options.Get("local_user_id") != null)
+        {
+            options.LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id"));
+        }
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+
+        s_AuthInterface.LinkAccount(options, client_data, (Epic.OnlineServices.Auth.LinkAccountCallbackInfo data) =>
+        {
+            Dictionary<string, object> ret = new Dictionary<string, object>(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null)
+            {
+                ret.Add("client_data", data.ClientData);
+            }
+            if (data.LocalUserId != null)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            if (data.SelectedAccountId != null)
+            {
+                ret.Add("selected_account_id", data.SelectedAccountId.ToString());
+            }
+            if (data.PinGrantInfo != null)
+            {
+                Dictionary pin_grant_info = new Dictionary();
+                pin_grant_info.Add("user_code", data.PinGrantInfo.UserCode);
+                pin_grant_info.Add("verification_uri", data.PinGrantInfo.VerificationURI);
+                pin_grant_info.Add("expires_in", data.PinGrantInfo.ExpiresIn);
+                pin_grant_info.Add("verification_uri_complete", data.PinGrantInfo.VerificationURIComplete);
+                ret.Add("pin_grant_info", pin_grant_info);
+            }
+
+            EmitSignal(nameof(auth_interface_link_account_callback), ret);
+        });
+    }
+
+    public void auth_interface_verify_user_auth(Reference p_options)
+    {
+        var p_auth_token = (Reference)p_options.Get("auth_token");
         var p_auth_type = (int)p_auth_token.Get("auth_type");
         var auth_token = new Token()
         {
@@ -642,9 +701,9 @@ public class IEOS : Node
             AuthToken = auth_token
         };
         object client_data = null;
-        if (p_verify_user_auth_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_verify_user_auth_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
         s_AuthInterface.VerifyUserAuth(options, client_data, (VerifyUserAuthCallbackInfo data) =>
@@ -663,35 +722,35 @@ public class IEOS : Node
     // -----
     // Connect Interface
     // -----
-    public void connect_interface_login(Reference p_login_options)
+    public void connect_interface_login(Reference p_options)
     {
-        var p_credentials = (Reference)p_login_options.Get("credentials");
+        var p_credentials = (Reference)p_options.Get("credentials");
 
-        var loginOptions = new Epic.OnlineServices.Connect.LoginOptions()
+        var options = new Epic.OnlineServices.Connect.LoginOptions()
         {
             Credentials = new Epic.OnlineServices.Connect.Credentials()
             {
-                Token = (string)p_credentials.Get("token"),
+                Token = p_credentials.Get("token") != null ? (string)p_credentials.Get("token") : null,
                 Type = (ExternalCredentialType)p_credentials.Get("type"),
             }
         };
-        if (p_login_options.Get("user_login_info") != null)
+        if (p_options.Get("user_login_info") != null)
         {
-            Reference p_user_login_info = (Reference)p_login_options.Get("user_login_info");
+            Reference p_user_login_info = (Reference)p_options.Get("user_login_info");
             var userLoginInfo = new UserLoginInfo()
             {
                 DisplayName = (string)p_user_login_info.Get("display_name"),
             };
-            loginOptions.UserLoginInfo = userLoginInfo;
+            options.UserLoginInfo = userLoginInfo;
         }
 
         object client_data = null;
-        if (p_login_options.Get("client_data") != null)
+        if (p_options.Get("client_data") != null)
         {
-            client_data = p_login_options.Get("client_data");
+            client_data = p_options.Get("client_data");
         }
 
-        s_ConnectInterface.Login(loginOptions, client_data, (Epic.OnlineServices.Connect.LoginCallbackInfo loginCallbackInfo) =>
+        s_ConnectInterface.Login(options, client_data, (Epic.OnlineServices.Connect.LoginCallbackInfo loginCallbackInfo) =>
         {
 
             Dictionary<string, object> ret = new Dictionary<string, object>(){
@@ -703,7 +762,8 @@ public class IEOS : Node
             }
             if (loginCallbackInfo.ContinuanceToken != null)
             {
-                ret.Add("continuance_token", loginCallbackInfo.ContinuanceToken.ToString());
+                ContinuanceTokenWrapper ctw = new ContinuanceTokenWrapper(loginCallbackInfo.ContinuanceToken);
+                ret.Add("continuance_token", ctw);
             }
             if (loginCallbackInfo.LocalUserId != null)
             {
@@ -711,11 +771,11 @@ public class IEOS : Node
             }
             if (loginCallbackInfo.ResultCode == Result.Success)
             {
-                ret.Add("sucess", true);
+                ret.Add("success", true);
             }
             else if (Common.IsOperationComplete(loginCallbackInfo.ResultCode))
             {
-                ret.Add("sucess", false);
+                ret.Add("success", false);
             }
             else
             {
@@ -877,6 +937,235 @@ public class IEOS : Node
                 ret.Add("client_data", data.ClientData);
             }
             EmitSignal(nameof(connect_interface_create_device_id_callback), ret);
+        });
+    }
+    public void connect_interface_delete_device_id(Reference p_options)
+    {
+        DeleteDeviceIdOptions options = new DeleteDeviceIdOptions();
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+        s_ConnectInterface.DeleteDeviceId(options, client_data, (DeleteDeviceIdCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null)
+            {
+                ret.Add("client_data", data.ClientData);
+            }
+            EmitSignal(nameof(connect_interface_delete_device_id_callback), ret);
+        });
+    }
+
+    public void connect_interface_create_user(Reference p_options)
+    {
+        ContinuanceTokenWrapper ctw = (ContinuanceTokenWrapper)p_options.Get("continuance_token");
+        var options = new CreateUserOptions()
+        {
+            ContinuanceToken = ctw._internalToken
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+        s_ConnectInterface.CreateUser(options, client_data, (CreateUserCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"local_user_id", data.LocalUserId},
+            };
+            if (data.ClientData != null)
+            {
+                ret.Add("client_data", data.ClientData);
+            }
+            EmitSignal(nameof(connect_interface_create_user_callback), ret);
+        });
+    }
+
+    public string connect_interface_get_external_account_mapping(Reference p_options)
+    {
+        GetExternalAccountMappingsOptions options = new GetExternalAccountMappingsOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            AccountIdType = (ExternalAccountType)p_options.Get("account_id_type"),
+            TargetExternalUserId = (string)p_options.Get("target_external_user_id"),
+        };
+        var product_user_id = s_ConnectInterface.GetExternalAccountMapping(options);
+        if (product_user_id == null || !product_user_id.IsValid()) return "";
+        return product_user_id.ToString();
+    }
+
+    public string connect_interface_get_logged_in_user_by_index(int p_index)
+    {
+        var product_user_id = s_ConnectInterface.GetLoggedInUserByIndex(p_index);
+        if (product_user_id == null || !product_user_id.IsValid()) return "";
+        return product_user_id.ToString();
+    }
+
+    public int connect_interface_get_logged_in_users_count()
+    {
+        var count = s_ConnectInterface.GetLoggedInUsersCount();
+        return count;
+    }
+
+    public int connect_interface_get_login_status(string p_local_user_id)
+    {
+        LoginStatus login_status = s_ConnectInterface.GetLoginStatus(ProductUserId.FromString(p_local_user_id));
+        return (int)login_status;
+    }
+
+    public int connect_interface_get_product_user_external_account_count(Reference p_options)
+    {
+        var options = new GetProductUserExternalAccountCountOptions()
+        {
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+        };
+        uint count = s_ConnectInterface.GetProductUserExternalAccountCount(options);
+        return (int)count;
+    }
+
+    public Dictionary connect_interface_get_product_user_id_mapping(Reference p_options)
+    {
+        var options = new GetProductUserIdMappingOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            AccountIdType = (ExternalAccountType)p_options.Get("account_id_type"),
+            TargetProductUserId = ProductUserId.FromString((string)p_options.Get("target_product_user_id")),
+        };
+        string product_user_id = "";
+        Result res = s_ConnectInterface.GetProductUserIdMapping(options, out product_user_id);
+
+        Dictionary ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            ret.Add("product_user_id", product_user_id);
+        }
+        return ret;
+    }
+
+    public void connect_interface_link_account(Reference p_options)
+    {
+        var ctw = (ContinuanceTokenWrapper)p_options.Get("continuance_token");
+        var options = new Epic.OnlineServices.Connect.LinkAccountOptions()
+        {
+            ContinuanceToken = ctw._internalToken
+        };
+        if (p_options.Get("local_user_id") != null)
+        {
+            options.LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id"));
+        }
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+
+        s_ConnectInterface.LinkAccount(options, client_data, (Epic.OnlineServices.Connect.LinkAccountCallbackInfo data) =>
+        {
+            Dictionary<string, object> ret = new Dictionary<string, object>(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null)
+            {
+                ret.Add("client_data", data.ClientData);
+            }
+            if (data.LocalUserId != null)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(connect_interface_link_account_callback), ret);
+        });
+    }
+
+    public void connect_interface_verify_id_token(Reference p_options)
+    {
+        var id_token = (Reference)p_options.Get("id_token");
+
+        var options = new Epic.OnlineServices.Connect.VerifyIdTokenOptions()
+        {
+            IdToken = new Epic.OnlineServices.Connect.IdToken()
+            {
+                ProductUserId = ProductUserId.FromString((string)id_token.Get("product_user_id")),
+                JsonWebToken = (string)id_token.Get("json_web_token")
+            }
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+
+        s_ConnectInterface.VerifyIdToken(options, client_data, (Epic.OnlineServices.Connect.VerifyIdTokenCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ProductUserId != null) ret.Add("product_user_id", data.ProductUserId.ToString());
+            if (data.IsAccountInfoPresent != null) ret.Add("is_account_info_present", data.IsAccountInfoPresent);
+            if (data.AccountIdType != null) ret.Add("account_id_type", (int)data.AccountIdType);
+            if (data.AccountId != null) ret.Add("account_id", data.AccountId.ToString());
+            if (data.Platform != null) ret.Add("platform", data.Platform);
+            if (data.DeviceType != null) ret.Add("device_type", data.DeviceType);
+            if (data.ClientId != null) ret.Add("client_id", data.ClientId);
+            if (data.ProductId != null) ret.Add("product_id", data.ProductId);
+            if (data.SandboxId != null) ret.Add("sandbox_id", data.SandboxId);
+            if (data.DeploymentId != null) ret.Add("deployment_id", data.DeploymentId);
+            EmitSignal(nameof(connect_interface_verify_id_token_callback), ret);
+        });
+
+    }
+
+    public void connect_interface_transfer_device_id_account(Reference p_options)
+    {
+        var options = new TransferDeviceIdAccountOptions()
+        {
+            PrimaryLocalUserId = ProductUserId.FromString((string)p_options.Get("primary_local_user_id")),
+            LocalDeviceUserId = ProductUserId.FromString((string)p_options.Get("local_device_user_id")),
+            ProductUserIdToPreserve = ProductUserId.FromString((string)p_options.Get("product_user_id_to_preserve")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+        s_ConnectInterface.TransferDeviceIdAccount(options, client_data, (TransferDeviceIdAccountCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.LocalUserId != null) ret.Add("local_user_id", data.LocalUserId.ToString());
+
+            EmitSignal(nameof(connect_interface_transfer_device_id_account_callback), ret);
+        });
+    }
+    public void connect_interface_unlink_account(Reference p_options)
+    {
+        var options = new UnlinkAccountOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+        s_ConnectInterface.UnlinkAccount(options, client_data, (UnlinkAccountCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.LocalUserId != null) ret.Add("local_user_id", data.LocalUserId.ToString());
+            EmitSignal(nameof(connect_interface_unlink_account_callback), ret);
         });
     }
 
@@ -1101,7 +1390,6 @@ public class IEOS : Node
         {
             client_data = p_options.Get("client_data");
         }
-
         s_AchievementsInterface.QueryDefinitions(options, client_data, (OnQueryDefinitionsCompleteCallbackInfo data) =>
         {
             var ret = new Dictionary(){
@@ -1134,7 +1422,6 @@ public class IEOS : Node
         {
             client_data = p_options.Get("client_data");
         }
-
         s_AchievementsInterface.QueryPlayerAchievements(options, client_data, (OnQueryPlayerAchievementsCompleteCallbackInfo data) =>
         {
             var ret = new Dictionary(){
@@ -1163,7 +1450,6 @@ public class IEOS : Node
         {
             client_data = p_options.Get("client_data");
         }
-
         s_AchievementsInterface.UnlockAchievements(options, client_data, (OnUnlockAchievementsCompleteCallbackInfo data) =>
         {
             var ret = new Dictionary(){
@@ -1182,8 +1468,198 @@ public class IEOS : Node
         });
     }
 
+
     // ------------------------
-    // Internal Ovverides
+    // Custom Invites Interface
+    // ------------------------
+    public int custom_invites_interface_finalize_invite(Reference p_options)
+    {
+        var options = new FinalizeInviteOptions()
+        {
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            CustomInviteId = (string)p_options.Get("custom_invite_id"),
+            ProcessingResult = (Result)p_options.Get("processing_result"),
+        };
+        Result res = s_CustomInvitesInterface.FinalizeInvite(options);
+        return (int)res;
+    }
+
+    public void custom_invites_interface_send_custom_invite(Reference p_options)
+    {
+        var options = new SendCustomInviteOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserIds = ((System.Collections.IEnumerable)p_options.Get("target_user_ids")).Cast<object>()
+                         .Select(x => ProductUserId.FromString(x.ToString()))
+                         .ToArray()
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+
+        s_CustomInvitesInterface.SendCustomInvite(options, client_data, (SendCustomInviteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.LocalUserId != null) ret.Add("local_user_id", data.LocalUserId.ToString());
+            if (data.TargetUserIds != null) ret.Add("target_user_ids", data.TargetUserIds.Select(x => x.ToString()).ToArray());
+
+            EmitSignal(nameof(custom_invites_interface_send_custom_invite_complete_callback), ret);
+        });
+    }
+
+    public int custom_invites_interface_set_custom_invite(Reference p_options)
+    {
+        var options = new SetCustomInviteOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            Payload = (string)p_options.Get("payload"),
+        };
+
+        Result res = s_CustomInvitesInterface.SetCustomInvite(options);
+        return (int)res;
+    }
+
+
+    // ------------------------
+    // Stats Interface
+    // ------------------------
+    public Dictionary stats_interface_copy_stat_by_index(Reference p_options)
+    {
+        var options = new CopyStatByIndexOptions()
+        {
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+            StatIndex = (int)p_options.Get("stat_index")
+        };
+        Stat outStat;
+        var res = s_StatsInterface.CopyStatByIndex(options, out outStat);
+        var ret = new Dictionary()
+        {
+            {"result_code", res},
+        };
+        if (outStat != null)
+        {
+            var stat_dict = new Dictionary(){
+                {"name", outStat.Name},
+                {"start_time", outStat.StartTime.ToString()},
+                {"end_time", outStat.EndTime.ToString()},
+                {"value", outStat.Value},
+            };
+            ret.Add("stat", stat_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary stats_interface_copy_stat_by_name(Reference p_options)
+    {
+        var options = new CopyStatByNameOptions()
+        {
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+            Name = (string)p_options.Get("name")
+        };
+        Stat outStat;
+        var res = s_StatsInterface.CopyStatByName(options, out outStat);
+        var ret = new Dictionary()
+        {
+            {"result_code", res},
+        };
+        if (outStat != null)
+        {
+            var stat_dict = new Dictionary(){
+                {"name", outStat.Name},
+                {"start_time", outStat.StartTime.ToString()},
+                {"end_time", outStat.EndTime.ToString()},
+                {"value", outStat.Value},
+            };
+            ret.Add("stat", stat_dict);
+        }
+        return ret;
+    }
+
+    public int stats_interface_get_stats_count(Reference p_options)
+    {
+        var options = new GetStatCountOptions()
+        {
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+        };
+        uint count = s_StatsInterface.GetStatsCount(options);
+        return (int)count;
+    }
+
+    public void stats_interface_ingest_stat(Reference p_options)
+    {
+        var p_stats = (System.Collections.IEnumerable)p_options.Get("stats");
+        IngestData[] ingestData;
+        int i = 0;
+        foreach (var stat in p_stats)
+        {
+            var stat_dict = (Dictionary)stat;
+            ingestData[i] = new IngestData()
+            {
+                StatName = (string)stat_dict.Get("stat_name"),
+                IngestAmount = (int)stat_dict.Get("ingest_amount")
+            };
+            i++;
+        }
+        var options = new IngestStatOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            Stats = ingestData,
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null)
+        {
+            client_data = p_options.Get("client_data");
+        }
+        s_StatsInterface.IngestStat(options, client_data, (IngestStatCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.LocalUserId != null) ret.Add("local_user_id", data.LocalUserId.ToString());
+            if (data.TargetUserId != null) ret.Add("target_user_id", data.TargetUserId.ToString());
+
+            EmitSignal(nameof(stats_interface_ingest_stat_complete_callback), ret);
+        });
+    }
+
+    public void stats_interface_query_stats(Reference p_options)
+    {
+        var options = new QueryStatOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
+        };
+        if (p_options.Get("stat_names") != null) options.StatNames = (string[])p_options.Get("stat_names");
+        if (p_options.Get("start_time") != null) options.StartTime = DateTime.Parse((string)p_options.Get("start_time"));
+        if (p_options.Get("end_time") != null) options.EndTime = DateTime.Parse((string)p_options.Get("end_time"));
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_StatsInterface.QueryStats(options, client_data, (QueryStatsCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.LocalUserId != null) ret.Add("local_user_id", data.LocalUserId.ToString());
+            if (data.TargetUserId != null) ret.Add("target_user_id", data.TargetUserId.ToString());
+
+            EmitSignal(nameof(stats_interface_query_stats_complete_callback), ret);
+        });
+    }
+
+
+    // ------------------------
+    // Internal Overrides
     // ------------------------
     public override void _Process(float delta)
     {
@@ -1204,6 +1680,9 @@ public class IEOS : Node
                 s_AuthInterface = null;
                 s_ConnectInterface = null;
                 s_AchievementsInterface = null;
+                s_CustomInvitesInterface = null;
+                s_StatsInterface = null;
+                s_LeaderboardsInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -1215,7 +1694,10 @@ public class IEOS : Node
     // Privates
     // ------------------------
     private static PlatformInterface s_PlatformInterface;
+    private static AchievementsInterface s_AchievementsInterface;
     private static AuthInterface s_AuthInterface;
     private static ConnectInterface s_ConnectInterface;
-    private static AchievementsInterface s_AchievementsInterface;
+    private static CustomInvitesInterface s_CustomInvitesInterface;
+    private static StatsInterface s_StatsInterface;
+    private static LeaderboardsInterface s_LeaderboardsInterface;
 }

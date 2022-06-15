@@ -31,9 +31,9 @@ func set_state(new_state: int):
 
 func fetch_image(url: String):
 	_url = url
-	if State.network_image_cache.has(url):
+	if Store.network_image_cache.has(url):
 		# Directly set the image
-		texture_rect.texture = State.network_image_cache[url]
+		texture_rect.texture = Store.network_image_cache[url]
 		set_state(States.Loaded)
 		return
 
@@ -44,16 +44,19 @@ func fetch_image(url: String):
 	http_request.request(url)
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_request_completed(result, response_code, _headers, body):
+	if result != OK or response_code != 200:
+		print("Network Image Error: result=%s, response_code=%s" % [result, response_code])
+
 	var image = Image.new()
 	var image_error = image.load_png_from_buffer(body)
 	if image_error != OK:
-		print("An error occurred while trying to display the image.")
+		print("Network Image Error: image_error=%s: An error occurred while trying to display the image." % image_error)
 		return
 
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
-	State.network_image_cache[_url] = image_texture
+	Store.network_image_cache[_url] = image_texture
 
 	texture_rect.texture = image_texture
 	set_state(States.Loaded)

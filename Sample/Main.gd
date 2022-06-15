@@ -3,9 +3,9 @@ extends Control
 export (NodePath) var _views_path
 onready var views = get_node(_views_path) as VBoxContainer
 
-
 func _ready() -> void:
-	State._main_node = self
+	print("ready")
+	Store._main_node = self
 
 	# -----
 	# EOS Setup
@@ -38,7 +38,8 @@ func _ready() -> void:
 		print("Failed to create EOS Platform")
 		return
 
-	State.emit_signal("platform_create")
+	yield(get_tree().create_timer(0.5), "timeout")
+	Store.emit_signal("platform_create")
 
 
 func get_view_manager():

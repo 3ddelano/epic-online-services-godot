@@ -8,6 +8,7 @@ const ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://Scenes/AchievementsView/Ach
 func _ready() -> void:
 	_clear()
 
+
 func _clear() -> void:
 	# Clear existing achievements
 	for child in $SC/VB.get_children():

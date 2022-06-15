@@ -6,7 +6,7 @@ onready var logs_label = $PC/SC/LogsLabel
 
 func _ready() -> void:
 	var _c = EOS.get_instance().connect("logging_interface_callback", self, "_on_logging_interface_callback")
-	_c = State.connect("platform_create", self, "_on_platform_create")
+	_c = Store.connect("platform_create", self, "_on_platform_create")
 
 
 func _on_platform_create():

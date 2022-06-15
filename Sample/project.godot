@@ -35,9 +35,14 @@ _global_script_classes=[ {
 "path": "res://Scenes/AchievementsView/AchievementsView.gd"
 }, {
 "base": "Reference",
-"class": "DeveloperLogin",
+"class": "BaseClass",
 "language": "GDScript",
-"path": "res://Scenes/LoginView/DeveloperLogin.gd"
+"path": "res://Scripts/BaseClass.gd"
+}, {
+"base": "VBoxContainer",
+"class": "CustomInvitesView",
+"language": "GDScript",
+"path": "res://Scenes/CustomInvitesView/CustomInvitesView.gd"
 }, {
 "base": "Reference",
 "class": "EOS",
@@ -67,7 +72,7 @@ _global_script_classes=[ {
 "base": "VBoxContainer",
 "class": "ViewManager",
 "language": "GDScript",
-"path": "res://ViewManager.gd"
+"path": "res://Scripts/ViewManager.gd"
 } ]
 _global_script_class_icons={
 "AchievementPopup": "",
@@ -75,7 +80,8 @@ _global_script_class_icons={
 "AchievementsList": "",
 "AchievementsListAchievement": "",
 "AchievementsView": "",
-"DeveloperLogin": "",
+"BaseClass": "",
+"CustomInvitesView": "",
 "EOS": "",
 "LoginView": "",
 "LogsView": "",
@@ -92,8 +98,8 @@ config/icon="res://logo.png"
 
 [autoload]
 
-Env="*res://Env.gd"
-State="*res://State.gd"
+Env="*res://Scripts/Env.gd"
+Store="*res://Scripts/Store.gd"
 IEOS="*res://EOS/IEOS.cs"
 
 [physics]

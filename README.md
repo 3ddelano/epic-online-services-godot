@@ -148,8 +148,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [x] Implementation
   - [x] Sample
 - Connect Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - AntiCheatServer Interface
   - [ ] Implementation
   - [ ] Sample
@@ -157,8 +157,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - CustomInvites Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - Ecom Interface
   - [ ] Implementation
   - [ ] Sample
