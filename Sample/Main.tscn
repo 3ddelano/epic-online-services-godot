@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Scenes/NotificationsView/NotificationsView.gd" type="Script" id=7]
 [ext_resource path="res://Scripts/ViewManager.gd" type="Script" id=8]
 [ext_resource path="res://Scenes/CustomInvitesView/CustomInvitesView.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Scenes/StatsView/StatsView.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Theme" id=4]
 default_font = ExtResource( 1 )
@@ -70,40 +71,40 @@ margin_left = 176.0
 margin_right = 297.0
 text = "Custom Invites"
 
-[node name="LobbiesBtn2" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+[node name="StatsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 303.0
-margin_right = 375.0
+margin_right = 356.0
+text = "Stats"
+
+[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 362.0
+margin_right = 434.0
 text = "Lobbies"
 
 [node name="LeaderboardsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 381.0
-margin_right = 494.0
+margin_left = 440.0
+margin_right = 553.0
 text = "Leaderboards"
 
 [node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 500.0
-margin_right = 568.0
+margin_left = 559.0
+margin_right = 627.0
 text = "Friends"
 
 [node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 574.0
-margin_right = 619.0
+margin_left = 633.0
+margin_right = 678.0
 text = "P2P"
 
 [node name="PlayerDataBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 625.0
-margin_right = 723.0
+margin_left = 684.0
+margin_right = 782.0
 text = "Player Data"
 
 [node name="ReportBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 729.0
-margin_right = 799.0
-text = "Reports"
-
-[node name="StatsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 805.0
+margin_left = 788.0
 margin_right = 858.0
-text = "Stats"
+text = "Reports"
 
 [node name="TitleStorageBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 864.0
@@ -143,6 +144,14 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1008.0
 margin_bottom = 205.0
+
+[node name="StatsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 10 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 306.0
+margin_right = 1008.0
+margin_bottom = 477.0
 
 [node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
 

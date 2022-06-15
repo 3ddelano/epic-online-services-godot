@@ -543,6 +543,65 @@ class CustomInvites:
 			return IEOS.custom_invites_interface_finalize_invite(options)
 
 
+class Stats:
+
+	class CopyStatByIndexOptions:
+		extends BaseClass
+		func _init().("CopyStatByIndexOptions"): pass
+
+		var target_user_id: String
+		var stat_index: int
+
+	class CopyStatByNameOptions:
+		extends BaseClass
+		func _init().("CopyStatByNameOptions"): pass
+
+		var target_user_id: String
+		var name: String
+
+	class GetStatsCountOptions:
+		extends BaseClass
+		func _init().("GetStatsCountOptions"): pass
+
+		var target_user_id: String
+
+	class IngestStatOptions:
+		extends BaseClass
+		func _init().("IngestStatOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+		var stats: Array # IngestData: {stat_name: String, ingest_amount: int}
+
+		var client_data = null
+
+	class QueryStatsOptions:
+		extends BaseClass
+		func _init().("QueryStatsOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+		var stat_names = null # [String]
+		var start_time = null # String
+		var end_time = null # String
+
+		var client_data = null
+
+	class StatsInterface:
+		static func copy_stat_by_index(options: CopyStatByIndexOptions) -> Dictionary:
+			return IEOS.stats_interface_copy_stat_by_index(options)
+
+		static func copy_stat_by_name(options: CopyStatByNameOptions) -> Dictionary:
+			return IEOS.stats_interface_copy_stat_by_name(options)
+
+		static func get_stats_count(options: GetStatsCountOptions) -> int:
+			return IEOS.stats_interface_get_stats_count(options)
+
+		static func ingest_stat(options: IngestStatOptions) -> void:
+			IEOS.stats_interface_ingest_stat(options)
+
+		static func query_stats(options: QueryStatsOptions) -> void:
+			IEOS.stats_interface_query_stats(options)
 
 
 class Platform:

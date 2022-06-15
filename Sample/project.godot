@@ -70,6 +70,11 @@ _global_script_classes=[ {
 "path": "res://Scenes/NotificationsView/NotificationsView.gd"
 }, {
 "base": "VBoxContainer",
+"class": "StatsView",
+"language": "GDScript",
+"path": "res://Scenes/StatsView/StatsView.gd"
+}, {
+"base": "VBoxContainer",
 "class": "ViewManager",
 "language": "GDScript",
 "path": "res://Scripts/ViewManager.gd"
@@ -87,6 +92,7 @@ _global_script_class_icons={
 "LogsView": "",
 "NetworkImage": "",
 "NotificationsView": "",
+"StatsView": "",
 "ViewManager": ""
 }
 

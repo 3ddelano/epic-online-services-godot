@@ -1,0 +1,106 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/StatsView/StatsView.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Fonts/roboto-16b.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
+
+[node name="StatsView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Stats"
+
+[node name="VB" type="VBoxContainer" parent="."]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 226.0
+custom_constants/separation = 8
+
+[node name="StatName" type="LineEdit" parent="VB"]
+margin_right = 250.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 250, 0 )
+size_flags_horizontal = 0
+placeholder_text = "Enter stat name"
+
+[node name="IngestAmount" type="SpinBox" parent="VB"]
+margin_top = 32.0
+margin_right = 74.0
+margin_bottom = 56.0
+size_flags_horizontal = 0
+max_value = 900000.0
+rounded = true
+
+[node name="HB" type="HBoxContainer" parent="VB"]
+margin_top = 64.0
+margin_right = 1024.0
+margin_bottom = 82.0
+custom_constants/separation = 16
+
+[node name="IngestBtn" parent="VB/HB" instance=ExtResource( 5 )]
+margin_right = 56.0
+margin_bottom = 18.0
+size_flags_horizontal = 0
+text = "Ingest"
+
+[node name="StatusLabel" type="Label" parent="VB/HB"]
+margin_left = 72.0
+margin_top = 2.0
+margin_right = 72.0
+margin_bottom = 16.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RefreshMyStatsBtn" parent="VB" instance=ExtResource( 5 )]
+margin_top = 90.0
+margin_right = 123.0
+margin_bottom = 108.0
+size_flags_horizontal = 0
+text = "Refresh my stats"
+
+[node name="HSeparator" type="HSeparator" parent="VB"]
+margin_top = 116.0
+margin_right = 1024.0
+margin_bottom = 120.0
+
+[node name="MyStatsLabel" type="Label" parent="VB"]
+margin_top = 128.0
+margin_right = 1024.0
+margin_bottom = 147.0
+custom_fonts/font = ExtResource( 3 )
+text = "My Stats"
+
+[node name="VB" type="VBoxContainer" parent="VB"]
+margin_top = 155.0
+margin_right = 1024.0
+margin_bottom = 184.0
+
+[node name="MyStatsRichTextLabel" type="RichTextLabel" parent="VB/VB"]
+margin_right = 1024.0
+margin_bottom = 29.0
+custom_constants/table_vseparation = 4
+custom_constants/table_hseparation = 16
+custom_fonts/bold_font = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[table=4]
+[cell][b]Stat Name[/b][/cell]
+[cell][b]Value[/b][/cell]
+[cell][b]Start Time[/b][/cell]
+[cell][b]End Time[/b][/cell]
+
+[/table]"
+text = "Stat NameValueStart TimeEnd Time"
+fit_content_height = true

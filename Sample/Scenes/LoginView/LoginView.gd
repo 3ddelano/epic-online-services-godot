@@ -120,7 +120,7 @@ func _on_auth_interface_login_callback(data: Dictionary):
 	if data.has("pin_grant_info"):
 		var pin_grant_info = data["pin_grant_info"]
 		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link before %s seconds [url]%s[/url]" % [pin_grant_info["expires_in"], pin_grant_info["verification_uri_complete"]])
-		var c = OS.shell_open(pin_grant_info["verification_uri_complete"])
+		var _c = OS.shell_open(pin_grant_info["verification_uri_complete"])
 
 	if data.has("continuance_token"):
 		print("--- Auth: Got continuance token, use it to link an account")
@@ -129,7 +129,7 @@ func _on_auth_interface_login_callback(data: Dictionary):
 	if data.has("account_feature_restricted_info"):
 		var account_feature_restricted_info = data["account_feature_restricted_info"]
 		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info["verification_uri_complete"])
-		var c = OS.shell_open(account_feature_restricted_info["verification_uri_complete"])
+		var _c = OS.shell_open(account_feature_restricted_info["verification_uri_complete"])
 
 	if not (data.pending or data.success):
 		print("--- Auth: Login Failed:: ", data)
@@ -171,7 +171,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		# Create user
 		var create_user_options = EOS.Connect.CreateUserOptions.new()
 		create_user_options.continuance_token = ctw
-		var c = EOS.Connect.ConnectInterface.create_user(create_user_options)
+		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
 		var ret = yield(EOS.get_instance(), "connect_interface_create_user_callback")
 		print("create user callback: ", ret)
 
@@ -258,7 +258,7 @@ func _on_login_btn_pressed():
 			set_login_state(States.EnterCredentials)
 
 			if login_type == "DISCORD":
-				var c = OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
+				var _c = OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
 		else:
 			# No data entry is required
 			match login_type:
@@ -274,7 +274,7 @@ func _on_login_btn_pressed():
 				yield(EOS.get_instance(), "auth_interface_delete_persistent_auth_callback")
 				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
 				options1.device_model = PoolStringArray([OS.get_name(), OS.get_model_name()]).join(" ")
-				var c = EOS.Connect.ConnectInterface.create_device_id(options1)
+				var _c = EOS.Connect.ConnectInterface.create_device_id(options1)
 				yield(EOS.get_instance(), "connect_interface_create_device_id_callback")
 				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
 			"DISCORD":

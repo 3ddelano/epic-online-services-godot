@@ -234,6 +234,9 @@ public class IEOS : Node
             EmitSignal(nameof(custom_invites_interface_custom_invite_received_callback), ret);
         });
 
+        s_StatsInterface = s_PlatformInterface.GetStatsInterface();
+        s_LeaderboardsInterface = s_PlatformInterface.GetLeaderboardsInterface();
+
         return true; // platform created successfully
     }
     public Result platform_interface_check_for_launcher_and_restart()
@@ -1108,8 +1111,8 @@ public class IEOS : Node
             };
             if (data.ClientData != null) ret.Add("client_data", data.ClientData);
             if (data.ProductUserId != null) ret.Add("product_user_id", data.ProductUserId.ToString());
-            if (data.IsAccountInfoPresent != null) ret.Add("is_account_info_present", data.IsAccountInfoPresent);
-            if (data.AccountIdType != null) ret.Add("account_id_type", (int)data.AccountIdType);
+            ret.Add("is_account_info_present", data.IsAccountInfoPresent);
+            ret.Add("account_id_type", (int)data.AccountIdType);
             if (data.AccountId != null) ret.Add("account_id", data.AccountId.ToString());
             if (data.Platform != null) ret.Add("platform", data.Platform);
             if (data.DeviceType != null) ret.Add("device_type", data.DeviceType);
@@ -1531,10 +1534,11 @@ public class IEOS : Node
     // ------------------------
     public Dictionary stats_interface_copy_stat_by_index(Reference p_options)
     {
+        int p_stat_index = (int)p_options.Get("stat_index");
         var options = new CopyStatByIndexOptions()
         {
             TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
-            StatIndex = (int)p_options.Get("stat_index")
+            StatIndex = (uint)p_stat_index
         };
         Stat outStat;
         var res = s_StatsInterface.CopyStatByIndex(options, out outStat);
@@ -1593,16 +1597,16 @@ public class IEOS : Node
 
     public void stats_interface_ingest_stat(Reference p_options)
     {
-        var p_stats = (System.Collections.IEnumerable)p_options.Get("stats");
-        IngestData[] ingestData;
+        var p_stats = (Godot.Collections.Array)p_options.Get("stats");
+        IngestData[] ingestData = new IngestData[p_stats.Count];
         int i = 0;
         foreach (var stat in p_stats)
         {
             var stat_dict = (Dictionary)stat;
             ingestData[i] = new IngestData()
             {
-                StatName = (string)stat_dict.Get("stat_name"),
-                IngestAmount = (int)stat_dict.Get("ingest_amount")
+                StatName = (string)stat_dict["stat_name"],
+                IngestAmount = (int)stat_dict["ingest_amount"]
             };
             i++;
         }
@@ -1632,19 +1636,22 @@ public class IEOS : Node
 
     public void stats_interface_query_stats(Reference p_options)
     {
-        var options = new QueryStatOptions()
+        var options = new QueryStatsOptions()
         {
             LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
             TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
         };
-        if (p_options.Get("stat_names") != null) options.StatNames = (string[])p_options.Get("stat_names");
+        if (p_options.Get("stat_names") != null) options.StatNames = ((System.Collections.IEnumerable)p_options.Get("stat_names"))
+                                                                        .Cast<object>()
+                                                                        .Select(x => x.ToString())
+                                                                        .ToArray();
         if (p_options.Get("start_time") != null) options.StartTime = DateTime.Parse((string)p_options.Get("start_time"));
         if (p_options.Get("end_time") != null) options.EndTime = DateTime.Parse((string)p_options.Get("end_time"));
 
         object client_data = null;
         if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
 
-        s_StatsInterface.QueryStats(options, client_data, (QueryStatsCompleteCallbackInfo data) =>
+        s_StatsInterface.QueryStats(options, client_data, (OnQueryStatsCompleteCallbackInfo data) =>
         {
             var ret = new Dictionary(){
                 {"result_code", data.ResultCode}
