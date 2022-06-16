@@ -699,6 +699,126 @@ class KWS:
 class Leaderboards:
 	enum LeaderboardAggregation { Min = 0, Max = 1, Sum = 2, Latest = 3 }
 
+	class CopyLeaderboardDefinitionByIndexOptions:
+		extends BaseClass
+		func _init().("CopyLeaderboardDefinitionByIndexOptions"): pass
+
+		var leaderboard_index: int
+
+	class CopyLeaderboardDefinitionByLeaderboardId:
+		extends BaseClass
+		func _init().("CopyLeaderboardDefinitionByLeaderboardId"): pass
+
+		var leaderboard_id: String
+
+	class CopyLeaderboardRecordByIndexOptions:
+		extends BaseClass
+		func _init().("CopyLeaderboardRecordByIndexOptions"): pass
+
+		var leaderboard_record_index: int
+
+	class CopyLeaderboardRecordByUserIdOptions:
+		extends BaseClass
+		func _init().("CopyLeaderboardRecordByUserIdOptions"): pass
+
+		var user_id: int
+
+	class CopyLeaderboardUserScoreByIndexOptions:
+		extends BaseClass
+		func _init().("CopyLeaderboardUserScoreByIndexOptions"): pass
+
+		var leaderboard_user_score_index: int
+		var stat_name: String
+
+	class CopyLeaderboardUserScoreByUserIdOptions:
+		extends BaseClass
+		func _init().("CopyLeaderboardUserScoreByUserIdOptions"): pass
+
+		var user_id: String
+		var stat_name: String
+
+	class GetLeaderboardDefinitionCountOptions:
+		extends BaseClass
+		func _init().("GetLeaderboardDefinitionCountOptions"): pass
+
+	class GetLeaderboardRecordCountOptions:
+		extends BaseClass
+		func _init().("GetLeaderboardRecordCountOptions"): pass
+
+	class GetLeaderboardUserScoreCountOptions:
+		extends BaseClass
+		func _init().("GetLeaderboardUserScoreCountOptions"): pass
+
+		var stat_name: String
+
+	class QueryLeaderboardDefinitionsOptions:
+		extends BaseClass
+		func _init().("QueryLeaderboardDefinitionsOptions"): pass
+
+		var local_user_id: String
+		var start_time = null # String
+		var end_time = null # String
+
+		var client_data = null
+
+	class QueryLeaderboardRanksOptions:
+		extends BaseClass
+		func _init().("QueryLeaderboardRanksOptions"): pass
+
+		var local_user_id: String
+		var leaderboard_id: String
+
+		var client_data = null
+
+	class QueryLeaderboardUserScoresOptions:
+		extends BaseClass
+		func _init().("QueryLeaderboardUserScoresOptions"): pass
+
+		var local_user_id: String
+		var user_ids = [] # [String]
+		var stat_info = [] # [{stat_name: String, aggregation: LeaderboardAggregation}]
+		var start_time = null # String
+		var end_time = null # String
+
+		var client_data = null
+
+	class LeaderboardsInterface:
+		static func copy_leaderboard_definition_by_index(options: CopyLeaderboardDefinitionByIndexOptions) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_definition_by_index(options)
+
+		static func copy_leaderboard_definition_by_leaderboard_id(options: CopyLeaderboardDefinitionByLeaderboardId) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_definition_by_leaderboard_id(options)
+
+		static func copy_leaderboard_record_by_index(options: CopyLeaderboardRecordByIndexOptions) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_record_by_index(options)
+
+		static func copy_leaderboard_record_by_user_id(options: CopyLeaderboardRecordByUserIdOptions) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_record_by_user_id(options)
+
+		static func copy_leaderboard_user_score_by_index(options: CopyLeaderboardUserScoreByIndexOptions) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_user_score_by_index(options)
+
+		static func copy_leaderboard_user_score_by_user_id(options: CopyLeaderboardUserScoreByUserIdOptions) -> Dictionary:
+			return IEOS.leaderboards_interface_copy_leaderboard_user_score_by_user_id(options)
+
+		static func get_leaderboard_definition_count(options: GetLeaderboardDefinitionCountOptions) -> int:
+			return IEOS.leaderboards_interface_get_leaderboard_definition_count(options)
+
+		static func get_leaderboard_record_count(options: GetLeaderboardRecordCountOptions) -> int:
+			return IEOS.leaderboards_interface_get_leaderboard_record_count(options)
+
+		static func get_leaderboard_user_score_count(options: GetLeaderboardUserScoreCountOptions) -> int:
+			return IEOS.leaderboards_interface_get_leaderboard_user_score_count(options)
+
+		static func query_leaderboard_definitions(options: QueryLeaderboardDefinitionsOptions) -> int:
+			return IEOS.leaderboards_interface_query_leaderboard_definitions(options)
+
+		static func query_leaderboard_ranks(options: QueryLeaderboardRanksOptions) -> int:
+			return IEOS.leaderboards_interface_query_leaderboard_ranks(options)
+
+		static func query_leaderboard_user_scores(options: QueryLeaderboardUserScoresOptions) -> int:
+			return IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
+
 
 class Lobby:
 	enum LobbyAttributeVisibility { Public = 0, Private = 1 }

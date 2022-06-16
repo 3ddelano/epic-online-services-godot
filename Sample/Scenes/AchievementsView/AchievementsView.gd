@@ -28,7 +28,6 @@ func _on_login_success():
 
 	var definition_count_options = EOS.Achievements.GetAchievementDefinitionCountOptions.new()
 	var definition_count = EOS.Achievements.AchievementsInterface.get_achievement_definition_count(definition_count_options)
-	print("Achievement Definition Count: ", definition_count)
 
 	achievements = {}
 	for i in definition_count:
@@ -50,7 +49,6 @@ func _on_login_success():
 	var player_achievement_count_options = EOS.Achievements.GetPlayerAchievementCountOptions.new()
 	player_achievement_count_options.user_id = Store.product_user_id
 	var player_achievement_count = EOS.Achievements.AchievementsInterface.get_player_achievement_count(player_achievement_count_options)
-	print("Player Achievement Count: ", player_achievement_count)
 
 	for i in player_achievement_count:
 		var player_copy_by_index_options = EOS.Achievements.CopyPlayerAchievementByIndexOptions.new()

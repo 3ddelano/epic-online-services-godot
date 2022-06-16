@@ -1,7 +1,7 @@
 class_name AchievementsListAchievement
 extends MarginContainer
 
-#signal pressed(_self)
+signal pressed(_self)
 
 onready var id_label = $MC/HB/VB/IdLabel
 onready var unlocked_image = $MC/HB/UnlockedImage as NetworkImage

@@ -4,7 +4,7 @@ export (NodePath) var _views_path
 onready var views = get_node(_views_path) as VBoxContainer
 
 func _ready() -> void:
-	print("ready")
+	print("Ready!")
 	Store._main_node = self
 
 	# -----

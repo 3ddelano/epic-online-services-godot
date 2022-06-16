@@ -169,8 +169,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - Leaderboards Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - Lobby Interface
   - [ ] Implementation
   - [ ] Sample

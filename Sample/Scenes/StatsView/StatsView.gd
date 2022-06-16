@@ -11,6 +11,7 @@ onready var refresh_my_stats_btn = $VB/RefreshMyStatsBtn
 onready var my_stats = $VB/VB/MyStatsRichTextLabel
 onready var status_label = $VB/HB/StatusLabel
 
+
 func _ready() -> void:
 	var _c
 	_c = Store.connect("login_success", self, "_on_login_success")
@@ -19,6 +20,7 @@ func _ready() -> void:
 	_c = EOS.get_instance().connect("stats_interface_ingest_stat_complete_callback", self, "_on_ingest_stat_complete_callback")
 	_c = ingest_btn.connect("pressed", self, "_on_ingest_btn_pressed")
 	_c = refresh_my_stats_btn.connect("pressed", self, "_on_refresh_my_stats_btn_pressed")
+
 
 func _on_login_success():
 	var query_stats_options = EOS.Stats.QueryStatsOptions.new()
@@ -49,7 +51,6 @@ func _on_query_stats_complete_callback(data: Dictionary):
 	var stats_count_options = EOS.Stats.GetStatsCountOptions.new()
 	stats_count_options.target_user_id = Store.product_user_id
 	var stats_count = EOS.Stats.StatsInterface.get_stats_count(stats_count_options)
-	print("--- Stats: get_stats_count: ", stats_count)
 
 	stats = []
 	for i in range(stats_count):
@@ -58,16 +59,15 @@ func _on_query_stats_complete_callback(data: Dictionary):
 		copy_stat_options.stat_index = i
 		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_stat_options)
 		if ret["result_code"] != EOS.Result.Success:
-			print("Invalid stat: ", ret)
+			print("--- Stats: copy_stat_by_index: Invalid stat: ", ret)
 		else:
 			stats.append(ret["stat"])
-	print("My stats: ", stats)
 	_update_stats()
 
 
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
-	print("--- Stats: Ingesting stat: name:%s amt:%s" % [_stat_name, _ingest_amount])
+	print("--- Stats: Ingesting stat: name=%s amount=%s" % [_stat_name, _ingest_amount])
 
 	var ingest_stat_options = EOS.Stats.IngestStatOptions.new()
 	ingest_stat_options.local_user_id = Store.product_user_id
@@ -88,6 +88,7 @@ func _on_ingest_stat_complete_callback(data: Dictionary):
 	print("--- Stats: Stat ingested")
 	status_label.text = "Ingesting success"
 	_on_login_success() # Query the stats
+
 
 func _update_stats():
 	var base_bbcode = """[table=4]

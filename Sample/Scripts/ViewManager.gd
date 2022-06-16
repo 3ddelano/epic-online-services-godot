@@ -3,16 +3,16 @@ extends VBoxContainer
 
 onready var auth_btn = $HB/AuthBtn
 onready var achievements_btn = $HB/AchievementsBtn
-onready var leaderboards_btn = $HB/LeaderboardsBtn
 onready var custominvites_btn = $HB/CustomInvitesBtn
 onready var stats_btn = $HB/StatsBtn
+onready var leaderboards_btn = $HB/LeaderboardsBtn
 
 func _ready() -> void:
 	var _c = auth_btn.connect("pressed", self, "_on_auth_btn_pressed")
 	_c = achievements_btn.connect("pressed", self, "_on_achievements_btn_pressed")
-	_c = leaderboards_btn.connect("pressed", self, "_on_leaderboards_btn_pressed")
 	_c = custominvites_btn.connect("pressed", self, "_on_custominvites_btn_pressed")
 	_c = stats_btn.connect("pressed", self, "_on_stats_btn_pressed")
+	_c = leaderboards_btn.connect("pressed", self, "_on_leaderboards_btn_pressed")
 
 func _on_auth_btn_pressed():
 	set_view("Login")
@@ -28,6 +28,10 @@ func _on_custominvites_btn_pressed():
 
 func _on_stats_btn_pressed():
 	set_view("Stats")
+
+
+func _on_leaderboards_btn_pressed():
+	set_view("Leaderboards")
 
 
 func get_view(view_name: String):

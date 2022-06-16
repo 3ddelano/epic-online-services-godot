@@ -1,0 +1,69 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/LeaderboardsView/LeaderboardsView.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Fonts/roboto-16b.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
+
+[node name="LeaderboardsView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Leaderboards"
+
+[node name="VB" type="VBoxContainer" parent="."]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 152.0
+custom_constants/separation = 8
+
+[node name="SelectLeaderboardBtn" type="OptionButton" parent="VB"]
+margin_right = 159.0
+margin_bottom = 20.0
+size_flags_horizontal = 0
+text = "Select a leaderboard"
+
+[node name="ViewLeaderboardBtn" parent="VB" instance=ExtResource( 5 )]
+margin_top = 28.0
+margin_right = 46.0
+margin_bottom = 46.0
+size_flags_horizontal = 0
+text = "View"
+
+[node name="LeaderboardName" type="Label" parent="VB"]
+margin_top = 54.0
+margin_right = 1024.0
+margin_bottom = 73.0
+custom_fonts/font = ExtResource( 3 )
+text = "Leaderboard Id"
+
+[node name="VB" type="VBoxContainer" parent="VB"]
+margin_top = 81.0
+margin_right = 1024.0
+margin_bottom = 110.0
+
+[node name="LeaderboardDataRichTextLabel" type="RichTextLabel" parent="VB/VB"]
+margin_right = 1024.0
+margin_bottom = 29.0
+custom_constants/table_vseparation = 4
+custom_constants/table_hseparation = 16
+custom_fonts/bold_font = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[table=3]
+[cell][b]Rank[/b][/cell]
+[cell][b]Score[/b][/cell]
+[cell][b]User[/b][/cell]
+[/table]"
+text = "RankScoreUser"
+fit_content_height = true

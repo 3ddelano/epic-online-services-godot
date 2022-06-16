@@ -79,6 +79,12 @@ public class IEOS : Node
     public delegate void stats_interface_ingest_stat_complete_callback(Dictionary callback_data);
     [Signal]
     public delegate void stats_interface_query_stats_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void leaderboards_interface_query_leaderboard_definitions_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void leaderboards_interface_query_leaderboard_ranks_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void leaderboards_interface_query_leaderboard_user_scores_complete_callback(Dictionary callback_data);
 
     // ------------------------
     // Public Functions
@@ -1439,10 +1445,7 @@ public class IEOS : Node
     }
     public void achievements_interface_unlock_achievements(Reference p_options)
     {
-        string[] p_achievement_ids = ((System.Collections.IEnumerable)p_options.Get("achievement_ids")).Cast<object>()
-                                 .Select(x => x.ToString())
-                                 .ToArray();
-
+        string[] p_achievement_ids = ((System.Collections.IEnumerable)p_options.Get("achievement_ids")).Cast<string>().ToArray();
         var options = new UnlockAchievementsOptions()
         {
             UserId = ProductUserId.FromString((string)p_options.Get("user_id")),
@@ -1493,9 +1496,7 @@ public class IEOS : Node
         var options = new SendCustomInviteOptions()
         {
             LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
-            TargetUserIds = ((System.Collections.IEnumerable)p_options.Get("target_user_ids")).Cast<object>()
-                         .Select(x => ProductUserId.FromString(x.ToString()))
-                         .ToArray()
+            TargetUserIds = ((System.Collections.IEnumerable)p_options.Get("target_user_ids")).Cast<string>().Select(x => ProductUserId.FromString(x)).ToArray()
         };
         object client_data = null;
         if (p_options.Get("client_data") != null)
@@ -1599,10 +1600,9 @@ public class IEOS : Node
     {
         var p_stats = (Godot.Collections.Array)p_options.Get("stats");
         IngestData[] ingestData = new IngestData[p_stats.Count];
-        int i = 0;
-        foreach (var stat in p_stats)
+        for (int i = 0; i < p_stats.Count; i++)
         {
-            var stat_dict = (Dictionary)stat;
+            var stat_dict = (Dictionary)p_stats[i];
             ingestData[i] = new IngestData()
             {
                 StatName = (string)stat_dict["stat_name"],
@@ -1642,8 +1642,7 @@ public class IEOS : Node
             TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
         };
         if (p_options.Get("stat_names") != null) options.StatNames = ((System.Collections.IEnumerable)p_options.Get("stat_names"))
-                                                                        .Cast<object>()
-                                                                        .Select(x => x.ToString())
+                                                                        .Cast<string>()
                                                                         .ToArray();
         if (p_options.Get("start_time") != null) options.StartTime = DateTime.Parse((string)p_options.Get("start_time"));
         if (p_options.Get("end_time") != null) options.EndTime = DateTime.Parse((string)p_options.Get("end_time"));
@@ -1664,6 +1663,280 @@ public class IEOS : Node
         });
     }
 
+    // ------------------------
+    // Leaderboards Interface
+    // ------------------------
+
+    public Dictionary leaderboards_interface_copy_leaderboard_definition_by_index(Reference p_options)
+    {
+        int p_leaderboard_index = (int)p_options.Get("leaderboard_index");
+        var options = new CopyLeaderboardDefinitionByIndexOptions()
+        {
+            LeaderboardIndex = (uint)p_leaderboard_index
+        };
+        Epic.OnlineServices.Leaderboards.Definition outLeaderboardDefinition;
+        var res = s_LeaderboardsInterface.CopyLeaderboardDefinitionByIndex(options, out outLeaderboardDefinition);
+
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var definition_dict = new Dictionary(){
+                {"leaderboard_id", outLeaderboardDefinition.LeaderboardId.ToString()},
+                {"stat_name", outLeaderboardDefinition.StatName},
+                {"leaderboard_aggregation", (int)outLeaderboardDefinition.Aggregation},
+            };
+
+            if (outLeaderboardDefinition.StartTime != null) definition_dict.Add("start_time", outLeaderboardDefinition.StartTime.ToString());
+            if (outLeaderboardDefinition.EndTime != null) definition_dict.Add("end_time", outLeaderboardDefinition.EndTime.ToString());
+            ret.Add("definition", definition_dict);
+        }
+        return ret;
+    }
+    public Dictionary leaderboards_interface_copy_leaderboard_definition_by_leaderboard_id(Reference p_options)
+    {
+        var options = new CopyLeaderboardDefinitionByLeaderboardIdOptions()
+        {
+            LeaderboardId = (string)p_options.Get("leaderboard_id")
+        };
+        Epic.OnlineServices.Leaderboards.Definition outLeaderboardDefinition;
+        var res = s_LeaderboardsInterface.CopyLeaderboardDefinitionByLeaderboardId(options, out outLeaderboardDefinition);
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var definition_dict = new Dictionary(){
+                {"leaderboard_id", outLeaderboardDefinition.LeaderboardId.ToString()},
+                {"stat_name", outLeaderboardDefinition.StatName},
+                {"leaderboard_aggregation", (int)outLeaderboardDefinition.Aggregation},
+            };
+
+            if (outLeaderboardDefinition.StartTime != null) definition_dict.Add("start_time", outLeaderboardDefinition.StartTime.ToString());
+            if (outLeaderboardDefinition.EndTime != null) definition_dict.Add("end_time", outLeaderboardDefinition.EndTime.ToString());
+            ret.Add("definition", definition_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary leaderboards_interface_copy_leaderboard_record_by_index(Reference p_options)
+    {
+        int p_leaderboard_record_index = (int)p_options.Get("leaderboard_record_index");
+        var options = new CopyLeaderboardRecordByIndexOptions()
+        {
+            LeaderboardRecordIndex = (uint)p_leaderboard_record_index
+        };
+
+        LeaderboardRecord outLeaderboardRecord;
+        var res = s_LeaderboardsInterface.CopyLeaderboardRecordByIndex(options, out outLeaderboardRecord);
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+
+        if (res == Result.Success)
+        {
+            var leaderboard_record_dict = new Dictionary(){
+                {"user_id", outLeaderboardRecord.UserId.ToString()},
+                {"rank", (int)outLeaderboardRecord.Rank},
+                {"score", outLeaderboardRecord.Score},
+                {"user_display_name", outLeaderboardRecord.UserDisplayName},
+            };
+            ret.Add("leaderboard_record", leaderboard_record_dict);
+        }
+
+        return ret;
+    }
+
+    public Dictionary leaderboards_interface_copy_leaderboard_record_by_user_id(Reference p_options)
+    {
+        var options = new CopyLeaderboardRecordByUserIdOptions()
+        {
+            UserId = ProductUserId.FromString((string)p_options.Get("user_id"))
+        };
+
+        LeaderboardRecord outLeaderboardRecord;
+        var res = s_LeaderboardsInterface.CopyLeaderboardRecordByUserId(options, out outLeaderboardRecord);
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+
+        if (res == Result.Success)
+        {
+            var leaderboard_record_dict = new Dictionary(){
+                {"user_id", outLeaderboardRecord.UserId.ToString()},
+                {"rank", (int)outLeaderboardRecord.Rank},
+                {"score", outLeaderboardRecord.Score},
+                {"user_display_name", outLeaderboardRecord.UserDisplayName},
+            };
+            ret.Add("leaderboard_record", leaderboard_record_dict);
+        }
+
+        return ret;
+    }
+
+    public Dictionary leaderboards_interface_copy_leaderboard_user_score_by_index(Reference p_options)
+    {
+        int p_user_score_index = (int)p_options.Get("leaderboard_user_score_index");
+        var options = new CopyLeaderboardUserScoreByIndexOptions()
+        {
+            LeaderboardUserScoreIndex = (uint)p_user_score_index,
+            StatName = (string)p_options.Get("stat_name")
+        };
+        LeaderboardUserScore outLeaderboardUserScore;
+        var res = s_LeaderboardsInterface.CopyLeaderboardUserScoreByIndex(options, out outLeaderboardUserScore);
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+
+        if (res == Result.Success)
+        {
+            var leaderboard_user_score_dict = new Dictionary(){
+                {"user_id", outLeaderboardUserScore.UserId.ToString()},
+                {"score", outLeaderboardUserScore.Score},
+            };
+            ret.Add("leaderboard_user_score", leaderboard_user_score_dict);
+        }
+
+        return ret;
+    }
+
+    public Dictionary leaderboards_interface_copy_leaderboard_user_score_by_user_id(Reference p_options)
+    {
+        var options = new CopyLeaderboardUserScoreByUserIdOptions()
+        {
+            UserId = ProductUserId.FromString((string)p_options.Get("user_id")),
+            StatName = (string)p_options.Get("stat_name")
+        };
+        LeaderboardUserScore outLeaderboardUserScore;
+        var res = s_LeaderboardsInterface.CopyLeaderboardUserScoreByUserId(options, out outLeaderboardUserScore);
+        var ret = new Dictionary()
+        {
+            {"result_code", res}
+        };
+
+        if (res == Result.Success)
+        {
+            var leaderboard_user_score_dict = new Dictionary(){
+                {"user_id", outLeaderboardUserScore.UserId.ToString()},
+                {"score", outLeaderboardUserScore.Score},
+            };
+            ret.Add("leaderboard_user_score", leaderboard_user_score_dict);
+        }
+
+        return ret;
+    }
+
+    public int leaderboards_interface_get_leaderboard_definition_count(Reference p_options)
+    {
+        var options = new GetLeaderboardDefinitionCountOptions()
+        {
+        };
+        return (int)s_LeaderboardsInterface.GetLeaderboardDefinitionCount(options);
+    }
+
+    public int leaderboards_interface_get_leaderboard_record_count(Reference p_options)
+    {
+        var options = new GetLeaderboardRecordCountOptions()
+        {
+        };
+        return (int)s_LeaderboardsInterface.GetLeaderboardRecordCount(options);
+    }
+
+    public int leaderboards_interface_get_leaderboard_user_score_count(Reference p_options)
+    {
+        var options = new GetLeaderboardUserScoreCountOptions()
+        {
+            StatName = (string)p_options.Get("stat_name")
+        };
+        return (int)s_LeaderboardsInterface.GetLeaderboardUserScoreCount(options);
+    }
+
+    public void leaderboards_interface_query_leaderboard_definitions(Reference p_options)
+    {
+        var options = new QueryLeaderboardDefinitionsOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+        };
+        if (p_options.Get("start_time") != null) options.StartTime = DateTime.Parse((string)p_options.Get("start_time"));
+        if (p_options.Get("end_time") != null) options.EndTime = DateTime.Parse((string)p_options.Get("end_time"));
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_LeaderboardsInterface.QueryLeaderboardDefinitions(options, client_data, (OnQueryLeaderboardDefinitionsCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            EmitSignal(nameof(leaderboards_interface_query_leaderboard_definitions_complete_callback), ret);
+        });
+    }
+
+    public void leaderboards_interface_query_leaderboard_ranks(Reference p_options)
+    {
+        var options = new QueryLeaderboardRanksOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            LeaderboardId = (string)p_options.Get("leaderboard_id"),
+        };
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_LeaderboardsInterface.QueryLeaderboardRanks(options, client_data, (OnQueryLeaderboardRanksCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            EmitSignal(nameof(leaderboards_interface_query_leaderboard_ranks_complete_callback), ret);
+        });
+    }
+
+    public void leaderboards_interface_query_leaderboard_user_scores(Reference p_options)
+    {
+        var p_stat_info = (Godot.Collections.Array)p_options.Get("stat_info");
+        UserScoresQueryStatInfo[] statInfo = new UserScoresQueryStatInfo[p_stat_info.Count];
+
+        for (int i = 0; i < p_stat_info.Count; i++)
+        {
+            var p_stat_info_dict = (Dictionary)p_stat_info[i];
+            statInfo[i] = new UserScoresQueryStatInfo()
+            {
+                StatName = (string)p_stat_info_dict["stat_name"],
+                Aggregation = (LeaderboardAggregation)p_stat_info_dict["aggregation"],
+            };
+        }
+        ProductUserId[] userIds = ((System.Collections.IEnumerable)p_options.Get("user_ids")).Cast<string>().Select(x => ProductUserId.FromString(x)).ToArray();
+        var options = new QueryLeaderboardUserScoresOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            UserIds = userIds,
+            StatInfo = statInfo,
+        };
+
+        if (p_options.Get("start_time") != null) options.StartTime = DateTime.Parse((string)p_options.Get("start_time"));
+        if (p_options.Get("end_time") != null) options.EndTime = DateTime.Parse((string)p_options.Get("end_time"));
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_LeaderboardsInterface.QueryLeaderboardUserScores(options, client_data, (OnQueryLeaderboardUserScoresCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            EmitSignal(nameof(leaderboards_interface_query_leaderboard_user_scores_complete_callback), ret);
+        });
+    }
 
     // ------------------------
     // Internal Overrides

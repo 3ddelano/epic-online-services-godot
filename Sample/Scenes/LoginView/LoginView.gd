@@ -152,6 +152,16 @@ func _on_connect_interface_login_status_changed(data: Dictionary):
 func _on_connect_interface_login_callback(data: Dictionary):
 	print("--- Connect: Login Callback:: ", data)
 
+	if data.has("continuance_token"):
+		print("Got continuance_token")
+		var ctw = data["continuance_token"]
+		# Create user
+		var create_user_options = EOS.Connect.CreateUserOptions.new()
+		create_user_options.continuance_token = ctw
+		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
+		var ret = yield(EOS.get_instance(), "connect_interface_create_user_callback")
+		print("create user callback: ", ret)
+
 	if not data.success:
 		print("--- Connect: Login Failed:: ", data)
 		set_login_state(States.Error)
@@ -164,16 +174,6 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		set_login_status("Connected account successfully")
 		set_login_state(States.Success)
 		Store.emit_signal("login_success")
-
-	if data.has("continuance_token"):
-		print("Got continuance_token")
-		var ctw = data["continuance_token"]
-		# Create user
-		var create_user_options = EOS.Connect.CreateUserOptions.new()
-		create_user_options.continuance_token = ctw
-		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
-		var ret = yield(EOS.get_instance(), "connect_interface_create_user_callback")
-		print("create user callback: ", ret)
 
 	#var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
 	#options1.target_user_id = Store.product_user_id
