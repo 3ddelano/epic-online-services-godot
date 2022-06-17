@@ -1,6 +1,7 @@
 class_name AchievementsListAchievement
 extends MarginContainer
 
+# warning-ignore:unused_signal
 signal pressed(_self)
 
 onready var id_label = $MC/HB/VB/IdLabel

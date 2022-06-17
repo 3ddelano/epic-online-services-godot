@@ -16,6 +16,8 @@ using Epic.OnlineServices.Achievements;
 using Epic.OnlineServices.CustomInvites;
 using Epic.OnlineServices.Stats;
 using Epic.OnlineServices.Leaderboards;
+using Epic.OnlineServices.Friends;
+using Epic.OnlineServices.UserInfo;
 
 
 public class IEOS : Node
@@ -85,15 +87,37 @@ public class IEOS : Node
     public delegate void leaderboards_interface_query_leaderboard_ranks_complete_callback(Dictionary callback_data);
     [Signal]
     public delegate void leaderboards_interface_query_leaderboard_user_scores_complete_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void friends_interface_accept_invite_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void friends_interface_friends_update_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void friends_interface_query_friends_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void friends_interface_reject_invite_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void friends_interface_send_invite_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void user_info_interface_query_user_info_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void user_info_interface_query_user_info_by_display_name_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void user_info_interface_query_user_info_by_external_account_callback(Dictionary callback_data);
 
     // ------------------------
     // Public Functions
     // ------------------------
 
+
+    // -----
+    // Logging Interface
+    // -----
     public Result logging_interface_set_log_level(int category, int level)
     {
         return LoggingInterface.SetLogLevel((LogCategory)category, (LogLevel)level);
     }
+
+
     // -----
     // Platform Interface
     // -----
@@ -242,6 +266,19 @@ public class IEOS : Node
 
         s_StatsInterface = s_PlatformInterface.GetStatsInterface();
         s_LeaderboardsInterface = s_PlatformInterface.GetLeaderboardsInterface();
+        s_FriendsInterface = s_PlatformInterface.GetFriendsInterface();
+        s_FriendsInterface.AddNotifyFriendsUpdate(new AddNotifyFriendsUpdateOptions(), null, (OnFriendsUpdateInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"local_user_id", data.LocalUserId.ToString()},
+                {"target_user_id", data.TargetUserId.ToString()},
+                {"previous_status", (int) data.PreviousStatus},
+                {"current_status", (int) data.CurrentStatus},
+            };
+            EmitSignal(nameof(friends_interface_friends_update_callback), ret);
+        });
+
+        s_UserInfoInterface = s_PlatformInterface.GetUserInfoInterface();
 
         return true; // platform created successfully
     }
@@ -317,6 +354,7 @@ public class IEOS : Node
     {
         return s_PlatformInterface.SetOverrideLocaleCode(locale_code);
     }
+
 
     // -----
     // Auth Interface
@@ -728,6 +766,7 @@ public class IEOS : Node
         });
     }
 
+
     // -----
     // Connect Interface
     // -----
@@ -845,11 +884,10 @@ public class IEOS : Node
     }
     public Dictionary connect_interface_copy_product_user_external_account_by_account_type(Reference p_options)
     {
-        int p_external_account_id_type = (int)p_options.Get("account_id_type");
         var options = new CopyProductUserExternalAccountByAccountTypeOptions()
         {
             TargetUserId = ProductUserId.FromString((string)p_options.Get("target_user_id")),
-            AccountIdType = (ExternalAccountType)p_external_account_id_type
+            AccountIdType = (ExternalAccountType)p_options.Get("account_id_type")
         };
 
         Epic.OnlineServices.Connect.ExternalAccountInfo externalAccountInfo;
@@ -1663,10 +1701,10 @@ public class IEOS : Node
         });
     }
 
+
     // ------------------------
     // Leaderboards Interface
     // ------------------------
-
     public Dictionary leaderboards_interface_copy_leaderboard_definition_by_index(Reference p_options)
     {
         int p_leaderboard_index = (int)p_options.Get("leaderboard_index");
@@ -1938,6 +1976,332 @@ public class IEOS : Node
         });
     }
 
+
+    // ------------------------
+    // Friends Interface
+    // ------------------------
+    public void friends_interface_accept_invite(Reference p_options)
+    {
+        var options = new AcceptInviteOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_FriendsInterface.AcceptInvite(options, client_data, (AcceptInviteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(friends_interface_accept_invite_callback), ret);
+        });
+    }
+
+    public string friends_interface_get_friend_at_index(Reference p_options)
+    {
+        var options = new GetFriendAtIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            Index = (int)p_options.Get("index")
+
+        };
+        EpicAccountId friendId = s_FriendsInterface.GetFriendAtIndex(options);
+        return friendId.ToString();
+    }
+    public int friends_interface_get_friends_count(Reference p_options)
+    {
+        var options = new GetFriendsCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return s_FriendsInterface.GetFriendsCount(options);
+    }
+
+    public int friends_interface_get_status(Reference p_options)
+    {
+        var options = new GetStatusOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        return (int)s_FriendsInterface.GetStatus(options);
+    }
+
+    public void friends_interface_query_friends(Reference p_options)
+    {
+        var options = new QueryFriendsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_FriendsInterface.QueryFriends(options, client_data, (QueryFriendsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(friends_interface_query_friends_callback), ret);
+        });
+    }
+
+    public void friends_interface_reject_invite(Reference p_options)
+    {
+        var options = new RejectInviteOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_FriendsInterface.RejectInvite(options, client_data, (RejectInviteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+            }
+            EmitSignal(nameof(friends_interface_reject_invite_callback), ret);
+        });
+    }
+
+    public void friends_interface_send_invite(Reference p_options)
+    {
+        var options = new SendInviteOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_FriendsInterface.SendInvite(options, client_data, (SendInviteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+            }
+            EmitSignal(nameof(friends_interface_send_invite_callback), ret);
+        });
+    }
+
+    // ------------------------
+    // User Info Interface
+    // ------------------------
+    public Dictionary user_info_interface_copy_external_user_info_by_account_id(Reference p_options)
+    {
+        var options = new CopyExternalUserInfoByAccountIdOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+            AccountId = (string)p_options.Get("account_id"),
+        };
+        ExternalUserInfo outExternalUserInfo;
+        Result res = s_UserInfoInterface.CopyExternalUserInfoByAccountId(options, out outExternalUserInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            Dictionary external_account_info_dict = new Dictionary(){
+                {"account_type", (int)outExternalUserInfo.AccountType},
+                {"account_id", outExternalUserInfo.AccountId},
+                {"display_name", outExternalUserInfo.DisplayName},
+            };
+            ret.Add("external_user_info", external_account_info_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary user_info_interface_copy_external_user_info_by_account_type(Reference p_options)
+    {
+        var options = new CopyExternalUserInfoByAccountTypeOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+            AccountType = (ExternalAccountType)p_options.Get("account_type")
+        };
+        ExternalUserInfo outExternalUserInfo;
+        Result res = s_UserInfoInterface.CopyExternalUserInfoByAccountType(options, out outExternalUserInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            Dictionary external_account_info_dict = new Dictionary(){
+                {"account_type", (int)outExternalUserInfo.AccountType},
+                {"account_id", outExternalUserInfo.AccountId},
+                {"display_name", outExternalUserInfo.DisplayName},
+            };
+            ret.Add("external_user_info", external_account_info_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary user_info_interface_copy_external_user_info_by_index(Reference p_options)
+    {
+        int p_index = (int)p_options.Get("index");
+        var options = new CopyExternalUserInfoByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+            Index = (uint)p_index
+        };
+        ExternalUserInfo outExternalUserInfo;
+        Result res = s_UserInfoInterface.CopyExternalUserInfoByIndex(options, out outExternalUserInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            Dictionary external_account_info_dict = new Dictionary(){
+                {"account_type", (int)outExternalUserInfo.AccountType},
+                {"account_id", outExternalUserInfo.AccountId},
+                {"display_name", outExternalUserInfo.DisplayName},
+            };
+            ret.Add("external_user_info", external_account_info_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary user_info_interface_copy_user_info(Reference p_options)
+    {
+        var options = new CopyUserInfoOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        UserInfoData outUserInfoData;
+        Result res = s_UserInfoInterface.CopyUserInfo(options, out outUserInfoData);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            Dictionary user_info_dict = new Dictionary(){
+                {"user_id", outUserInfoData.UserId.ToString()},
+            };
+            if (outUserInfoData.Country != null) user_info_dict.Add("country", outUserInfoData.Country);
+            else user_info_dict.Add("country", "");
+            if (outUserInfoData.DisplayName != null) user_info_dict.Add("display_name", outUserInfoData.DisplayName);
+            else user_info_dict.Add("display_name", "");
+            if (outUserInfoData.PreferredLanguage != null) user_info_dict.Add("preferred_language", outUserInfoData.PreferredLanguage);
+            else user_info_dict.Add("preferred_language", "");
+            if (outUserInfoData.Nickname != null) user_info_dict.Add("nickname", outUserInfoData.Nickname);
+            else user_info_dict.Add("nickname", "");
+            ret.Add("user_info", user_info_dict);
+        }
+        return ret;
+    }
+
+    public int user_info_interface_get_external_user_info_count(Reference p_options)
+    {
+        var options = new GetExternalUserInfoCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        uint count = s_UserInfoInterface.GetExternalUserInfoCount(options);
+        return (int)count;
+    }
+
+    public void user_info_interface_query_user_info(Reference p_options)
+    {
+        var options = new QueryUserInfoOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_UserInfoInterface.QueryUserInfo(options, client_data, (QueryUserInfoCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+            }
+            EmitSignal(nameof(user_info_interface_query_user_info_callback), ret);
+        });
+    }
+
+    public void user_info_interface_query_user_info_by_display_name(Reference p_options)
+    {
+        var options = new QueryUserInfoByDisplayNameOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            DisplayName = (string)p_options.Get("display_name"),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_UserInfoInterface.QueryUserInfoByDisplayName(options, client_data, (QueryUserInfoByDisplayNameCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+                ret.Add("display_name", String.Copy(data.DisplayName));
+            }
+            EmitSignal(nameof(user_info_interface_query_user_info_by_display_name_callback), ret);
+        });
+    }
+
+
+    public void user_info_interface_query_user_info_by_external_account(Reference p_options)
+    {
+        var options = new QueryUserInfoByExternalAccountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ExternalAccountId = (string)p_options.Get("external_account_id"),
+            AccountType = (ExternalAccountType)p_options.Get("account_type"),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_UserInfoInterface.QueryUserInfoByExternalAccount(options, client_data, (QueryUserInfoByExternalAccountCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("target_user_id", data.TargetUserId.ToString());
+                ret.Add("external_account_id", data.ExternalAccountId);
+                ret.Add("account_type", (int)data.AccountType);
+            }
+            EmitSignal(nameof(user_info_interface_query_user_info_by_external_account_callback), ret);
+        });
+    }
+
+
     // ------------------------
     // Internal Overrides
     // ------------------------
@@ -1963,6 +2327,8 @@ public class IEOS : Node
                 s_CustomInvitesInterface = null;
                 s_StatsInterface = null;
                 s_LeaderboardsInterface = null;
+                s_FriendsInterface = null;
+                s_UserInfoInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -1980,4 +2346,6 @@ public class IEOS : Node
     private static CustomInvitesInterface s_CustomInvitesInterface;
     private static StatsInterface s_StatsInterface;
     private static LeaderboardsInterface s_LeaderboardsInterface;
+    private static FriendsInterface s_FriendsInterface;
+    private static UserInfoInterface s_UserInfoInterface;
 }

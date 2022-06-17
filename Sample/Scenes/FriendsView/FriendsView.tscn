@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/FriendsView/FriendsView.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Fonts/roboto-16b.tres" type="DynamicFont" id=3]
+
+[node name="FriendsView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Friends"
+
+[node name="VB" type="VBoxContainer" parent="."]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 84.0
+custom_constants/separation = 8
+
+[node name="LoginWithEpic" type="Label" parent="VB"]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Login with Epic Games account to see Friend List"
+
+[node name="FriendsRichTextLabel" type="RichTextLabel" parent="VB"]
+margin_top = 22.0
+margin_right = 1024.0
+margin_bottom = 42.0
+custom_constants/table_vseparation = 4
+custom_constants/table_hseparation = 16
+custom_fonts/bold_font = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[b]Friends List[/b]"
+text = "Friends List"
+fit_content_height = true

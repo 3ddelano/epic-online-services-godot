@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Scenes/CustomInvitesView/CustomInvitesView.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scenes/StatsView/StatsView.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/LeaderboardsView/LeaderboardsView.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scenes/FriendsView/FriendsView.tscn" type="PackedScene" id=12]
 
 [sub_resource type="Theme" id=4]
 default_font = ExtResource( 1 )
@@ -82,15 +83,15 @@ margin_left = 362.0
 margin_right = 475.0
 text = "Leaderboards"
 
-[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 481.0
-margin_right = 553.0
-text = "Lobbies"
-
 [node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 559.0
-margin_right = 627.0
+margin_left = 481.0
+margin_right = 549.0
 text = "Friends"
+
+[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 555.0
+margin_right = 627.0
+text = "Lobbies"
 
 [node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 633.0
@@ -123,13 +124,13 @@ split_offset = 120
 
 [node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC"]
 margin_right = 1008.0
-margin_bottom = 422.0
+margin_bottom = 445.0
 
 [node name="LoginView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1008.0
-margin_bottom = 422.0
+margin_bottom = 302.0
 
 [node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 2 )]
 visible = false
@@ -161,6 +162,13 @@ anchor_bottom = 0.0
 margin_top = 306.0
 margin_right = 1008.0
 margin_bottom = 552.0
+
+[node name="FriendsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 12 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 306.0
+margin_right = 1008.0
+margin_bottom = 445.0
 
 [node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
 
@@ -218,6 +226,6 @@ __meta__ = {
 [node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource( 4 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 434.0
+margin_top = 457.0
 margin_right = 1008.0
 margin_bottom = 557.0

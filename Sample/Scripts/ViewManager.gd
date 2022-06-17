@@ -6,6 +6,7 @@ onready var achievements_btn = $HB/AchievementsBtn
 onready var custominvites_btn = $HB/CustomInvitesBtn
 onready var stats_btn = $HB/StatsBtn
 onready var leaderboards_btn = $HB/LeaderboardsBtn
+onready var friends_btn = $HB/FriendsBtn
 
 func _ready() -> void:
 	var _c = auth_btn.connect("pressed", self, "_on_auth_btn_pressed")
@@ -13,6 +14,7 @@ func _ready() -> void:
 	_c = custominvites_btn.connect("pressed", self, "_on_custominvites_btn_pressed")
 	_c = stats_btn.connect("pressed", self, "_on_stats_btn_pressed")
 	_c = leaderboards_btn.connect("pressed", self, "_on_leaderboards_btn_pressed")
+	_c = friends_btn.connect("pressed", self, "_on_friends_btn_pressed")
 
 func _on_auth_btn_pressed():
 	set_view("Login")
@@ -33,6 +35,9 @@ func _on_stats_btn_pressed():
 func _on_leaderboards_btn_pressed():
 	set_view("Leaderboards")
 
+
+func _on_friends_btn_pressed():
+	set_view("Friends")
 
 func get_view(view_name: String):
 	if view_name == "Logs":

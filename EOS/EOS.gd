@@ -691,6 +691,67 @@ class Ecom:
 class Friends:
 	enum FriendsStatus { NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3 }
 
+	class AcceptInviteOptions:
+		extends BaseClass
+		func _init().("AcceptInviteOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+
+	class GetFriendAtIndexOptions:
+		extends BaseClass
+		func _init().("GetFriendAtIndexOptions"): pass
+
+		var local_user_id: String
+		var index: int
+
+	class GetFriendsCountOptions:
+		extends BaseClass
+		func _init().("GetFriendsCountOptions"): pass
+
+		var local_user_id: String
+
+	class GetStatusOptions:
+		extends BaseClass
+		func _init().("GetStatusOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class QueryFriendsOptions:
+		extends BaseClass
+		func _init().("QueryFriendsOptions"): pass
+
+		var local_user_id: String
+
+	class RejectInviteOptions:
+		extends BaseClass
+		func _init().("RejectInviteOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class FriendsInterface:
+		static func accept_invite(options: AcceptInviteOptions) -> void:
+			IEOS.friends_interface_accept_invite(options)
+
+		static func get_friend_at_index(options: GetFriendAtIndexOptions) -> String:
+			return IEOS.friends_interface_get_friend_at_index(options)
+
+		static func get_friends_count(options: GetFriendsCountOptions) -> int:
+			return IEOS.friends_interface_get_friends_count(options)
+
+		static func get_status(options: GetStatusOptions) -> int:
+			return IEOS.friends_interface_get_status(options)
+
+		static func query_friends(options: QueryFriendsOptions) -> void:
+			IEOS.friends_interface_query_friends(options)
+
+		static func reject_invite(options: RejectInviteOptions) -> void:
+			IEOS.friends_interface_reject_invite(options)
+
 
 class KWS:
 	enum KWSPermissionStatus { Granted = 0, Rejected = 1, Pending = 2 }
@@ -810,14 +871,14 @@ class Leaderboards:
 		static func get_leaderboard_user_score_count(options: GetLeaderboardUserScoreCountOptions) -> int:
 			return IEOS.leaderboards_interface_get_leaderboard_user_score_count(options)
 
-		static func query_leaderboard_definitions(options: QueryLeaderboardDefinitionsOptions) -> int:
-			return IEOS.leaderboards_interface_query_leaderboard_definitions(options)
+		static func query_leaderboard_definitions(options: QueryLeaderboardDefinitionsOptions) -> void:
+			IEOS.leaderboards_interface_query_leaderboard_definitions(options)
 
-		static func query_leaderboard_ranks(options: QueryLeaderboardRanksOptions) -> int:
-			return IEOS.leaderboards_interface_query_leaderboard_ranks(options)
+		static func query_leaderboard_ranks(options: QueryLeaderboardRanksOptions) -> void:
+			IEOS.leaderboards_interface_query_leaderboard_ranks(options)
 
-		static func query_leaderboard_user_scores(options: QueryLeaderboardUserScoresOptions) -> int:
-			return IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
+		static func query_leaderboard_user_scores(options: QueryLeaderboardUserScoresOptions) -> void:
+			IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
 
 
 class Lobby:
@@ -1047,6 +1108,99 @@ class UI:
 
 	enum NotificationLocation { TopLeft, TopRight, BottomLeft, BottomRight }
 
+class UserInfo:
+
+	class CopyExternalUserInfoByAccountIdOptions:
+		extends BaseClass
+		func _init().("CopyExternalUserInfoByAccountIdOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+		var account_id: String
+
+	class CopyExternalUserInfoByAccountTypeOptions:
+		extends BaseClass
+		func _init().("CopyExternalUserInfoByAccountTypeOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+		var account_type: int # ExternalAccountType
+
+	class CopyExternalUserInfoByIndexOptions:
+		extends BaseClass
+		func _init().("CopyExternalUserInfoByIndexOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+		var index: int
+
+	class CopyUserInfoOptions:
+		extends BaseClass
+		func _init().("CopyUserInfoOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class GetExternalUserInfoCountOptions:
+		extends BaseClass
+		func _init().("GetExternalUserInfoCountOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class QueryUserInfoOptions:
+		extends BaseClass
+		func _init().("QueryUserInfoOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+
+	class QueryUserInfoByDisplayNameOptions:
+		extends BaseClass
+		func _init().("QueryUserInfoByDisplayNameOptions"): pass
+
+		var local_user_id: String
+		var display_name: String
+
+		var client_data = null
+
+	class QueryUserInfoByExternalAccountOptions:
+		extends BaseClass
+		func _init().("QueryUserInfoByExternalAccountOptions"): pass
+
+		var local_user_id: String
+		var external_account_id: String
+		var account_type: int # ExternalAccountType
+
+		var client_data = null
+
+	class UserInfoInterface:
+		static func copy_external_user_info_by_account_id(options: CopyExternalUserInfoByAccountIdOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_external_user_info_by_account_id(options)
+
+		static func copy_external_user_info_by_account_type(options: CopyExternalUserInfoByAccountTypeOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_external_user_info_by_account_ty(options)
+
+		static func copy_external_user_info_by_index(options: CopyExternalUserInfoByIndexOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_external_user_info_by_index(options)
+
+		static func copy_user_info(options: CopyUserInfoOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_user_info(options)
+
+		static func get_external_user_info_count(options: GetExternalUserInfoCountOptions) -> int:
+			return IEOS.user_info_interface_get_external_user_info_count(options)
+
+		static func query_user_info(options: QueryUserInfoOptions) -> void:
+			IEOS.user_info_interface_query_user_info(options)
+
+		static func query_user_info_by_display_name(options: QueryUserInfoByDisplayNameOptions) -> void:
+			IEOS.user_info_interface_query_user_info_by_display_name(options)
+
+		static func query_user_info_by_external_account(options: QueryUserInfoByExternalAccountOptions) -> void:
+			IEOS.user_info_interface_query_user_info_by_external_account(options)
+
 
 class Logging:
 	enum LogCategory {
@@ -1123,7 +1277,13 @@ static func get_instance() -> IEOS:
 	return IEOS
 
 
-static func print_result(result: int) -> String:
+static func print_result(result) -> String:
+	if typeof(result) == TYPE_DICTIONARY:
+		if result.has("result_code"):
+			result = result["result_code"]
+		else:
+			printerr("EOS: print_result: Could not find result_code in ", result)
+			return ""
 	return Result.keys()[Result.values().find(result)]
 
 

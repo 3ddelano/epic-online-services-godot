@@ -76,8 +76,8 @@ func _ready() -> void:
 	c = instance.connect("connect_interface_login_status_changed", self, "_on_connect_interface_login_status_changed")
 
 	# TODO: (Remove) Autologin for debug purpose
-	yield(Store, "platform_create")
-	perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
+#	yield(Store, "platform_create")
+#	perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 	pass
 
 
@@ -90,31 +90,31 @@ func _on_auth_interface_login_callback(data: Dictionary):
 		print("--- Auth: Login Success")
 
 	if data.has("local_user_id"):
-		Store.local_user_id = data["local_user_id"]
-		print("Epic Account Id: ", Store.local_user_id)
+		Store.epic_account_id = data["local_user_id"]
+		print("Epic Account Id: ", Store.epic_account_id)
 
-		var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.local_user_id)
+		var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
 		var user_auth_token = copy_user_auth_token.user_auth_token
 		connect_account(EOS.ExternalCredentialType.Epic, user_auth_token.access_token)
 
 		#print("Logged in accounts count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
 		#print("Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
-		#print("Get login status: ", EOS.Auth.AuthInterface.get_login_status(Store.local_user_id))
-		#print("Merged accounts count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(Store.local_user_id))
-		#print("Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(Store.local_user_id, 0))
-		#print("Selected account id: ", EOS.Auth.AuthInterface.get_selected_account_id(Store.local_user_id))
+		#print("Get login status: ", EOS.Auth.AuthInterface.get_login_status(Store.epic_account_id))
+		#print("Merged accounts count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(Store.epic_account_id))
+		#print("Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(Store.epic_account_id, 0))
+		#print("Selected account id: ", EOS.Auth.AuthInterface.get_selected_account_id(Store.epic_account_id))
 
 		#var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
 		#verify_user_auth_options.auth_token = user_auth_token
 		#EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
 
-		#print("Active country code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.local_user_id))
-		#print("Active local code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.local_user_id))
+		#print("Active country code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.epic_account_id))
+		#print("Active local code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.epic_account_id))
 		#print("Override country code: ", EOS.Platform.PlatformInterface.get_override_country_code())
 		#print("Override locale code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
 
 		#var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
-		#copy_id_token_options.account_id = Store.local_user_id
+		#copy_id_token_options.account_id = Store.epic_account_id
 		#print("Copy id token: ", EOS.print_result(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options).result_code))
 
 	if data.has("pin_grant_info"):
@@ -139,7 +139,7 @@ func _on_auth_interface_login_callback(data: Dictionary):
 
 func _on_auth_interface_logout_callback(data: Dictionary):
 	print("--- Auth: Logout Callback:: ", data)
-	Store.local_user_id = ""
+	Store.epic_account_id = ""
 	Store.product_user_id = ""
 	set_login_state(States.ChooseMethod)
 	Store.emit_signal("logout_success")
@@ -173,6 +173,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		print("Product User Id: ", Store.product_user_id)
 		set_login_status("Connected account successfully")
 		set_login_state(States.Success)
+
 		Store.emit_signal("login_success")
 
 	#var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
@@ -285,7 +286,7 @@ func _on_login_btn_pressed():
 
 func _on_logout_btn_pressed():
 	var logout_options = EOS.Auth.LogoutOptions.new()
-	logout_options.local_user_id = Store.local_user_id
+	logout_options.local_user_id = Store.epic_account_id
 	login_status.text = "Logout pending..."
 	set_login_state(States.Pending)
 	EOS.Auth.AuthInterface.logout(logout_options)

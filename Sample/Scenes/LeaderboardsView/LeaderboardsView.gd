@@ -7,7 +7,7 @@ var leaderboards = []
 onready var select_leaderboard_btn = $VB/SelectLeaderboardBtn
 onready var view_leaderboard_btn = $VB/ViewLeaderboardBtn
 onready var leaderboard_name = $VB/LeaderboardName
-onready var leaderboard_data_richtextlabel = $VB/VB/LeaderboardDataRichTextLabel
+onready var leaderboard_data_richtextlabel = $VB/LeaderboardDataRichTextLabel
 
 
 func _ready() -> void:

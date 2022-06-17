@@ -37,7 +37,6 @@ func _on_login_success():
 		var achievement_definition = EOS.Achievements.AchievementsInterface.copy_achievement_definition_v2_by_index(copy_by_index_options).definition_v2
 		achievement_definition.unlock_time = ""
 		achievements[achievement_definition.achievement_id] = achievement_definition
-		# print(JSON.print(achievement_definition, "\t", true))
 
 	var player_query_options = EOS.Achievements.QueryPlayerAchievementsOptions.new()
 	player_query_options.local_user_id = Store.product_user_id
@@ -89,8 +88,8 @@ func _on_achievement_pressed(node: AchievementsListAchievement):
 
 
 func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary):
-	print("--- Auth: Achievements Unlocked Callback")
-#	print(data)
+	print("--- Achievements: achievements_unlocked_callback ")
+
 	if data.user_id == Store.product_user_id:
 		achievements[data.achievement_id].unlock_time = data.unlock_time
 	_rebuild_ui()
@@ -102,8 +101,7 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 
 
 func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
-	print("--- Auth: Unlock Achievements Complete Callback")
-	#print(data)
+	print("--- Achievements: unlock_achievements_complete_callback: %s" % EOS.print_result(data["result_code"]))
 
 func _on_refresh_btn_pressed():
 	_on_login_success()

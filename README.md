@@ -163,8 +163,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - Friends Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - KWS Interface
   - [ ] Implementation
   - [ ] Sample
@@ -214,5 +214,5 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - UserInfo Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample

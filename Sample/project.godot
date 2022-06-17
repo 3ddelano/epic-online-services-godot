@@ -50,6 +50,11 @@ _global_script_classes=[ {
 "path": "res://EOS/EOS.gd"
 }, {
 "base": "VBoxContainer",
+"class": "FriendsView",
+"language": "GDScript",
+"path": "res://Scenes/FriendsView/FriendsView.gd"
+}, {
+"base": "VBoxContainer",
 "class": "LeaderboardsView",
 "language": "GDScript",
 "path": "res://Scenes/LeaderboardsView/LeaderboardsView.gd"
@@ -93,6 +98,7 @@ _global_script_class_icons={
 "BaseClass": "",
 "CustomInvitesView": "",
 "EOS": "",
+"FriendsView": "",
 "LeaderboardsView": "",
 "LoginView": "",
 "LogsView": "",
