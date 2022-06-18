@@ -21,6 +21,7 @@ using Epic.OnlineServices.UserInfo;
 using Epic.OnlineServices.Ecom;
 using Epic.OnlineServices.UI;
 using Epic.OnlineServices.KWS;
+using Epic.OnlineServices.Metrics;
 
 
 public class IEOS : Node
@@ -334,6 +335,9 @@ public class IEOS : Node
             };
             EmitSignal(nameof(kws_interface_permissions_update_received), ret);
         });
+
+        s_MetricsInterface = s_PlatformInterface.GetMetricsInterface();
+
         return true; // platform created successfully
     }
     public Result platform_interface_check_for_launcher_and_restart()
@@ -3227,6 +3231,75 @@ public class IEOS : Node
         });
     }
 
+
+    // ------------------------
+    // Metrics Interface
+    // ------------------------
+    public int metrics_interface_begin_player_session(Reference p_options)
+    {
+        int p_account_id_type = (int)p_options.Get("account_id_type");
+        string p_account_id = (string)p_options.Get("account_id");
+
+        MetricsAccountIdType account_id_type = (MetricsAccountIdType)p_account_id_type;
+        BeginPlayerSessionOptionsAccountId account_id;
+        if (account_id_type == MetricsAccountIdType.Epic)
+        {
+            account_id = new BeginPlayerSessionOptionsAccountId()
+            {
+                Epic = EpicAccountId.FromString(p_account_id)
+            };
+        }
+        else
+        {
+            account_id = new BeginPlayerSessionOptionsAccountId()
+            {
+                External = p_account_id
+            };
+        }
+
+        int p_controller_type = (int)p_options.Get("controller_type");
+        var options = new BeginPlayerSessionOptions()
+        {
+            AccountId = account_id,
+            DisplayName = (string)p_options.Get("display_name"),
+            ControllerType = (UserControllerType)p_controller_type
+        };
+        if (p_options.Get("server_ip") != null) options.ServerIp = (string)p_options.Get("server_ip");
+        else options.ServerIp = null;
+        if (p_options.Get("game_session_id") != null) options.GameSessionId = (string)p_options.Get("game_session_id");
+
+        return (int)s_MetricsInterface.BeginPlayerSession(options);
+    }
+    public int metrics_interface_end_player_session(Reference p_options)
+    {
+        int p_account_id_type = (int)p_options.Get("account_id_type");
+        string p_account_id = (string)p_options.Get("account_id");
+
+        MetricsAccountIdType account_id_type = (MetricsAccountIdType)p_account_id_type;
+        EndPlayerSessionOptionsAccountId account_id;
+        if (account_id_type == MetricsAccountIdType.Epic)
+        {
+            account_id = new EndPlayerSessionOptionsAccountId()
+            {
+                Epic = EpicAccountId.FromString(p_account_id)
+            };
+        }
+        else
+        {
+            account_id = new EndPlayerSessionOptionsAccountId()
+            {
+                External = p_account_id
+            };
+        }
+
+        var options = new EndPlayerSessionOptions()
+        {
+            AccountId = account_id
+        };
+        return (int)s_MetricsInterface.EndPlayerSession(options);
+    }
+
+
     // ------------------------
     // Internal Overrides
     // ------------------------
@@ -3256,6 +3329,7 @@ public class IEOS : Node
                 s_UserInfoInterface = null;
                 s_EcomInterface = null;
                 s_UIInterface = null;
+                s_MetricsInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -3278,4 +3352,5 @@ public class IEOS : Node
     private static EcomInterface s_EcomInterface;
     private static UIInterface s_UIInterface;
     private static KWSInterface s_KWSInterface;
+    private static MetricsInterface s_MetricsInterface;
 }

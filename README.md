@@ -172,8 +172,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - Metrics Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - Mods Interface
   - [ ] Implementation
   - [ ] Sample

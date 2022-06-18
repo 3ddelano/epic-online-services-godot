@@ -74,6 +74,7 @@ func _ready() -> void:
 	# Connect Interface callbacks
 	c = instance.connect("connect_interface_login_callback", self, "_on_connect_interface_login_callback")
 	c = instance.connect("connect_interface_login_status_changed", self, "_on_connect_interface_login_status_changed")
+	c = instance.connect("user_info_interface_query_user_info_callback", self, "_on_query_user_info_callback")
 
 	# TODO: (Remove) Autologin for debug purpose
 #	yield(Store, "platform_create")
@@ -89,12 +90,20 @@ func _on_auth_interface_login_callback(data: Dictionary):
 	elif data.success:
 		print("--- Auth: Login Success")
 
+
 	if data.has("local_user_id"):
 		Store.epic_account_id = data["local_user_id"]
 		print("Epic Account Id: ", Store.epic_account_id)
 
 		var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
 		var user_auth_token = copy_user_auth_token.user_auth_token
+
+		# Get user info of logged in user
+		var options = EOS.UserInfo.QueryUserInfoOptions.new()
+		options.local_user_id = Store.epic_account_id
+		options.target_user_id = Store.epic_account_id
+		EOS.UserInfo.UserInfoInterface.query_user_info(options)
+
 		connect_account(EOS.ExternalCredentialType.Epic, user_auth_token.access_token)
 
 		#print("Logged in accounts count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
@@ -143,6 +152,21 @@ func _on_auth_interface_logout_callback(data: Dictionary):
 	Store.product_user_id = ""
 	set_login_state(States.ChooseMethod)
 	Store.emit_signal("logout_success")
+
+
+func _on_query_user_info_callback(data: Dictionary):
+	print("--- LoginView: UserInfo: query_user_info_callback: %s" % EOS.print_result(data))
+	if data.has("client_data") and typeof(data["client_data"]) == TYPE_STRING:
+		if data["client_data"] != "login_view":
+			# Not the callback for the LoginView
+			return
+
+	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
+	copy_user_info_options.local_user_id = Store.epic_account_id
+	copy_user_info_options.target_user_id = Store.epic_account_id
+	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_info_options)
+	if user_info_data["result_code"] == EOS.Result.Success:
+		Store.display_name = user_info_data["user_info"]["display_name"]
 
 
 func _on_connect_interface_login_status_changed(data: Dictionary):

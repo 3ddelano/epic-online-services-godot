@@ -1151,6 +1151,29 @@ class Metrics:
 
 	enum UserControllerType { Unknown = 0, MouseKeyboard = 1, GamepadControl = 2, TouchControl = 3 }
 
+	class BeginPlayerSessionOptions extends BaseClass:
+		func _init().("BeginPlayerSessionOptions"): pass
+
+		var account_id_type: int # MetricsAccountIdType
+		var account_id: String
+		var display_name: String
+		var controller_type: int # UserControllerType
+		var server_ip = null # String
+		var game_session_id = null # String
+
+	class EndPlayerSessionOptions extends BaseClass:
+		func _init().("EndPlayerSessionOptions"): pass
+
+		var account_id_type: int # MetricsAccountIdType
+		var account_id: String
+
+	class MetricsInterface:
+		static func begin_player_session(options: BeginPlayerSessionOptions) -> int:
+			return IEOS.metrics_interface_begin_player_session(options)
+
+		static func end_player_session(options: EndPlayerSessionOptions) -> int:
+			return IEOS.metrics_interface_end_player_session(options)
+
 
 class Mods:
 	enum ModEnumerationType { Installed = 0, AllAvailable }

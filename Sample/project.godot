@@ -54,6 +54,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/FriendsView/FriendsView.gd"
 }, {
+"base": "Container",
+"class": "HFlowContainer",
+"language": "GDScript",
+"path": "res://h_flow_container/h_flow_container.gd"
+}, {
 "base": "VBoxContainer",
 "class": "LeaderboardsView",
 "language": "GDScript",
@@ -68,6 +73,11 @@ _global_script_classes=[ {
 "class": "LogsView",
 "language": "GDScript",
 "path": "res://Scenes/LogsView/LogsView.gd"
+}, {
+"base": "VBoxContainer",
+"class": "MetricView",
+"language": "GDScript",
+"path": "res://Scenes/MetricsView/MetricsView.gd"
 }, {
 "base": "MarginContainer",
 "class": "NetworkImage",
@@ -104,9 +114,11 @@ _global_script_class_icons={
 "CustomInvitesView": "",
 "EOS": "",
 "FriendsView": "",
+"HFlowContainer": "res://h_flow_container/h_flow_container.svg",
 "LeaderboardsView": "",
 "LoginView": "",
 "LogsView": "",
+"MetricView": "",
 "NetworkImage": "",
 "NotificationsView": "",
 "StatsView": "",
