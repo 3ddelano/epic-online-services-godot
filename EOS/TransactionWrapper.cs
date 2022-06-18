@@ -5,23 +5,6 @@ using Epic.OnlineServices.Ecom;
 
 public class TransactionWrapper : Reference
 {
-    public Transaction _internalTransaction;
-
-    public TransactionWrapper(Transaction transaction)
-    {
-        _internalTransaction = transaction;
-    }
-
-    public string GetClass()
-    {
-        return "TransactionWrapper";
-    }
-
-    public override string ToString()
-    {
-        return "TransactionWrapper(" + _internalTransaction.ToString() + ")";
-    }
-
     public Dictionary copy_entitlement_by_index(Reference p_options)
     {
         int p_entitlement_index = (int)p_options.Get("entitlement_index");
@@ -70,11 +53,29 @@ public class TransactionWrapper : Reference
         return ret;
     }
 
-    public void _Notification(int what)
+    public TransactionWrapper(Transaction transaction)
+    {
+        _internalTransaction = transaction;
+    }
+
+    public string GetClass()
+    {
+        return "TransactionWrapper";
+    }
+
+    public override string ToString()
+    {
+        return "TransactionWrapper(" + _internalTransaction.ToString() + ")";
+    }
+
+    public override void _Notification(int what)
     {
         if (what == 1) //Object.NOTIFICATION_PREDELETE
         {
             _internalTransaction.Release();
         }
     }
+
+    public Transaction _internalTransaction;
+
 }

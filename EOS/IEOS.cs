@@ -20,6 +20,7 @@ using Epic.OnlineServices.Friends;
 using Epic.OnlineServices.UserInfo;
 using Epic.OnlineServices.Ecom;
 using Epic.OnlineServices.UI;
+using Epic.OnlineServices.KWS;
 
 
 public class IEOS : Node
@@ -123,6 +124,19 @@ public class IEOS : Node
     public delegate void ui_interface_hide_friends_callback(Dictionary callback_data);
     [Signal]
     public delegate void ui_interface_show_friends_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_permissions_update_received(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_create_user_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_query_age_gate_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_query_permissions_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_request_permissions_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void kws_interface_update_parent_email_callback(Dictionary callback_data);
+
 
 
     // ------------------------
@@ -312,6 +326,14 @@ public class IEOS : Node
             EmitSignal(nameof(ui_interface_display_settings_updated_callback), ret);
         });
 
+        s_KWSInterface = s_PlatformInterface.GetKWSInterface();
+        s_KWSInterface.AddNotifyPermissionsUpdateReceived(new AddNotifyPermissionsUpdateReceivedOptions(), null, (PermissionsUpdateReceivedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"local_user_id", data.LocalUserId.ToString()},
+            };
+            EmitSignal(nameof(kws_interface_permissions_update_received), ret);
+        });
         return true; // platform created successfully
     }
     public Result platform_interface_check_for_launcher_and_restart()
@@ -1042,7 +1064,7 @@ public class IEOS : Node
     public void connect_interface_create_user(Reference p_options)
     {
         ContinuanceTokenWrapper ctw = (ContinuanceTokenWrapper)p_options.Get("continuance_token");
-        var options = new CreateUserOptions()
+        var options = new Epic.OnlineServices.Connect.CreateUserOptions()
         {
             ContinuanceToken = ctw._internalToken
         };
@@ -1051,7 +1073,7 @@ public class IEOS : Node
         {
             client_data = p_options.Get("client_data");
         }
-        s_ConnectInterface.CreateUser(options, client_data, (CreateUserCallbackInfo data) =>
+        s_ConnectInterface.CreateUser(options, client_data, (Epic.OnlineServices.Connect.CreateUserCallbackInfo data) =>
         {
             var ret = new Dictionary(){
                 {"result_code", data.ResultCode},
@@ -3026,6 +3048,186 @@ public class IEOS : Node
 
 
     // ------------------------
+    // KWS Interface
+    // ------------------------
+    public Dictionary kws_interface_copy_permission_by_index(Reference p_options)
+    {
+        int p_index = (int)p_options.Get("index");
+
+        var options = new CopyPermissionByIndexOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            Index = (uint)p_index
+        };
+        PermissionStatus outPermission;
+        var res = s_KWSInterface.CopyPermissionByIndex(options, out outPermission);
+        var ret = new Dictionary(){
+            {"result_code", res},
+        };
+        if (res == Result.Success)
+        {
+            var permission_dict = new Dictionary(){
+                {"name", outPermission.Name},
+                {"status", (int)outPermission.Status}
+            };
+            ret.Add("permission", permission_dict);
+        }
+        return ret;
+    }
+
+    public void kws_interface_create_user(Reference p_options)
+    {
+        var options = new Epic.OnlineServices.KWS.CreateUserOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            DateOfBirth = (string)p_options.Get("date_of_birth"),
+            ParentEmail = (string)p_options.Get("parent_email"),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_KWSInterface.CreateUser(options, client_data, (Epic.OnlineServices.KWS.CreateUserCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("kws_user_id", data.KWSUserId);
+                ret.Add("is_minor", data.IsMinor);
+            }
+            EmitSignal(nameof(kws_interface_create_user_callback), ret);
+        });
+    }
+
+    public Dictionary kws_interface_get_permission_by_key(Reference p_options)
+    {
+        var options = new GetPermissionByKeyOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            Key = (string)p_options.Get("key")
+        };
+        KWSPermissionStatus outPermission;
+        var res = s_KWSInterface.GetPermissionByKey(options, out outPermission);
+        var ret = new Dictionary(){
+            {"result_code", res},
+        };
+        if (res == Result.Success)
+        {
+            ret.Add("permission", (int)outPermission);
+        }
+        return ret;
+    }
+
+    public int kws_interface_get_permissions_count(Reference p_options)
+    {
+        var options = new GetPermissionsCountOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return s_KWSInterface.GetPermissionsCount(options);
+    }
+
+    public void kws_interface_query_age_gate(Reference p_options)
+    {
+        var options = new QueryAgeGateOptions()
+        {
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_KWSInterface.QueryAgeGate(options, client_data, (QueryAgeGateCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("country_code", data.CountryCode);
+                ret.Add("age_of_consent", data.AgeOfConsent);
+            }
+            EmitSignal(nameof(kws_interface_query_age_gate_callback), ret);
+        });
+    }
+
+    public void kws_interface_query_permissions(Reference p_options)
+    {
+        var options = new QueryPermissionsOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_KWSInterface.QueryPermissions(options, client_data, (QueryPermissionsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("kws_user_id", data.KWSUserId);
+                ret.Add("date_of_birth", data.DateOfBirth);
+                ret.Add("is_minor", data.IsMinor);
+            }
+            EmitSignal(nameof(kws_interface_query_permissions_callback), ret);
+        });
+    }
+
+    public void kws_interface_request_permissions(Reference p_options)
+    {
+        var options = new RequestPermissionsOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            PermissionKeys = ((System.Collections.IEnumerable)p_options.Get("permission_keys")).Cast<string>().ToArray(),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_KWSInterface.RequestPermissions(options, client_data, (RequestPermissionsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(kws_interface_request_permissions_callback), ret);
+        });
+    }
+
+    public void kws_interface_update_parent_email(Reference p_options)
+    {
+        var options = new UpdateParentEmailOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id")),
+            ParentEmail = (string)p_options.Get("parent_email"),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_KWSInterface.UpdateParentEmail(options, client_data, (UpdateParentEmailCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(kws_interface_update_parent_email_callback), ret);
+        });
+    }
+
+    // ------------------------
     // Internal Overrides
     // ------------------------
     public override void _Process(float delta)
@@ -3075,4 +3277,5 @@ public class IEOS : Node
     private static UserInfoInterface s_UserInfoInterface;
     private static EcomInterface s_EcomInterface;
     private static UIInterface s_UIInterface;
+    private static KWSInterface s_KWSInterface;
 }

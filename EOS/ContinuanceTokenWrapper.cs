@@ -3,8 +3,6 @@ using Epic.OnlineServices;
 
 public class ContinuanceTokenWrapper : Reference
 {
-    public ContinuanceToken _internalToken;
-
     public ContinuanceTokenWrapper(ContinuanceToken token)
     {
         _internalToken = token;
@@ -19,4 +17,6 @@ public class ContinuanceTokenWrapper : Reference
     {
         return "ContinuanceTokenWrapper(" + _internalToken.ToString() + ")";
     }
+
+    public ContinuanceToken _internalToken;
 }

@@ -9,54 +9,46 @@ class_name EOS
 
 
 class Achievements:
-	class CopyAchievementDefinitionV2ByAchievementIdOptions:
-		extends BaseClass
+	class CopyAchievementDefinitionV2ByAchievementIdOptions extends BaseClass:
 		func _init().("CopyAchievementDefinitionV2ByAchievementIdOptions"): pass
 
 		var achievement_id: String
 
-	class CopyAchievementDefinitionV2ByIndexOptions:
-		extends BaseClass
+	class CopyAchievementDefinitionV2ByIndexOptions extends BaseClass:
 		func _init().("CopyAchievementDefinitionV2ByIndexOptions"): pass
 
 		var achievement_index: int
 
-	class CopyPlayerAchievementByAchievementIdOptions:
-		extends BaseClass
+	class CopyPlayerAchievementByAchievementIdOptions extends BaseClass:
 		func _init().("CopyPlayerAchievementByAchievementIdOptions"): pass
 
 		var target_user_id: String
 		var achievement_id: String
 		var local_user_id: String
 
-	class CopyPlayerAchievementByIndexOptions:
-		extends BaseClass
+	class CopyPlayerAchievementByIndexOptions extends BaseClass:
 		func _init().("CopyPlayerAchievementByIndexOptions"): pass
 
 		var target_user_id: String
 		var achievement_index: int
 		var local_user_id: String
 
-	class GetAchievementDefinitionCountOptions:
-		extends BaseClass
+	class GetAchievementDefinitionCountOptions extends BaseClass:
 		func _init().("GetAchievementDefinitionCountOptions"): pass
 
-	class QueryDefinitionsOptions:
-		extends BaseClass
+	class QueryDefinitionsOptions extends BaseClass:
 		func _init().("QueryDefinitionsOptions"): pass
 
 		var local_user_id = ""
 
 		var client_data = null
 
-	class GetPlayerAchievementCountOptions:
-		extends BaseClass
+	class GetPlayerAchievementCountOptions extends BaseClass:
 		func _init().("GetPlayerAchievementCountOptions"): pass
 
 		var user_id: String
 
-	class QueryPlayerAchievementsOptions:
-		extends BaseClass
+	class QueryPlayerAchievementsOptions extends BaseClass:
 		func _init().("QueryPlayerAchievementsOptions"): pass
 
 		var target_user_id: String
@@ -64,8 +56,7 @@ class Achievements:
 
 		var client_data = null
 
-	class UnlockAchievementsOptions:
-		extends BaseClass
+	class UnlockAchievementsOptions extends BaseClass:
 		func _init().("UnlockAchievementsOptions"): pass
 
 		var user_id: String
@@ -110,21 +101,18 @@ class Achievements:
 
 
 class Connect:
-	class Credentials:
-		extends BaseClass
+	class Credentials extends BaseClass:
 		func _init().("Credentials"): pass
 
 		var type: int  # ExternalCredentialType
 		var token = null
 
-	class UserLoginInfo:
-		extends BaseClass
+	class UserLoginInfo extends BaseClass:
 		func _init().("UserLoginInfo"): pass
 
 		var display_name: String
 
-	class LoginOptions:
-		extends BaseClass
+	class LoginOptions extends BaseClass:
 		func _init().("LoginOptions"): pass
 
 		var credentials: Credentials
@@ -132,85 +120,73 @@ class Connect:
 
 		var client_data = null
 
-	class CopyIdTokenOptions:
-		extends BaseClass
+	class CopyIdTokenOptions extends BaseClass:
 		func _init().("CopyIdTokenOptions"): pass
 
 		var local_user_id: String
 
-	class CopyProductUserExternalAccountByAccountIdOptions:
-		extends BaseClass
+	class CopyProductUserExternalAccountByAccountIdOptions extends BaseClass:
 		func _init().("CopyProductUserExternalAccountByAccountIdOptions"): pass
 
 		var target_user_id: String
 		var account_id: String
 
-	class CopyProductUserExternalAccountByAccountTypeOptions:
-		extends BaseClass
+	class CopyProductUserExternalAccountByAccountTypeOptions extends BaseClass:
 		func _init().("CopyProductUserExternalAccountByAccountTypeOptions"): pass
 
 		var target_user_id: String
 		var account_id_type: int  # ExternalAccountType
 
-	class CopyProductUserExternalAccountByIndexOptions:
-		extends BaseClass
+	class CopyProductUserExternalAccountByIndexOptions extends BaseClass:
 		func _init().("CopyProductUserExternalAccountByIndexOptions"): pass
 
 		var target_user_id: String
 		var external_account_info_index: int
 
-	class CopyProductUserInfoOptions:
-		extends BaseClass
+	class CopyProductUserInfoOptions extends BaseClass:
 		func _init().("CopyProductUserInfoOptions"): pass
 
 		var target_user_id: String
 
-	class CreateDeviceIdOptions:
-		extends BaseClass
+	class CreateDeviceIdOptions extends BaseClass:
 		func _init().("CreateDeviceIdOptions"): pass
 
 		var device_model: String
 
 		var client_data = null
 
-	class DeleteDeviceIdOptions:
-		extends BaseClass
+	class DeleteDeviceIdOptions extends BaseClass:
 		func _init().("DeleteDeviceIdOptions"): pass
 
 		var client_data = null
 
-	class CreateUserOptions:
-		extends BaseClass
+	class CreateUserOptions extends BaseClass:
 		func _init().("CreateUserOptions"): pass
 
 		var continuance_token: Reference # ContinuanceTokenWrapper
 
 		var client_data = null
 
-	class GetExternalAccountMappingsOptions:
-		extends BaseClass
+	class GetExternalAccountMappingsOptions extends BaseClass:
 		func _init().("GetExternalAccountMappingsOptions"): pass
 
 		var local_user_id: String
 		var account_id_type: int # ExternalAccountType
 		var target_external_user_id: String
 
-	class GetProductUserExternalAccountCountOptions:
-		extends BaseClass
+	class GetProductUserExternalAccountCountOptions extends BaseClass:
 		func _init().("GetProductUserExternalAccountCountOptions"): pass
 
 		var target_user_id: String
 
-	class GetProductUserIdMappingOptions:
-		extends BaseClass
+	class GetProductUserIdMappingOptions extends BaseClass:
 		func _init().("GetProductUserIdMappingOptions"): pass
 
 		var local_user_id: String
 		var account_id_type: int # ExternalAccountType
 		var target_product_user_id: String
 
-	class LinkAccountOptions:
-		extends BaseClass
+	class LinkAccountOptions extends BaseClass:
 		func _init().("LinkAccountOptions"): pass
 
 		var continuance_token = null # ContinuanceTokenWrapper
@@ -218,23 +194,20 @@ class Connect:
 
 		var client_data = null
 
-	class IdToken:
-		extends BaseClass
+	class IdToken extends BaseClass:
 		func _init().("IdToken"): pass
 
 		var product_user_id: String
 		var json_web_token: String
 
-	class VerifyIdTokenOptions:
-		extends BaseClass
+	class VerifyIdTokenOptions extends BaseClass:
 		func _init().("VerifyIdTokenOptions"): pass
 
 		var id_token: IdToken
 
 		var client_data = null
 
-	class TransferDeviceIdAccountOptions:
-		extends BaseClass
+	class TransferDeviceIdAccountOptions extends BaseClass:
 		func _init().("TransferDeviceIdAccountOptions"): pass
 
 		var primary_local_user_id: String
@@ -243,8 +216,7 @@ class Connect:
 
 		var client_data = null
 
-	class UnlinkAccountOptions:
-		extends BaseClass
+	class UnlinkAccountOptions extends BaseClass:
 		func _init().("UnlinkAccountOptions"): pass
 
 		var local_user_id: String
@@ -343,8 +315,7 @@ class Auth:
 		ExternalAuth = 7
 	}
 
-	class LoginOptions:
-		extends BaseClass
+	class LoginOptions extends BaseClass:
 		func _init().("LoginOptions"): pass
 
 		var type: int
@@ -353,16 +324,14 @@ class Auth:
 
 		var client_data = null
 
-	class LogoutOptions:
-		extends BaseClass
+	class LogoutOptions extends BaseClass:
 		func _init().("LogoutOptions"): pass
 
 		var local_user_id: String
 
 		var client_data = null
 
-	class Credentials:
-		extends BaseClass
+	class Credentials extends BaseClass:
 		func _init().("Credentials"): pass
 
 		var type: int  # LoginCredentialType
@@ -370,25 +339,21 @@ class Auth:
 		var token = null  # String
 		var external_type = null  # ExternalCredentialType
 
-	class CopyIdTokenOptions:
-		extends BaseClass
+	class CopyIdTokenOptions extends BaseClass:
 		func _init().("CopyIdTokenOptions"): pass
 
 		var account_id: String
 
-	class CopyUserAuthTokenOptions:
-		extends BaseClass
+	class CopyUserAuthTokenOptions extends BaseClass:
 		func _init().("CopyUserAuthTokenOptions"): pass
 
-	class DeletePersistentAuthOptions:
-		extends BaseClass
+	class DeletePersistentAuthOptions extends BaseClass:
 		func _init().("DeletePersistentAuthOptions"): pass
 
 		var refresh_token = null
 		var client_data = null
 
-	class LinkAccountOptions:
-		extends BaseClass
+	class LinkAccountOptions extends BaseClass:
 		func _init().("LinkAccountOptions"): pass
 
 		var link_account_flags: int # LinkAccountFlags
@@ -397,8 +362,7 @@ class Auth:
 
 		var client_data = null
 
-	class QueryIdTokenOptions:
-		extends BaseClass
+	class QueryIdTokenOptions extends BaseClass:
 		func _init().("QueryIdTokenOptions"): pass
 
 		var local_user_id: String
@@ -406,23 +370,20 @@ class Auth:
 
 		var client_data = null
 
-	class IdToken:
-		extends BaseClass
+	class IdToken extends BaseClass:
 		func _init().("IdToken"): pass
 
 		var account_id: String
 		var json_web_token: String
 
-	class VerifyIdTokenOptions:
-		extends BaseClass
+	class VerifyIdTokenOptions extends BaseClass:
 		func _init().("VerifyIdTokenOptions"): pass
 
 		var id_token: IdToken
 
 		var client_data = null
 
-	class Token:
-		extends BaseClass
+	class Token extends BaseClass:
 		func _init().("Token"): pass
 
 		var app: String
@@ -436,8 +397,7 @@ class Auth:
 		var refresh_expires_in: float
 		var refresh_expires_at: String
 
-	class VerifyUserAuthOptions:
-		extends BaseClass
+	class VerifyUserAuthOptions extends BaseClass:
 		func _init().("VerifyUserAuthOptions"): pass
 
 		var auth_token: Token
@@ -508,23 +468,20 @@ class Auth:
 
 class CustomInvites:
 
-	class SetCustomInviteOptions:
-		extends BaseClass
+	class SetCustomInviteOptions extends BaseClass:
 		func _init().("SetCustomInviteOptions"): pass
 
 		var local_user_id: String
 		var payload: String
 
-	class SendCustomInviteOptions:
-		extends BaseClass
+	class SendCustomInviteOptions extends BaseClass:
 		func _init().("SendCustomInviteOptions"): pass
 
 		var local_user_id: String
 		var target_user_ids = [] # [String]
 		var client_data = null
 
-	class FinalizeInviteOptions:
-		extends BaseClass
+	class FinalizeInviteOptions extends BaseClass:
 		func _init().("FinalizeInviteOptions"): pass
 
 		var target_user_id: String
@@ -545,28 +502,24 @@ class CustomInvites:
 
 class Stats:
 
-	class CopyStatByIndexOptions:
-		extends BaseClass
+	class CopyStatByIndexOptions extends BaseClass:
 		func _init().("CopyStatByIndexOptions"): pass
 
 		var target_user_id: String
 		var stat_index: int
 
-	class CopyStatByNameOptions:
-		extends BaseClass
+	class CopyStatByNameOptions extends BaseClass:
 		func _init().("CopyStatByNameOptions"): pass
 
 		var target_user_id: String
 		var name: String
 
-	class GetStatsCountOptions:
-		extends BaseClass
+	class GetStatsCountOptions extends BaseClass:
 		func _init().("GetStatsCountOptions"): pass
 
 		var target_user_id: String
 
-	class IngestStatOptions:
-		extends BaseClass
+	class IngestStatOptions extends BaseClass:
 		func _init().("IngestStatOptions"): pass
 
 		var local_user_id: String
@@ -575,8 +528,7 @@ class Stats:
 
 		var client_data = null
 
-	class QueryStatsOptions:
-		extends BaseClass
+	class QueryStatsOptions extends BaseClass:
 		func _init().("QueryStatsOptions"): pass
 
 		var local_user_id: String
@@ -616,15 +568,13 @@ class Platform:
 		WindowsEnableOverlayOpengl = 0x00040
 	}
 
-	class InitializeOptions:
-		extends BaseClass
+	class InitializeOptions extends BaseClass:
 		func _init().("InitializeOptions"): pass
 
 		var product_name: String
 		var product_version: String
 
-	class CreateOptions:
-		extends BaseClass
+	class CreateOptions extends BaseClass:
 		func _init().("CreateOptions"): pass
 
 		var product_id: String
@@ -941,8 +891,7 @@ class Ecom:
 class Friends:
 	enum FriendsStatus { NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3 }
 
-	class AcceptInviteOptions:
-		extends BaseClass
+	class AcceptInviteOptions extends BaseClass:
 		func _init().("AcceptInviteOptions"): pass
 
 		var local_user_id: String
@@ -950,34 +899,29 @@ class Friends:
 
 		var client_data = null
 
-	class GetFriendAtIndexOptions:
-		extends BaseClass
+	class GetFriendAtIndexOptions extends BaseClass:
 		func _init().("GetFriendAtIndexOptions"): pass
 
 		var local_user_id: String
 		var index: int
 
-	class GetFriendsCountOptions:
-		extends BaseClass
+	class GetFriendsCountOptions extends BaseClass:
 		func _init().("GetFriendsCountOptions"): pass
 
 		var local_user_id: String
 
-	class GetStatusOptions:
-		extends BaseClass
+	class GetStatusOptions extends BaseClass:
 		func _init().("GetStatusOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 
-	class QueryFriendsOptions:
-		extends BaseClass
+	class QueryFriendsOptions extends BaseClass:
 		func _init().("QueryFriendsOptions"): pass
 
 		var local_user_id: String
 
-	class RejectInviteOptions:
-		extends BaseClass
+	class RejectInviteOptions extends BaseClass:
 		func _init().("RejectInviteOptions"): pass
 
 		var local_user_id: String
@@ -1006,64 +950,122 @@ class Friends:
 class KWS:
 	enum KWSPermissionStatus { Granted = 0, Rejected = 1, Pending = 2 }
 
+	class CopyPermissionByIndexOptions extends BaseClass:
+		func _init().("CopyPermissionByIndexOptions"): pass
+
+		var local_user_id: String
+		var index: int
+
+	class CreateUserOptions extends BaseClass:
+		func _init().("CreateUserOptions"): pass
+
+		var local_user_id: String
+		var date_of_birth: String # Date of birth in ISO8601 form (YYYY-MM-DD)
+		var parent_email: String
+
+	class GetPermissionByKeyOptions extends BaseClass:
+		func _init().("GetPermissionByKeyOptions"): pass
+
+		var local_user_id: String
+		var key: String
+
+	class GetPermissionsCountOptions extends BaseClass:
+		func _init().("GetPermissionsCountOptions"): pass
+
+		var local_user_id: String
+
+	class QueryAgeGateOptions extends BaseClass:
+		func _init().("QueryAgeGateOptions"): pass
+
+	class QueryPermissionsOptions extends BaseClass:
+		func _init().("QueryPermissionsOptions"): pass
+
+		var local_user_id: String
+
+	class RequestPermissionsOptions extends BaseClass:
+		func _init().("RequestPermissionsOptions"): pass
+
+		var local_user_id: String
+		var permission_keys: Array # [String]
+
+	class UpdateParentEmailOptions extends BaseClass:
+		func _init().("UpdateParentEmailOptions"): pass
+
+		var local_user_id: String
+		var parent_email: String
+
+	static func copy_permission_by_index(options: CopyPermissionByIndexOptions) -> Dictionary:
+		return IEOS.kws_interface_copy_permission_by_index(options)
+
+	static func create_user(options: CreateUserOptions) -> void:
+		IEOS.kws_interface_create_user(options)
+
+	static func get_permission_by_key(options: GetPermissionByKeyOptions) -> Dictionary:
+		return IEOS.kws_interface_get_permission_by_key(options)
+
+	static func get_permissions_count(options: GetPermissionsCountOptions) -> int:
+		return IEOS.kws_interface_get_permissions_count(options)
+
+	static func query_age_gate(options: QueryAgeGateOptions) -> void:
+		IEOS.kws_interface_query_age_gate(options)
+
+	static func query_permissions(options: QueryPermissionsOptions) -> void:
+		IEOS.kws_interface_query_permissions(options)
+
+	static func request_permissions(options: RequestPermissionsOptions) -> void:
+		IEOS.kws_interface_request_permissions(options)
+
+	static func update_parent_email(options: UpdateParentEmailOptions) -> void:
+		IEOS.kws_interface_update_parent_email(options)
+
 
 class Leaderboards:
 	enum LeaderboardAggregation { Min = 0, Max = 1, Sum = 2, Latest = 3 }
 
-	class CopyLeaderboardDefinitionByIndexOptions:
-		extends BaseClass
+	class CopyLeaderboardDefinitionByIndexOptions extends BaseClass:
 		func _init().("CopyLeaderboardDefinitionByIndexOptions"): pass
 
 		var leaderboard_index: int
 
-	class CopyLeaderboardDefinitionByLeaderboardId:
-		extends BaseClass
+	class CopyLeaderboardDefinitionByLeaderboardId extends BaseClass:
 		func _init().("CopyLeaderboardDefinitionByLeaderboardId"): pass
 
 		var leaderboard_id: String
 
-	class CopyLeaderboardRecordByIndexOptions:
-		extends BaseClass
+	class CopyLeaderboardRecordByIndexOptions extends BaseClass:
 		func _init().("CopyLeaderboardRecordByIndexOptions"): pass
 
 		var leaderboard_record_index: int
 
-	class CopyLeaderboardRecordByUserIdOptions:
-		extends BaseClass
+	class CopyLeaderboardRecordByUserIdOptions extends BaseClass:
 		func _init().("CopyLeaderboardRecordByUserIdOptions"): pass
 
 		var user_id: int
 
-	class CopyLeaderboardUserScoreByIndexOptions:
-		extends BaseClass
+	class CopyLeaderboardUserScoreByIndexOptions extends BaseClass:
 		func _init().("CopyLeaderboardUserScoreByIndexOptions"): pass
 
 		var leaderboard_user_score_index: int
 		var stat_name: String
 
-	class CopyLeaderboardUserScoreByUserIdOptions:
-		extends BaseClass
+	class CopyLeaderboardUserScoreByUserIdOptions extends BaseClass:
 		func _init().("CopyLeaderboardUserScoreByUserIdOptions"): pass
 
 		var user_id: String
 		var stat_name: String
 
-	class GetLeaderboardDefinitionCountOptions:
-		extends BaseClass
+	class GetLeaderboardDefinitionCountOptions extends BaseClass:
 		func _init().("GetLeaderboardDefinitionCountOptions"): pass
 
-	class GetLeaderboardRecordCountOptions:
-		extends BaseClass
+	class GetLeaderboardRecordCountOptions extends BaseClass:
 		func _init().("GetLeaderboardRecordCountOptions"): pass
 
-	class GetLeaderboardUserScoreCountOptions:
-		extends BaseClass
+	class GetLeaderboardUserScoreCountOptions extends BaseClass:
 		func _init().("GetLeaderboardUserScoreCountOptions"): pass
 
 		var stat_name: String
 
-	class QueryLeaderboardDefinitionsOptions:
-		extends BaseClass
+	class QueryLeaderboardDefinitionsOptions extends BaseClass:
 		func _init().("QueryLeaderboardDefinitionsOptions"): pass
 
 		var local_user_id: String
@@ -1072,8 +1074,7 @@ class Leaderboards:
 
 		var client_data = null
 
-	class QueryLeaderboardRanksOptions:
-		extends BaseClass
+	class QueryLeaderboardRanksOptions extends BaseClass:
 		func _init().("QueryLeaderboardRanksOptions"): pass
 
 		var local_user_id: String
@@ -1081,8 +1082,7 @@ class Leaderboards:
 
 		var client_data = null
 
-	class QueryLeaderboardUserScoresOptions:
-		extends BaseClass
+	class QueryLeaderboardUserScoresOptions extends BaseClass:
 		func _init().("QueryLeaderboardUserScoresOptions"): pass
 
 		var local_user_id: String
@@ -1426,46 +1426,40 @@ class UI:
 
 class UserInfo:
 
-	class CopyExternalUserInfoByAccountIdOptions:
-		extends BaseClass
+	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
 		func _init().("CopyExternalUserInfoByAccountIdOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 		var account_id: String
 
-	class CopyExternalUserInfoByAccountTypeOptions:
-		extends BaseClass
+	class CopyExternalUserInfoByAccountTypeOptions extends BaseClass:
 		func _init().("CopyExternalUserInfoByAccountTypeOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 		var account_type: int # ExternalAccountType
 
-	class CopyExternalUserInfoByIndexOptions:
-		extends BaseClass
+	class CopyExternalUserInfoByIndexOptions extends BaseClass:
 		func _init().("CopyExternalUserInfoByIndexOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 		var index: int
 
-	class CopyUserInfoOptions:
-		extends BaseClass
+	class CopyUserInfoOptions extends BaseClass:
 		func _init().("CopyUserInfoOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 
-	class GetExternalUserInfoCountOptions:
-		extends BaseClass
+	class GetExternalUserInfoCountOptions extends BaseClass:
 		func _init().("GetExternalUserInfoCountOptions"): pass
 
 		var local_user_id: String
 		var target_user_id: String
 
-	class QueryUserInfoOptions:
-		extends BaseClass
+	class QueryUserInfoOptions extends BaseClass:
 		func _init().("QueryUserInfoOptions"): pass
 
 		var local_user_id: String
@@ -1473,8 +1467,7 @@ class UserInfo:
 
 		var client_data = null
 
-	class QueryUserInfoByDisplayNameOptions:
-		extends BaseClass
+	class QueryUserInfoByDisplayNameOptions extends BaseClass:
 		func _init().("QueryUserInfoByDisplayNameOptions"): pass
 
 		var local_user_id: String
@@ -1482,8 +1475,7 @@ class UserInfo:
 
 		var client_data = null
 
-	class QueryUserInfoByExternalAccountOptions:
-		extends BaseClass
+	class QueryUserInfoByExternalAccountOptions extends BaseClass:
 		func _init().("QueryUserInfoByExternalAccountOptions"): pass
 
 		var local_user_id: String
@@ -1567,8 +1559,7 @@ class Logging:
 		VeryVerbose = 600
 	}
 
-	class LogMessage:
-		extends BaseClass
+	class LogMessage extends BaseClass:
 		func _init().("LogMessage"): pass
 
 		var category: String

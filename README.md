@@ -166,8 +166,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [x] Implementation
   - [x] Sample
 - KWS Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [ ] Sample (No general access yet)
 - Lobby Interface
   - [ ] Implementation
   - [ ] Sample
