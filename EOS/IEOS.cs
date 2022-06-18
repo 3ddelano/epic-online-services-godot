@@ -18,6 +18,8 @@ using Epic.OnlineServices.Stats;
 using Epic.OnlineServices.Leaderboards;
 using Epic.OnlineServices.Friends;
 using Epic.OnlineServices.UserInfo;
+using Epic.OnlineServices.Ecom;
+using Epic.OnlineServices.UI;
 
 
 public class IEOS : Node
@@ -103,11 +105,29 @@ public class IEOS : Node
     public delegate void user_info_interface_query_user_info_by_display_name_callback(Dictionary callback_data);
     [Signal]
     public delegate void user_info_interface_query_user_info_by_external_account_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_checkout_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_query_entitlements_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_query_offers_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_query_ownership_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_query_ownership_token_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ecom_interface_redeem_entitlements_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ui_interface_display_settings_updated_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ui_interface_hide_friends_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void ui_interface_show_friends_callback(Dictionary callback_data);
+
 
     // ------------------------
     // Public Functions
     // ------------------------
-
 
     // -----
     // Logging Interface
@@ -279,6 +299,18 @@ public class IEOS : Node
         });
 
         s_UserInfoInterface = s_PlatformInterface.GetUserInfoInterface();
+
+        s_EcomInterface = s_PlatformInterface.GetEcomInterface();
+
+        s_UIInterface = s_PlatformInterface.GetUIInterface();
+        s_UIInterface.AddNotifyDisplaySettingsUpdated(new AddNotifyDisplaySettingsUpdatedOptions(), null, (OnDisplaySettingsUpdatedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"is_visible", data.IsVisible},
+                {"is_exclusive_input", data.IsExclusiveInput},
+            };
+            EmitSignal(nameof(ui_interface_display_settings_updated_callback), ret);
+        });
 
         return true; // platform created successfully
     }
@@ -2302,6 +2334,697 @@ public class IEOS : Node
     }
 
 
+
+    // ------------------------
+    // Ecom Interface
+    // ------------------------
+    public void ecom_interface_checkout(Reference p_options)
+    {
+        CheckoutEntry[] p_entries = ((System.Collections.IEnumerable)p_options.Get("entries")).Cast<Dictionary>().Select(x => new CheckoutEntry()
+        {
+            OfferId = (string)x["offer_id"]
+        }).ToArray();
+        var options = new CheckoutOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            Entries = p_entries
+        };
+        if (p_options.Get("override_catalog_namespace") != null) options.OverrideCatalogNamespace = (string)p_options.Get("override_catalog_namespace");
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_EcomInterface.Checkout(options, client_data, (CheckoutCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode}
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("transaction_id", data.TransactionId.ToString());
+            }
+            EmitSignal(nameof(ecom_interface_checkout_callback), ret);
+        });
+    }
+
+    public Dictionary ecom_interface_copy_entitlement_by_id(Reference p_options)
+    {
+        var options = new CopyEntitlementByIdOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementId = (string)p_options.Get("entitlement_id"),
+        };
+        Entitlement outEntitlement;
+        Result res = s_EcomInterface.CopyEntitlementById(options, out outEntitlement);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var entitlement_dict = new Dictionary(){
+                {"entitlement_name", outEntitlement.EntitlementName},
+                {"entitlement_id", outEntitlement.EntitlementId},
+                {"catalog_item_id", outEntitlement.CatalogItemId},
+                {"server_index", outEntitlement.ServerIndex},
+                {"redeemed", outEntitlement.Redeemed},
+                {"end_timestamp", (int) outEntitlement.EndTimestamp},
+            };
+            ret.Add("entitlement", entitlement_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_entitlement_by_index(Reference p_options)
+    {
+        int p_entitlement_index = (int)p_options.Get("entitlement_index");
+        var options = new CopyEntitlementByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementIndex = (uint)p_entitlement_index
+        };
+        Entitlement outEntitlement;
+        Result res = s_EcomInterface.CopyEntitlementByIndex(options, out outEntitlement);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var entitlement_dict = new Dictionary(){
+                {"entitlement_name", outEntitlement.EntitlementName},
+                {"entitlement_id", outEntitlement.EntitlementId},
+                {"catalog_item_id", outEntitlement.CatalogItemId},
+                {"server_index", outEntitlement.ServerIndex},
+                {"redeemed", outEntitlement.Redeemed},
+                {"end_timestamp", (int) outEntitlement.EndTimestamp},
+            };
+            ret.Add("entitlement", entitlement_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_entitlement_by_name_and_index(Reference p_options)
+    {
+        int p_index = (int)p_options.Get("index");
+        var options = new CopyEntitlementByNameAndIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementName = (string)p_options.Get("entitlement_name"),
+            Index = (uint)p_index
+        };
+        Entitlement outEntitlement;
+        Result res = s_EcomInterface.CopyEntitlementByNameAndIndex(options, out outEntitlement);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var entitlement_dict = new Dictionary(){
+                {"entitlement_name", outEntitlement.EntitlementName},
+                {"entitlement_id", outEntitlement.EntitlementId},
+                {"catalog_item_id", outEntitlement.CatalogItemId},
+                {"server_index", outEntitlement.ServerIndex},
+                {"redeemed", outEntitlement.Redeemed},
+                {"end_timestamp", (int) outEntitlement.EndTimestamp},
+            };
+            ret.Add("entitlement", entitlement_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_item_by_id(Reference p_options)
+    {
+        var options = new CopyItemByIdOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ItemId = (string)p_options.Get("item_id")
+        };
+        CatalogItem outItem;
+        Result res = s_EcomInterface.CopyItemById(options, out outItem);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var item_dict = new Dictionary(){
+                {"catalog_namespace", outItem.CatalogNamespace},
+                {"id", outItem.Id},
+                {"entitlement_name", outItem.EntitlementName},
+                {"title_text", outItem.TitleText},
+                {"description_text", outItem.DescriptionText},
+                {"long_description_text", outItem.LongDescriptionText},
+                {"developer_text", outItem.DeveloperText},
+                {"item_type", (int)outItem.ItemType},
+                {"entitlement_end_timestamp", (int)outItem.EntitlementEndTimestamp},
+            };
+            ret.Add("item", item_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_item_image_info_by_index(Reference p_options)
+    {
+        int p_image_info_index = (int)p_options.Get("image_info_index");
+        var options = new CopyItemImageInfoByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ItemId = (string)p_options.Get("item_id"),
+            ImageInfoIndex = (uint)p_image_info_index
+        };
+        KeyImageInfo outImageInfo;
+        Result res = s_EcomInterface.CopyItemImageInfoByIndex(options, out outImageInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var image_info_dict = new Dictionary(){
+                {"type", outImageInfo.Type},
+                {"url", outImageInfo.Url},
+                {"width", (int)outImageInfo.Width},
+                {"height", (int)outImageInfo.Height},
+            };
+            ret.Add("image_info", image_info_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_item_release_by_index(Reference p_options)
+    {
+        int p_release_index = (int)p_options.Get("release_index");
+        var options = new CopyItemReleaseByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ItemId = (string)p_options.Get("item_id"),
+            ReleaseIndex = (uint)p_release_index
+        };
+        CatalogRelease outImageInfo;
+        Result res = s_EcomInterface.CopyItemReleaseByIndex(options, out outImageInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var release_dict = new Dictionary(){
+                {"release_note", outImageInfo.ReleaseNote},
+                {"compatible_app_ids", outImageInfo.CompatibleAppIds},
+                {"compatible_platforms", outImageInfo.CompatiblePlatforms},
+            };
+            ret.Add("release", release_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_offer_by_id(Reference p_options)
+    {
+        var options = new CopyOfferByIdOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferId = (string)p_options.Get("offer_id"),
+        };
+        CatalogOffer outOffer;
+        Result res = s_EcomInterface.CopyOfferById(options, out outOffer);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var offer_dict = new Dictionary(){
+                {"server_index", outOffer.ServerIndex},
+                {"catalog_namespace", outOffer.CatalogNamespace},
+                {"id", outOffer.Id},
+                {"title_text", outOffer.TitleText},
+                {"description_text", outOffer.DescriptionText},
+                {"long_description_text", outOffer.LongDescriptionText},
+                {"currency_code", outOffer.CurrencyCode},
+                {"price_result", (int)outOffer.PriceResult},
+                {"discount_percentage", outOffer.DiscountPercentage},
+                {"expiration_timestamp", outOffer.ExpirationTimestamp},
+                {"purchased_count", outOffer.PurchasedCount},
+                {"purchased_limit", outOffer.PurchaseLimit},
+                {"available_for_purchase", outOffer.AvailableForPurchase},
+                {"original_price", outOffer.OriginalPrice64},
+                {"current_price", outOffer.CurrentPrice64},
+                {"decimal_point", outOffer.DecimalPoint},
+            };
+            ret.Add("offer", offer_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_offer_by_index(Reference p_options)
+    {
+        int p_offer_index = (int)p_options.Get("offer_index");
+        var options = new CopyOfferByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferIndex = (uint)p_offer_index
+        };
+        CatalogOffer outOffer;
+        Result res = s_EcomInterface.CopyOfferByIndex(options, out outOffer);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var offer_dict = new Dictionary(){
+                {"server_index", outOffer.ServerIndex},
+                {"catalog_namespace", outOffer.CatalogNamespace},
+                {"id", outOffer.Id},
+                {"title_text", outOffer.TitleText},
+                {"description_text", outOffer.DescriptionText},
+                {"long_description_text", outOffer.LongDescriptionText},
+                {"currency_code", outOffer.CurrencyCode},
+                {"price_result", (int)outOffer.PriceResult},
+                {"discount_percentage", outOffer.DiscountPercentage},
+                {"expiration_timestamp", outOffer.ExpirationTimestamp},
+                {"purchased_count", outOffer.PurchasedCount},
+                {"purchased_limit", outOffer.PurchaseLimit},
+                {"available_for_purchase", outOffer.AvailableForPurchase},
+                {"original_price", outOffer.OriginalPrice64},
+                {"current_price", outOffer.CurrentPrice64},
+                {"decimal_point", outOffer.DecimalPoint},
+            };
+            ret.Add("offer", offer_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_offer_image_info_by_index(Reference p_options)
+    {
+        int p_image_info_index = (int)p_options.Get("image_info_index");
+        var options = new CopyOfferImageInfoByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferId = (string)p_options.Get("offer_id"),
+            ImageInfoIndex = (uint)p_image_info_index
+        };
+        KeyImageInfo outImageInfo;
+        Result res = s_EcomInterface.CopyOfferImageInfoByIndex(options, out outImageInfo);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var image_info_dict = new Dictionary(){
+                {"type", outImageInfo.Type},
+                {"url", outImageInfo.Url},
+                {"width", (int)outImageInfo.Width},
+                {"height", (int)outImageInfo.Height},
+            };
+            ret.Add("image_info", image_info_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_offer_item_by_index(Reference p_options)
+    {
+        int p_item_index = (int)p_options.Get("item_index");
+        var options = new CopyOfferItemByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferId = (string)p_options.Get("offer_id"),
+            ItemIndex = (uint)p_item_index
+        };
+        CatalogItem outItem;
+        Result res = s_EcomInterface.CopyOfferItemByIndex(options, out outItem);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var item_dict = new Dictionary(){
+                {"catalog_namespace", outItem.CatalogNamespace},
+                {"id", outItem.Id},
+                {"entitlement_name", outItem.EntitlementName},
+                {"title_text", outItem.TitleText},
+                {"description_text", outItem.DescriptionText},
+                {"long_description_text", outItem.LongDescriptionText},
+                {"developer_text", outItem.DeveloperText},
+                {"item_type", (int)outItem.ItemType},
+                {"entitlement_end_timestamp", (int)outItem.EntitlementEndTimestamp},
+            };
+            ret.Add("item", item_dict);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_transaction_by_id(Reference p_options)
+    {
+        var options = new CopyTransactionByIdOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TransactionId = (string)p_options.Get("transaction_id"),
+        };
+        Transaction outTransaction;
+        Result res = s_EcomInterface.CopyTransactionById(options, out outTransaction);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var transaction_wrapper = new TransactionWrapper(outTransaction);
+            ret.Add("transaction", transaction_wrapper);
+        }
+        return ret;
+    }
+
+    public Dictionary ecom_interface_copy_transaction_by_index(Reference p_options)
+    {
+        int p_transaction_index = (int)p_options.Get("transaction_index");
+        var options = new CopyTransactionByIndexOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TransactionIndex = (uint)p_transaction_index
+        };
+        Transaction outTransaction;
+        Result res = s_EcomInterface.CopyTransactionByIndex(options, out outTransaction);
+        var ret = new Dictionary(){
+            {"result_code", res}
+        };
+        if (res == Result.Success)
+        {
+            var transaction_wrapper = new TransactionWrapper(outTransaction);
+            ret.Add("transaction", transaction_wrapper);
+        }
+        return ret;
+    }
+
+    public int ecom_interface_get_entitlements_by_name_count(Reference p_options)
+    {
+        var options = new GetEntitlementsByNameCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementName = (string)p_options.Get("entitlement_name")
+        };
+        return (int)s_EcomInterface.GetEntitlementsByNameCount(options);
+    }
+
+    public int ecom_interface_get_entitlements_count(Reference p_options)
+    {
+        var options = new GetEntitlementsCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return (int)s_EcomInterface.GetEntitlementsCount(options);
+    }
+
+    public int ecom_interface_get_item_image_info_count(Reference p_options)
+    {
+        var options = new GetItemImageInfoCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ItemId = (string)p_options.Get("item_id"),
+        };
+        return (int)s_EcomInterface.GetItemImageInfoCount(options);
+    }
+
+    public int ecom_interface_get_item_release_count(Reference p_options)
+    {
+        var options = new GetItemReleaseCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            ItemId = (string)p_options.Get("item_id"),
+        };
+        return (int)s_EcomInterface.GetItemReleaseCount(options);
+    }
+
+    public int ecom_interface_get_offer_count(Reference p_options)
+    {
+        var options = new GetOfferCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return (int)s_EcomInterface.GetOfferCount(options);
+    }
+
+    public int ecom_interface_get_offer_image_info_count(Reference p_options)
+    {
+        var options = new GetOfferImageInfoCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferId = (string)p_options.Get("offer_id"),
+        };
+        return (int)s_EcomInterface.GetOfferImageInfoCount(options);
+    }
+
+    public int ecom_interface_get_offer_item_count(Reference p_options)
+    {
+        var options = new GetOfferItemCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            OfferId = (string)p_options.Get("offer_id"),
+        };
+        return (int)s_EcomInterface.GetOfferItemCount(options);
+    }
+
+    public int ecom_interface_get_transaction_count(Reference p_options)
+    {
+        var options = new GetTransactionCountOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return (int)s_EcomInterface.GetTransactionCount(options);
+    }
+
+    public void ecom_interface_query_entitlements(Reference p_options)
+    {
+        var options = new QueryEntitlementsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementNames = ((System.Collections.IEnumerable)p_options.Get("entitlement_names")).Cast<string>().ToArray(),
+            IncludeRedeemed = (bool)p_options.Get("include_redeemed"),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_EcomInterface.QueryEntitlements(options, client_data, (QueryEntitlementsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(ecom_interface_query_entitlements_callback), ret);
+        });
+    }
+
+    public void ecom_interface_query_offers(Reference p_options)
+    {
+        var options = new QueryOffersOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        if (p_options.Get("override_catalog_namespace") != null) options.OverrideCatalogNamespace = (string)p_options.Get("override_catalog_namespace");
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_EcomInterface.QueryOffers(options, client_data, (QueryOffersCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(ecom_interface_query_offers_callback), ret);
+        });
+    }
+
+    public void ecom_interface_query_ownership(Reference p_options)
+    {
+        var options = new QueryOwnershipOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            CatalogItemIds = ((System.Collections.IEnumerable)p_options.Get("catalog_item_ids")).Cast<string>().ToArray(),
+        };
+        if (p_options.Get("catalog_namespace") != null) options.CatalogNamespace = (string)p_options.Get("catalog_namespace");
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_EcomInterface.QueryOwnership(options, client_data, (QueryOwnershipCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("item_ownership",
+                    data.ItemOwnership.Select(x => new Dictionary(){
+                        {"id", x.Id},
+                        {"ownership_status", (int)x.OwnershipStatus},
+                    }).ToArray()
+                );
+            }
+            EmitSignal(nameof(ecom_interface_query_ownership_callback), ret);
+        });
+    }
+
+    public void ecom_interface_query_ownership_token(Reference p_options)
+    {
+        var options = new QueryOwnershipTokenOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            CatalogItemIds = ((System.Collections.IEnumerable)p_options.Get("catalog_item_ids")).Cast<string>().ToArray(),
+        };
+        if (p_options.Get("catalog_namespace") != null) options.CatalogNamespace = (string)p_options.Get("catalog_namespace");
+
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_EcomInterface.QueryOwnershipToken(options, client_data, (QueryOwnershipTokenCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+                ret.Add("ownership_token", data.OwnershipToken);
+            }
+            EmitSignal(nameof(ecom_interface_query_ownership_token_callback), ret);
+        });
+    }
+
+    public void ecom_interface_redeem_entitlements(Reference p_options)
+    {
+        var options = new RedeemEntitlementsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            EntitlementIds = ((System.Collections.IEnumerable)p_options.Get("entitlement_ids")).Cast<string>().ToArray(),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+
+        s_EcomInterface.RedeemEntitlements(options, client_data, (RedeemEntitlementsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(ecom_interface_redeem_entitlements_callback), ret);
+        });
+    }
+
+
+    // ------------------------
+    // UI Interface
+    // ------------------------
+    public int ui_interface_acknowledge_event_id(Reference p_options)
+    {
+        int p_event_id = (int)p_options.Get("ui_event_id");
+        int p_result = (int)p_options.Get("result");
+        var options = new AcknowledgeEventIdOptions()
+        {
+            UiEventId = (ulong)p_event_id,
+            Result = (Result)p_result
+        };
+        return (int)s_UIInterface.AcknowledgeEventId(options);
+    }
+
+    public bool ui_interface_get_friends_visible(Reference p_options)
+    {
+        var options = new GetFriendsVisibleOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        return s_UIInterface.GetFriendsVisible(options);
+    }
+
+    public int ui_interface_get_notification_location_preference()
+    {
+        return (int)s_UIInterface.GetNotificationLocationPreference();
+    }
+
+    public int ui_interface_get_toggle_friends_key(Reference p_options)
+    {
+        return (int)s_UIInterface.GetToggleFriendsKey(new GetToggleFriendsKeyOptions());
+    }
+
+    public void ui_interface_hide_friends(Reference p_options)
+    {
+        var options = new HideFriendsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_UIInterface.HideFriends(options, client_data, (HideFriendsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(ui_interface_hide_friends_callback), ret);
+        });
+    }
+
+    public bool ui_interface_is_valid_key_combination(int p_key_combination)
+    {
+        return s_UIInterface.IsValidKeyCombination(
+            (KeyCombination)p_key_combination
+        );
+    }
+
+    public int ui_interface_set_display_preference(Reference p_options)
+    {
+        int p_notification_location = (int)p_options.Get("notification_location");
+        var options = new SetDisplayPreferenceOptions()
+        {
+            NotificationLocation = (NotificationLocation)p_notification_location
+        };
+        return (int)s_UIInterface.SetDisplayPreference(options);
+    }
+
+    public int ui_interface_set_toggle_friends_key(Reference p_options)
+    {
+        var options = new SetToggleFriendsKeyOptions()
+        {
+            KeyCombination = (KeyCombination)p_options.Get("key_combination")
+        };
+        return (int)s_UIInterface.SetToggleFriendsKey(options);
+    }
+
+    public void ui_interface_show_friends(Reference p_options)
+    {
+        var options = new ShowFriendsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        object client_data = null;
+        if (p_options.Get("client_data") != null) client_data = p_options.Get("client_data");
+        s_UIInterface.ShowFriends(options, client_data, (ShowFriendsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+            };
+            if (data.ClientData != null) ret.Add("client_data", data.ClientData);
+            if (data.ResultCode == Result.Success)
+            {
+                ret.Add("local_user_id", data.LocalUserId.ToString());
+            }
+            EmitSignal(nameof(ui_interface_show_friends_callback), ret);
+        });
+    }
+
+
     // ------------------------
     // Internal Overrides
     // ------------------------
@@ -2329,6 +3052,8 @@ public class IEOS : Node
                 s_LeaderboardsInterface = null;
                 s_FriendsInterface = null;
                 s_UserInfoInterface = null;
+                s_EcomInterface = null;
+                s_UIInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -2348,4 +3073,6 @@ public class IEOS : Node
     private static LeaderboardsInterface s_LeaderboardsInterface;
     private static FriendsInterface s_FriendsInterface;
     private static UserInfoInterface s_UserInfoInterface;
+    private static EcomInterface s_EcomInterface;
+    private static UIInterface s_UIInterface;
 }

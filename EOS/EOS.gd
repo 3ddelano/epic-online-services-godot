@@ -687,6 +687,256 @@ class Ecom:
 
 	enum OwnershipStatus { NotOwned = 0, Owned = 1 }
 
+	class CheckoutOptions extends BaseClass:
+		func _init().("CheckoutOptions"): pass
+
+		var local_user_id: String
+		var entries: Array # [{offer_id: String}]
+		var override_catalog_namespace = null # String
+
+	class CopyEntitlementByIdOptions extends BaseClass:
+		func _init().("CopyEntitlementByIdOptions"): pass
+
+		var local_user_id: String
+		var entitlement_id: String
+
+	class CopyEntitlementByIndexOptions extends BaseClass:
+		func _init().("CopyEntitlementByIndexOptions"): pass
+
+		var local_user_id: String
+		var entitlement_index: int
+
+	class CopyEntitlementByNameAndIndexOptions extends BaseClass:
+		func _init().("CopyEntitlementByNameAndIndexOptions"): pass
+
+		var local_user_id: String
+		var entitlement_name: String
+		var index: int
+
+	class CopyItemByIdOptions extends BaseClass:
+		func _init().("CopyItemByIdOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+
+	class CopyItemImageInfoByIndexOptions extends BaseClass:
+		func _init().("CopyItemImageInfoByIndexOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+		var image_info_index: int
+
+	class CopyItemReleaseByIndexOptions extends BaseClass:
+		func _init().("CopyItemReleaseByIndexOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+		var release_index: int
+
+	class CopyOfferByIdOptions extends BaseClass:
+		func _init().("CopyOfferByIdOptions"): pass
+
+		var local_user_id: String
+		var offer_id: String
+
+	class CopyOfferByIndexOptions extends BaseClass:
+		func _init().("CopyOfferByIndexOptions"): pass
+
+		var local_user_id: String
+		var offer_index: int
+
+	class CopyOfferImageInfoByIndexOptions extends BaseClass:
+		func _init().("CopyOfferImageInfoByIndexOptions"): pass
+
+		var local_user_id: String
+		var offer_id: String
+		var image_info_index: int
+
+	class CopyOfferItemByIndexOptions extends BaseClass:
+		func _init().("CopyOfferItemByIndexOptions"): pass
+
+		var local_user_id: String
+		var offer_id: String
+		var item_index: int
+
+	class CopyTransactionByIdOptions extends BaseClass:
+		func _init().("CopyTransactionByIdOptions"): pass
+
+		var local_user_id: String
+		var transaction_id: String
+
+	class CopyTransactionByIndexOptions extends BaseClass:
+		func _init().("CopyTransactionByIndexOptions"): pass
+
+		var local_user_id: String
+		var transaction_index: int
+
+	class GetEntitlementsByNameCountOptions extends BaseClass:
+		func _init().("GetEntitlementsByNameCountOptions"): pass
+
+		var local_user_id: String
+		var entitlement_name: String
+
+	class GetEntitlementsCountOptions extends BaseClass:
+		func _init().("GetEntitlementsCountOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+
+	class GetItemImageInfoCountOptions extends BaseClass:
+		func _init().("GetItemImageInfoCountOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+
+	class GetItemReleaseCountOptions extends BaseClass:
+		func _init().("GetItemReleaseCountOptions"): pass
+
+		var local_user_id: String
+		var item_id: String
+
+	class GetOfferCountOptions extends BaseClass:
+		func _init().("GetOfferCountOptions"): pass
+
+		var local_user_id: String
+
+	class GetOfferImageInfoCountOptions extends BaseClass:
+		func _init().("GetOfferImageInfoCountOptions"): pass
+
+		var local_user_id: String
+		var offer_id: String
+
+	class GetOfferItemCountOptions extends BaseClass:
+		func _init().("GetOfferItemCountOptions"): pass
+
+		var local_user_id: String
+		var offer_id: String
+
+	class GetTransactionCountOptions extends BaseClass:
+		func _init().("GetTransactionCountOptions"): pass
+
+		var local_user_id: String
+
+	class QueryEntitlementsOptions extends BaseClass:
+		func _init().("QueryEntitlementsOptions"): pass
+
+		var local_user_id: String
+		var entitlement_names: Array # [String]
+		var include_redeemed: bool
+
+	class QueryOffersOptions extends BaseClass:
+		func _init().("QueryOffersOptions"): pass
+
+		var local_user_id: String
+		var override_catalog_namespace = null # String
+
+		var client_data = null
+
+	class QueryOwnershipOptions extends BaseClass:
+		func _init().("QueryOwnershipOptions"): pass
+
+		var local_user_id: String
+		var catalog_item_ids: Array # [String]
+		var catalog_namespace = null # String
+
+		var client_data = null
+
+	class QueryOwnershipTokenOptions extends BaseClass:
+		func _init().("QueryOwnershipTokenOptions"): pass
+
+		var local_user_id: String
+		var catalog_item_ids: Array # [String]
+		var catalog_namespace = null # String
+
+		var client_data = null
+
+	class RedeemEntitlementsOptions extends BaseClass:
+		func _init().("RedeemEntitlementsOptions"): pass
+
+		var local_user_id: String
+		var entitlement_ids: Array # [String]
+
+		var client_data = null
+
+	class EcomInterface:
+		static func checkout(options: CheckoutOptions) -> void:
+			IEOS.ecom_interface_checkout(options)
+
+		static func copy_entitlement_by_id(options: CopyEntitlementByIdOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_entitlement_by_id(options)
+
+		static func copy_entitlement_by_index(options: CopyEntitlementByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_entitlement_by_index(options)
+
+		static func copy_entitlement_by_name_and_index(options: CopyEntitlementByNameAndIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_entitlement_by_name_and_index(options)
+
+		static func copy_item_by_id(options: CopyItemByIdOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_item_by_id(options)
+
+		static func copy_item_image_info_by_index(options: CopyItemImageInfoByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_item_image_info_by_index(options)
+
+		static func copy_item_release_by_index(options: CopyItemReleaseByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_item_release_by_index(options)
+
+		static func copy_offer_by_id(options: CopyOfferByIdOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_offer_by_id(options)
+
+		static func copy_offer_by_index(options: CopyOfferByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_offer_by_index(options)
+
+		static func copy_offer_image_info_by_index(options: CopyOfferImageInfoByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_offer_image_info_by_index(options)
+
+		static func copy_offer_item_by_index(options: CopyOfferItemByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_offer_item_by_index(options)
+
+		static func copy_transaction_by_id(options: CopyTransactionByIdOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_transaction_by_id(options)
+
+		static func copy_transaction_by_index(options: CopyTransactionByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_transaction_by_index(options)
+
+		static func get_entitlements_by_name_count(options: GetEntitlementsByNameCountOptions) -> int:
+			return IEOS.ecom_interface_get_entitlements_by_name_count(options)
+
+		static func get_entitlements_count(options: GetEntitlementsCountOptions) -> int:
+			return IEOS.ecom_interface_get_entitlements_count(options)
+
+		static func get_item_image_info_count(options: GetItemImageInfoCountOptions) -> int:
+			return IEOS.ecom_interface_get_item_image_info_count(options)
+
+		static func get_item_release_count(options: GetItemReleaseCountOptions) -> int:
+			return IEOS.ecom_interface_get_item_release_count(options)
+
+		static func get_offer_count(options: GetOfferCountOptions) -> int:
+			return IEOS.ecom_interface_get_offer_count(options)
+
+		static func get_offer_image_info_count(options: GetOfferImageInfoCountOptions) -> int:
+			return IEOS.ecom_interface_get_offer_image_info_count(options)
+
+		static func get_offer_item_count(options: GetOfferItemCountOptions) -> int:
+			return IEOS.ecom_interface_get_offer_item_count(options)
+
+		static func get_transaction_count(options: GetTransactionCountOptions) -> int:
+			return IEOS.ecom_interface_get_transaction_count(options)
+
+		static func query_entitlements(options: QueryEntitlementsOptions) -> void:
+			IEOS.ecom_interface_query_entitlements(options)
+
+		static func query_offers(options: QueryOffersOptions) -> void:
+			IEOS.ecom_interface_query_offers(options)
+
+		static func query_ownership(options: QueryOwnershipOptions) -> void:
+			IEOS.ecom_interface_query_ownership(options)
+
+		static func query_ownership_token(options: QueryOwnershipTokenOptions) -> void:
+			IEOS.ecom_interface_query_ownership_token(options)
+
+		static func redeem_entitlements(options: RedeemEntitlementsOptions) -> void:
+			IEOS.ecom_interface_redeem_entitlements(options)
+
 
 class Friends:
 	enum FriendsStatus { NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3 }
@@ -992,6 +1242,8 @@ class UI:
 	const Meta = 8 << ModifierShift
 	const ValidModifierMask = Shift | Control | Alt | Meta
 
+	enum NotificationLocation { TopLeft, TopRight, BottomLeft, BottomRight }
+
 	enum KeyCombination {
 		ModifierShift = 16,
 		KeyTypeMask = (1 << ModifierShift) - 1,
@@ -1106,7 +1358,71 @@ class UI:
 		MaxKeyType
 	}
 
-	enum NotificationLocation { TopLeft, TopRight, BottomLeft, BottomRight }
+	class AcknowledgeEventIdOptions extends BaseClass:
+		func _init().("AcknowledgeEventIdOptions"): pass
+
+		var ui_event_id: int
+		var result: int
+
+	class GetFriendsVisibleOptions extends BaseClass:
+		func _init().("GetFriendsVisibleOptions"): pass
+
+		var local_user_id: String
+
+	class GetToggleFriendsKeyOptions extends BaseClass:
+		func _init().("GetToggleFriendsKeyOptions"): pass
+
+	class HideFriendsOptions extends BaseClass:
+		func _init().("HideFriendsOptions"): pass
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class SetDisplayPreferenceOptions extends BaseClass:
+		func _init().("SetDisplayPreferenceOptions"): pass
+
+		var notification_location: int # NotificationLocation
+
+	class SetToggleFriendsKeyOptions extends BaseClass:
+		func _init().("SetToggleFriendsKeyOptions"): pass
+
+		var key_combination: int # KeyCombination
+
+	class ShowFriendsOptions extends BaseClass:
+		func _init().("ShowFriendsOptions"): pass
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class UIInterface:
+		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> int:
+			return IEOS.ui_interface_acknowledge_event_id(options)
+
+		static func get_friends_visible(options: GetFriendsVisibleOptions) -> bool:
+			return IEOS.ui_interface_get_friends_visible(options)
+
+		static func get_notification_location_preference() -> int:
+			return IEOS.ui_interface_get_notification_location_preference()
+
+		static func get_toggle_friends_key(options: GetToggleFriendsKeyOptions) -> int:
+			return IEOS.ui_interface_get_toggle_friends_key(options)
+
+		static func hide_friends(options: HideFriendsOptions) -> void:
+			IEOS.ui_interface_hide_friends(options)
+
+		static func is_valid_key_combination(key_combination: int) -> bool:
+			return IEOS.ui_interface_is_valid_key_combination(key_combination)
+
+		static func set_display_preference(options: SetDisplayPreferenceOptions) -> int:
+			return IEOS.ui_interface_set_display_preference(options)
+
+		static func set_toggle_friends_key(options: SetToggleFriendsKeyOptions) -> int:
+			return IEOS.ui_interface_set_toggle_friends_key(options)
+
+		static func show_friends(options: ShowFriendsOptions) -> void:
+			IEOS.ui_interface_show_friends(options)
 
 class UserInfo:
 

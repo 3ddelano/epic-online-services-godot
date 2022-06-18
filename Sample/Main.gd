@@ -44,3 +44,8 @@ func _ready() -> void:
 
 func get_view_manager():
 	return views
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.scancode == KEY_QUOTELEFT: # ` key to toggle Logs
+			Store.get_view("Logs").visible = not Store.get_view("Logs").visible

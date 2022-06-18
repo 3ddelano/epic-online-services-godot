@@ -12,7 +12,7 @@ public class ContinuanceTokenWrapper : Reference
 
     public string GetClass()
     {
-        return "ContinuanceToken";
+        return "ContinuanceTokenWrapper";
     }
 
     public override string ToString()

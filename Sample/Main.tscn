@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Fonts/roboto-16r.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scenes/AchievementsView/AchievementsView.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Scenes/StatsView/StatsView.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/LeaderboardsView/LeaderboardsView.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Scenes/FriendsView/FriendsView.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Scenes/UIView/UIView.tscn" type="PackedScene" id=13]
 
 [sub_resource type="Theme" id=4]
 default_font = ExtResource( 1 )
@@ -88,29 +89,34 @@ margin_left = 481.0
 margin_right = 549.0
 text = "Friends"
 
-[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+[node name="UIBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
 margin_left = 555.0
-margin_right = 627.0
+margin_right = 585.0
+text = "UI"
+
+[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
+margin_left = 591.0
+margin_right = 663.0
 text = "Lobbies"
 
 [node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 633.0
-margin_right = 678.0
+margin_left = 669.0
+margin_right = 714.0
 text = "P2P"
 
 [node name="PlayerDataBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 684.0
-margin_right = 782.0
+margin_left = 720.0
+margin_right = 818.0
 text = "Player Data"
 
 [node name="ReportBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 788.0
-margin_right = 858.0
+margin_left = 824.0
+margin_right = 894.0
 text = "Reports"
 
 [node name="TitleStorageBtn" parent="MC/ViewManager/HB" instance=ExtResource( 6 )]
-margin_left = 864.0
-margin_right = 970.0
+margin_left = 900.0
+margin_right = 1006.0
 text = "Title Storage"
 
 [node name="VSC" type="VSplitContainer" parent="MC/ViewManager"]
@@ -124,13 +130,13 @@ split_offset = 120
 
 [node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC"]
 margin_right = 1008.0
-margin_bottom = 445.0
+margin_bottom = 422.0
 
 [node name="LoginView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 5 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 1008.0
-margin_bottom = 302.0
+margin_bottom = 422.0
 
 [node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 2 )]
 visible = false
@@ -144,8 +150,9 @@ margin_bottom = 445.0
 visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
+margin_top = 306.0
 margin_right = 1008.0
-margin_bottom = 205.0
+margin_bottom = 477.0
 
 [node name="StatsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 10 )]
 visible = false
@@ -153,7 +160,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 306.0
 margin_right = 1008.0
-margin_bottom = 477.0
+margin_bottom = 552.0
 
 [node name="LeaderboardsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 11 )]
 visible = false
@@ -161,14 +168,23 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 306.0
 margin_right = 1008.0
-margin_bottom = 552.0
+margin_bottom = 468.0
 
 [node name="FriendsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 12 )]
+visible = false
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 306.0
 margin_right = 1008.0
 margin_bottom = 445.0
+
+[node name="UIView" parent="MC/ViewManager/VSC/VB" instance=ExtResource( 13 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 306.0
+margin_right = 1008.0
+margin_bottom = 477.0
 
 [node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
 
@@ -226,6 +242,6 @@ __meta__ = {
 [node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource( 4 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 457.0
+margin_top = 434.0
 margin_right = 1008.0
 margin_bottom = 557.0

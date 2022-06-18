@@ -176,6 +176,20 @@ func _on_connect_interface_login_callback(data: Dictionary):
 
 		Store.emit_signal("login_success")
 
+		# Test Ecom stuff
+		#var offers_options = EOS.Ecom.QueryOffersOptions.new()
+		#offers_options.local_user_id = Store.epic_account_id
+		#EOS.Ecom.EcomInterface.query_offers(offers_options)
+
+		#var checkout_options = EOS.Ecom.CheckoutOptions.new()
+		#checkout_options.local_user_id = Store.epic_account_id
+		#checkout_options.entries = [{
+		#	offer_id = "1234"
+		#}]
+		#EOS.Ecom.EcomInterface.checkout(checkout_options)
+		#var checkout_data = yield(EOS.get_instance(), "ecom_interface_checkout_callback")
+		#print(checkout_data)
+
 	#var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
 	#options1.target_user_id = Store.product_user_id
 	#options1.account_id = Store.product_user_id
