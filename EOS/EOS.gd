@@ -1609,6 +1609,14 @@ class Logging:
 	static func set_log_level(log_category: int, log_level: int) -> int:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
+class Version:
+	class VersionInterface:
+		static func get_version() -> String:
+			return IEOS.version_interface_get_version()
+
+		static func get_constants() -> Dictionary:
+			return IEOS.version_interface_get_constants()
+
 
 static func get_instance() -> IEOS:
 	return IEOS

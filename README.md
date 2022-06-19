@@ -211,3 +211,6 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 - AntiCheatClient Interface
   - [ ] Implementation
   - [ ] Sample
+- Version Interface
+  - [x] Implementation
+  - [x] Sample

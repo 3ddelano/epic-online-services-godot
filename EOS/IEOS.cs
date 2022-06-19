@@ -22,6 +22,7 @@ using Epic.OnlineServices.Ecom;
 using Epic.OnlineServices.UI;
 using Epic.OnlineServices.KWS;
 using Epic.OnlineServices.Metrics;
+using Epic.OnlineServices.Version;
 
 public class IEOS : Node
 {
@@ -2661,6 +2662,27 @@ public class IEOS : Node
             AccountId = account_id
         };
         return s_MetricsInterface.EndPlayerSession(ref options);
+    }
+
+    // ------------------------
+    // Version Interface
+    // ------------------------
+    public string version_interface_get_version()
+    {
+        return VersionInterface.GetVersion()?.ToString();
+    }
+
+    public Dictionary version_interface_get_constants()
+    {
+        return new Dictionary(){
+            {"company_name", VersionInterface.CompanyName.ToString()},
+            {"copyright_string", VersionInterface.CopyrightString.ToString()},
+            {"product_identifier", VersionInterface.ProductIdentifier.ToString()},
+            {"product_name", VersionInterface.ProductName.ToString()},
+            {"major_version", VersionInterface.MajorVersion},
+            {"minor_version", VersionInterface.MinorVersion},
+            {"patch_version", VersionInterface.PatchVersion},
+        };
     }
 
 

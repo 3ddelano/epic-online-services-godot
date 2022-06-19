@@ -41,6 +41,8 @@ func _ready() -> void:
 	var _c = Store.connect("login_success", self, "_on_login_success")
 	yield(get_tree().create_timer(0.5), "timeout")
 	Store.emit_signal("platform_create")
+	print(EOS.Version.VersionInterface.get_constants())
+	print("Version: ", EOS.Version.VersionInterface.get_version())
 
 
 func get_view_manager():
