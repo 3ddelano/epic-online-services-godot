@@ -22,6 +22,7 @@ using Epic.OnlineServices.Ecom;
 using Epic.OnlineServices.UI;
 using Epic.OnlineServices.KWS;
 using Epic.OnlineServices.Metrics;
+using Epic.OnlineServices.Mods;
 using Epic.OnlineServices.Version;
 
 public class IEOS : Node
@@ -137,6 +138,8 @@ public class IEOS : Node
     public delegate void kws_interface_request_permissions_callback(Dictionary callback_data);
     [Signal]
     public delegate void kws_interface_update_parent_email_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void mods_interface_enumerate_mods_callback(Dictionary callback_data);
 
 
 
@@ -329,6 +332,8 @@ public class IEOS : Node
         });
 
         s_MetricsInterface = s_PlatformInterface.GetMetricsInterface();
+
+        s_ModsInterface = s_PlatformInterface.GetModsInterface();
 
         return true; // platform created successfully
     }
@@ -2687,6 +2692,57 @@ public class IEOS : Node
 
 
     // ------------------------
+    // Mods Interface
+    // ------------------------
+    public Dictionary mods_interface_copy_mod_info(Reference p_options)
+    {
+        var options = new CopyModInfoOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            Type = (ModEnumerationType)p_options.Get("type"),
+        };
+        ModInfo? outMod;
+        var res = s_ModsInterface.CopyModInfo(ref options, out outMod);
+        var ret = new Dictionary(){
+            {"result_code", res},
+            {"mod", null}
+        };
+        if (outMod != null)
+            ret["mod"] = new Dictionary(){
+                {"mods", outMod?.Mods?.Select(x=> new Dictionary(){
+                    {"namespace_id", x.NamespaceId?.ToString()},
+                    {"item_id", x.ItemId?.ToString()},
+                    {"artifact_id", x.ArtifactId?.ToString()},
+                    {"title", x.Title?.ToString()},
+                    {"version", x.Version?.ToString()},
+                })},
+                {"type", outMod?.Type},
+            };
+        return ret;
+    }
+
+    public void mods_interface_enumerate_mods(Reference p_options)
+    {
+        var options = new EnumerateModsOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            Type = (ModEnumerationType)p_options.Get("type"),
+        };
+        object client_data = _get_client_data(p_options);
+        s_ModsInterface.EnumerateMods(ref options, client_data, (ref EnumerateModsCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"client_data", data.ClientData},
+                {"local_user_id", data.LocalUserId?.ToString()},
+                {"type", data.Type},
+            };
+            EmitSignal(nameof(mods_interface_enumerate_mods_callback), ret);
+        });
+    }
+
+
+    // ------------------------
     // Internal Overrides
     // ------------------------
     public override void _Process(float delta)
@@ -2716,6 +2772,7 @@ public class IEOS : Node
                 s_EcomInterface = null;
                 s_UIInterface = null;
                 s_MetricsInterface = null;
+                s_ModsInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -2969,4 +3026,6 @@ public class IEOS : Node
     private static UIInterface s_UIInterface;
     private static KWSInterface s_KWSInterface;
     private static MetricsInterface s_MetricsInterface;
+    private static ModsInterface s_ModsInterface;
+
 }

@@ -140,7 +140,7 @@ func _on_login_success():
 #	EOS.Connect.ConnectInterface.verify_id_token(options10)
 #	print("--- Connect: verify_id_token_callback: ", yield(EOS.get_instance(), "connect_interface_verify_id_token_callback"))
 #
-#	# Test Ecom stuff
+#	# Ecom interface
 #	var offers_options = EOS.Ecom.QueryOffersOptions.new()
 #	offers_options.local_user_id = Store.epic_account_id
 #	EOS.Ecom.EcomInterface.query_offers(offers_options)
@@ -154,4 +154,18 @@ func _on_login_success():
 #	EOS.Ecom.EcomInterface.checkout(checkout_options)
 #	var checkout_data = yield(EOS.get_instance(), "ecom_interface_checkout_callback")
 #	print("--- Ecom: checkout_callback", checkout_data)
+
+	# Mod interface
+	var enum_mods_options = EOS.Mods.EnumerateModsOptions.new()
+	enum_mods_options.local_user_id = Store.epic_account_id
+	enum_mods_options.type = EOS.Mods.ModEnumerationType.AllAvailable
+	EOS.Mods.ModsInterface.enumerate_mods(enum_mods_options)
+	var enum_mods_callback_data = yield(EOS.get_instance(), "mods_interface_enumerate_mods_callback")
+	print("--- Mods: enumerate_mods_callback: ", EOS.print_result(enum_mods_callback_data))
+
+	var copy_mod_info_options = EOS.Mods.CopyModInfoOptions.new()
+	copy_mod_info_options.local_user_id = Store.epic_account_id
+	copy_mod_info_options.type = EOS.Mods.ModEnumerationType.AllAvailable
+	var copy_mods_info_data = EOS.Mods.ModsInterface.copy_mod_info(copy_mod_info_options)
+	print("--- Mods: copy_mod_info: ", copy_mods_info_data)
 	pass

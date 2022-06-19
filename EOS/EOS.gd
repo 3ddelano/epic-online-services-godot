@@ -1187,6 +1187,25 @@ class Metrics:
 class Mods:
 	enum ModEnumerationType { Installed = 0, AllAvailable }
 
+	class CopyModInfoOptions extends BaseClass:
+		func _init().("CopyModInfoOptions"): pass
+
+		var local_user_id: String
+		var type: int # ModEnumerationType
+
+	class EnumerateModsOptions extends BaseClass:
+		func _init().("EnumerateModsOptions"): pass
+
+		var local_user_id: String
+		var type: int # ModEnumerationType
+
+	class ModsInterface:
+		static func copy_mod_info(options: CopyModInfoOptions) -> Dictionary:
+			return IEOS.mods_interface_copy_mod_info(options)
+
+		static func enumerate_mods(options: EnumerateModsOptions) -> void:
+			IEOS.mods_interface_enumerate_mods(options)
+
 
 class P2P:
 	enum ConnectionClosedReason {

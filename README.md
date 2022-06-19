@@ -170,8 +170,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [x] Implementation
   - [x] Sample
 - Mods Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - P2P Interface
   - [ ] Implementation
   - [ ] Sample
