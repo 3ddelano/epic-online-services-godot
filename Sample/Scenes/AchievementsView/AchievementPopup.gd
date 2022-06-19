@@ -30,7 +30,7 @@ func from_achievement_node(node: AchievementsListAchievement):
 
 	id_label.text = "Id: " + data.achievement_id
 	flavor_label.text = "Flavor Text: " + data.flavor_text
-	if data.has("is_hidden"):
+	if data.is_hidden != null:
 		if data.is_hidden:
 			is_visible_label.text = "Is Visible: False"
 		else:

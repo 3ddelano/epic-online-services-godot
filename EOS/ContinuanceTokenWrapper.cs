@@ -8,14 +8,15 @@ public class ContinuanceTokenWrapper : Reference
         _internalToken = token;
     }
 
-    public string GetClass()
+    public new string GetClass()
     {
         return "ContinuanceTokenWrapper";
     }
 
     public override string ToString()
     {
-        return "ContinuanceTokenWrapper(" + _internalToken.ToString() + ")";
+        string tokenString = _internalToken.ToString();
+        return "ContinuanceTokenWrapper(" + tokenString + ")";
     }
 
     public ContinuanceToken _internalToken;

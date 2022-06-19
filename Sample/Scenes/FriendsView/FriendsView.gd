@@ -35,7 +35,7 @@ func _on_logout_success():
 
 
 func _on_query_friends_callback(data: Dictionary):
-	print("--- Friends: query_friends_callback: %s" % EOS.print_result(data["result_code"]))
+	print("--- Friends: query_friends_callback: ", EOS.print_result(data))
 
 	var get_friends_count_options = EOS.Friends.GetFriendsCountOptions.new()
 	get_friends_count_options.local_user_id = Store.epic_account_id
@@ -57,21 +57,20 @@ func _on_query_friends_callback(data: Dictionary):
 
 
 func _on_query_user_info_callback(data: Dictionary):
-	print("--- Friends: UserInfo: query_user_info_callback: %s" % EOS.print_result(data))
-	if data.has("client_data") and typeof(data["client_data"]) == TYPE_STRING:
-		if data["client_data"] != "friends_list":
-			# Not the callback for the FriendsView
-			return
+	print("--- Friends: UserInfo: query_user_info_callback: ", EOS.print_result(data))
+	if data.client_data != "friends_list":
+		# Not the callback for the FriendsView
+		return
 
 	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_user_info_options.local_user_id = Store.epic_account_id
-	copy_user_info_options.target_user_id = data["target_user_id"]
+	copy_user_info_options.target_user_id = data.target_user_id
 
 	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_info_options)
-	if user_info_data["result_code"] != EOS.Result.Success:
+	if user_info_data.result_code != EOS.Result.Success:
 		print("--- Friends: user info data: result: ", EOS.print_result(user_info_data))
 	else:
-		friends.append(user_info_data["user_info"])
+		friends.append(user_info_data.user_info)
 		_update_friends_list()
 
 func _update_friends_list():
@@ -80,9 +79,9 @@ func _update_friends_list():
 	var rows_bbcode = ""
 	for friend in friends:
 		rows_bbcode += "\n"
-		if friend.has("display_name") and friend["display_name"] != "":
-			rows_bbcode += friend["display_name"]
-		if friend.has("country") and friend["country"] != "":
-			rows_bbcode += " (country=%s)" % friend["country"]
+		if friend.display_name != null:
+			rows_bbcode += friend.display_name
+		if friend.country != null:
+			rows_bbcode += " (country=%s)" % friend.country
 	friend_richtextlabel.bbcode_text = base_bbcode + rows_bbcode
 

@@ -415,22 +415,24 @@ class Auth:
 			return IEOS.auth_interface_copy_id_token(options)
 
 		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id: String) -> Dictionary:
-			var token_dict: Dictionary = IEOS.auth_interface_copy_user_auth_token(
+			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
 				options, local_user_id
 			)
 			var token: Token = Token.new()
-			token.app = token_dict.app
-			token.client_id = token_dict.client_id
-			token.account_id = token_dict.account_id
-			token.access_token = token_dict.access_token
-			token.expires_in = token_dict.expires_in
-			token.expires_at = token_dict.expires_at
-			token.auth_type = token_dict.auth_type
-			token.refresh_token = token_dict.refresh_token
-			token.refresh_expires_in = token_dict.refresh_expires_in
-			token.refresh_expires_at = token_dict.refresh_expires_at
+			if func_result.token:
+				var token_dict = func_result.token
+				token.app = token_dict.app
+				token.client_id = token_dict.client_id
+				token.account_id = token_dict.account_id
+				token.access_token = token_dict.access_token
+				token.expires_in = token_dict.expires_in
+				token.expires_at = token_dict.expires_at
+				token.auth_type = token_dict.auth_type
+				token.refresh_token = token_dict.refresh_token
+				token.refresh_expires_in = token_dict.refresh_expires_in
+				token.refresh_expires_at = token_dict.refresh_expires_at
 
-			return {user_auth_token = token, result_code = token_dict.result_code}
+			return {result_code = func_result.result_code, token = token}
 
 		static func delete_persistent_auth(options: DeletePersistentAuthOptions) -> void:
 			IEOS.auth_interface_delete_persistent_auth(options)
@@ -566,6 +568,13 @@ class Platform:
 		WindowsEnableOverlayD3D9 = 0x00010,
 		WindowsEnableOverlayD3D10 = 0x00020,
 		WindowsEnableOverlayOpengl = 0x00040
+	}
+
+	enum ApplicationStatus {
+		BackgroundConstrained = 0,
+		BackgroundUnconstrained = 1,
+		BackgroundSuspended = 2,
+		Foreground = 3
 	}
 
 	class InitializeOptions extends BaseClass:
@@ -1556,7 +1565,7 @@ class Logging:
 		Lobby = 18,
 		Leaderboards = 19,
 		Keychain = 20,
-		IdentityProvider = 21,
+		IntegratedPlatform = 21,
 		TitleStorage = 22,
 		Mods = 23,
 		AntiCheat = 24,
@@ -1566,9 +1575,7 @@ class Logging:
 		Kws = 28,
 		Rtc = 29,
 		RTCAdmin = 30,
-		Inventory = 31,
-		ReceiptValidator = 32,
-		CustomInvites = 33,
+		CustomInvites = 31,
 		AllCategories = 0x7fffffff
 	}
 
@@ -1610,7 +1617,7 @@ static func get_instance() -> IEOS:
 static func print_result(result) -> String:
 	if typeof(result) == TYPE_DICTIONARY:
 		if result.has("result_code"):
-			result = result["result_code"]
+			result = result.result_code
 		else:
 			printerr("EOS: print_result: Could not find result_code in ", result)
 			return ""
@@ -1663,6 +1670,8 @@ enum Result {
 	CacheDirectoryInvalid = 37,
 	InvalidState = 38,
 	RequestInProgress = 39,
+	ApplicationSuspended = 40,
+	NetworkDisconnected = 41,
 	AuthAccountLocked = 1001,
 	AuthAccountLockedForUpdate = 1002,
 	AuthInvalidRefreshToken = 1003,
@@ -1680,6 +1689,8 @@ enum Result {
 	AuthApplicationNotFound = 1015,
 	AuthScopeNotFound = 1016,
 	AuthAccountFeatureRestricted = 1017,
+	AuthAccountPortalLoadError = 1018,
+	AuthCorrectiveActionRequired = 1019,
 	AuthPinGrantCode = 1020,
 	AuthPinGrantExpired = 1021,
 	AuthPinGrantPending = 1022,
@@ -1692,7 +1703,7 @@ enum Result {
 	AuthExternalAuthIsLastLoginType = 1037,
 	AuthExchangeCodeNotFound = 1040,
 	AuthOriginatingExchangeCodeSessionExpired = 1041,
-	AuthPersistentAuthAccountNotActive = 1050,
+	AuthAccountNotActive = 1050,
 	AuthMFARequired = 1060,
 	AuthParentalControls = 1070,
 	AuthNoRealId = 1080,
@@ -1782,6 +1793,7 @@ enum Result {
 	LobbyNotAllowed = 9016,
 	LobbyMemberUpdateOnly = 9017,
 	LobbyPresenceLobbyExists = 9018,
+	LobbyVoiceNotEnabled = 9019,
 	TitleStorageUserErrorFromDataCallback = 10000,
 	TitleStorageEncryptionKeyNotSet = 10001,
 	TitleStorageFileCorrupted = 10002,
@@ -1821,10 +1833,23 @@ enum Result {
 	UserBanned = 13003,
 	RoomWasLeft = 13004,
 	ReconnectionTimegateExpired = 13005,
+	ShutdownInvoked = 13006,
+	UserIsInBlocklist = 13007,
 	ProgressionSnapshotSnapshotIdUnavailable = 14000,
 	ParentEmailMissing = 15000,
 	UserGraduated = 15001,
 	AndroidJavaVMNotStored = 17000,
+	PermissionRequiredPatchAvailable = 18000,
+	PermissionRequiredSystemUpdate = 18001,
+	PermissionAgeRestrictionFailure = 18002,
+	PermissionAccountTypeFailure = 18003,
+	PermissionChatRestriction = 18004,
+	PermissionUGCRestriction = 18005,
+	PermissionOnlinePlayRestricted = 18006,
+	DesktopCrossplayApplicationNotBootstrapped = 19000,
+	DesktopCrossplayServiceNotInstalled = 19001,
+	DesktopCrossplayServiceStartFailed = 19002,
+	DesktopCrossplayServiceNotRunning = 19003,
 	UnexpectedError = 0x7FFFFFFF
 }
 
@@ -1866,7 +1891,11 @@ enum ExternalCredentialType {
 	AmazonAccessToken = 17
 }
 
-enum LoginStatus { NotLoggedIn = 0, UsingLocalProfile = 1, LoggedIn = 2 }
+enum LoginStatus {
+	NotLoggedIn = 0,
+	UsingLocalProfile = 1,
+	LoggedIn = 2
+}
 
 enum RTCAudioInputStatus {
 	Idle = 0,
@@ -1876,7 +1905,11 @@ enum RTCAudioInputStatus {
 	Failed = 4
 }
 
-enum RTCAudioOutputStatus { Idle = 0, Playing = 1, Failed = 2 }
+enum RTCAudioOutputStatus {
+	Idle = 0,
+	Playing = 1,
+	Failed = 2
+}
 
 enum RTCAudioStatus {
 	Unsupported = 0,

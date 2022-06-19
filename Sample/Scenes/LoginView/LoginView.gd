@@ -55,8 +55,8 @@ func _ready() -> void:
 	# Generate login type dropdown
 	var c = 0
 	for login_type in login_types.keys():
-		login_type_btn.add_item(login_types[login_type]["name"])
-		login_types[login_type]["type"] = login_type
+		login_type_btn.add_item(login_types[login_type].name)
+		login_types[login_type].type = login_type
 		login_type_btn.set_item_metadata(c, login_types[login_type])
 		c += 1
 
@@ -70,7 +70,6 @@ func _ready() -> void:
 	var instance = EOS.get_instance()
 	c = instance.connect("auth_interface_login_callback", self, "_on_auth_interface_login_callback")
 	c = instance.connect("auth_interface_logout_callback", self, "_on_auth_interface_logout_callback")
-	#c = instance.connect("auth_interface_login_status_changed", self, "_on_auth_interface_login_status_changed")
 	# Connect Interface callbacks
 	c = instance.connect("connect_interface_login_callback", self, "_on_connect_interface_login_callback")
 	c = instance.connect("connect_interface_login_status_changed", self, "_on_connect_interface_login_status_changed")
@@ -79,75 +78,51 @@ func _ready() -> void:
 	# TODO: (Remove) Autologin for debug purpose
 #	yield(Store, "platform_create")
 #	perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
-	pass
 
 
 func _on_auth_interface_login_callback(data: Dictionary):
-	print("--- Auth: Login Callback: ", data)
+	print("--- Auth: login_callback: ", EOS.print_result(data))
 
 	if data.pending:
 		print("--- Auth: Login Pending...")
-	elif data.success:
-		print("--- Auth: Login Success")
 
-
-	if data.has("local_user_id"):
-		Store.epic_account_id = data["local_user_id"]
+	if data.local_user_id != null and data.local_user_id != "":
+		Store.epic_account_id = data.local_user_id
 		print("Epic Account Id: ", Store.epic_account_id)
 
 		var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
-		var user_auth_token = copy_user_auth_token.user_auth_token
+		var token = copy_user_auth_token.token
 
 		# Get user info of logged in user
 		var options = EOS.UserInfo.QueryUserInfoOptions.new()
 		options.local_user_id = Store.epic_account_id
 		options.target_user_id = Store.epic_account_id
 		EOS.UserInfo.UserInfoInterface.query_user_info(options)
+		# Connect the account to get a Product User Id from the Epic Account Id
+		connect_account(EOS.ExternalCredentialType.Epic, token.access_token)
 
-		connect_account(EOS.ExternalCredentialType.Epic, user_auth_token.access_token)
+	if data.pin_grant_info != null:
+		var pin_grant_info = data.pin_grant_info
+		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link before %s seconds [url]%s[/url]" % [pin_grant_info.expires_in, pin_grant_info.verification_uri_complete])
+		var _c = OS.shell_open(pin_grant_info.verification_uri_complete)
 
-		#print("Logged in accounts count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
-		#print("Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
-		#print("Get login status: ", EOS.Auth.AuthInterface.get_login_status(Store.epic_account_id))
-		#print("Merged accounts count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(Store.epic_account_id))
-		#print("Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(Store.epic_account_id, 0))
-		#print("Selected account id: ", EOS.Auth.AuthInterface.get_selected_account_id(Store.epic_account_id))
+	if data.continuance_token != null:
+		print("--- Auth: Got continuance_token, use it to link an account")
+		print(data.continuance_token)
 
-		#var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
-		#verify_user_auth_options.auth_token = user_auth_token
-		#EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
-
-		#print("Active country code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.epic_account_id))
-		#print("Active local code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.epic_account_id))
-		#print("Override country code: ", EOS.Platform.PlatformInterface.get_override_country_code())
-		#print("Override locale code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
-
-		#var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
-		#copy_id_token_options.account_id = Store.epic_account_id
-		#print("Copy id token: ", EOS.print_result(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options).result_code))
-
-	if data.has("pin_grant_info"):
-		var pin_grant_info = data["pin_grant_info"]
-		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link before %s seconds [url]%s[/url]" % [pin_grant_info["expires_in"], pin_grant_info["verification_uri_complete"]])
-		var _c = OS.shell_open(pin_grant_info["verification_uri_complete"])
-
-	if data.has("continuance_token"):
-		print("--- Auth: Got continuance token, use it to link an account")
-		print(data["continuance_token"])
-
-	if data.has("account_feature_restricted_info"):
-		var account_feature_restricted_info = data["account_feature_restricted_info"]
-		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info["verification_uri_complete"])
-		var _c = OS.shell_open(account_feature_restricted_info["verification_uri_complete"])
+	if data.account_feature_restricted_info != null:
+		var account_feature_restricted_info = data.account_feature_restricted_info
+		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info.verification_uri_complete)
+		var _c = OS.shell_open(account_feature_restricted_info.verification_uri_complete)
 
 	if not (data.pending or data.success):
-		print("--- Auth: Login Failed:: ", data)
+		print("--- Auth: Login Failed: ", data)
 		set_login_state(States.Error)
 		set_login_status("Login Error: " + EOS.print_result(data.result_code))
 
 
 func _on_auth_interface_logout_callback(data: Dictionary):
-	print("--- Auth: Logout Callback:: ", data)
+	print("--- Auth: logout_callback: ", EOS.print_result(data))
 	Store.epic_account_id = ""
 	Store.product_user_id = ""
 	set_login_state(States.ChooseMethod)
@@ -155,124 +130,50 @@ func _on_auth_interface_logout_callback(data: Dictionary):
 
 
 func _on_query_user_info_callback(data: Dictionary):
-	print("--- LoginView: UserInfo: query_user_info_callback: %s" % EOS.print_result(data))
-	if data.has("client_data") and typeof(data["client_data"]) == TYPE_STRING:
-		if data["client_data"] != "login_view":
-			# Not the callback for the LoginView
-			return
+	print("--- LoginView: UserInfo: query_user_info_callback: ", EOS.print_result(data))
+	if data.client_data != "login_view":
+		# Not the callback for the LoginView
+		return
 
 	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_user_info_options.local_user_id = Store.epic_account_id
 	copy_user_info_options.target_user_id = Store.epic_account_id
 	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_info_options)
-	if user_info_data["result_code"] == EOS.Result.Success:
-		Store.display_name = user_info_data["user_info"]["display_name"]
+	if user_info_data.result_code == EOS.Result.Success:
+		if user_info_data.user_info.display_name != null:
+			Store.display_name = user_info_data.user_info.display_name
 
 
 func _on_connect_interface_login_status_changed(data: Dictionary):
-	print("--- Connect: Login Status Changed:: ", data)
+	print("--- Connect: login_status_changed: ", data)
 
 
 func _on_connect_interface_login_callback(data: Dictionary):
-	print("--- Connect: Login Callback:: ", data)
+	print("--- Connect: login_callback: ", EOS.print_result(data))
 
-	if data.has("continuance_token"):
-		print("Got continuance_token")
-		var ctw = data["continuance_token"]
+	if data.continuance_token:
+		print("--- Connect: Got continuance_token, creating a user...")
+		var ctw = data.continuance_token
 		# Create user
 		var create_user_options = EOS.Connect.CreateUserOptions.new()
 		create_user_options.continuance_token = ctw
 		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
 		var ret = yield(EOS.get_instance(), "connect_interface_create_user_callback")
-		print("create user callback: ", ret)
+		print("--- Connect: create_user_callback: ", ret)
 
 	if not data.success:
-		print("--- Connect: Login Failed:: ", data)
+		print("--- Connect: Login Failed: ", data)
 		set_login_state(States.Error)
 		set_login_status("Login Error: " + EOS.print_result(data.result_code))
 		return
 
-	if data.has("local_user_id"):
+	if data.local_user_id != null and data.local_user_id != "":
 		Store.product_user_id = data.local_user_id
 		print("Product User Id: ", Store.product_user_id)
 		set_login_status("Connected account successfully")
 		set_login_state(States.Success)
 
 		Store.emit_signal("login_success")
-
-		# Test Ecom stuff
-		#var offers_options = EOS.Ecom.QueryOffersOptions.new()
-		#offers_options.local_user_id = Store.epic_account_id
-		#EOS.Ecom.EcomInterface.query_offers(offers_options)
-
-		#var checkout_options = EOS.Ecom.CheckoutOptions.new()
-		#checkout_options.local_user_id = Store.epic_account_id
-		#checkout_options.entries = [{
-		#	offer_id = "1234"
-		#}]
-		#EOS.Ecom.EcomInterface.checkout(checkout_options)
-		#var checkout_data = yield(EOS.get_instance(), "ecom_interface_checkout_callback")
-		#print(checkout_data)
-
-	#var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
-	#options1.target_user_id = Store.product_user_id
-	#options1.account_id = Store.product_user_id
-	#print("By account Id: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_id(options1))
-
-	#var options2 = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
-	#options2.target_user_id = Store.product_user_id
-	#options2.account_id_type = EOS.ExternalAccountType.Epic
-	#print("By account type: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(options2))
-
-	#var options3 = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
-	#options3.target_user_id = Store.product_user_id
-	#options3.external_account_info_index = 0
-	#print("By account index: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(options3))
-
-	#var options4 = EOS.Connect.CopyProductUserInfoOptions.new()
-	#options4.target_user_id = Store.product_user_id
-	#print("User info: ", EOS.Connect.ConnectInterface.copy_product_user_info(options4))
-
-#	var options5 = EOS.Connect.CopyIdTokenOptions.new()
-#	options5.local_user_id = Store.product_user_id
-#	var ret5 = EOS.Connect.ConnectInterface.copy_id_token(options5)
-#	var id_token = EOS.Connect.IdToken.new()
-#	id_token.json_web_token = ret5["json_web_token"]
-#	id_token.product_user_id = ret5["product_user_id"]
-#	print("Id token: ", id_token)
-
-	#var options6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
-	#options6.local_user_id = Store.product_user_id
-	#options6.account_id_type = EOS.ExternalAccountType.Discord
-	#options6.target_external_user_id  = "321233875776962560"
-	#print("External account mapping: ", EOS.Connect.ConnectInterface.get_external_account_mapping(options6))
-
-	#print("Logged in user 0: ", EOS.Connect.ConnectInterface.get_logged_in_user_by_index(0))
-	#print("Logged in users count: ", EOS.Connect.ConnectInterface.get_logged_in_users_count())
-	#print("Login status: ", EOS.Connect.ConnectInterface.get_login_status(Store.product_user_id))
-
-	#var options7 = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
-	#options7.target_user_id = Store.product_user_id
-	#print("External account count: ", EOS.Connect.ConnectInterface.get_product_user_external_account_count(options7))
-
-#	var options8 = EOS.Connect.GetProductUserIdMappingOptions.new()
-#	options8.local_user_id = Store.product_user_id
-#	options8.account_id_type = EOS.ExternalAccountType.Discord
-#	options8.target_product_user_id  = "321233875776962560"
-#	print("Product user id mapping: ", EOS.Connect.ConnectInterface.get_product_user_id_mapping(options8))
-
-#	var options9 = EOS.Connect.LinkAccountOptions.new()
-#	options9.local_user_id = Store.product_user_id
-#	options9.continuance_token = ContinunanceTokenWrapperHere
-#	EOS.Connect.ConnectInterface.link_account(options9)
-#	print(yield(EOS.get_instance(), "connect_interface_link_account_callback"))
-
-#	var options10 = EOS.Connect.VerifyIdTokenOptions.new()
-#	options10.id_token = id_token
-#	print(options10)
-#	EOS.Connect.ConnectInterface.verify_id_token(options10)
-#	print("Verify Id Token: ", yield(EOS.get_instance(), "connect_interface_verify_id_token_callback"))
-	pass
 
 
 func _on_retry_login_btn_pressed():
@@ -285,7 +186,7 @@ func _on_back_btn_pressed():
 
 func _on_login_btn_pressed():
 	var login_type_data = login_type_btn.get_selected_metadata()
-	var login_type = login_type_data["type"]
+	var login_type = login_type_data.type
 	var login_id = enter_credentials.get_id_value()
 	var login_token = enter_credentials.get_token_value()
 

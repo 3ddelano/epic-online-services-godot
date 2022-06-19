@@ -24,6 +24,7 @@ func _ready() -> void:
 
 	_c = EOS.get_instance().connect("ui_interface_show_friends_callback", self, "_on_friends_overlay_visibility_changed")
 	_c = EOS.get_instance().connect("ui_interface_hide_friends_callback", self, "_on_friends_overlay_visibility_changed")
+	_c = EOS.get_instance().connect("ui_interface_display_settings_updated_callback", self, "_on_display_settings_updated_callback")
 
 	loginwithepic.visible = true
 	container.visible = false
@@ -67,3 +68,7 @@ func _on_show_friends_btn_pressed():
 
 func _on_friends_overlay_visibility_changed(_data: Dictionary):
 	_on_friends_visible_btn_pressed()
+
+
+func _on_display_settings_updated_callback(data: Dictionary):
+	print("--- UI: display_settings_updated_callback: ", data)

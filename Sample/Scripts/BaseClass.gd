@@ -17,5 +17,5 @@ func _to_string() -> String:
 	all_props.pop_front()
 	var props = PoolStringArray()
 	for prop in all_props:
-		props.append("%s=%s" % [prop["name"], get(prop["name"])])
+		props.append("%s=%s" % [prop.name, get(prop.name)])
 	return get_class() + "(" + props.join(", ") + ")"

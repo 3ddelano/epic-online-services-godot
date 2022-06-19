@@ -16,24 +16,24 @@ func _ready() -> void:
 
 
 func _on_send_custom_invite_complete_callback(data: Dictionary):
-	print("--- Custom Invites: Send custom invite complete: ", data)
+	print("--- Custom Invites: send_custom_invite_complete_callback: ", EOS.print_result(data))
 
 
 func _on_custom_invite_accepted_callback(data: Dictionary):
-	print("--- Custom Invites: Custom invite accepted: ", data)
+	print("--- Custom Invites: custom_invite_accepted_callback: ", EOS.print_result(data))
 
 	var options1 = EOS.CustomInvites.FinalizeInviteOptions.new()
 	options1.target_user_id = Store.product_user_id
 	options1.local_user_id = Store.product_user_id
-	options1.custom_invite_id = data["custom_invite_id"]
+	options1.custom_invite_id = data.custom_invite_id
 	options1.processing_result = EOS.Result.Success
 
 	var res = EOS.CustomInvites.CustomInvitesInterface.finalize_invite(options1)
-	print("Custom Invites: finalize_invite: result = %s [%s]" % [res, EOS.print_result(res)])
+	print("--- Custom Invites: finalize_invite: ", EOS.print_result(res))
 
 
 func _on_custom_invite_received_callback(data: Dictionary):
-	print("--- Custom Invites: Custom invite recevied: ", data)
+	print("--- Custom Invites: custom_invite_received_callback(: ", EOS.print_result(data))
 
 
 func _on_set_payload_btn_pressed():
@@ -41,7 +41,7 @@ func _on_set_payload_btn_pressed():
 	options1.local_user_id = Store.product_user_id
 	options1.payload = payload_textedit.text
 	var res = EOS.CustomInvites.CustomInvitesInterface.set_custom_invite(options1)
-	print("Custom Invites: set_custom_invite: result = %s [%s]" % [res, EOS.print_result(res)])
+	print("--- Custom Invites: set_custom_invite: ", EOS.print_result(res))
 
 
 func _on_send_invite_btn_pressed():

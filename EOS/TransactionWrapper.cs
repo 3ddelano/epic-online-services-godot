@@ -12,20 +12,20 @@ public class TransactionWrapper : Reference
         {
             EntitlementIndex = (uint)p_entitlement_index
         };
-        Entitlement outEntitlement;
-        var res = _internalTransaction.CopyEntitlementByIndex(options, out outEntitlement);
+        Entitlement? outEntitlement;
+        var res = _internalTransaction.CopyEntitlementByIndex(ref options, out outEntitlement);
         var ret = new Dictionary(){
             {"result_code", res}
         };
         if (res == Result.Success)
         {
             var entitlement_dict = new Dictionary(){
-                {"entitlement_name", outEntitlement.EntitlementName},
-                {"entitlement_id", outEntitlement.EntitlementId},
-                {"catalog_item_id", outEntitlement.CatalogItemId},
-                {"server_index", outEntitlement.ServerIndex},
-                {"redeemed", outEntitlement.Redeemed},
-                {"end_timestamp", (int) outEntitlement.EndTimestamp},
+                {"entitlement_name", outEntitlement?.EntitlementName.ToString()},
+                {"entitlement_id", outEntitlement?.EntitlementId.ToString()},
+                {"catalog_item_id", outEntitlement?.CatalogItemId.ToString()},
+                {"server_index", outEntitlement?.ServerIndex.ToString()},
+                {"redeemed", outEntitlement?.Redeemed},
+                {"end_timestamp", (int) outEntitlement?.EndTimestamp},
             };
             ret.Add("entitlement", entitlement_dict);
         }
@@ -35,20 +35,21 @@ public class TransactionWrapper : Reference
 
     public int get_entitlements_count(Reference p_options)
     {
-        uint count = _internalTransaction.GetEntitlementsCount(new TransactionGetEntitlementsCountOptions());
+        var options = new TransactionGetEntitlementsCountOptions();
+        uint count = _internalTransaction.GetEntitlementsCount(ref options);
         return (int)count;
     }
 
     public Dictionary get_transaction_id(Reference p_options)
     {
-        string outBuffer;
+        Utf8String outBuffer;
         Result res = _internalTransaction.GetTransactionId(out outBuffer);
         var ret = new Dictionary(){
             {"result_code", res}
         };
         if (res == Result.Success)
         {
-            ret.Add("transaction_id", outBuffer);
+            ret.Add("transaction_id", outBuffer.ToString());
         }
         return ret;
     }
@@ -58,7 +59,7 @@ public class TransactionWrapper : Reference
         _internalTransaction = transaction;
     }
 
-    public string GetClass()
+    public new string GetClass()
     {
         return "TransactionWrapper";
     }

@@ -46,7 +46,7 @@ func _on_refresh_my_stats_btn_pressed():
 
 
 func _on_query_stats_complete_callback(data: Dictionary):
-	print("--- Stats: query_stats_complete_callback: result_code: ", EOS.print_result(data["result_code"]) )
+	print("--- Stats: query_stats_complete_callback: ", EOS.print_result(data) )
 
 	var stats_count_options = EOS.Stats.GetStatsCountOptions.new()
 	stats_count_options.target_user_id = Store.product_user_id
@@ -58,10 +58,10 @@ func _on_query_stats_complete_callback(data: Dictionary):
 		copy_stat_options.target_user_id = Store.product_user_id
 		copy_stat_options.stat_index = i
 		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_stat_options)
-		if ret["result_code"] != EOS.Result.Success:
+		if ret.result_code != EOS.Result.Success:
 			print("--- Stats: copy_stat_by_index: Invalid stat: ", ret)
 		else:
-			stats.append(ret["stat"])
+			stats.append(ret.stat)
 	_update_stats()
 
 
@@ -79,10 +79,10 @@ func ingest_stat(_stat_name: String, _ingest_amount: int):
 
 
 func _on_ingest_stat_complete_callback(data: Dictionary):
-	print("--- Stats: ingest_stat_complete_callback: result_code ", EOS.print_result(data["result_code"]))
+	print("--- Stats: ingest_stat_complete_callback: ", EOS.print_result(data))
 
-	if data["result_code"] != EOS.Result.Success:
-		status_label.text = "Ingesting Failed: " + EOS.print_result(data["result_code"])
+	if data.result_code != EOS.Result.Success:
+		status_label.text = "Ingesting Failed: " + EOS.print_result(data)
 		return
 
 	print("--- Stats: Stat ingested")
@@ -101,12 +101,12 @@ func _update_stats():
 
 	var rows_bbcode = ""
 	for stat in stats:
-		rows_bbcode += "[cell]%s[/cell]" % stat["name"]
-		if stat.has("value"):
-			rows_bbcode += "[cell]%s[/cell]" % stat["value"]
-		if stat.has("start_time"):
-			rows_bbcode += "[cell]%s[/cell]" % stat["start_time"]
-		if stat.has("end_time"):
-			rows_bbcode += "[cell]%s[/cell]" % stat["end_time"]
+		rows_bbcode += "[cell]%s[/cell]" % stat.name
+		if stat.value != null:
+			rows_bbcode += "[cell]%s[/cell]" % stat.value
+		if stat.start_time != null:
+			rows_bbcode += "[cell]%s[/cell]" % stat.start_time
+		if stat.end_time != null:
+			rows_bbcode += "[cell]%s[/cell]" % stat.end_time
 
 	my_stats.bbcode_text = base_bbcode % rows_bbcode

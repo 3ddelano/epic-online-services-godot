@@ -54,7 +54,7 @@ func _on_logout_success():
 
 
 func _on_query_leaderboard_defs_complete_callback(data: Dictionary):
-	print("--- Leaderboards: query_leaderboard_definitions_complete_callback: result = %s" % [EOS.print_result(data["result_code"])])
+	print("--- Leaderboards: query_leaderboard_definitions_complete_callback: ", [EOS.print_result(data)])
 
 	var leaderboard_defs_count = EOS.Leaderboards.LeaderboardsInterface.get_leaderboard_definition_count(EOS.Leaderboards.GetLeaderboardDefinitionCountOptions.new())
 
@@ -63,10 +63,10 @@ func _on_query_leaderboard_defs_complete_callback(data: Dictionary):
 		var copy_leaderboard_def_options = EOS.Leaderboards.CopyLeaderboardDefinitionByIndexOptions.new()
 		copy_leaderboard_def_options.leaderboard_index = i
 		var leaderboard_def_data = EOS.Leaderboards.LeaderboardsInterface.copy_leaderboard_definition_by_index(copy_leaderboard_def_options)
-		if leaderboard_def_data["result_code"] != EOS.Result.Success:
-			print("--- Leaderboards: copy_leaderboard_definition_by_index: result_code = %s " % [EOS.print_result(data["result_code"])])
+		if leaderboard_def_data.result_code != EOS.Result.Success:
+			print("--- Leaderboards: copy_leaderboard_definition_by_index: ", EOS.print_result(data))
 			continue
-		leaderboards.append(leaderboard_def_data["definition"])
+		leaderboards.append(leaderboard_def_data.definition)
 
 	#var copy_leaderboard_def_options = EOS.Leaderboards.CopyLeaderboardDefinitionByLeaderboardId.new()
 	#copy_leaderboard_def_options.leaderboard_id = "stat_sum_leaderboard"
@@ -81,8 +81,8 @@ func _update_select_leaderboard_button():
 
 	for i in leaderboards.size():
 		var leaderboard = leaderboards[i]
-		select_leaderboard_btn.add_item(leaderboard["leaderboard_id"], i)
-		select_leaderboard_btn.set_item_metadata(i, leaderboard["leaderboard_id"])
+		select_leaderboard_btn.add_item(leaderboard.leaderboard_id, i)
+		select_leaderboard_btn.set_item_metadata(i, leaderboard.leaderboard_id)
 
 
 func _on_view_leaderboard_btn_pressed():
@@ -99,7 +99,7 @@ func _on_view_leaderboard_btn_pressed():
 
 
 func _on_query_leaderboard_ranks_complete_callback(data: Dictionary):
-	print("--- Leaderboards: query_leaderboard_ranks_complete_callback: result = %s" % [EOS.print_result(data["result_code"])])
+	print("--- Leaderboards: query_leaderboard_ranks_complete_callback: ", EOS.print_result(data))
 
 	var leaderboard_records_count = EOS.Leaderboards.LeaderboardsInterface.get_leaderboard_record_count(EOS.Leaderboards.GetLeaderboardRecordCountOptions.new())
 
@@ -108,12 +108,12 @@ func _on_query_leaderboard_ranks_complete_callback(data: Dictionary):
 		var copy_leaderboard_record_options = EOS.Leaderboards.CopyLeaderboardRecordByIndexOptions.new()
 		copy_leaderboard_record_options.leaderboard_record_index = i
 		var leaderboard_record_data = EOS.Leaderboards.LeaderboardsInterface.copy_leaderboard_record_by_index(copy_leaderboard_record_options)
-		if leaderboard_record_data["result_code"] != EOS.Result.Success:
-			print("--- Leaderboards: copy_leaderboard_record_by_index: result_code = %s " % [EOS.print_result(data["result_code"])])
+		if leaderboard_record_data.result_code != EOS.Result.Success:
+			print("--- Leaderboards: copy_leaderboard_record_by_index: ", EOS.print_result(data))
 			continue
-		leaderboard_records.append(leaderboard_record_data["leaderboard_record"])
+		leaderboard_records.append(leaderboard_record_data.leaderboard_record)
 
-	_update_leaderboard(data["client_data"], leaderboard_records)
+	_update_leaderboard(data.client_data, leaderboard_records)
 
 
 func _update_leaderboard(leaderboard_id: String, records: Array):
@@ -134,12 +134,12 @@ func _update_leaderboard(leaderboard_id: String, records: Array):
 
 	var rows_bbcode = ""
 	for record in records:
-		rows_bbcode += "[cell]%s[/cell]" % record["rank"]
-		if record.has("score"):
-			rows_bbcode += "[cell]%s[/cell]" % record["score"]
-		if record.has("user_display_name"):
-			var display_name = record["user_display_name"]
-			if record["user_id"] == Store.product_user_id:
+		rows_bbcode += "[cell]%s[/cell]" % record.rank
+		if record.score != null:
+			rows_bbcode += "[cell]%s[/cell]" % record.score
+		if record.user_display_name != null:
+			var display_name = record.user_display_name
+			if record.user_id == Store.product_user_id:
 				display_name += "[b] (you)[/b]"
 			rows_bbcode += "[cell]%s[/cell]" % display_name
 

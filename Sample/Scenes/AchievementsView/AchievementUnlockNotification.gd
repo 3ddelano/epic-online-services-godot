@@ -18,7 +18,7 @@ func from_achievement_data(data: Dictionary):
 
 	name_label.text = data.unlocked_display_name
 	id_label.text = data.achievement_id
-	if data.has("unlocked_icon_url"):
+	if data.unlocked_icon_url != null:
 		unlocked_image.fetch_image(data.unlocked_icon_url)
 	else:
 		unlocked_image.fetch_image(data.icon_url)

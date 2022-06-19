@@ -101,7 +101,8 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 
 
 func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
-	print("--- Achievements: unlock_achievements_complete_callback: %s" % EOS.print_result(data["result_code"]))
+	print("--- Achievements: unlock_achievements_complete_callback: ", EOS.print_result(data))
+
 
 func _on_refresh_btn_pressed():
 	_on_login_success()
