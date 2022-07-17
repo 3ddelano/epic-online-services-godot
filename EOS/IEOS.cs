@@ -24,6 +24,9 @@ using Epic.OnlineServices.KWS;
 using Epic.OnlineServices.Metrics;
 using Epic.OnlineServices.Mods;
 using Epic.OnlineServices.Version;
+using Epic.OnlineServices.Reports;
+using Epic.OnlineServices.ProgressionSnapshot;
+using Epic.OnlineServices.Presence;
 
 public class IEOS : Node
 {
@@ -140,6 +143,12 @@ public class IEOS : Node
     public delegate void kws_interface_update_parent_email_callback(Dictionary callback_data);
     [Signal]
     public delegate void mods_interface_enumerate_mods_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void reports_interface_report_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void progression_snapshot_interface_submit_snapshot_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void progression_snapshot_interface_delete_snapshot_callback(Dictionary callback_data);
 
 
 
@@ -334,6 +343,12 @@ public class IEOS : Node
         s_MetricsInterface = s_PlatformInterface.GetMetricsInterface();
 
         s_ModsInterface = s_PlatformInterface.GetModsInterface();
+
+        s_ReportsInterface = s_PlatformInterface.GetReportsInterface();
+
+        s_ProgressionSnapshotInterface = s_PlatformInterface.GetProgressionSnapshotInterface();
+
+        s_PresenceInterface = s_PlatformInterface.GetPresenceInterface();
 
         return true; // platform created successfully
     }
@@ -2743,6 +2758,133 @@ public class IEOS : Node
 
 
     // ------------------------
+    // Reports Interface
+    // ------------------------
+    public void reports_interface_send_player_behavior_report(Reference p_options)
+    {
+        var options = new SendPlayerBehaviorReportOptions()
+        {
+            ReporterUserId = ProductUserId.FromString((string)p_options.Get("reporter_user_id")),
+            ReportedUserId = ProductUserId.FromString((string)p_options.Get("reported_user_id")),
+            Category = (PlayerReportsCategory)p_options.Get("category"),
+            Message = new Utf8String((string)p_options.Get("message")),
+            Context = new Utf8String((string)p_options.Get("context")),
+        };
+        object client_data = _get_client_data(p_options);
+
+        s_ReportsInterface.SendPlayerBehaviorReport(ref options, client_data, (ref SendPlayerBehaviorReportCompleteCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"client_data", data.ClientData},
+            };
+            EmitSignal(nameof(reports_interface_report_callback), ret);
+        });
+    }
+
+
+    // ------------------------
+    // Progression Snapshot Interface
+    // ------------------------
+    public Dictionary progression_snapshot_interface_begin_snapshot(Reference p_options)
+    {
+        var options = new BeginSnapshotOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id"))
+        };
+        uint outSnapshotId;
+        Result res = s_ProgressionSnapshotInterface.BeginSnapshot(ref options, out outSnapshotId);
+        return new Dictionary(){
+            {"result_code", res},
+            {"snapshot_id", outSnapshotId}
+        };
+    }
+
+    public Result progression_snapshot_interface_add_progression(Reference p_options)
+    {
+        var p_snapshot_id = (int)p_options.Get("snapshot_id");
+        var options = new AddProgressionOptions()
+        {
+            SnapshotId = (uint)p_snapshot_id,
+            Key = new Utf8String((string)p_options.Get("key")),
+            Value = new Utf8String((string)p_options.Get("value")),
+
+        };
+        return s_ProgressionSnapshotInterface.AddProgression(ref options);
+    }
+
+    public void progression_snapshot_interface_submit_snapshot(Reference p_options)
+    {
+        var p_snapshot_id = (int)p_options.Get("snapshot_id");
+        var options = new SubmitSnapshotOptions()
+        {
+            SnapshotId = (uint)p_snapshot_id,
+
+        };
+
+        object client_data = _get_client_data(p_options);
+        s_ProgressionSnapshotInterface.SubmitSnapshot(ref options, client_data, (ref SubmitSnapshotCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"snapshot_id", data.SnapshotId},
+                {"client_data", data.ClientData}
+            };
+
+            // Clear internal memory resources allocated by the SDK
+            var endSnapshotOptions = new EndSnapshotOptions()
+            {
+                SnapshotId = data.SnapshotId
+            };
+            var _res = s_ProgressionSnapshotInterface.EndSnapshot(ref endSnapshotOptions);
+            EmitSignal(nameof(progression_snapshot_interface_submit_snapshot_callback), ret);
+        });
+    }
+
+    public void progression_snapshot_interface_delete_snapshot(Reference p_options)
+    {
+        var options = new DeleteSnapshotOptions()
+        {
+            LocalUserId = ProductUserId.FromString((string)p_options.Get("local_user_id"))
+        };
+
+        object client_data = _get_client_data(p_options);
+        s_ProgressionSnapshotInterface.DeleteSnapshot(ref options, client_data, (ref DeleteSnapshotCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"client_data", data.ClientData},
+            };
+            if (data.LocalUserId != null)
+            {
+                ret["local_user_id"] = data.LocalUserId.ToString();
+            }
+            EmitSignal(nameof(progression_snapshot_interface_delete_snapshot_callback), ret);
+        });
+    }
+
+
+    // ------------------------
+    // Presence Interface
+    // ------------------------
+    public void presence_interface_copy_presence(Reference p_options)
+    {
+        Info? outPresence;
+        var options = new CopyPresenceOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id"))
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id"))
+        };
+        s_PresenceInterface.CopyPresence(ref options, out outPresence);
+        if (outPresence != null)
+        {
+
+        }
+    }
+
+
+
+    // ------------------------
     // Internal Overrides
     // ------------------------
     public override void _Process(float delta)
@@ -2773,6 +2915,8 @@ public class IEOS : Node
                 s_UIInterface = null;
                 s_MetricsInterface = null;
                 s_ModsInterface = null;
+                s_ReportsInterface = null;
+                s_ProgressionSnapshotInterface = null;
                 s_PlatformInterface = null;
                 PlatformInterface.Shutdown();
             }
@@ -3027,5 +3171,7 @@ public class IEOS : Node
     private static KWSInterface s_KWSInterface;
     private static MetricsInterface s_MetricsInterface;
     private static ModsInterface s_ModsInterface;
-
+    private static ReportsInterface s_ReportsInterface;
+    private static ProgressionSnapshotInterface s_ProgressionSnapshotInterface;
+    private static PresenceInterface s_PresenceInterface;
 }

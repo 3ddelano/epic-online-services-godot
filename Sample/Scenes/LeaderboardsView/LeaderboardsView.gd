@@ -54,7 +54,7 @@ func _on_logout_success():
 
 
 func _on_query_leaderboard_defs_complete_callback(data: Dictionary):
-	print("--- Leaderboards: query_leaderboard_definitions_complete_callback: ", [EOS.print_result(data)])
+	print("--- Leaderboards: query_leaderboard_definitions_complete_callback: ", EOS.print_result(data))
 
 	var leaderboard_defs_count = EOS.Leaderboards.LeaderboardsInterface.get_leaderboard_definition_count(EOS.Leaderboards.GetLeaderboardDefinitionCountOptions.new())
 

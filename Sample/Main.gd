@@ -38,11 +38,11 @@ func _ready() -> void:
 		print("Failed to create EOS Platform")
 		return
 
-	var _c = Store.connect("login_success", self, "_on_login_success")
+#	var _c = Store.connect("login_success", self, "_on_login_success")
 	yield(get_tree().create_timer(0.5), "timeout")
 	Store.emit_signal("platform_create")
-	print(EOS.Version.VersionInterface.get_constants())
-	print("Version: ", EOS.Version.VersionInterface.get_version())
+	var sdk_constants = EOS.Version.VersionInterface.get_constants()
+	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
 
 
 func get_view_manager():
@@ -53,12 +53,14 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.scancode == KEY_QUOTELEFT: # ` key to toggle Logs
 			Store.get_view("Logs").visible = not Store.get_view("Logs").visible
-
-
+		elif event.scancode == KEY_TAB:
+			if Store.product_user_id:
+				_on_tab_pressed()
 
 
 # Dev testing stuff
-func _on_login_success():
+func _on_tab_pressed():
+	# Auth interface
 #	print("--- Auth: get_logged_in_accounts_count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
 #	print("--- Auth: Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
 #	print("--- Auth: get_login_status: ", EOS.Auth.AuthInterface.get_login_status(Store.epic_account_id))
@@ -72,7 +74,10 @@ func _on_login_success():
 #	var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
 #	verify_user_auth_options.auth_token = token
 #	EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
-#
+
+
+
+#	Platform interface
 #	print("--- Platform: get_active_country_code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.epic_account_id))
 #	print("--- Platform: get_active_locale_code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.epic_account_id))
 #	print("--- Platform: get_override_country_code: ", EOS.Platform.PlatformInterface.get_override_country_code())
@@ -81,7 +86,10 @@ func _on_login_success():
 #	var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
 #	copy_id_token_options.account_id = Store.epic_account_id
 #	print("--- Auth: copy_id_token: ", EOS.print_result(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options)))
-#
+
+
+
+#	Connect interface
 #	var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
 #	options1.target_user_id = Store.product_user_id
 #	options1.account_id = Store.epic_account_id
@@ -139,7 +147,9 @@ func _on_login_success():
 #	options10.id_token = id_token
 #	EOS.Connect.ConnectInterface.verify_id_token(options10)
 #	print("--- Connect: verify_id_token_callback: ", yield(EOS.get_instance(), "connect_interface_verify_id_token_callback"))
-#
+
+
+
 #	# Ecom interface
 #	var offers_options = EOS.Ecom.QueryOffersOptions.new()
 #	offers_options.local_user_id = Store.epic_account_id
@@ -155,17 +165,66 @@ func _on_login_success():
 #	var checkout_data = yield(EOS.get_instance(), "ecom_interface_checkout_callback")
 #	print("--- Ecom: checkout_callback", checkout_data)
 
-	# Mod interface
-	var enum_mods_options = EOS.Mods.EnumerateModsOptions.new()
-	enum_mods_options.local_user_id = Store.epic_account_id
-	enum_mods_options.type = EOS.Mods.ModEnumerationType.AllAvailable
-	EOS.Mods.ModsInterface.enumerate_mods(enum_mods_options)
-	var enum_mods_callback_data = yield(EOS.get_instance(), "mods_interface_enumerate_mods_callback")
-	print("--- Mods: enumerate_mods_callback: ", EOS.print_result(enum_mods_callback_data))
 
-	var copy_mod_info_options = EOS.Mods.CopyModInfoOptions.new()
-	copy_mod_info_options.local_user_id = Store.epic_account_id
-	copy_mod_info_options.type = EOS.Mods.ModEnumerationType.AllAvailable
-	var copy_mods_info_data = EOS.Mods.ModsInterface.copy_mod_info(copy_mod_info_options)
-	print("--- Mods: copy_mod_info: ", copy_mods_info_data)
+
+#	# Mod interface
+#	var enum_mods_options = EOS.Mods.EnumerateModsOptions.new()
+#	enum_mods_options.local_user_id = Store.epic_account_id
+#	enum_mods_options.type = EOS.Mods.ModEnumerationType.AllAvailable
+#	EOS.Mods.ModsInterface.enumerate_mods(enum_mods_options)
+#	var enum_mods_callback_data = yield(EOS.get_instance(), "mods_interface_enumerate_mods_callback")
+#	print("--- Mods: enumerate_mods_callback: ", EOS.print_result(enum_mods_callback_data))
+#
+#	var copy_mod_info_options = EOS.Mods.CopyModInfoOptions.new()
+#	copy_mod_info_options.local_user_id = Store.epic_account_id
+#	copy_mod_info_options.type = EOS.Mods.ModEnumerationType.AllAvailable
+#	var copy_mods_info_data = EOS.Mods.ModsInterface.copy_mod_info(copy_mod_info_options)
+#	print("--- Mods: copy_mod_info: ", copy_mods_info_data)
+
+
+
+	# Reports interface
+#	var report_options = EOS.Reports.SendPlayerBehaviorReportOptions.new()
+#	report_options.reporter_user_id = Store.product_user_id
+#	report_options.reported_user_id = "e5d94c924f204a63bd343b976ae662cd"
+#	report_options.category = EOS.Reports.PlayerReportsCategory.Spamming
+#	report_options.message = "this is test message"
+#	report_options.context = JSON.print({hello = "testing"})
+#	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
+#	print("--- Reports: send_player_behavior_report: ", EOS.print_result(yield(EOS.get_instance(), "reports_interface_report_callback")))
+
+
+
+#	# ProgressionSnapshot Interface
+#	var begin_snapshot_options = EOS.ProgressionSnapshot.BeginSnapshotOptions.new()
+#	begin_snapshot_options.local_user_id = Store.product_user_id
+#	var begin_snapshot_ret = EOS.ProgressionSnapshot.ProgressionSnapshotInterface.begin_snapshot(begin_snapshot_options)
+#	print("--- ProgressionSnapshot: begin_snapshot: ", begin_snapshot_ret)
+#
+#	yield(get_tree().create_timer(3), "timeout")
+#
+#	var add_progression_options = EOS.ProgressionSnapshot.AddProgressionOptions.new()
+#	add_progression_options.snapshot_id = begin_snapshot_ret.snapshot_id
+#	add_progression_options.key = "test_key"
+#	add_progression_options.value = "test_value 0123456789"
+#	print("--- ProgressionSnapshot: add_progression: ", EOS.print_result(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.add_progression(add_progression_options)))
+#
+#	yield(get_tree().create_timer(3), "timeout")
+#
+#	var submit_snapshot_options = EOS.ProgressionSnapshot.SubmitSnapshotOptions.new()
+#	submit_snapshot_options.snapshot_id = begin_snapshot_ret.snapshot_id
+#	print("--- ProgressionSnapshot: submit_snapshot: ", EOS.print_result(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.submit_snapshot(submit_snapshot_options)))
+#	print("--- ProgressionSnapshot: submit_snapshot_callback: ", yield(EOS.get_instance(), "progression_snapshot_interface_submit_snapshot_callback"))
+#
+#	yield(get_tree().create_timer(3), "timeout")
+#
+#	var delete_snapshot_options = EOS.ProgressionSnapshot.DeleteSnapshotOptions.new()
+#	delete_snapshot_options.local_user_id = Store.product_user_id
+#	print("--- ProgressionSnapshot: delete_snapshot: ", EOS.print_result(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.delete_snapshot(delete_snapshot_options)))
+#	print("--- ProgressionSnapshot: delete_snapshot_callback: ", yield(EOS.get_instance(), "progression_snapshot_interface_delete_snapshot_callback"))
+
+
+
+
+
 	pass

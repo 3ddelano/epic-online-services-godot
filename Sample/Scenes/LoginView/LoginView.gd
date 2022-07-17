@@ -76,8 +76,9 @@ func _ready() -> void:
 	c = instance.connect("user_info_interface_query_user_info_callback", self, "_on_query_user_info_callback")
 
 	# TODO: (Remove) Autologin for debug purpose
-#	yield(Store, "platform_create")
-#	perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
+	if OS.is_debug_build():
+		yield(Store, "platform_create")
+		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 
 
 func _on_auth_interface_login_callback(data: Dictionary):

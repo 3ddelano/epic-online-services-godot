@@ -182,11 +182,11 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - ProgressionSnapshot Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - Reports Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - RTC Interface
   - [ ] Implementation
   - [ ] Sample

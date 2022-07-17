@@ -4,7 +4,6 @@ extends VBoxContainer
 onready var loginwithepic = $LoginWithEpic
 onready var container = $VB
 
-onready var friends_visible_btn = $VB/HB/FriendsVisibleBtn
 onready var friends_visible_label = $VB/HB/FriendsVisibleLabel
 
 onready var notification_location_btn = $VB/HB2/NotificationLocationBtn
@@ -18,12 +17,11 @@ func _ready() -> void:
 	_c = Store.connect("login_success", self, "_on_login_success")
 	_c = Store.connect("logout_success", self, "_on_logout_success")
 
-	_c = friends_visible_btn.connect("pressed", self, "_on_friends_visible_btn_pressed")
 	_c = notification_location_btn.connect("pressed", self, "_on_notification_location_btn_pressed")
 	_c = show_friends_btn.connect("pressed", self, "_on_show_friends_btn_pressed")
 
-	_c = EOS.get_instance().connect("ui_interface_show_friends_callback", self, "_on_friends_overlay_visibility_changed")
-	_c = EOS.get_instance().connect("ui_interface_hide_friends_callback", self, "_on_friends_overlay_visibility_changed")
+#	_c = EOS.get_instance().connect("ui_interface_show_friends_callback", self, "_on_friends_overlay_visibility_changed")
+#	_c = EOS.get_instance().connect("ui_interface_hide_friends_callback", self, "_on_friends_overlay_visibility_changed")
 	_c = EOS.get_instance().connect("ui_interface_display_settings_updated_callback", self, "_on_display_settings_updated_callback")
 
 	loginwithepic.visible = true
@@ -45,15 +43,15 @@ func _on_logout_success():
 	container.visible = false
 
 
-func _on_friends_visible_btn_pressed():
-	var options = EOS.UI.GetFriendsVisibleOptions.new()
-	options.local_user_id = Store.epic_account_id
-	var is_friends_visible = EOS.UI.UIInterface.get_friends_visible(options)
-
-	if is_friends_visible:
-		friends_visible_label.text = "Yes"
-	else:
-		friends_visible_label.text = "No"
+#func _on_friends_visible_btn_pressed():
+#	var options = EOS.UI.GetFriendsVisibleOptions.new()
+#	options.local_user_id = Store.epic_account_id
+#	var is_friends_visible = EOS.UI.UIInterface.get_friends_visible(options)
+#
+#	if is_friends_visible:
+#		friends_visible_label.text = "Yes"
+#	else:
+#		friends_visible_label.text = "No"
 
 func _on_notification_location_btn_pressed():
 	var notification_location = EOS.UI.UIInterface.get_notification_location_preference()
@@ -66,9 +64,14 @@ func _on_show_friends_btn_pressed():
 	EOS.UI.UIInterface.show_friends(options)
 
 
-func _on_friends_overlay_visibility_changed(_data: Dictionary):
-	_on_friends_visible_btn_pressed()
+#func _on_friends_overlay_visibility_changed(_data: Dictionary):
+#	_on_friends_visible_btn_pressed()
 
 
 func _on_display_settings_updated_callback(data: Dictionary):
-	print("--- UI: display_settings_updated_callback: ", data)
+#	print("--- UI: display_settings_updated_callback: ", data)
+
+	if data.is_visible:
+		friends_visible_label.text = "Overlay Visible: Yes"
+	else:
+		friends_visible_label.text = "Overlay Visible: No"

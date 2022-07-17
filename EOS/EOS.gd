@@ -1258,6 +1258,63 @@ class Reports:
 		Other = 7
 	}
 
+	class SendPlayerBehaviorReportOptions extends BaseClass:
+		func _init().("SendPlayerBehaviorReportOptions"): pass
+
+		var reporter_user_id: String
+		var reported_user_id: String
+		var category: int # PlayerReportsCategory
+		var message: String
+		var context: String
+
+		var client_data = null
+
+	class ReportsInterface:
+		static func send_player_behavior_report(options: SendPlayerBehaviorReportOptions) -> void:
+			IEOS.reports_interface_send_player_behavior_report(options)
+
+
+class ProgressionSnapshot:
+
+	class BeginSnapshotOptions extends BaseClass:
+		func _init().("BeginSnapshotOptions"): pass
+
+		var local_user_id: String
+
+	class AddProgressionOptions extends BaseClass:
+		func _init().("AddProgressionOptions"): pass
+
+		var snapshot_id: int
+		var key: String
+		var value: String
+
+	class SubmitSnapshotOptions extends BaseClass:
+		func _init().("SubmitSnapshotOptions"): pass
+
+		var snapshot_id: int
+
+		var client_data = null
+
+	class DeleteSnapshotOptions extends BaseClass:
+		func _init().("DeleteSnapshotOptions"): pass
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class ProgressionSnapshotInterface:
+		static func begin_snapshot(options: BeginSnapshotOptions) -> Dictionary:
+			return IEOS.progression_snapshot_interface_begin_snapshot(options)
+
+		static func add_progression(options: AddProgressionOptions) -> int:
+			return IEOS.progression_snapshot_interface_add_progression(options)
+
+		static func submit_snapshot(options: SubmitSnapshotOptions) -> void:
+			IEOS.progression_snapshot_interface_submit_snapshot(options)
+
+		static func delete_snapshot(options: DeleteSnapshotOptions) -> void:
+			IEOS.progression_snapshot_interface_delete_snapshot(options)
+
 
 class RTC:
 	enum RTCParticipantStatus { Joined = 0, Left = 1 }
@@ -1475,6 +1532,7 @@ class UI:
 		static func show_friends(options: ShowFriendsOptions) -> void:
 			IEOS.ui_interface_show_friends(options)
 
+
 class UserInfo:
 
 	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
@@ -1627,6 +1685,7 @@ class Logging:
 
 	static func set_log_level(log_category: int, log_level: int) -> int:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
+
 
 class Version:
 	class VersionInterface:
