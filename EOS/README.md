@@ -61,17 +61,28 @@ Getting Started
     #endif
    ``` 
 
-1. Add the `IEOS.cs` file present in `EOS` folder as an autoload (Project Settings -> Autoload).
+1. In the res:// folder open the `{Project Name}.csproj` and add the following lines after the `</PropertyGroup>` to ensure that the EOS libraries will be automatically included in the exported project (you can further modify this to only include the library of the current platform):
+   ```
+   <ItemGroup>
+     <DllFiles Include="EOS\Bin\**"/>
+     <Reference Include="Microsoft.CSharp" />
+   </ItemGroup>
+   <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+     <Copy SourceFiles="@(DllFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+   </Target>
+   ```
+
+2. Add the `IEOS.cs` file present in `EOS` folder as an autoload (Project Settings -> Autoload).
  
-1. You can now use the methods/signals from the `EOS` class in Godot.
+3. You can now use the methods/signals from the `EOS` class in Godot.
    
    Minimal Starting Boilerplate (See `Main.gd` and `LogsView.gd` in `Sample` for an example)
    ```GDScript
     func _ready():
         # Initialize the SDK
         var init_options = EOS.Platform.InitializeOptions.new()
-        init_options.product_name = "PRODUCT NAME HERE"
-        init_options.product_version = "PRODUCT VERSION HERE"
+        init_options.product_name = "PRODUCT_NAME_HERE"
+        init_options.product_version = "PRODUCT_VERSION_HERE"
 
         var init_result: int = EOS.Platform.PlatformInterface.initialize(init_options)
         if init_result != EOS.Result.Success:
@@ -80,12 +91,12 @@ Getting Started
 
         # Create platform
         var create_options = EOS.Platform.CreateOptions.new()
-        create_options.product_id = "PRODUCT_ID HERE"
-        create_options.sandbox_id = "SANDBOX_ID HERE"
-        create_options.deployment_id = "DEPLOYMENT_ID HERE"
-        create_options.client_id = "CLIENT_ID HERE"
-        create_options.client_secret = "CLIENT_SECRET HERE"
-        create_options.encryption_key = "ENCRYPTION_KEY HERE"
+        create_options.product_id = "PRODUCT_ID_HERE"
+        create_options.sandbox_id = "SANDBOX_ID_HERE"
+        create_options.deployment_id = "DEPLOYMENT_ID_HERE"
+        create_options.client_id = "CLIENT_ID_HERE"
+        create_options.client_secret = "CLIENT_SECRET_HERE"
+        create_options.encryption_key = "ENCRYPTION_KEY_HERE"
 
         # Enable Social Overlay on Windows
         if OS.get_name() == "Windows":
@@ -107,7 +118,8 @@ Getting Started
         
         print("SDK %s | %s" % [msg.category, msg.message])
    ```
-1. **Using login with Account portal**
+4. **Using Account Portal to login to EOS**
+   
    See <a href="#bootstrapping-godot-executable-with-epic-online-services">Bootstrapping Godot executable with Epic Online Services</a>
 
 ### How to run the sample project?
