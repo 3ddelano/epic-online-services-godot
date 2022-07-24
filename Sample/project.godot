@@ -37,7 +37,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "BaseClass",
 "language": "GDScript",
-"path": "res://Scripts/BaseClass.gd"
+"path": "res://EOS/Scripts/BaseClass.gd"
 }, {
 "base": "VBoxContainer",
 "class": "CustomInvitesView",
@@ -47,7 +47,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "EOS",
 "language": "GDScript",
-"path": "res://EOS/EOS.gd"
+"path": "res://EOS/Scripts/EOS.gd"
 }, {
 "base": "VBoxContainer",
 "class": "FriendsView",
@@ -136,7 +136,7 @@ config/icon="res://logo.png"
 
 Env="*res://Scripts/Env.gd"
 Store="*res://Scripts/Store.gd"
-IEOS="*res://EOS/IEOS.cs"
+IEOS="*res://EOS/Scripts/IEOS.cs"
 
 [physics]
 
