@@ -41,7 +41,8 @@ Getting Started
 1. Download/clone the repo and copy the `EOS` folder to your own Godot project folder.
 
 1. Download the `EOS C# SDK`, extract it, and copy and paste the `Source` and `Bin` folders to the `EOS` folder. The EOS folder should look something like this:
-  <img src="./_media/eos_folder_structure.png">
+   
+   <img src="./_media/eos_folder_structure.png">
 
 1. Open the file, `res://EOS/Source/Core/Config.cs` and paste the following lines at the top and save the file 
    > You may get a permission warning saying that the file is Readonly. Make sure that the file gets saved/overwritten
