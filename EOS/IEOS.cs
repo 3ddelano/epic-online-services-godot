@@ -149,6 +149,10 @@ public class IEOS : Node
     public delegate void progression_snapshot_interface_submit_snapshot_callback(Dictionary callback_data);
     [Signal]
     public delegate void progression_snapshot_interface_delete_snapshot_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void presence_interface_join_game_accepted(Dictionary callback_data);
+    [Signal]
+    public delegate void presence_interface_presence_changed(Dictionary callback_data);
 
 
 
@@ -349,6 +353,26 @@ public class IEOS : Node
         s_ProgressionSnapshotInterface = s_PlatformInterface.GetProgressionSnapshotInterface();
 
         s_PresenceInterface = s_PlatformInterface.GetPresenceInterface();
+        var presence_join_game_accepted_options = new AddNotifyJoinGameAcceptedOptions();
+        s_PresenceInterface.AddNotifyJoinGameAccepted(ref presence_join_game_accepted_options, null, (ref JoinGameAcceptedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"join_info", data.JoinInfo.ToString()},
+                {"local_user_id", data.LocalUserId.ToString()},
+                {"target_user_id", data.TargetUserId.ToString()},
+                {"ui_event_id", data.UiEventId},
+            };
+            EmitSignal(nameof(presence_interface_join_game_accepted));
+        });
+        var presence_presence_changed_options = new AddNotifyOnPresenceChangedOptions();
+        s_PresenceInterface.AddNotifyOnPresenceChanged(ref presence_presence_changed_options, null, (ref PresenceChangedCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"local_user_id", data.LocalUserId.ToString()},
+                {"presence_user_id", data.PresenceUserId.ToString()},
+            };
+            EmitSignal(nameof(presence_interface_presence_changed));
+        });
 
         return true; // platform created successfully
     }
@@ -2867,19 +2891,37 @@ public class IEOS : Node
     // ------------------------
     // Presence Interface
     // ------------------------
-    public void presence_interface_copy_presence(Reference p_options)
+    public Dictionary presence_interface_copy_presence(Reference p_options)
     {
         Info? outPresence;
         var options = new CopyPresenceOptions()
         {
-            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id"))
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
             TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id"))
         };
-        s_PresenceInterface.CopyPresence(ref options, out outPresence);
+        Result res = s_PresenceInterface.CopyPresence(ref options, out outPresence);
+
         if (outPresence != null)
         {
-
+            var records = outPresence?.Records.Select(x => new Dictionary(){
+                {"key", x.Key.ToString()},
+                {"value", x.Value.ToString()}
+            });
+            var ret = new Dictionary(){
+                {"result_code", res},
+                {"status", (int)outPresence?.Status},
+                {"user_id", outPresence?.UserId.ToString()},
+                {"product_id", outPresence?.ProductId.ToString()},
+                {"product_version", outPresence?.ProductVersion},
+                {"platform", outPresence?.Platform},
+                {"rich_text", outPresence?.RichText},
+                {"product_name", outPresence?.ProductName},
+                {"integrated_platform", outPresence?.IntegratedPlatform},
+                {"records", records}
+            };
+            return ret;
         }
+        return new Dictionary() { { "result_code", res } };
     }
 
 
