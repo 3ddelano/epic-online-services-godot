@@ -208,8 +208,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
   - [ ] Implementation
   - [ ] Sample
 - Presence Interface
-  - [ ] Implementation
-  - [ ] Sample
+  - [x] Implementation
+  - [x] Sample
 - ProgressionSnapshot Interface
   - [x] Implementation
   - [x] Sample
