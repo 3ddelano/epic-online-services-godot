@@ -59,6 +59,10 @@ public class TransactionWrapper : Reference
         _internalTransaction = transaction;
     }
 
+    public TransactionWrapper()
+    {
+    }
+
     public new string GetClass()
     {
         return "TransactionWrapper";

@@ -8,6 +8,10 @@ public class ContinuanceTokenWrapper : Reference
         _internalToken = token;
     }
 
+    public ContinuanceTokenWrapper()
+    {
+    }
+
     public new string GetClass()
     {
         return "ContinuanceTokenWrapper";

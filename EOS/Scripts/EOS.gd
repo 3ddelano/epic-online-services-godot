@@ -1245,6 +1245,89 @@ class PlayerDataStorage:
 class Presence:
 	enum Status { Offline = 0, Online = 1, Away = 2, ExtendedAway = 3, DoNotDisturb = 4 }
 
+	class CopyPresenceOptions extends BaseClass:
+		func _init().("CopyPresenceOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class CreatePresenceModificationOptions extends BaseClass:
+		func _init().("CopyPresenceOptions"): pass
+
+		var local_user_id: String
+
+	class PresenceModificationSetDataOptions extends BaseClass:
+		func _init().("PresenceModificationSetDataOptions"): pass
+
+		var records: Array # [{key: string, value: string}]
+
+	class PresenceModificationDeleteDataOptions extends BaseClass:
+		func _init().("PresenceModificationDeleteDataOptions"): pass
+
+		var records: Array # [string]
+
+	class PresenceModificationSetJoinInfoOptions extends BaseClass:
+		func _init().("PresenceModificationSetJoinInfoOptions"): pass
+
+		var join_info: String
+
+	class PresenceModificationSetRawRichTextOptions extends BaseClass:
+		func _init().("PresenceModificationSetRawRichTextOptions"): pass
+
+		var rich_text: String
+
+	class PresenceModificationSetStatusOptions extends BaseClass:
+		func _init().("PresenceModificationSetStatusOptions"): pass
+
+		var status: int
+
+	class GetJoinInfoOptions extends BaseClass:
+		func _init().("GetJoinInfoOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class HasPresenceOptions extends BaseClass:
+		func _init().("HasPresenceOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class QueryPresenceOptions extends BaseClass:
+		func _init().("QueryPresenceOptions"): pass
+
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+
+	class SetPresenceOptions extends BaseClass:
+		func _init().("SetPresenceOptions"): pass
+
+		var local_user_id: String
+		var presence_modification: Reference # PresenceModificationWrapper
+
+		var client_data = null
+
+
+	class PresenceInterface:
+		static func copy_presence(options: CopyPresenceOptions) -> Dictionary:
+			return IEOS.presence_interface_copy_presence(options)
+
+		static func create_presence_modification(options: CreatePresenceModificationOptions) -> Dictionary:
+			return IEOS.presence_interface_create_presence_modification(options)
+
+		static func get_join_info(options: GetJoinInfoOptions) -> Dictionary:
+			return IEOS.presence_interface_get_join_info(options)
+
+		static func has_presence(options: HasPresenceOptions) -> Dictionary:
+			return IEOS.presence_interface_has_presence(options)
+
+		static func query_presence(options: QueryPresenceOptions) -> void:
+			IEOS.presence_interface_query_presence(options)
+
+		static func set_presence(options: SetPresenceOptions) -> void:
+			IEOS.presence_interface_set_presence(options)
 
 class Reports:
 	enum PlayerReportsCategory {

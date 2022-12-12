@@ -153,6 +153,10 @@ public class IEOS : Node
     public delegate void presence_interface_join_game_accepted(Dictionary callback_data);
     [Signal]
     public delegate void presence_interface_presence_changed(Dictionary callback_data);
+    [Signal]
+    public delegate void presence_interface_query_presence_callback(Dictionary callback_data);
+    [Signal]
+    public delegate void presence_interface_set_presence_callback(Dictionary callback_data);
 
 
 
@@ -2900,23 +2904,32 @@ public class IEOS : Node
             TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id"))
         };
         Result res = s_PresenceInterface.CopyPresence(ref options, out outPresence);
-
-        if (outPresence != null)
+        if (res == Result.Success)
         {
-            var records = outPresence?.Records.Select(x => new Dictionary(){
-                {"key", x.Key.ToString()},
-                {"value", x.Value.ToString()}
-            });
+            Godot.Collections.Array<Dictionary> records = new Godot.Collections.Array<Dictionary>();
+            if (outPresence?.Records != null && outPresence?.Records.Length > 0)
+            {
+                foreach (var record in outPresence?.Records)
+                {
+                    records.Add(new Dictionary(){
+                    {"key", record.Key.ToString()},
+                    {"value", record.Value.ToString()}
+                });
+                    GD.Print(record.Key.ToString());
+                    GD.Print(record.Value.ToString());
+                }
+                GD.Print(records);
+            }
             var ret = new Dictionary(){
                 {"result_code", res},
                 {"status", (int)outPresence?.Status},
                 {"user_id", outPresence?.UserId.ToString()},
                 {"product_id", outPresence?.ProductId.ToString()},
-                {"product_version", outPresence?.ProductVersion},
-                {"platform", outPresence?.Platform},
-                {"rich_text", outPresence?.RichText},
-                {"product_name", outPresence?.ProductName},
-                {"integrated_platform", outPresence?.IntegratedPlatform},
+                {"product_version", outPresence?.ProductVersion.ToString()},
+                {"platform", outPresence?.Platform.ToString()},
+                {"rich_text", outPresence?.RichText.ToString()},
+                {"product_name", outPresence?.ProductName.ToString()},
+                {"integrated_platform", outPresence?.IntegratedPlatform.ToString()},
                 {"records", records}
             };
             return ret;
@@ -2924,6 +2937,107 @@ public class IEOS : Node
         return new Dictionary() { { "result_code", res } };
     }
 
+    public Dictionary presence_interface_create_presence_modification(Reference p_options)
+    {
+        PresenceModification outPresenceModification;
+        var options = new CreatePresenceModificationOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+        };
+        Result res = s_PresenceInterface.CreatePresenceModification(ref options, out outPresenceModification);
+
+        if (res == Result.Success)
+        {
+            var presenceModificationWrapper = new PresenceModificationWrapper(outPresenceModification);
+
+            var ret = new Dictionary(){
+                {"result_code", res},
+                {"presence_modification", presenceModificationWrapper},
+            };
+            return ret;
+        }
+        return new Dictionary() { { "result_code", res } };
+    }
+
+    public Dictionary presence_interface_get_join_info(Reference p_options)
+    {
+        var options = new GetJoinInfoOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id"))
+        };
+        Result res = s_PresenceInterface.GetJoinInfo(ref options, out var outJoinInfo);
+
+        if (res == Result.Success)
+        {
+            var ret = new Dictionary(){
+                {"result_code", res},
+                {"join_info", outJoinInfo.ToString()}
+            };
+            return ret;
+        }
+        return new Dictionary() { { "result_code", res } };
+    }
+
+    public bool presence_interface_has_presence(Reference p_options)
+    {
+        var options = new HasPresenceOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id"))
+        };
+        return s_PresenceInterface.HasPresence(ref options);
+    }
+
+    public void presence_interface_query_presence(Reference p_options)
+    {
+        var options = new QueryPresenceOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            TargetUserId = EpicAccountId.FromString((string)p_options.Get("target_user_id")),
+        };
+        object client_data = _get_client_data(p_options);
+
+        s_PresenceInterface.QueryPresence(ref options, client_data, (ref QueryPresenceCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"client_data", data.ClientData},
+            };
+            if (data.LocalUserId != null)
+            {
+                ret["local_user_id"] = data.LocalUserId.ToString();
+            }
+            if (data.TargetUserId != null)
+            {
+                ret["target_user_id"] = data.TargetUserId.ToString();
+            }
+            EmitSignal(nameof(presence_interface_query_presence_callback), ret);
+        });
+    }
+
+    public void presence_interface_set_presence(Reference p_options)
+    {
+        var options = new SetPresenceOptions()
+        {
+            LocalUserId = EpicAccountId.FromString((string)p_options.Get("local_user_id")),
+            PresenceModificationHandle = ((PresenceModificationWrapper)p_options.Get("presence_modification"))._internalPresenceModification,
+        };
+        object client_data = _get_client_data(p_options);
+
+        s_PresenceInterface.SetPresence(ref options, client_data, (ref SetPresenceCallbackInfo data) =>
+        {
+            var ret = new Dictionary(){
+                {"result_code", data.ResultCode},
+                {"client_data", data.ClientData},
+            };
+            if (data.LocalUserId != null)
+            {
+                ret["local_user_id"] = data.LocalUserId.ToString();
+            }
+            EmitSignal(nameof(presence_interface_set_presence_callback), ret);
+        });
+    }
 
 
     // ------------------------

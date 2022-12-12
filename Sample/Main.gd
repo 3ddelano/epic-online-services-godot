@@ -224,6 +224,67 @@ func _on_tab_pressed():
 #	print("--- ProgressionSnapshot: delete_snapshot_callback: ", yield(EOS.get_instance(), "progression_snapshot_interface_delete_snapshot_callback"))
 
 
+#	# Presence Interface
+#	var create_presence_modification_options = EOS.Presence.CreatePresenceModificationOptions.new()
+#	create_presence_modification_options.local_user_id = Store.epic_account_id
+#	var create_presence_modification_ret = EOS.Presence.PresenceInterface.create_presence_modification(create_presence_modification_options)
+#	print("--- Presence: create_presence_modification: ", EOS.print_result(create_presence_modification_ret.result_code))
+#	var presence_modification = create_presence_modification_ret.presence_modification
+
+#	var set_data_options = EOS.Presence.PresenceModificationSetDataOptions.new()
+#	set_data_options.records = [{key = "hello", value="lorem"}]
+#	var set_data_ret = presence_modification.set_data(set_data_options)
+#	print("--- PresenceModificationWrapper: set_data: ", EOS.print_result(set_data_ret))
+
+#	var delete_data_options = EOS.Presence.PresenceModificationDeleteDataOptions.new()
+#	delete_data_options.records = ["awe", "abc"]
+#	var delete_data_ret = presence_modification.delete_data(delete_data_options)
+#	print("--- PresenceModificationWrapper: delete_data: ", EOS.print_result(delete_data_ret))
+
+#	var set_join_info_options = EOS.Presence.PresenceModificationSetJoinInfoOptions.new()
+#	set_join_info_options.join_info = "this is sample join info"
+#	var set_join_info_ret = presence_modification.set_join_info(set_join_info_options)
+#	print("--- PresenceModificationWrapper: set_join_info: ", EOS.print_result(set_join_info_ret))
+
+#	var set_raw_rich_text_options = EOS.Presence.PresenceModificationSetRawRichTextOptions.new()
+#	set_raw_rich_text_options.rich_text = "this is sample join info"
+#	var set_raw_rich_text_ret = presence_modification.set_raw_rich_text(set_raw_rich_text_options)
+#	print("--- PresenceModificationWrapper: set_raw_rich_text: ", EOS.print_result(set_raw_rich_text_ret))
+
+#	var set_status_options = EOS.Presence.PresenceModificationSetStatusOptions.new()
+#	set_status_options.status = EOS.Presence.Status.DoNotDisturb
+#	var set_status_ret = presence_modification.set_status(set_status_options)
+#	print("--- PresenceModificationWrapper: set_status: ", EOS.print_result(set_status_ret))
+
+#	var get_join_info_options = EOS.Presence.GetJoinInfoOptions.new()
+#	get_join_info_options.local_user_id = Store.epic_account_id
+#	get_join_info_options.target_user_id = Store.epic_account_id
+#	var get_join_info_ret = EOS.Presence.PresenceInterface.get_join_info(get_join_info_options)
+#	print("--- Presence: get_join_info: ", EOS.print_result(get_join_info_ret))
+
+#	var has_presence_options = EOS.Presence.HasPresenceOptions.new()
+#	has_presence_options.local_user_id = Store.epic_account_id
+#	has_presence_options.target_user_id = Store.epic_account_id
+#	var has_presence_ret = EOS.Presence.PresenceInterface.has_presence(has_presence_options)
+#	print("--- Presence: has_presence: ", EOS.print_result(has_presence_ret))
+
+#	var query_presence_options = EOS.Presence.QueryPresenceOptions.new()
+#	query_presence_options.local_user_id = Store.epic_account_id
+#	query_presence_options.target_user_id = Store.epic_account_id
+#	EOS.Presence.PresenceInterface.query_presence(query_presence_options)
+#	print("--- Presence: query_presence_callback: ", EOS.print_result(yield(EOS.get_instance(), "presence_interface_query_presence_callback")))
+
+#	var copy_presence_options = EOS.Presence.CopyPresenceOptions.new()
+#	copy_presence_options.local_user_id = Store.epic_account_id
+#	copy_presence_options.target_user_id = Store.epic_account_id
+#	var copy_presence_ret = EOS.Presence.PresenceInterface.copy_presence(copy_presence_options)
+#	print("--- Presence: copy_presence: ", EOS.print_result(copy_presence_ret))
+
+#	var set_presence_options = EOS.Presence.SetPresenceOptions.new()
+#	set_presence_options.local_user_id = Store.epic_account_id
+#	set_presence_options.presence_modification = presence_modification
+#	var set_presence_ret = EOS.Presence.PresenceInterface.set_presence(set_presence_options)
+#	print("--- Presence: set_presence_callback: ", EOS.print_result(yield(EOS.get_instance(), "presence_interface_set_presence_callback")))
 
 
 

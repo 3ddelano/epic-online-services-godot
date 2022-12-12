@@ -47,8 +47,8 @@ func log_msg(level: int, msg: String, category := ""):
 	if category != "":
 		_category = category
 
-	if level <= EOS.Logging.LogLevel.Warning:
-		print("%s | %s | %s" % [_category, level_str, msg])
+#	if level <= EOS.Logging.LogLevel.Warning:
+#		print("%s | %s | %s" % [_category, level_str, msg])
 
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
 	logs_label.bbcode_text += "[color=#%s]%s | %s |[/color] [color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]

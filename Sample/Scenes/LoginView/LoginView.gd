@@ -131,10 +131,10 @@ func _on_auth_interface_logout_callback(data: Dictionary):
 
 
 func _on_query_user_info_callback(data: Dictionary):
-	print("--- LoginView: UserInfo: query_user_info_callback: ", EOS.print_result(data))
 	if data.client_data != "login_view":
 		# Not the callback for the LoginView
 		return
+	print("--- LoginView: UserInfo: query_user_info_callback: ", EOS.print_result(data))
 
 	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_user_info_options.local_user_id = Store.epic_account_id
