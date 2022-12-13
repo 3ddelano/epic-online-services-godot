@@ -3161,7 +3161,6 @@ public class IEOS : Node
             {"price_result", data?.PriceResult},
             {"discount_percentage", (int)data?.DiscountPercentage},
             {"expiration_timestamp", data?.ExpirationTimestamp},
-            {"purchased_count", (int)data?.PurchasedCount},
             {"purchased_limit", data?.PurchaseLimit},
             {"available_for_purchase", data?.AvailableForPurchase},
             {"original_price", data?.OriginalPrice64},
