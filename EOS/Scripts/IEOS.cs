@@ -436,6 +436,15 @@ public class IEOS : Node
         return s_PlatformInterface.SetOverrideLocaleCode(locale_code);
     }
 
+    public int platform_interface_get_network_status()
+    {
+        return (int)s_PlatformInterface.GetNetworkStatus();
+    }
+
+    public Result platform_interface_set_network_status(NetworkStatus newStatus)
+    {
+        return s_PlatformInterface.SetNetworkStatus(newStatus);
+    }
 
     // -----
     // Auth Interface

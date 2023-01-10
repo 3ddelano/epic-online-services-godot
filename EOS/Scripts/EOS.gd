@@ -577,6 +577,12 @@ class Platform:
 		Foreground = 3
 	}
 
+	enum NetworkStatus {
+		Disabled = 0,
+		Offline = 1
+		Online = 2
+	}
+
 	class InitializeOptions extends BaseClass:
 		func _init().("InitializeOptions"): pass
 
@@ -640,6 +646,11 @@ class Platform:
 		static func set_override_locale_code(locale_code: String) -> Dictionary:
 			return IEOS.platform_interface_set_override_locale_code(locale_code)
 
+		static func set_network_status(new_status: int) -> int:
+			return IEOS.platform_interface_set_network_status(new_status)
+
+		static func get_network_status() -> int:
+			return IEOS.platform_interface_get_network_status()
 
 class Ecom:
 	enum ItemType { Durable = 0, Consumable = 1, Other = 2 }
