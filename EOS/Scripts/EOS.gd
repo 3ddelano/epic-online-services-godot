@@ -625,6 +625,12 @@ class Platform:
 		static func create(options: CreateOptions) -> bool:
 			return IEOS.platform_interface_create(options)
 
+		static func release() -> void:
+			IEOS.platform_interface_release()
+
+		static func shutdown() -> int:
+			return IEOS.platform_interface_shutdown()
+
 		static func check_for_launcher_and_restart() -> int:
 			return IEOS.platform_interface_check_for_launcher_and_restart()
 

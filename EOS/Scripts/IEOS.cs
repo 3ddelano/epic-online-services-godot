@@ -446,6 +446,19 @@ public class IEOS : Node
         return s_PlatformInterface.SetNetworkStatus(newStatus);
     }
 
+    public void platform_interface_release()
+    {
+        if (s_PlatformInterface != null)
+        {
+            s_PlatformInterface.Release();
+        }
+    }
+
+    public Result platform_interface_shutdown()
+    {
+        return PlatformInterface.Shutdown();
+    }
+
     // -----
     // Auth Interface
     // -----
