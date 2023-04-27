@@ -97,7 +97,7 @@ void IEOS::ecom_interface_query_ownership(Ref<RefCounted> options) {
     return;
 }
 
-void IEOS::ecom_interface_query_ownershitoken(Ref<RefCounted> options) {
+void IEOS::ecom_interface_query_ownership_token(Ref<RefCounted> options) {
     return;
 }
 

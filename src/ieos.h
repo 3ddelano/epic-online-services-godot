@@ -205,7 +205,7 @@ class IEOS : public RefCounted {
     void ecom_interface_query_entitlements(Ref<RefCounted> options);
     void ecom_interface_query_offers(Ref<RefCounted> options);
     void ecom_interface_query_ownership(Ref<RefCounted> options);
-    void ecom_interface_query_ownershitoken(Ref<RefCounted> options);
+    void ecom_interface_query_ownership_token(Ref<RefCounted> options);
     void ecom_interface_redeem_entitlements(Ref<RefCounted> options);
 
     // -----
