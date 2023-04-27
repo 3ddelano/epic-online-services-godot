@@ -1,5 +1,15 @@
 extends Control
 
+@onready var PRODUCT_NAME: String = Env.get_var("PRODUCT_NAME") # Paste your own
+@onready var PRODUCT_VERSION: String = Env.get_var("PRODUCT_VERSION") # Paste your own
+@onready var PRODUCT_ID: String = Env.get_var("PRODUCT_ID") # Paste your own
+@onready var SANDBOX_ID: String = Env.get_var("SANDBOX_ID") # Paste your own
+@onready var DEPLOYMENT_ID: String = Env.get_var("DEPLOYMENT_ID") # Paste your own
+@onready var CLIENT_ID: String = Env.get_var("CLIENT_ID") # Paste your own
+@onready var CLIENT_SECRET: String = Env.get_var("CLIENT_SECRET") # Paste your own
+@onready var ENCRYPTION_KEY: String = Env.get_var("ENCRYPTION_KEY") # Paste your own
+
+
 @export var _views_path: NodePath
 @onready var views = get_node(_views_path) as VBoxContainer
 
@@ -13,8 +23,8 @@ func _ready() -> void:
 
 	# Initialize the SDK
 	var init_options = EOS.Platform.InitializeOptions.new()
-	init_options.product_name = Env.get_var("PRODUCT_NAME")
-	init_options.product_version = Env.get_var("PRODUCT_VERSION")
+	init_options.product_name = PRODUCT_NAME
+	init_options.product_version = PRODUCT_VERSION
 	var init_result: int = EOS.Platform.PlatformInterface.initialize(init_options)
 	if init_result != EOS.Result.Success:
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_result))
@@ -22,12 +32,12 @@ func _ready() -> void:
 
 	# Create platform
 	var create_options = EOS.Platform.CreateOptions.new()
-	create_options.product_id = Env.get_var("PRODUCT_ID") # Paste your own here instead
-	create_options.sandbox_id = Env.get_var("SANDBOX_ID") # Paste your own here instead
-	create_options.deployment_id = Env.get_var("DEPLOYMENT_ID") # Paste your own here instead
-	create_options.client_id = Env.get_var("CLIENT_ID") # Paste your own here instead
-	create_options.client_secret = Env.get_var("CLIENT_SECRET") # Paste your own here instead
-	create_options.encryption_key = Env.get_var("ENCRYPTION_KEY") # Paste your own here instead
+	create_options.product_id = PRODUCT_ID
+	create_options.sandbox_id = SANDBOX_ID
+	create_options.deployment_id = DEPLOYMENT_ID
+	create_options.client_id = CLIENT_ID
+	create_options.client_secret = CLIENT_SECRET
+	create_options.encryption_key = ENCRYPTION_KEY
 	if OS.get_name() == "Windows":
 		create_options.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 	#create_options.is_server = true
