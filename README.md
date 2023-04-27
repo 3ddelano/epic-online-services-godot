@@ -4,7 +4,7 @@ Epic Online Services Godot (WIP)
 
 ### Unofficial Epic Online Services wrapper for Godot Engine 4.x (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.x Mono-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.15" src="https://img.shields.io/badge/-Epic Online Services 1.15-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.x-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.15" src="https://img.shields.io/badge/-Epic Online Services 1.15-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Tested on: Windows 10 x64 and Linux x64
 
@@ -47,7 +47,7 @@ This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps
 
         var init_result := EOS.Platform.PlatformInterface.initialize(init_options)
         if init_result != EOS.Result.Success:
-            print("Failed to initialize EOS SDK: ", EOS.print_result(init_result))
+            print("Failed to initialize EOS SDK: ", EOS.result_str(init_result))
             return
 
         # Create platform
@@ -63,20 +63,19 @@ This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps
         if OS.get_name() == "Windows":
             create_options.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 
-        var create_result: bool = EOS.Platform.PlatformInterface.create(create_options)
+        var create_result := EOS.Platform.PlatformInterface.create(create_options)
         if not create_result:
             print("Failed to create EOS Platform")
             return
 
         # Setup Logs from EOS
-        EOS.get_instance().connect("logging_interface_callback", self, "_on_logging_interface_callback")
-        var res: int = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
+        EOS.get_instance().connect("logging_interface_callback", Callable(self, "_on_logging_interface_callback"))
+        var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
         if res != EOS.Result.Success:
-            print("Failed to set log level: ", EOS.print_result(res))
+            print("Failed to set log level: ", EOS.result_str(res))
     
     func _on_logging_interface_callback(msg):
         msg = EOS.Logging.LogMessage.from(msg) as EOS.Logging.LogMessage
-        
         print("SDK %s | %s" % [msg.category, msg.message])
    ```
 
@@ -118,32 +117,33 @@ To develop this plugin, follow the below steps:
 ### How to run the sample project?
 > The sample Godot project is located in the **Sample** folder
 
-1. Copy the `EOS` folder into the `Sample` folder, then open `project.godot` in Godot mono.
-1. Copy the credentials (Product Id, Sandbox Id, Deployment Id, Client Id, Client Secret) for your product from the Dev Portal and paste them in `Main.gd` script in the relevant `EOS.Platform.CreateOptions`. The encryption key is a random 64 character long string. These credentials need to be kept as private as possible. One way is to make sure to encrypt all scripts when exporting the final game. (See [Compiling with script key encryption](https://docs.godotengine.org/en/stable/development/compiling/compiling_with_script_encryption_key.html))
+1. Clone/Download the repo.
+2. Download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest) from the Releases section and replace the existing `/addons/epic-online-services-godot` with the one from the Release (this includes the built shared libraries).
+3. Copy your credentials (`Product Id`, `Sandbox Id`, `Deployment Id`, `Client Id`, `Client Secret`) of your Epic Games "Product" from the Epic Games Dev Portal and paste them in `Main.gd` script in the relevant sections. The encryption key is a random 64 character long string. These credentials need to be kept as private as possible. One way is to make sure to encrypt all scripts when exporting the final game. (See [Compiling with script key encryption](https://docs.godotengine.org/en/stable/development/compiling/compiling_with_script_encryption_key.html))
 
-1. Configure your Product on the EOS Dev Portal with the following configuration:
-  - In the Client Policies section in Product Settings, enable all the features except Connect (Disabled by Epic)
-  - In the Permissions section of Epic Account Services, enable all three: Basic Profile, Online Presence and Friends. 
-  - (Optional if you want some pre-made achievements)  
-  In the Achievements section in Game Services, use the Bulk Import option and import the `HelloProduct.zip` file located at `res://HelloProduct.zip`
+4. Configure your Product on the EOS Dev Portal with the following configuration:
+  - In the `Client Policies` section in `Product Settings`, enable all the features except `Connect` (Disabled by Epic)
+  - In the `Permissions` section of `Epic Account Services`, enable all three: `Basic Profile`, `Online Presence` and `Friends`. 
+  - (Optional if you want some pre-made achievements)
+  In the `Achievements` section in `Game Services`, use the `Bulk Import` option and import the `HelloProduct.zip` file located at `res://HelloProduct.zip`
 
 ### Bootstrapping Godot executable with Epic Online Services
-If you want to use the Account Portal option to login in Epic Online Services, you need to bootstrap the Godot executable as needed by EOS-SDK 1.15 and greater. See [Redistributable Installer](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/Crossplayacrossplatforms/RedistributableInstaller/index.html)
+If you want to use the `Account Portal` login option in Epic Online Services, you need to bootstrap the Godot/Game executable as needed by `EOS-SDK 1.15` and greater. See [Redistributable Installer](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/Crossplayacrossplatforms/RedistributableInstaller/index.html)
 
-A sample of the generated .ini file is shown below:
+A sample of the generated `.ini` file for the Godot Editor is shown below (during game development):
 ```
-ApplicationPath=Godot_v3.4.2-stable_mono_win64.exe
+ApplicationPath=Godot_v4.0.0-stable_win64.exe
 WorkingDirectory=
 WaitForExit=0
 NoOperation=0
 ```
 Follow the instructions in [Running the service for local development](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/Crossplayacrossplatforms/RedistributableInstaller/index.html#runningtheserviceforlocaldevelopment) and:
-- When in development
+- During game development
   
-  Bootstrap the Godot mono executable (eg. `Godot_v3.4.2-stable_mono_win64.exe`)
-- When exporting the project
+  Bootstrap the Godot Editor executable (eg. `Godot_v4.0.0-stable_win64.exe`) to test the `Account Portal` login
+- After exporting the game
   
-  Bootstrap the exported project executable (eg. `My Amazing Game.exe`)
+  Bootstrap the exported game executable (eg. `My Amazing Game.exe`)
 
 # Support Development
 
