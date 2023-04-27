@@ -1,8 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource path="res://Scenes/MetricsView/MetricsView.gd" type="Script" id=1]
-[ext_resource path="res://Fonts/roboto-32b.tres" type="DynamicFont" id=2]
-[ext_resource path="res://Scenes/UI/PrimaryButton.tscn" type="PackedScene" id=5]
+[ext_resource type="Script" path="res://scenes/MetricsView/MetricsView.gd" id="1"]
+[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
 [node name="MetricsView" type="VBoxContainer"]
 anchor_right = 1.0
@@ -15,46 +15,46 @@ __meta__ = {
 }
 
 [node name="Title" type="Label" parent="."]
-margin_right = 1024.0
-margin_bottom = 38.0
+offset_right = 1024.0
+offset_bottom = 38.0
 size_flags_vertical = 1
-custom_fonts/font = ExtResource( 2 )
+theme_override_fonts/font = ExtResource( 2 )
 text = "Metrics"
 
 [node name="HB" type="HBoxContainer" parent="."]
-margin_top = 42.0
-margin_right = 1024.0
-margin_bottom = 60.0
-custom_constants/separation = 16
+offset_top = 42.0
+offset_right = 1024.0
+offset_bottom = 60.0
+theme_override_constants/separation = 16
 
 [node name="StartPlayerSessionBtn" parent="HB" instance=ExtResource( 5 )]
-margin_right = 148.0
-margin_bottom = 18.0
+offset_right = 148.0
+offset_bottom = 18.0
 size_flags_horizontal = 0
 text = "Start Player Sesssion"
 
 [node name="StartPlayerSessionLabel" type="Label" parent="HB"]
-margin_left = 164.0
-margin_top = 2.0
-margin_right = 319.0
-margin_bottom = 16.0
+offset_left = 164.0
+offset_top = 2.0
+offset_right = 319.0
+offset_bottom = 16.0
 text = "Click button to load data"
 
 [node name="HB2" type="HBoxContainer" parent="."]
-margin_top = 64.0
-margin_right = 1024.0
-margin_bottom = 82.0
-custom_constants/separation = 16
+offset_top = 64.0
+offset_right = 1024.0
+offset_bottom = 82.0
+theme_override_constants/separation = 16
 
 [node name="EndPlayerSessionBtn" parent="HB2" instance=ExtResource( 5 )]
-margin_right = 135.0
-margin_bottom = 18.0
+offset_right = 135.0
+offset_bottom = 18.0
 size_flags_horizontal = 0
 text = "End Player Session"
 
 [node name="EndPlayerSessionLabel" type="Label" parent="HB2"]
-margin_left = 151.0
-margin_top = 2.0
-margin_right = 306.0
-margin_bottom = 16.0
+offset_left = 151.0
+offset_top = 2.0
+offset_right = 306.0
+offset_bottom = 16.0
 text = "Click button to load data"

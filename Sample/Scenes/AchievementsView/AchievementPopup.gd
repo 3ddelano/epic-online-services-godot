@@ -1,27 +1,27 @@
 class_name AchievementPopup
 extends PopupPanel
 
-onready var id_label = $VB/MC/VB/IdLabel
-onready var flavor_label = $VB/MC/VB/FlavorLabel
-onready var is_visible_label = $VB/MC/VB/IsVisibleLabel
-onready var is_unlocked_label = $VB/MC/VB/IsUnlockedLabel
-onready var stat_thresholds_vb = $VB/MC/VB/MC/VB/SC/StatThesholdsVB
-onready var locked_image = $VB/MC/VB/HB/VB/LockedImage
-onready var locked_label = $VB/MC/VB/HB/VB/LockedLabel
-onready var locked_desc_label = $VB/MC/VB/HB/VB/LockedDescLabel
-onready var unlocked_image = $VB/MC/VB/HB/VB2/UnlockedImage
-onready var unlocked_label = $VB/MC/VB/HB/VB2/UnlockedLabel
-onready var unlocked_desc_label = $VB/MC/VB/HB/VB2/UnlockedDescLabel
+@onready var id_label = $VB/MC/VB/IdLabel
+@onready var flavor_label = $VB/MC/VB/FlavorLabel
+@onready var is_visible_label = $VB/MC/VB/IsVisibleLabel
+@onready var is_unlocked_label = $VB/MC/VB/IsUnlockedLabel
+@onready var stat_thresholds_vb = $VB/MC/VB/MC/VB/SC/StatThesholdsVB
+@onready var locked_image = $VB/MC/VB/HB/VB/LockedImage
+@onready var locked_label = $VB/MC/VB/HB/VB/LockedLabel
+@onready var locked_desc_label = $VB/MC/VB/HB/VB/LockedDescLabel
+@onready var unlocked_image = $VB/MC/VB/HB/VB2/UnlockedImage
+@onready var unlocked_label = $VB/MC/VB/HB/VB2/UnlockedLabel
+@onready var unlocked_desc_label = $VB/MC/VB/HB/VB2/UnlockedDescLabel
 
-onready var unlock_btn = $VB/MC/VB/UnlockBtn
-onready var close_btn = $VB/CloseBtn
+@onready var unlock_btn = $VB/MC/VB/UnlockBtn
+@onready var close_btn = $VB/CloseBtn
 
 var achievement_node: AchievementsListAchievement
 
 
 func _ready() -> void:
-	unlock_btn.connect("pressed", self, "_on_unlock_btn_pressed")
-	close_btn.connect("pressed", self, "set_visible", [false])
+	unlock_btn.connect("pressed", Callable(self, "_on_unlock_btn_pressed"))
+	close_btn.connect("pressed", Callable(self, "set_visible").bind(false))
 
 
 func from_achievement_node(node: AchievementsListAchievement):

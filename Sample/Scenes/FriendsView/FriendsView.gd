@@ -4,16 +4,16 @@ extends VBoxContainer
 # Local cache of friends data
 var friends = []
 
-onready var loginwithepic = $VB/LoginWithEpic
-onready var friend_richtextlabel = $VB/FriendsRichTextLabel
+@onready var loginwithepic = $VB/LoginWithEpic
+@onready var friend_richtextlabel = $VB/FriendsRichTextLabel
 
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", self, "_on_login_success")
-	_c = Store.connect("logout_success", self, "_on_logout_success")
-	_c = EOS.get_instance().connect("friends_interface_query_friends_callback", self, "_on_query_friends_callback")
-	_c = EOS.get_instance().connect("user_info_interface_query_user_info_callback", self, "_on_query_user_info_callback")
+	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
+	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
+	_c = EOS.get_instance().connect("friends_interface_query_friends_callback", Callable(self, "_on_query_friends_callback"))
+	_c = EOS.get_instance().connect("user_info_interface_query_user_info_callback", Callable(self, "_on_query_user_info_callback"))
 
 func _on_login_success():
 
@@ -83,5 +83,5 @@ func _update_friends_list():
 			rows_bbcode += friend.display_name
 		if friend.country != null:
 			rows_bbcode += " (country=%s)" % friend.country
-	friend_richtextlabel.bbcode_text = base_bbcode + rows_bbcode
+	friend_richtextlabel.text = base_bbcode + rows_bbcode
 

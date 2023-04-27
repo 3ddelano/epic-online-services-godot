@@ -1,7 +1,7 @@
 extends Control
 
-export (NodePath) var _views_path
-onready var views = get_node(_views_path) as VBoxContainer
+@export var _views_path: NodePath
+@onready var views = get_node(_views_path) as VBoxContainer
 
 func _ready() -> void:
 	print("Ready!")
@@ -39,7 +39,7 @@ func _ready() -> void:
 		return
 
 #	var _c = Store.connect("login_success", self, "_on_login_success")
-	yield(get_tree().create_timer(0.5), "timeout")
+	await get_tree().create_timer(0.5).timeout
 	Store.emit_signal("platform_create")
 	var sdk_constants = EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
@@ -51,9 +51,9 @@ func get_view_manager():
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
-		if event.scancode == KEY_QUOTELEFT: # ` key to toggle Logs
+		if event.keycode == KEY_QUOTELEFT: # ` key to toggle Logs
 			Store.get_view("Logs").visible = not Store.get_view("Logs").visible
-		elif event.scancode == KEY_TAB:
+		elif event.keycode == KEY_TAB:
 			if Store.product_user_id:
 				_on_tab_pressed()
 

@@ -4,22 +4,22 @@ extends VBoxContainer
 # Local cache of stats
 var stats = []
 
-onready var stat_name = $VB/StatName
-onready var ingest_amount = $VB/IngestAmount
-onready var ingest_btn = $VB/HB/IngestBtn
-onready var refresh_my_stats_btn = $VB/RefreshMyStatsBtn
-onready var my_stats = $VB/VB/MyStatsRichTextLabel
-onready var status_label = $VB/HB/StatusLabel
+@onready var stat_name = $VB/StatName
+@onready var ingest_amount = $VB/IngestAmount
+@onready var ingest_btn = $VB/HB/IngestBtn
+@onready var refresh_my_stats_btn = $VB/RefreshMyStatsBtn
+@onready var my_stats = $VB/VB/MyStatsRichTextLabel
+@onready var status_label = $VB/HB/StatusLabel
 
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", self, "_on_login_success")
-	_c = Store.connect("logout_success", self, "_on_logout_success")
-	_c = EOS.get_instance().connect("stats_interface_query_stats_complete_callback", self, "_on_query_stats_complete_callback")
-	_c = EOS.get_instance().connect("stats_interface_ingest_stat_complete_callback", self, "_on_ingest_stat_complete_callback")
-	_c = ingest_btn.connect("pressed", self, "_on_ingest_btn_pressed")
-	_c = refresh_my_stats_btn.connect("pressed", self, "_on_refresh_my_stats_btn_pressed")
+	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
+	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
+	_c = EOS.get_instance().connect("stats_interface_query_stats_complete_callback", Callable(self, "_on_query_stats_complete_callback"))
+	_c = EOS.get_instance().connect("stats_interface_ingest_stat_complete_callback", Callable(self, "_on_ingest_stat_complete_callback"))
+	_c = ingest_btn.connect("pressed", Callable(self, "_on_ingest_btn_pressed"))
+	_c = refresh_my_stats_btn.connect("pressed", Callable(self, "_on_refresh_my_stats_btn_pressed"))
 
 
 func _on_login_success():
@@ -109,4 +109,4 @@ func _update_stats():
 		if stat.end_time != null:
 			rows_bbcode += "[cell]%s[/cell]" % stat.end_time
 
-	my_stats.bbcode_text = base_bbcode % rows_bbcode
+	my_stats.text = base_bbcode % rows_bbcode

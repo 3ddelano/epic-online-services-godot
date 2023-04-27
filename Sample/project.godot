@@ -6,137 +6,19 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "PopupPanel",
-"class": "AchievementPopup",
-"language": "GDScript",
-"path": "res://Scenes/AchievementsView/AchievementPopup.gd"
-}, {
-"base": "Control",
-"class": "AchievementUnlockNotification",
-"language": "GDScript",
-"path": "res://Scenes/AchievementsView/AchievementUnlockNotification.gd"
-}, {
-"base": "MarginContainer",
-"class": "AchievementsList",
-"language": "GDScript",
-"path": "res://Scenes/AchievementsView/AchievementsList.gd"
-}, {
-"base": "MarginContainer",
-"class": "AchievementsListAchievement",
-"language": "GDScript",
-"path": "res://Scenes/AchievementsView/AchievementsListAchievement.gd"
-}, {
-"base": "VBoxContainer",
-"class": "AchievementsView",
-"language": "GDScript",
-"path": "res://Scenes/AchievementsView/AchievementsView.gd"
-}, {
-"base": "Reference",
-"class": "BaseClass",
-"language": "GDScript",
-"path": "res://EOS/Scripts/BaseClass.gd"
-}, {
-"base": "VBoxContainer",
-"class": "CustomInvitesView",
-"language": "GDScript",
-"path": "res://Scenes/CustomInvitesView/CustomInvitesView.gd"
-}, {
-"base": "Reference",
-"class": "EOS",
-"language": "GDScript",
-"path": "res://EOS/Scripts/EOS.gd"
-}, {
-"base": "VBoxContainer",
-"class": "FriendsView",
-"language": "GDScript",
-"path": "res://Scenes/FriendsView/FriendsView.gd"
-}, {
-"base": "Container",
-"class": "HFlowContainer",
-"language": "GDScript",
-"path": "res://h_flow_container/h_flow_container.gd"
-}, {
-"base": "VBoxContainer",
-"class": "LeaderboardsView",
-"language": "GDScript",
-"path": "res://Scenes/LeaderboardsView/LeaderboardsView.gd"
-}, {
-"base": "CenterContainer",
-"class": "LoginView",
-"language": "GDScript",
-"path": "res://Scenes/LoginView/LoginView.gd"
-}, {
-"base": "VBoxContainer",
-"class": "LogsView",
-"language": "GDScript",
-"path": "res://Scenes/LogsView/LogsView.gd"
-}, {
-"base": "VBoxContainer",
-"class": "MetricView",
-"language": "GDScript",
-"path": "res://Scenes/MetricsView/MetricsView.gd"
-}, {
-"base": "MarginContainer",
-"class": "NetworkImage",
-"language": "GDScript",
-"path": "res://Scenes/UI/NetworkImage.gd"
-}, {
-"base": "MarginContainer",
-"class": "NotificationsView",
-"language": "GDScript",
-"path": "res://Scenes/NotificationsView/NotificationsView.gd"
-}, {
-"base": "VBoxContainer",
-"class": "StatsView",
-"language": "GDScript",
-"path": "res://Scenes/StatsView/StatsView.gd"
-}, {
-"base": "VBoxContainer",
-"class": "UIView",
-"language": "GDScript",
-"path": "res://Scenes/UIView/UIView.gd"
-}, {
-"base": "VBoxContainer",
-"class": "ViewManager",
-"language": "GDScript",
-"path": "res://Scripts/ViewManager.gd"
-} ]
-_global_script_class_icons={
-"AchievementPopup": "",
-"AchievementUnlockNotification": "",
-"AchievementsList": "",
-"AchievementsListAchievement": "",
-"AchievementsView": "",
-"BaseClass": "",
-"CustomInvitesView": "",
-"EOS": "",
-"FriendsView": "",
-"HFlowContainer": "res://h_flow_container/h_flow_container.svg",
-"LeaderboardsView": "",
-"LoginView": "",
-"LogsView": "",
-"MetricView": "",
-"NetworkImage": "",
-"NotificationsView": "",
-"StatsView": "",
-"UIView": "",
-"ViewManager": ""
-}
+config_version=5
 
 [application]
 
-config/name="Epic Online Services Godot"
+config/name="Epic Online Services Godot 4.x"
 run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.0")
 config/icon="res://logo.png"
 
 [autoload]
 
-Env="*res://Scripts/Env.gd"
-Store="*res://Scripts/Store.gd"
-IEOS="*res://EOS/Scripts/IEOS.cs"
+Env="*res://scripts/Env.gd"
+Store="*res://scripts/Store.gd"
 
 [physics]
 
@@ -144,5 +26,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-environment/default_clear_color=Color( 0.121569, 0.121569, 0.121569, 1 )
-environment/default_environment="res://default_env.tres"
+environment/defaults/default_clear_color=Color(0.121569, 0.121569, 0.121569, 1)
+environment/defaults/default_environment="res://default_env.tres"

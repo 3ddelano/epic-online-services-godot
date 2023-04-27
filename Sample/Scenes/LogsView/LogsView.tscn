@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource path="res://Fonts/roboto-13r.tres" type="DynamicFont" id=1]
-[ext_resource path="res://Scenes/LogsView/LogsView.gd" type="Script" id=2]
+[ext_resource type="FontFile" path="res://fonts/roboto-13r.tres" id="1"]
+[ext_resource type="Script" path="res://scenes/LogsView/LogsView.gd" id="2"]
 
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.0627451, 0.0627451, 0.0627451, 1 )
@@ -14,7 +14,7 @@ border_color = Color( 0.427451, 0.427451, 0.427451, 1 )
 [node name="LogsView" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 0, 100 )
+custom_minimum_size = Vector2( 0, 100 )
 size_flags_vertical = 3
 script = ExtResource( 2 )
 __meta__ = {
@@ -22,29 +22,29 @@ __meta__ = {
 }
 
 [node name="PC" type="PanelContainer" parent="."]
-margin_right = 1024.0
-margin_bottom = 600.0
+offset_right = 1024.0
+offset_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 5 )
+theme_override_styles/panel = SubResource( 5 )
 
 [node name="SC" type="ScrollContainer" parent="PC"]
-margin_left = 1.0
-margin_top = 1.0
-margin_right = 1023.0
-margin_bottom = 599.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1023.0
+offset_bottom = 599.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="LogsLabel" type="RichTextLabel" parent="PC/SC"]
-margin_right = 1022.0
-margin_bottom = 598.0
+offset_right = 1022.0
+offset_bottom = 598.0
 focus_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/normal_font = ExtResource( 1 )
+theme_override_fonts/normal_font = ExtResource( 1 )
 bbcode_enabled = true
-bbcode_text = "Logs"
+text = "Logs"
 text = "Logs"
 fit_content_height = true
 scroll_active = false

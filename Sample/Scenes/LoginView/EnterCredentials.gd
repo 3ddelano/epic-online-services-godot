@@ -1,10 +1,10 @@
 extends VBoxContainer
 
-onready var id_label = $IdLabel
-onready var token_label = $TokenLabel
+@onready var id_label = $IdLabel
+@onready var token_label = $TokenLabel
 
-onready var id_lineedit = $IdLineEdit
-onready var token_lineedit = $TokenLineEdit
+@onready var id_lineedit = $IdLineEdit
+@onready var token_lineedit = $TokenLineEdit
 
 
 func set_helper_texts(id_help: String, token_help: String):

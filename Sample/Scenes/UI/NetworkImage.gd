@@ -3,8 +3,8 @@ extends MarginContainer
 
 var LOADING_TEXTURE = preload("res://Scenes/UI/loading-icon.png")
 
-onready var texture_rect = $TR
-onready var anim_player = $Anim
+@onready var texture_rect = $TR
+@onready var anim_player = $Anim
 
 enum States {
 	Loading,
@@ -40,7 +40,7 @@ func fetch_image(url: String):
 	set_state(States.Loading)
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
-	http_request.connect("request_completed", self, "_on_request_completed")
+	http_request.connect("request_completed", Callable(self, "_on_request_completed"))
 	http_request.request(url)
 
 

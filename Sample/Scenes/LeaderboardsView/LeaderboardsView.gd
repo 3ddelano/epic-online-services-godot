@@ -4,19 +4,19 @@ extends VBoxContainer
 # Local cache of leaderboard data
 var leaderboards = []
 
-onready var select_leaderboard_btn = $VB/SelectLeaderboardBtn
-onready var view_leaderboard_btn = $VB/ViewLeaderboardBtn
-onready var leaderboard_name = $VB/LeaderboardName
-onready var leaderboard_data_richtextlabel = $VB/LeaderboardDataRichTextLabel
+@onready var select_leaderboard_btn = $VB/SelectLeaderboardBtn
+@onready var view_leaderboard_btn = $VB/ViewLeaderboardBtn
+@onready var leaderboard_name = $VB/LeaderboardName
+@onready var leaderboard_data_richtextlabel = $VB/LeaderboardDataRichTextLabel
 
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", self, "_on_login_success")
-	_c = Store.connect("logout_success", self, "_on_logout_success")
-	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_definitions_complete_callback", self, "_on_query_leaderboard_defs_complete_callback")
-	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_ranks_complete_callback", self, "_on_query_leaderboard_ranks_complete_callback")
-	_c = view_leaderboard_btn.connect("pressed", self, "_on_view_leaderboard_btn_pressed")
+	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
+	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
+	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_definitions_complete_callback", Callable(self, "_on_query_leaderboard_defs_complete_callback"))
+	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_ranks_complete_callback", Callable(self, "_on_query_leaderboard_ranks_complete_callback"))
+	_c = view_leaderboard_btn.connect("pressed", Callable(self, "_on_view_leaderboard_btn_pressed"))
 
 	_update_leaderboard("", [])
 
@@ -143,5 +143,5 @@ func _update_leaderboard(leaderboard_id: String, records: Array):
 				display_name += "[b] (you)[/b]"
 			rows_bbcode += "[cell]%s[/cell]" % display_name
 
-	leaderboard_data_richtextlabel.bbcode_text = base_bbcode % rows_bbcode
+	leaderboard_data_richtextlabel.text = base_bbcode % rows_bbcode
 

@@ -1,28 +1,28 @@
 class_name UIView
 extends VBoxContainer
 
-onready var loginwithepic = $LoginWithEpic
-onready var container = $VB
+@onready var loginwithepic = $LoginWithEpic
+@onready var container = $VB
 
-onready var friends_visible_label = $VB/HB/FriendsVisibleLabel
+@onready var friends_visible_label = $VB/HB/FriendsVisibleLabel
 
-onready var notification_location_btn = $VB/HB2/NotificationLocationBtn
-onready var notification_location_label = $VB/HB2/NotificationLocationLabel
+@onready var notification_location_btn = $VB/HB2/NotificationLocationBtn
+@onready var notification_location_label = $VB/HB2/NotificationLocationLabel
 
-onready var show_friends_btn = $VB/HB3/ShowFriendsBtn
+@onready var show_friends_btn = $VB/HB3/ShowFriendsBtn
 
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", self, "_on_login_success")
-	_c = Store.connect("logout_success", self, "_on_logout_success")
+	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
+	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
 
-	_c = notification_location_btn.connect("pressed", self, "_on_notification_location_btn_pressed")
-	_c = show_friends_btn.connect("pressed", self, "_on_show_friends_btn_pressed")
+	_c = notification_location_btn.connect("pressed", Callable(self, "_on_notification_location_btn_pressed"))
+	_c = show_friends_btn.connect("pressed", Callable(self, "_on_show_friends_btn_pressed"))
 
 #	_c = EOS.get_instance().connect("ui_interface_show_friends_callback", self, "_on_friends_overlay_visibility_changed")
 #	_c = EOS.get_instance().connect("ui_interface_hide_friends_callback", self, "_on_friends_overlay_visibility_changed")
-	_c = EOS.get_instance().connect("ui_interface_display_settings_updated_callback", self, "_on_display_settings_updated_callback")
+	_c = EOS.get_instance().connect("ui_interface_display_settings_updated_callback", Callable(self, "_on_display_settings_updated_callback"))
 
 	loginwithepic.visible = true
 	container.visible = false

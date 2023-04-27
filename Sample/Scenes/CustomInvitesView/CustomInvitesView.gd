@@ -1,18 +1,18 @@
 class_name CustomInvitesView
 extends VBoxContainer
 
-onready var set_payload_btn = $VB/SetPayloadBtn
-onready var payload_textedit = $VB/PayloadTextEdit
-onready var send_invite_btn = $VB/SendInviteBtn
+@onready var set_payload_btn = $VB/SetPayloadBtn
+@onready var payload_textedit = $VB/PayloadTextEdit
+@onready var send_invite_btn = $VB/SendInviteBtn
 
 
 func _ready() -> void:
 	var _c
-	_c = EOS.get_instance().connect("custom_invites_interface_send_custom_invite_complete_callback", self, "_on_send_custom_invite_complete_callback")
-	_c = EOS.get_instance().connect("custom_invites_interface_custom_invite_accepted_callback", self, "_on_custom_invite_accepted_callback")
-	_c = EOS.get_instance().connect("custom_invites_interface_custom_invite_received_callback", self, "_on_custom_invite_received_callback")
-	_c = set_payload_btn.connect("pressed", self, "_on_set_payload_btn_pressed")
-	_c = send_invite_btn.connect("pressed", self, "_on_send_invite_btn_pressed")
+	_c = EOS.get_instance().connect("custom_invites_interface_send_custom_invite_complete_callback", Callable(self, "_on_send_custom_invite_complete_callback"))
+	_c = EOS.get_instance().connect("custom_invites_interface_custom_invite_accepted_callback", Callable(self, "_on_custom_invite_accepted_callback"))
+	_c = EOS.get_instance().connect("custom_invites_interface_custom_invite_received_callback", Callable(self, "_on_custom_invite_received_callback"))
+	_c = set_payload_btn.connect("pressed", Callable(self, "_on_set_payload_btn_pressed"))
+	_c = send_invite_btn.connect("pressed", Callable(self, "_on_send_invite_btn_pressed"))
 
 
 func _on_send_custom_invite_complete_callback(data: Dictionary):

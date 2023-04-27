@@ -4,16 +4,16 @@ extends MarginContainer
 # warning-ignore:unused_signal
 signal pressed(_self)
 
-onready var id_label = $MC/HB/VB/IdLabel
-onready var unlocked_image = $MC/HB/UnlockedImage as NetworkImage
+@onready var id_label = $MC/HB/VB/IdLabel
+@onready var unlocked_image = $MC/HB/UnlockedImage as NetworkImage
 
-onready var button = $RR/Button
+@onready var button = $RR/Button
 
 var _data: Dictionary
 
 
 func _ready():
-	button.connect("pressed", self, "emit_signal", ["pressed", self])
+	button.connect("pressed", Callable(self, "emit_signal").bind("pressed", self))
 
 
 func from_achievement_data(data: Dictionary):

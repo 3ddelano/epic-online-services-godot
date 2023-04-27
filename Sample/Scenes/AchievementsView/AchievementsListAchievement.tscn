@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource path="res://Scenes/AchievementsView/AchievementsListAchievement.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/UI/NetworkImage.tscn" type="PackedScene" id=2]
+[ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsListAchievement.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/UI/NetworkImage.tscn" id="2"]
 
 [sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 0.329412, 0.329412, 0.329412, 1 )
@@ -18,44 +18,44 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="AchievementsListAchievement" type="MarginContainer"]
-margin_right = 326.0
-margin_bottom = 72.0
+offset_right = 326.0
+offset_bottom = 72.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="RR" type="ReferenceRect" parent="."]
-margin_right = 326.0
-margin_bottom = 72.0
+offset_right = 326.0
+offset_bottom = 72.0
 border_color = Color( 1, 0, 0, 0 )
 
 [node name="Button" type="Button" parent="RR"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_default_cursor_shape = 2
-custom_styles/hover = SubResource( 2 )
-custom_styles/pressed = SubResource( 2 )
-custom_styles/focus = SubResource( 2 )
-custom_styles/normal = SubResource( 1 )
+theme_override_styles/hover = SubResource( 2 )
+theme_override_styles/pressed = SubResource( 2 )
+theme_override_styles/focus = SubResource( 2 )
+theme_override_styles/normal = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MC" type="MarginContainer" parent="."]
-margin_right = 326.0
-margin_bottom = 72.0
+offset_right = 326.0
+offset_bottom = 72.0
 mouse_filter = 2
-custom_constants/margin_right = 4
-custom_constants/margin_top = 4
-custom_constants/margin_left = 4
-custom_constants/margin_bottom = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_bottom = 4
 
 [node name="HB" type="HBoxContainer" parent="MC"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 322.0
-margin_bottom = 68.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 322.0
+offset_bottom = 68.0
 mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
@@ -64,14 +64,14 @@ __meta__ = {
 [node name="UnlockedImage" parent="MC/HB" instance=ExtResource( 2 )]
 
 [node name="VB" type="VBoxContainer" parent="MC/HB"]
-margin_left = 68.0
-margin_right = 318.0
-margin_bottom = 64.0
+offset_left = 68.0
+offset_right = 318.0
+offset_bottom = 64.0
 mouse_filter = 2
 
 [node name="IdLabel" type="Label" parent="MC/HB/VB"]
-margin_right = 250.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 250, 0 )
+offset_right = 250.0
+offset_bottom = 14.0
+custom_minimum_size = Vector2( 250, 0 )
 text = "ID: achievement_id_here_123456789"
 autowrap = true

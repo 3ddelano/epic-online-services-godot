@@ -1,16 +1,16 @@
 class_name LoginView
 extends CenterContainer
 
-onready var login_type_btn = $HB/Right/ChooseMethod/LoginTypeButton
-onready var login_btn = $HB/Right/LoginButton
-onready var back_btn = $HB/Right/BackButton
-onready var retry_login_btn = $HB/Right/RetryLoginButton
-onready var logout_btn = $HB/Right/LogoutButton
+@onready var login_type_btn = $HB/Right/ChooseMethod/LoginTypeButton
+@onready var login_btn = $HB/Right/LoginButton
+@onready var back_btn = $HB/Right/BackButton
+@onready var retry_login_btn = $HB/Right/RetryLoginButton
+@onready var logout_btn = $HB/Right/LogoutButton
 
 # Sub Views
-onready var choose_method = $HB/Right/ChooseMethod
-onready var enter_credentials = $HB/Right/EnterCredentials
-onready var login_status = $HB/Right/LoginStatus
+@onready var choose_method = $HB/Right/ChooseMethod
+@onready var enter_credentials = $HB/Right/EnterCredentials
+@onready var login_status = $HB/Right/LoginStatus
 
 enum States {
 	ChooseMethod,
@@ -61,23 +61,23 @@ func _ready() -> void:
 		c += 1
 
 
-	login_btn.connect("pressed", self, "_on_login_btn_pressed")
-	back_btn.connect("pressed", self, "_on_back_btn_pressed")
-	retry_login_btn.connect("pressed", self, "_on_retry_login_btn_pressed")
-	logout_btn.connect("pressed", self, "_on_logout_btn_pressed")
+	login_btn.connect("pressed", Callable(self, "_on_login_btn_pressed"))
+	back_btn.connect("pressed", Callable(self, "_on_back_btn_pressed"))
+	retry_login_btn.connect("pressed", Callable(self, "_on_retry_login_btn_pressed"))
+	logout_btn.connect("pressed", Callable(self, "_on_logout_btn_pressed"))
 
 	# Auth Interface callbacks
 	var instance = EOS.get_instance()
-	c = instance.connect("auth_interface_login_callback", self, "_on_auth_interface_login_callback")
-	c = instance.connect("auth_interface_logout_callback", self, "_on_auth_interface_logout_callback")
+	c = instance.connect("auth_interface_login_callback", Callable(self, "_on_auth_interface_login_callback"))
+	c = instance.connect("auth_interface_logout_callback", Callable(self, "_on_auth_interface_logout_callback"))
 	# Connect Interface callbacks
-	c = instance.connect("connect_interface_login_callback", self, "_on_connect_interface_login_callback")
-	c = instance.connect("connect_interface_login_status_changed", self, "_on_connect_interface_login_status_changed")
-	c = instance.connect("user_info_interface_query_user_info_callback", self, "_on_query_user_info_callback")
+	c = instance.connect("connect_interface_login_callback", Callable(self, "_on_connect_interface_login_callback"))
+	c = instance.connect("connect_interface_login_status_changed", Callable(self, "_on_connect_interface_login_status_changed"))
+	c = instance.connect("user_info_interface_query_user_info_callback", Callable(self, "_on_query_user_info_callback"))
 
 	# TODO: (Remove) Autologin for debug purpose
 	if OS.is_debug_build():
-		yield(Store, "platform_create")
+		await Store.platform_create
 		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 
 
@@ -159,7 +159,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		var create_user_options = EOS.Connect.CreateUserOptions.new()
 		create_user_options.continuance_token = ctw
 		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
-		var ret = yield(EOS.get_instance(), "connect_interface_create_user_callback")
+		var ret = await EOS.get_instance().connect_interface_create_user_callback
 		print("--- Connect: create_user_callback: ", ret)
 
 	if not data.success:
@@ -212,11 +212,11 @@ func _on_login_btn_pressed():
 		match login_type:
 			"DEVICE_ID":
 				EOS.Auth.AuthInterface.delete_persistent_auth(EOS.Auth.DeletePersistentAuthOptions.new())
-				yield(EOS.get_instance(), "auth_interface_delete_persistent_auth_callback")
+				await EOS.get_instance().auth_interface_delete_persistent_auth_callback
 				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
-				options1.device_model = PoolStringArray([OS.get_name(), OS.get_model_name()]).join(" ")
+				options1.device_model = PackedStringArray([OS.get_name(), OS.get_model_name()]" ".join())
 				var _c = EOS.Connect.ConnectInterface.create_device_id(options1)
-				yield(EOS.get_instance(), "connect_interface_create_device_id_callback")
+				await EOS.get_instance().connect_interface_create_device_id_callback
 				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
 			"DISCORD":
 				connect_account(EOS.ExternalCredentialType.DiscordAccessToken, login_token)

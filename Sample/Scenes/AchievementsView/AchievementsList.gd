@@ -20,10 +20,10 @@ func from_achievements_array(arr: Array):
 
 	# Populate new achievements
 	for achievement_data in arr:
-		var achievement = ACHIEVEMENTS_LIST_ACHIEVEMENT.instance()
+		var achievement = ACHIEVEMENTS_LIST_ACHIEVEMENT.instantiate()
 		$SC/VB.add_child(achievement)
 
-		achievement.connect("pressed", self, "_on_achievement_pressed")
+		achievement.connect("pressed", Callable(self, "_on_achievement_pressed"))
 		achievement.from_achievement_data(achievement_data)
 
 

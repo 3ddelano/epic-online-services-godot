@@ -2,16 +2,19 @@ Epic Online Services Godot (WIP)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
-### Unofficial Epic Online Services wrapper for Godot Engine 3.x (includes demo project)
+### Unofficial Epic Online Services wrapper for Godot Engine 4.x (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 3.x-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.15" src="https://img.shields.io/badge/-Epic Online Services 1.15-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.x Mono-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.15" src="https://img.shields.io/badge/-Epic Online Services 1.15-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Tested on: Windows 10 x64 and Linux x64
 
-#### Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
+> Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
-<a href="#current-status-link"><h2>Current Status</h2>
-</a>
+
+#### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3.x Mono (C#)
+#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4.x non-mono
+
+## [View Current Status](#current-status)
 
 ## [Demo Video (Coming Soon)](#)
 
@@ -20,72 +23,29 @@ Epic Online Services Godot (WIP)
 How does it work
 --------------
 
-This project wraps the Epic Online Services C# SDK so that it can be easily used in Godot using GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like user login, logout, achievement unlock, etc.
+This project uses GDExtension to wrap the Epic Online Services C SDK so that it can be easily used in Godot using GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like user login, logout, achievement unlock, etc.
 
 
-Requirements
+Installation
 --------------
 
-> You need to have the **Mono version of Godot** to make use of this project. This doesn't mean you have to code in C#. You can code in any language that Godot supports.
+This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps below:
 
-- Mono version (C# support) of Godot Engine (Get it here [Godot Engine Download](https://godotengine.org/download))
-- Mono Godot project
-  Easily convert a normal GDScript project to Mono (Project Menu -> Tools -> C# -> Create C# Solution)
-- EOS C# SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal/sdk))
-- Make sure you have accepted the Terms for [Epic Online Services](https://www.epicgames.com/site/en-US/tos?lang=en-US)
-- A product registered with Epic Games Services (Make one for free [Epic Developer Portal](https://dev.epicgames.com/portal))
-
-
-Getting Started
---------------
-1. Download/clone the repo and copy the `EOS` folder to your own Godot project folder.
-
-1. Download the `EOS C# SDK`, extract it, and copy and paste the `Source` and `Bin` folders to the `EOS` folder. The EOS folder should look something like this:
-   
-   <img src="./_media/eos_folder_structure.png">
-
-1. Open the file, `res://EOS/Source/Core/Config.cs` and paste the following lines at the top and save the file 
-   > You may get a permission warning saying that the file is Readonly. Make sure that the file gets saved/overwritten
-   ```C
-    #if GODOT_WINDOWS || GODOT_64
-        #define EOS_PLATFORM_WINDOWS_64
-    #elif GODOT_X11
-        #define EOS_PLATFORM_LINUX
-    #elif GODOT_OSX
-        #define EOS_PLATFORM_OSX
-    #elif GODOT_IOS
-        #define EOS_PLATFORM_IOS
-    #elif GODOT_ANDROID || __ANDROID__
-        #define EOS_PLATFORM_ANDROID
-    #else
-        #error "Godot could not set the EOS target platform."
-    #endif
-   ``` 
-
-1. In the res:// folder open the `{Project Name}.csproj` and add the following lines after the `</PropertyGroup>` to ensure that the EOS libraries will be automatically included in the exported project (you can further modify this to only include the library of the current platform):
-   ```
-   <ItemGroup>
-     <DllFiles Include="EOS\Bin\**"/>
-     <Reference Include="Microsoft.CSharp" />
-   </ItemGroup>
-   <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
-     <Copy SourceFiles="@(DllFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
-   </Target>
-   ```
-
-2. Add the `IEOS.cs` file present in `EOS` folder as an autoload (Project Settings -> Autoload).
- 
-3. You can now use the methods/signals from the `EOS` class in Godot.
-   
-   Minimal Starting Boilerplate (See `Main.gd` and `LogsView.gd` in `Sample` for an example)
+1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
+2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `addons/` folder in of your project.
+3. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.x` plugin.
+4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below simple script.
    ```GDScript
-    func _ready():
+   # In main script
+   extends Node
+
+   func _ready():
         # Initialize the SDK
         var init_options = EOS.Platform.InitializeOptions.new()
         init_options.product_name = "PRODUCT_NAME_HERE"
         init_options.product_version = "PRODUCT_VERSION_HERE"
 
-        var init_result: int = EOS.Platform.PlatformInterface.initialize(init_options)
+        var init_result := EOS.Platform.PlatformInterface.initialize(init_options)
         if init_result != EOS.Result.Success:
             print("Failed to initialize EOS SDK: ", EOS.print_result(init_result))
             return
@@ -119,9 +79,41 @@ Getting Started
         
         print("SDK %s | %s" % [msg.category, msg.message])
    ```
-4. **Using Account Portal to login to EOS**
+
+
+Development Setup
+--------------
+
+#### Pre-requisites
+- Godot Engine 4.x (Get it here [Godot Engine Download](https://godotengine.org/download/))
+- Epic Online Services C SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal/sdk))
+- Make sure you have accepted the Terms and Conditions for [Epic Online Services](https://www.epicgames.com/site/en-US/tos?lang=en-US)
+- A product registered with Epic Games Services (Make one for free [Epic Developer Portal](https://dev.epicgames.com/portal))
+
+To develop this plugin, follow the below steps:
+1. Download/clone the repository.
+
+2. Extract the `EOS C SDK` zip downloaded from Epic Games, rename it to `eos-sdk` and paste it in the `thirdparty/` folder. Refer to the below folder structure.
    
-   See <a href="#bootstrapping-godot-executable-with-epic-online-services">Bootstrapping Godot executable with Epic Online Services</a>
+   <img src="./_media/eos_folder_structure.png">
+
+3. Follow the steps to generate the GDExtension bindings for C++ based on [this tutorial](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_cpp_example.html#building-the-c-bindings). Now you should have dumped the GDextension API interface and built the `godot-cpp` library.
+
+4. Build the GDExtension plugin in debug mode (With debug symbols)
+   ```shell
+   # In root folder
+   scons platform=<platform> -j4 target=template_debug dev_build=yes
+   ```
+   Eg. `scons platform=windows -j4 target=template_debug dev_build=yes`
+
+5. Build the GDExtension plugin for release (Optimized)
+   ```shell
+   # In root folder
+   scons platform=windows -j4 target=template_release
+   ```
+
+6. The build GDExtension library will be in the `addons/epic-online-services-godot/bin/` folder with a `/demo/addons/epic-online-services-godot/bin`.
+
 
 ### How to run the sample project?
 > The sample Godot project is located in the **Sample** folder
@@ -163,7 +155,7 @@ Follow the instructions in [Running the service for local development](https://d
 
 Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](https://discord.gg/FZY9TqW)
 
-<a id="current-status-link"><h2>Current Status</h2></a>
+## Current Status
 
 - Auth Interface
   - [x] Implementation

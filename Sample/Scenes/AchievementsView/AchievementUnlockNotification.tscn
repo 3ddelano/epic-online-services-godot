@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=6 format=3]
 
-[ext_resource path="res://Scenes/UI/NetworkImage.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scenes/AchievementsView/AchievementUnlockNotification.gd" type="Script" id=2]
+[ext_resource type="PackedScene" path="res://scenes/UI/NetworkImage.tscn" id="1"]
+[ext_resource type="Script" path="res://scenes/AchievementsView/AchievementUnlockNotification.gd" id="2"]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
@@ -26,8 +26,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 0.5 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 0.5 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
@@ -41,42 +41,42 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 0,
 "values": [ Color( 0, 0, 0, 1 ) ]
 }
 
 [node name="AchievementUnlockNotification" type="MarginContainer"]
 modulate = Color( 0, 0, 0, 1 )
-margin_right = 338.0
-margin_bottom = 80.0
+offset_right = 338.0
+offset_bottom = 80.0
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BG" type="PanelContainer" parent="."]
-margin_right = 338.0
-margin_bottom = 80.0
-custom_styles/panel = SubResource( 1 )
+offset_right = 338.0
+offset_bottom = 80.0
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="MC" type="MarginContainer" parent="."]
-margin_right = 338.0
-margin_bottom = 80.0
+offset_right = 338.0
+offset_bottom = 80.0
 mouse_filter = 2
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_bottom = 8
 
 [node name="HB" type="HBoxContainer" parent="MC"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 330.0
-margin_bottom = 72.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 330.0
+offset_bottom = 72.0
 mouse_filter = 2
-custom_constants/separation = 8
+theme_override_constants/separation = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -85,31 +85,31 @@ __meta__ = {
 size_flags_vertical = 0
 
 [node name="VB" type="VBoxContainer" parent="MC/HB"]
-margin_left = 72.0
-margin_right = 322.0
-margin_bottom = 64.0
+offset_left = 72.0
+offset_right = 322.0
+offset_bottom = 64.0
 mouse_filter = 2
 
 [node name="Unlocked" type="Label" parent="MC/HB/VB"]
-margin_right = 250.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 250, 0 )
+offset_right = 250.0
+offset_bottom = 14.0
+custom_minimum_size = Vector2( 250, 0 )
 text = "New Achievement Unlocked!"
 autowrap = true
 
 [node name="NameLabel" type="Label" parent="MC/HB/VB"]
-margin_top = 18.0
-margin_right = 250.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 250, 0 )
+offset_top = 18.0
+offset_right = 250.0
+offset_bottom = 32.0
+custom_minimum_size = Vector2( 250, 0 )
 text = "Name here"
 autowrap = true
 
 [node name="IdLabel" type="Label" parent="MC/HB/VB"]
-margin_top = 36.0
-margin_right = 250.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 250, 0 )
+offset_top = 36.0
+offset_right = 250.0
+offset_bottom = 50.0
+custom_minimum_size = Vector2( 250, 0 )
 text = "ID: 123"
 autowrap = true
 

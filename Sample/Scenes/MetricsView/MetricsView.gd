@@ -1,17 +1,17 @@
 class_name MetricView
 extends VBoxContainer
 
-onready var start_player_session_btn = $HB/StartPlayerSessionBtn
-onready var start_player_session_label = $HB/StartPlayerSessionLabel
+@onready var start_player_session_btn = $HB/StartPlayerSessionBtn
+@onready var start_player_session_label = $HB/StartPlayerSessionLabel
 
-onready var end_player_session_btn = $HB2/EndPlayerSessionBtn
-onready var end_player_session_label = $HB2/EndPlayerSessionLabel
+@onready var end_player_session_btn = $HB2/EndPlayerSessionBtn
+@onready var end_player_session_label = $HB2/EndPlayerSessionLabel
 
 func _ready() -> void:
 	var _c
 
-	start_player_session_btn.connect("pressed", self, "_on_start_player_session_btn_pressed")
-	end_player_session_btn.connect("pressed", self, "_on_end_player_session_btn_pressed")
+	start_player_session_btn.connect("pressed", Callable(self, "_on_start_player_session_btn_pressed"))
+	end_player_session_btn.connect("pressed", Callable(self, "_on_end_player_session_btn_pressed"))
 
 
 func _on_start_player_session_btn_pressed():

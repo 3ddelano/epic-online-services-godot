@@ -4,27 +4,27 @@ extends VBoxContainer
 # Local cache of achievements
 var achievements = {}
 
-onready var achievements_list = $RR/AchievementsList
-onready var achievement_popup = $RR/AchievementPopup
-onready var refresh_btn = $MC/RefreshBtn
+@onready var achievements_list = $RR/AchievementsList
+@onready var achievement_popup = $RR/AchievementPopup
+@onready var refresh_btn = $MC/RefreshBtn
 
-onready var AchievementUnlockNotificationScene = preload("res://Scenes/AchievementsView/AchievementUnlockNotification.tscn")
+@onready var AchievementUnlockNotificationScene = preload("res://Scenes/AchievementsView/AchievementUnlockNotification.tscn")
 
 func _ready() -> void:
 	# Achievements callbacks
-	var _c = EOS.get_instance().connect("achievements_interface_achievements_unlocked_callback", self, "_on_achievements_interface_achievements_unlocked_callback")
-	_c = EOS.get_instance().connect("achievements_interface_unlock_achievements_complete_callback", self, "_on_achievements_interface_unlock_achievements_complete_callback")
+	var _c = EOS.get_instance().connect("achievements_interface_achievements_unlocked_callback", Callable(self, "_on_achievements_interface_achievements_unlocked_callback"))
+	_c = EOS.get_instance().connect("achievements_interface_unlock_achievements_complete_callback", Callable(self, "_on_achievements_interface_unlock_achievements_complete_callback"))
 
-	_c = Store.connect("login_success", self, "_on_login_success")
-	_c = Store.connect("logout_success", self, "_on_logout_success")
-	_c = achievements_list.connect("achievement_pressed", self, "_on_achievement_pressed")
-	_c = refresh_btn.connect("pressed", self, "_on_refresh_btn_pressed")
+	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
+	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
+	_c = achievements_list.connect("achievement_pressed", Callable(self, "_on_achievement_pressed"))
+	_c = refresh_btn.connect("pressed", Callable(self, "_on_refresh_btn_pressed"))
 
 func _on_login_success():
 	var query_options = EOS.Achievements.QueryDefinitionsOptions.new()
 	query_options.local_user_id = Store.product_user_id
 	EOS.Achievements.AchievementsInterface.query_definitions(query_options)
-	yield(EOS.get_instance(), "achievements_interface_query_definitions_complete_callback")
+	await EOS.get_instance().achievements_interface_query_definitions_complete_callback
 
 	var definition_count_options = EOS.Achievements.GetAchievementDefinitionCountOptions.new()
 	var definition_count = EOS.Achievements.AchievementsInterface.get_achievement_definition_count(definition_count_options)
@@ -42,7 +42,7 @@ func _on_login_success():
 	player_query_options.local_user_id = Store.product_user_id
 	player_query_options.target_user_id = Store.product_user_id
 	EOS.Achievements.AchievementsInterface.query_player_achievements(player_query_options)
-	yield(EOS.get_instance(), "achievements_interface_query_player_achievements_complete_callback")
+	await EOS.get_instance().achievements_interface_query_player_achievements_complete_callback
 	print("Done query player achievements")
 
 	var player_achievement_count_options = EOS.Achievements.GetPlayerAchievementCountOptions.new()
@@ -95,7 +95,7 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 	_rebuild_ui()
 
 	# Show achivement unlocked notification
-	var achievement_unlock_notification = AchievementUnlockNotificationScene.instance()
+	var achievement_unlock_notification = AchievementUnlockNotificationScene.instantiate()
 	Store.get_view("Notifications").add_notification(achievement_unlock_notification)
 	achievement_unlock_notification.from_achievement_data(achievements[data.achievement_id])
 

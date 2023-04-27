@@ -1,12 +1,12 @@
 class_name LogsView
 extends VBoxContainer
 
-onready var logs_label = $PC/SC/LogsLabel
+@onready var logs_label = $PC/SC/LogsLabel
 
 
 func _ready() -> void:
-	var _c = EOS.get_instance().connect("logging_interface_callback", self, "_on_logging_interface_callback")
-	_c = Store.connect("platform_create", self, "_on_platform_create")
+	var _c = EOS.get_instance().connect("logging_interface_callback", Callable(self, "_on_logging_interface_callback"))
+	_c = Store.connect("platform_create", Callable(self, "_on_platform_create"))
 
 
 func _on_platform_create():
@@ -51,5 +51,5 @@ func log_msg(level: int, msg: String, category := ""):
 #		print("%s | %s | %s" % [_category, level_str, msg])
 
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
-	logs_label.bbcode_text += "[color=#%s]%s | %s |[/color] [color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]
+	logs_label.text += "[color=#%s]%s | %s |[/color] [color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]
 	logs_label.get_parent().set_deferred("scroll_vertical", 100000)

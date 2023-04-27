@@ -1,0 +1,15 @@
+[configuration]
+
+entry_symbol = "eosg_library_init"
+
+[libraries]
+linux.x86_64.debug = "bin/libeosg.linux.template_debug.dev.x86_64.so"
+linux.x86_64.release = "bin/libeosg.linux.template_release.x86_64.so"
+windows.x86_64.debug = "bin/libeosg.windows.template_debug.dev.x86_64.dll"
+windows.x86_64.release = "bin/libeosg.windows.template_release.x86_64.dll"
+
+[dependencies]
+windows.debug.x86_64 = "bin/windows/EOSSDK-Win64-Shipping.dll"
+windows.release.x86_64 = "bin/windows/EOSSDK-Win64-Shipping.dll"
+linux.debug.x86_64 = "bin/linux/libEOSSDK-Linux-Shipping.so"
+linux.release.x86_64 = "bin/linux/libEOSSDK-Linux-Shipping.so"
