@@ -1,0 +1,8 @@
+[gd_resource type="FontFile" load_steps=2 format=3]
+
+[ext_resource type="FontFile" uid="uid://bvjo321fa54x8" path="res://fonts/Roboto-Bold.ttf" id="1"]
+
+[resource]
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 1 )

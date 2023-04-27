@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/UIView/UIView.gd" id="1"]
+[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
+
+[node name="UIView" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+offset_right = 1024.0
+offset_bottom = 38.0
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource( 2 )
+text = "UI"
+
+[node name="LoginWithEpic" type="Label" parent="."]
+offset_top = 42.0
+offset_right = 1024.0
+offset_bottom = 56.0
+text = "Login with Epic Games account to see Friend List"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VB" type="VBoxContainer" parent="."]
+offset_top = 60.0
+offset_right = 1024.0
+offset_bottom = 142.0
+theme_override_constants/separation = 16
+
+[node name="HB" type="HBoxContainer" parent="VB"]
+offset_right = 1024.0
+offset_bottom = 14.0
+theme_override_constants/separation = 16
+
+[node name="FriendsVisibleLabel" type="Label" parent="VB/HB"]
+offset_right = 110.0
+offset_bottom = 14.0
+text = "Overlay Visible: ?"
+
+[node name="HB2" type="HBoxContainer" parent="VB"]
+offset_top = 30.0
+offset_right = 1024.0
+offset_bottom = 48.0
+theme_override_constants/separation = 16
+
+[node name="NotificationLocationBtn" parent="VB/HB2" instance=ExtResource( 5 )]
+offset_right = 175.0
+offset_bottom = 18.0
+size_flags_horizontal = 0
+text = "Get Notification Location"
+
+[node name="NotificationLocationLabel" type="Label" parent="VB/HB2"]
+offset_left = 191.0
+offset_top = 2.0
+offset_right = 346.0
+offset_bottom = 16.0
+text = "Click button to load data"
+
+[node name="HB3" type="HBoxContainer" parent="VB"]
+offset_top = 64.0
+offset_right = 1024.0
+offset_bottom = 82.0
+theme_override_constants/separation = 16
+
+[node name="ShowFriendsBtn" parent="VB/HB3" instance=ExtResource( 5 )]
+offset_right = 153.0
+offset_bottom = 18.0
+size_flags_horizontal = 0
+text = "Show Friends Overlay"

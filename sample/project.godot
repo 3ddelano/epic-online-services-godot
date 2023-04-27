@@ -1,0 +1,35 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Epic Online Services Godot 4.x"
+run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.0")
+config/icon="res://logo.png"
+
+[autoload]
+
+Env="*res://scripts/Env.gd"
+Store="*res://scripts/Store.gd"
+EOS_tick="*res://addons/epic-online-services-godot/tick.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/epic-online-services-godot/plugin.cfg")
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.121569, 0.121569, 0.121569, 1)
+environment/defaults/default_environment="res://default_env.tres"

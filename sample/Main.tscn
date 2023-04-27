@@ -1,0 +1,186 @@
+[gd_scene load_steps=17 format=3 uid="uid://gcoi8ld0uvkl"]
+
+[ext_resource type="FontFile" path="res://fonts/roboto-16r.tres" id="1_j7moy"]
+[ext_resource type="PackedScene" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
+[ext_resource type="Script" path="res://Main.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ViewManager.gd" id="3_j157n"]
+[ext_resource type="PackedScene" uid="uid://cl2qvlvdhn2iw" path="res://scenes/LogsView/LogsView.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/LoginView/LoginView.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/CustomInvitesView/CustomInvitesView.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/StatsView/StatsView.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/LeaderboardsView/LeaderboardsView.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/FriendsView/FriendsView.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/UIView/UIView.tscn" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/MetricsView/MetricsView.tscn" id="14"]
+[ext_resource type="Script" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
+
+[sub_resource type="Theme" id="4"]
+default_font = ExtResource("1_j7moy")
+
+[sub_resource type="StyleBoxEmpty" id="5"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("4")
+script = ExtResource("3")
+_views_path = NodePath("MC/ViewManager")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.121569, 0.121569, 0.121569, 1)
+
+[node name="MC" type="MarginContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ViewManager" type="VBoxContainer" parent="MC"]
+layout_mode = 2
+script = ExtResource("3_j157n")
+
+[node name="HB" type="HFlowContainer" parent="MC/ViewManager"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AuthBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Auth"
+
+[node name="AchievementsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Achievements"
+
+[node name="CustomInvitesBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Custom Invites"
+
+[node name="StatsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Stats"
+
+[node name="LeaderboardsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Leaderboards"
+
+[node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Friends"
+
+[node name="UIBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "UI"
+
+[node name="MetricsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Metrics"
+
+[node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Lobbies"
+
+[node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "P2P"
+
+[node name="PlayerDataBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Player Data"
+
+[node name="ReportBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Reports"
+
+[node name="TitleStorageBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+layout_mode = 2
+text = "Title Storage"
+
+[node name="VSC" type="VSplitContainer" parent="MC/ViewManager"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/autohide = 0
+
+[node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC"]
+layout_mode = 2
+theme_override_constants/separation = 52
+
+[node name="LoginView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("5")]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("2")]
+visible = false
+layout_mode = 2
+
+[node name="CustomInvitesView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("9")]
+visible = false
+layout_mode = 2
+
+[node name="StatsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("10")]
+visible = false
+layout_mode = 2
+
+[node name="LeaderboardsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("11")]
+visible = false
+layout_mode = 2
+
+[node name="FriendsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("12")]
+visible = false
+layout_mode = 2
+
+[node name="UIView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("13")]
+visible = false
+layout_mode = 2
+
+[node name="MetricsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("14")]
+visible = false
+layout_mode = 2
+
+[node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
+
+[node name="NotificationsView" type="MarginContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer"]
+offset_top = 270.0
+offset_right = 366.0
+offset_bottom = 600.0
+mouse_filter = 2
+script = ExtResource("14_v0jrb")
+
+[node name="SC" type="ScrollContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PC" type="PanelContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+mouse_filter = 2
+theme_override_styles/panel = SubResource("5")
+
+[node name="MC" type="MarginContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC/PC"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 8
+
+[node name="VB" type="VBoxContainer" parent="MC/ViewManager/VSC/VB/NotificationsLayer/NotificationsView/SC/PC/MC"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource("4")]
+layout_mode = 2
