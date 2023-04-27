@@ -2357,10 +2357,10 @@ public class IEOS : Node
                 {"client_data", data.ClientData},
                 {"local_user_id", data.LocalUserId?.ToString()},
                 {"item_ownership",
-                    data.ItemOwnership?.Select(x => new Dictionary(){
+                    new Godot.Collections.Array(data.ItemOwnership?.Select(x => new Dictionary(){
                         {"id", x.Id?.ToString()},
                         {"ownership_status", x.OwnershipStatus},
-                    }).ToArray()
+                    }))
                 }
             };
             EmitSignal(nameof(ecom_interface_query_ownership_callback), ret);
