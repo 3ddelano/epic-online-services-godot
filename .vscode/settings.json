@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "**/*.obj": true,
+    "**/*.ilk": true,
+    "**/*.exp": true,
+    "**/*.pdb": true,
+    "**/__pycache__": true
+  }
+}

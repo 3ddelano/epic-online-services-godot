@@ -1,4 +1,4 @@
 res://default_env.tres
 res://Main.tscn
-res://Scripts/Env.gd
-res://Main.gd
+res://addons/epic-online-services-godot/eos.gd
+res://scenes/UI/CustomNetworkImage.gd

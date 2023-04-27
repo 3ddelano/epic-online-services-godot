@@ -1,7 +1,7 @@
 class_name NetworkImage
 extends MarginContainer
 
-var LOADING_TEXTURE = preload("res://Scenes/UI/loading-icon.png")
+var LOADING_TEXTURE = preload("res://scenes/UI/loading-icon.png")
 
 @onready var texture_rect = $TR
 @onready var anim_player = $Anim

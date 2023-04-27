@@ -8,7 +8,7 @@ var achievements = {}
 @onready var achievement_popup = $RR/AchievementPopup
 @onready var refresh_btn = $MC/RefreshBtn
 
-@onready var AchievementUnlockNotificationScene = preload("res://Scenes/AchievementsView/AchievementUnlockNotification.tscn")
+@onready var AchievementUnlockNotificationScene = preload("res://scenes/AchievementsView/AchievementUnlockNotification.tscn")
 
 func _ready() -> void:
 	# Achievements callbacks

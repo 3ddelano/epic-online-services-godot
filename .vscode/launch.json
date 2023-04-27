@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Project",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${config:godot_tools.editor_path_4}",
+      "args": ["--debug", "--headless"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/demo",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "build"
+    }
+  ]
+}

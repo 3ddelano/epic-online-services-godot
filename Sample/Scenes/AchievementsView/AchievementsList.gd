@@ -3,7 +3,7 @@ extends MarginContainer
 
 signal achievement_pressed(node)
 
-const ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://Scenes/AchievementsView/AchievementsListAchievement.tscn")
+const ACHIEVEMENTS_LIST_ACHIEVEMENT = preload("res://scenes/AchievementsView/AchievementsListAchievement.tscn")
 
 func _ready() -> void:
 	_clear()

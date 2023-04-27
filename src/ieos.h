@@ -57,8 +57,7 @@ class IEOS : public RefCounted {
     int platform_interface_shutdown();
 
     // Version Interface
-    String
-    version_interface_get_version();
+    String version_interface_get_version();
     Dictionary version_interface_get_constants();
 };
 

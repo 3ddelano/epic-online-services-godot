@@ -5,194 +5,194 @@
 extends RefCounted
 class_name EOS
 
-#class Auth:
-#	enum ScopeFlags {
-#		NoFlags = 0x0,
-#		BasicProfile = 0x1,
-#		FriendsList = 0x2,
-#		Presence = 0x4,
-#		FriendsManagement = 0x8,
-#		Email = 0x10
-#	}
-#
-#	enum AuthTokenType { Client = 0, User = 1 }
-#
-#	enum LinkAccountFlags { NoFlags = 0x0, NintendoNsaId = 0x1 }
-#
-#	enum LoginCredentialType {
-#		Password = 0,
-#		ExchangeCode = 1,
-#		PersistentAuth = 2,
-#		DeviceCode = 3,
-#		Developer = 4,
-#		RefreshToken = 5,
-#		AccountPortal = 6,
-#		ExternalAuth = 7
-#	}
-#
-#	class LoginOptions extends BaseClass:
-#		func _init():
-#			super._init("LoginOptions")
-#
-#		var type: int
-#		var credentials: Credentials
-#		var scope_flags: int
-#
-#		var client_data = null
-#
-#	class LogoutOptions extends BaseClass:
-#		func _init():
-#			super._init("LogoutOptions")
-#
-#		var local_user_id: String
-#
-#		var client_data = null
-#
-#	class Credentials extends BaseClass:
-#		func _init():
-#			super._init("Credentials")
-#
-#		var type: int  # LoginCredentialType
-#		var id = null  # String
-#		var token = null  # String
-#		var external_type = null  # ExternalCredentialType
-#
-#	class CopyIdTokenOptions extends BaseClass:
-#		func _init():
-#			super._init("CopyIdTokenOptions")
-#
-#		var account_id: String
-#
-#	class CopyUserAuthTokenOptions extends BaseClass:
-#		func _init():
-#			super._init("CopyUserAuthTokenOptions")
-#
-#	class DeletePersistentAuthOptions extends BaseClass:
-#		func _init():
-#			super._init("DeletePersistentAuthOptions")
-#
-#		var refresh_token = null
-#		var client_data = null
-#
-#	class LinkAccountOptions extends BaseClass:
-#		func _init():
-#			super._init("LinkAccountOptions")
-#
-#		var link_account_flags: int # LinkAccountFlags
-#		var continuance_token: RefCounted # ContinuanceTokenWrapper
-#		var local_user_id: String
-#
-#		var client_data = null
-#
-#	class QueryIdTokenOptions extends BaseClass:
-#		func _init():
-#			super._init("QueryIdTokenOptions")
-#
-#		var local_user_id: String
-#		var target_account_id: String
-#
-#		var client_data = null
-#
-#	class IdToken extends BaseClass:
-#		func _init():
-#			super._init("IdToken")
-#
-#		var account_id: String
-#		var json_web_token: String
-#
-#	class VerifyIdTokenOptions extends BaseClass:
-#		func _init():
-#			super._init("VerifyIdTokenOptions")
-#
-#		var id_token: IdToken
-#
-#		var client_data = null
-#
-#	class Token extends BaseClass:
-#		func _init():
-#			super._init("Token")
-#
-#		var app: String
-#		var client_id: String
-#		var account_id: String
-#		var access_token: String
-#		var expires_in: float
-#		var expires_at: String
-#		var auth_type: int
-#		var refresh_token: String
-#		var refresh_expires_in: float
-#		var refresh_expires_at: String
-#
-#	class VerifyUserAuthOptions extends BaseClass:
-#		func _init():
-#			super._init("VerifyUserAuthOptions")
-#
-#		var auth_token: Token
-#
-#		var client_data = null
-#
-#	class AuthInterface:
-#		static func login(options: LoginOptions) -> void:
-#			IEOS.auth_interface_login(options)
-#
-#		static func logout(options: LogoutOptions) -> void:
-#			IEOS.auth_interface_logout(options)
-#
-#		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
-#			return IEOS.auth_interface_copy_id_token(options)
-#
-#		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id: String) -> Dictionary:
-#			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
-#				options, local_user_id
-#			)
-#			var token: Token = Token.new()
-#			if func_result.token:
-#				var token_dict = func_result.token
-#				token.app = token_dict.app
-#				token.client_id = token_dict.client_id
-#				token.account_id = token_dict.account_id
-#				token.access_token = token_dict.access_token
-#				token.expires_in = token_dict.expires_in
-#				token.expires_at = token_dict.expires_at
-#				token.auth_type = token_dict.auth_type
-#				token.refresh_token = token_dict.refresh_token
-#				token.refresh_expires_in = token_dict.refresh_expires_in
-#				token.refresh_expires_at = token_dict.refresh_expires_at
-#
-#			return {result_code = func_result.result_code, token = token}
-#
-#		static func delete_persistent_auth(options: DeletePersistentAuthOptions) -> void:
-#			IEOS.auth_interface_delete_persistent_auth(options)
-#
-#		static func get_logged_in_account_by_index(index: int) -> String:
-#			return IEOS.auth_interface_get_logged_in_account_by_index(index)
-#
-#		static func get_logged_in_accounts_count() -> int:
-#			return IEOS.auth_interface_get_logged_in_accounts_count()
-#
-#		static func get_login_status(local_user_id: String) -> int:
-#			return IEOS.auth_interface_get_login_status(local_user_id)
-#
-#		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
-#			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
-#
-#		static func get_merged_accounts_count(local_user_id: String) -> int:
-#			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
-#
-#		static func get_selected_account_id(local_user_id: String) -> Dictionary:
-#			return IEOS.auth_interface_get_selected_account_id(local_user_id)
-#
-#		static func link_account(options: LinkAccountOptions):
-#			return IEOS.auth_interface_link_account(options)
-#
-#		static func query_id_token(options: QueryIdTokenOptions) -> void:
-#			IEOS.auth_interface_query_id_token(options)
-#
-#		static func verify_id_token(options: VerifyIdTokenOptions) -> void:
-#			IEOS.auth_interface_verify_id_token(options)
-#
-#		static func verify_user_auth(options: VerifyUserAuthOptions) -> void:
-#			IEOS.auth_interface_verify_user_auth(options)
+class Auth:
+	enum ScopeFlags {
+		NoFlags = 0x0,
+		BasicProfile = 0x1,
+		FriendsList = 0x2,
+		Presence = 0x4,
+		FriendsManagement = 0x8,
+		Email = 0x10
+	}
+
+	enum AuthTokenType { Client = 0, User = 1 }
+
+	enum LinkAccountFlags { NoFlags = 0x0, NintendoNsaId = 0x1 }
+
+	enum LoginCredentialType {
+		Password = 0,
+		ExchangeCode = 1,
+		PersistentAuth = 2,
+		DeviceCode = 3,
+		Developer = 4,
+		RefreshToken = 5,
+		AccountPortal = 6,
+		ExternalAuth = 7
+	}
+
+	class LoginOptions extends BaseClass:
+		func _init():
+			super._init("LoginOptions")
+
+		var type: int
+		var credentials: Credentials
+		var scope_flags: int
+
+		var client_data = null
+
+	class LogoutOptions extends BaseClass:
+		func _init():
+			super._init("LogoutOptions")
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class Credentials extends BaseClass:
+		func _init():
+			super._init("Credentials")
+
+		var type: int  # LoginCredentialType
+		var id = null  # String
+		var token = null  # String
+		var external_type = null  # ExternalCredentialType
+
+	class CopyIdTokenOptions extends BaseClass:
+		func _init():
+			super._init("CopyIdTokenOptions")
+
+		var account_id: String
+
+	class CopyUserAuthTokenOptions extends BaseClass:
+		func _init():
+			super._init("CopyUserAuthTokenOptions")
+
+	class DeletePersistentAuthOptions extends BaseClass:
+		func _init():
+			super._init("DeletePersistentAuthOptions")
+
+		var refresh_token = null
+		var client_data = null
+
+	class LinkAccountOptions extends BaseClass:
+		func _init():
+			super._init("LinkAccountOptions")
+
+		var link_account_flags: int # LinkAccountFlags
+		var continuance_token: RefCounted # ContinuanceTokenWrapper
+		var local_user_id: String
+
+		var client_data = null
+
+	class QueryIdTokenOptions extends BaseClass:
+		func _init():
+			super._init("QueryIdTokenOptions")
+
+		var local_user_id: String
+		var target_account_id: String
+
+		var client_data = null
+
+	class IdToken extends BaseClass:
+		func _init():
+			super._init("IdToken")
+
+		var account_id: String
+		var json_web_token: String
+
+	class VerifyIdTokenOptions extends BaseClass:
+		func _init():
+			super._init("VerifyIdTokenOptions")
+
+		var id_token: IdToken
+
+		var client_data = null
+
+	class Token extends BaseClass:
+		func _init():
+			super._init("Token")
+
+		var app: String
+		var client_id: String
+		var account_id: String
+		var access_token: String
+		var expires_in: float
+		var expires_at: String
+		var auth_type: int
+		var refresh_token: String
+		var refresh_expires_in: float
+		var refresh_expires_at: String
+
+	class VerifyUserAuthOptions extends BaseClass:
+		func _init():
+			super._init("VerifyUserAuthOptions")
+
+		var auth_token: Token
+
+		var client_data = null
+
+	class AuthInterface:
+		static func login(options: LoginOptions) -> void:
+			IEOS.auth_interface_login(options)
+
+		static func logout(options: LogoutOptions) -> void:
+			IEOS.auth_interface_logout(options)
+
+		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
+			return IEOS.auth_interface_copy_id_token(options)
+
+		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id: String) -> Dictionary:
+			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
+				options, local_user_id
+			)
+			var token: Token = Token.new()
+			if func_result.token:
+				var token_dict = func_result.token
+				token.app = token_dict.app
+				token.client_id = token_dict.client_id
+				token.account_id = token_dict.account_id
+				token.access_token = token_dict.access_token
+				token.expires_in = token_dict.expires_in
+				token.expires_at = token_dict.expires_at
+				token.auth_type = token_dict.auth_type
+				token.refresh_token = token_dict.refresh_token
+				token.refresh_expires_in = token_dict.refresh_expires_in
+				token.refresh_expires_at = token_dict.refresh_expires_at
+
+			return {result_code = func_result.result_code, token = token}
+
+		static func delete_persistent_auth(options: DeletePersistentAuthOptions) -> void:
+			IEOS.auth_interface_delete_persistent_auth(options)
+
+		static func get_logged_in_account_by_index(index: int) -> String:
+			return IEOS.auth_interface_get_logged_in_account_by_index(index)
+
+		static func get_logged_in_accounts_count() -> int:
+			return IEOS.auth_interface_get_logged_in_accounts_count()
+
+		static func get_login_status(local_user_id: String) -> int:
+			return IEOS.auth_interface_get_login_status(local_user_id)
+
+		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
+			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
+
+		static func get_merged_accounts_count(local_user_id: String) -> int:
+			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
+
+		static func get_selected_account_id(local_user_id: String) -> Dictionary:
+			return IEOS.auth_interface_get_selected_account_id(local_user_id)
+
+		static func link_account(options: LinkAccountOptions):
+			return IEOS.auth_interface_link_account(options)
+
+		static func query_id_token(options: QueryIdTokenOptions) -> void:
+			IEOS.auth_interface_query_id_token(options)
+
+		static func verify_id_token(options: VerifyIdTokenOptions) -> void:
+			IEOS.auth_interface_verify_id_token(options)
+
+		static func verify_user_auth(options: VerifyUserAuthOptions) -> void:
+			IEOS.auth_interface_verify_user_auth(options)
 
 
 class Platform extends RefCounted:

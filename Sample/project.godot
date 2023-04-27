@@ -19,6 +19,11 @@ config/icon="res://logo.png"
 
 Env="*res://scripts/Env.gd"
 Store="*res://scripts/Store.gd"
+EOS_tick="*res://addons/epic-online-services-godot/tick.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/epic-online-services-godot/plugin.cfg")
 
 [physics]
 
