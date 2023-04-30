@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Main.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ViewManager.gd" id="3_j157n"]
 [ext_resource type="PackedScene" uid="uid://cl2qvlvdhn2iw" path="res://scenes/LogsView/LogsView.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/LoginView/LoginView.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://bht0ln2ftshrw" path="res://scenes/LoginView/LoginView.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/CustomInvitesView/CustomInvitesView.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/StatsView/StatsView.tscn" id="10"]

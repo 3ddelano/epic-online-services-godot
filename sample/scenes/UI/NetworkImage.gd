@@ -54,8 +54,7 @@ func _on_request_completed(result, response_code, _headers, body):
 		print("Network Image Error: image_error=%s: An error occurred while trying to display the image." % image_error)
 		return
 
-	var image_texture = ImageTexture.new()
-	image_texture.create_from_image(image)
+	var image_texture = ImageTexture.create_from_image(image)
 	Store.network_image_cache[_url] = image_texture
 
 	texture_rect.texture = image_texture

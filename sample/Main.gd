@@ -40,23 +40,17 @@ func _ready() -> void:
 	create_options.encryption_key = ENCRYPTION_KEY
 	if OS.get_name() == "Windows":
 		create_options.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
-	#create_options.is_server = true
-	#create_options.tick_budget_in_milliseconds = 500
 
 	var create_success: bool = EOS.Platform.PlatformInterface.create(create_options)
 	if not create_success:
 		print("Failed to create EOS Platform")
 		return
 
-#	var _c = Store.connect("login_success", self, "_on_login_success")
-	await get_tree().create_timer(0.5).timeout
-	Store.emit_signal("platform_create")
+	var _c = Store.connect("login_success", Callable(self, "_on_login_success"))
 	var sdk_constants = EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
-
-
-func get_view_manager():
-	return views
+	await get_tree().create_timer(0.5).timeout
+	Store.emit_signal("platform_create")
 
 
 func _input(event: InputEvent) -> void:
@@ -70,6 +64,7 @@ func _input(event: InputEvent) -> void:
 
 # Dev testing stuff
 func _on_tab_pressed():
+	print("Tab pressed")
 	# Auth interface
 #	print("--- Auth: get_logged_in_accounts_count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
 #	print("--- Auth: Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
@@ -84,6 +79,8 @@ func _on_tab_pressed():
 #	var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
 #	verify_user_auth_options.auth_token = token
 #	EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
+#	var verify_user_auth_ret = await EOS.get_instance().auth_interface_verify_user_auth_callback
+#	print("--- Auth: verify_user_auth: ", verify_user_auth_ret)
 
 
 
@@ -96,7 +93,6 @@ func _on_tab_pressed():
 #	var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
 #	copy_id_token_options.account_id = Store.epic_account_id
 #	print("--- Auth: copy_id_token: ", EOS.result_str(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options)))
-
 
 
 #	Connect interface
@@ -299,3 +295,17 @@ func _on_tab_pressed():
 
 
 	pass
+
+
+func get_view_manager():
+	return views
+
+
+func _notification(what: int) -> void:
+	if what != 17:
+		print(what)
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		print("Shutting down")
+		EOS.Platform.PlatformInterface.release()
+		var res = IEOS.shutdown()
+		print(res)

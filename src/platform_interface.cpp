@@ -14,27 +14,12 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     CharString overrideCountryCode = VARIANT_TO_CHARSTRING(p_options->get("override_country_code"));
     CharString overrideLocaleCode = VARIANT_TO_CHARSTRING(p_options->get("override_locale_code"));
 
-    std::cout << "productId " << productId.get_data() << std::endl;
-    std::cout << "sandboxId " << sandboxId.get_data() << std::endl;
-    std::cout << "deploymentId " << deploymentId.get_data() << std::endl;
-    std::cout << "isServer " << isServer << std::endl;
-    std::cout << "encryptionKey " << encryptionKey.get_data() << std::endl;
-    std::cout << "flags " << flags << std::endl;
-    std::cout << "tickBudgetInMilliseconds " << tickBudgetInMilliseconds << std::endl;
-    std::cout << "clientId " << clientId.get_data() << std::endl;
-    std::cout << "clientSecret " << clientSecret.get_data() << std::endl;
-    std::cout << "overrideCountryCode " << overrideCountryCode.get_data() << std::endl;
-    std::cout << "overrideLocaleCode " << overrideLocaleCode.get_data() << std::endl;
-    std::cout << "done\n";
-
-    EOS_Platform_Options platformOptions = {0};
+    EOS_Platform_Options platformOptions;
+    memset(&platformOptions, 0, sizeof(platformOptions));
     platformOptions.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
-    platformOptions.Reserved = nullptr;
     platformOptions.ProductId = productId.get_data();
     platformOptions.SandboxId = sandboxId.get_data();
-    platformOptions.ClientCredentials.ClientId = nullptr;
-    platformOptions.ClientCredentials.ClientSecret = nullptr;
-    std::cout << "clientId length:" << clientId.length() << std::endl;
+
     if (clientId.length() != 0) {
         platformOptions.ClientCredentials.ClientId = clientId.get_data();
     }
@@ -45,12 +30,9 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     if (isServer) {
         platformOptions.bIsServer = EOS_TRUE;
     }
-    platformOptions.EncryptionKey = nullptr;
     if (encryptionKey.length() != 0) {
         platformOptions.EncryptionKey = encryptionKey.get_data();
     }
-    platformOptions.OverrideCountryCode = nullptr;
-    platformOptions.OverrideLocaleCode = nullptr;
     if (overrideCountryCode.length() != 0) {
         platformOptions.OverrideLocaleCode = overrideCountryCode.get_data();
     }
@@ -59,13 +41,14 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     }
     platformOptions.DeploymentId = deploymentId.get_data();
     platformOptions.Flags = flags;
-    platformOptions.CacheDirectory = nullptr;
     platformOptions.TickBudgetInMilliseconds = tickBudgetInMilliseconds;
 
-    EOS_Platform_RTCOptions rtcOptions = {0};
+    EOS_Platform_RTCOptions rtcOptions;
+    memset(&rtcOptions, 0, sizeof(rtcOptions));
     rtcOptions.ApiVersion = EOS_PLATFORM_RTCOPTIONS_API_LATEST;
 #ifdef _WIN32
-    EOS_Windows_RTCOptions windowsRTCOptions = {0};
+    EOS_Windows_RTCOptions windowsRTCOptions;
+    memset(&windowsRTCOptions, 0, sizeof(windowsRTCOptions));
     windowsRTCOptions.ApiVersion = EOS_WINDOWS_RTCOPTIONS_API_LATEST;
     CharString xAudio29DllPath = ProjectSettings::get_singleton()->globalize_path("res://addons/epic-online-services-godot/bin/x64/xaudio2_9redist.dll").utf8();
     windowsRTCOptions.XAudio29DllPath = xAudio29DllPath.get_data();
@@ -94,6 +77,25 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     if (s_platformInterface == nullptr) {
         return false;
     }
+
+    // Get interface handles
+    s_achievementsInterface = EOS_Platform_GetAchievementsInterface(s_platformInterface);
+    s_authInterface = EOS_Platform_GetAuthInterface(s_platformInterface);
+    s_connectInterface = EOS_Platform_GetConnectInterface(s_platformInterface);
+    s_customInvitesInterface = EOS_Platform_GetCustomInvitesInterface(s_platformInterface);
+    s_ecomInterface = EOS_Platform_GetEcomInterface(s_platformInterface);
+    s_friendsInterface = EOS_Platform_GetFriendsInterface(s_platformInterface);
+    s_kwsInterface = EOS_Platform_GetKWSInterface(s_platformInterface);
+    s_leaderboardsInterface = EOS_Platform_GetLeaderboardsInterface(s_platformInterface);
+    s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
+    s_modsInterface = EOS_Platform_GetModsInterface(s_platformInterface);
+    s_playerDataStorageInterface = EOS_Platform_GetPlayerDataStorageInterface(s_platformInterface);
+    s_presenceInterface = EOS_Platform_GetPresenceInterface(s_platformInterface);
+    s_progressionSnapshotInterface = EOS_Platform_GetProgressionSnapshotInterface(s_platformInterface);
+    s_reportsInterface = EOS_Platform_GetReportsInterface(s_platformInterface);
+    s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
+    s_uiInterface = EOS_Platform_GetUIInterface(s_platformInterface);
+    s_userInfoInterface = EOS_Platform_GetUserInfoInterface(s_platformInterface);
 
     return true;
 }
@@ -187,7 +189,8 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
     CharString productName = VARIANT_TO_CHARSTRING(p_options->get("product_name"));
     CharString productVersion = VARIANT_TO_CHARSTRING(p_options->get("product_version"));
 
-    EOS_InitializeOptions initOptions = {0};
+    EOS_InitializeOptions initOptions;
+    memset(&initOptions, 0, sizeof(initOptions));
     initOptions.ApiVersion = EOS_INITIALIZE_API_LATEST;
     initOptions.ProductName = productName.get_data();
     initOptions.ProductVersion = productVersion.get_data();
@@ -252,6 +255,29 @@ int IEOS::platform_interface_get_network_status() {
     return static_cast<int>(status);
 }
 
-void IEOS::platform_interface_release() { return; }
+void IEOS::platform_interface_release() {
+    if (s_platformInterface == nullptr) return;
+    s_achievementsInterface = nullptr;
+    s_authInterface = nullptr;
+    s_connectInterface = nullptr;
+    s_customInvitesInterface = nullptr;
+    s_ecomInterface = nullptr;
+    s_friendsInterface = nullptr;
+    s_kwsInterface = nullptr;
+    s_leaderboardsInterface = nullptr;
+    s_metricsInterface = nullptr;
+    s_modsInterface = nullptr;
+    s_playerDataStorageInterface = nullptr;
+    s_presenceInterface = nullptr;
+    s_progressionSnapshotInterface = nullptr;
+    s_reportsInterface = nullptr;
+    s_statsInterface = nullptr;
+    s_uiInterface = nullptr;
+    s_userInfoInterface = nullptr;
+    EOS_Platform_Release(s_platformInterface);
+}
 
-int IEOS::platform_interface_shutdown() { return 1; }
+int IEOS::platform_interface_shutdown() {
+    EOS_EResult res = EOS_Shutdown();
+    return static_cast<int>(res);
+}

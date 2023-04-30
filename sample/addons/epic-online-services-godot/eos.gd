@@ -348,9 +348,8 @@ class Auth:
 		func _init():
 			super._init("LoginOptions")
 
-		var type: int
 		var credentials: Credentials
-		var scope_flags: int
+		var scope_flags: ScopeFlags = -1
 
 		var client_data = null
 
@@ -366,10 +365,10 @@ class Auth:
 		func _init():
 			super._init("Credentials")
 
-		var type: int  # LoginCredentialType
-		var id = null  # String
-		var token = null  # String
-		var external_type = null  # ExternalCredentialType
+		var type: LoginCredentialType = -1
+		var id: String
+		var token: String
+		var external_type: ExternalCredentialType = -1
 
 	class CopyIdTokenOptions extends BaseClass:
 		func _init():
@@ -686,31 +685,31 @@ class Platform extends RefCounted:
 		static func get_override_locale_code() -> Dictionary:
 			return IEOS.platform_interface_get_override_locale_code()
 
-		static func set_override_country_code(country_code: String) -> int:
+		static func set_override_country_code(country_code: String) -> Result:
 			return IEOS.platform_interface_set_override_country_code(country_code)
 
-		static func set_override_locale_code(locale_code: String) -> int:
+		static func set_override_locale_code(locale_code: String) -> Result:
 			return IEOS.platform_interface_set_override_locale_code(locale_code)
 
-		static func check_for_launcher_and_restart() -> int:
+		static func check_for_launcher_and_restart() -> Result:
 			return IEOS.platform_interface_check_for_launcher_and_restart()
 
-		static func initialize(options: InitializeOptions) -> int:
+		static func initialize(options: InitializeOptions) -> Result:
 			return IEOS.platform_interface_initialize(options)
 
 		static func get_desktop_crossplay_status() -> Dictionary:
 			return IEOS.platform_interface_get_desktop_crossplay_status()
 
-		static func set_application_status(status: ApplicationStatus) -> int:
+		static func set_application_status(status: ApplicationStatus) -> Result:
 			return IEOS.platform_interface_set_application_status(status)
 
-		static func get_application_status() -> int:
+		static func get_application_status() -> ApplicationStatus:
 			return IEOS.platform_interface_get_application_status()
 
-		static func set_network_status(status: ApplicationStatus) -> int:
+		static func set_network_status(status: NetworkStatus) -> Result:
 			return IEOS.platform_interface_set_network_status(status)
 
-		static func get_network_status() -> int:
+		static func get_network_status() -> NetworkStatus:
 			return IEOS.platform_interface_get_network_status()
 
 		static func release() -> void:
@@ -1934,7 +1933,7 @@ class Logging:
 			return "%s | %s | %s" % [category, level, message]
 
 	static func set_log_level(log_category: int, log_level: int) -> int:
-		return 1#IEOS.logging_interface_set_log_level(log_category, log_level)
+		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
 
 class Version:

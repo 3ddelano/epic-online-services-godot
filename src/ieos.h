@@ -12,6 +12,7 @@
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "utils.h"
+#include "wrappers/continuance_token.h"
 #ifdef _WIN32
 #include "Windows/eos_Windows.h"
 #endif
@@ -25,8 +26,24 @@ class IEOS : public RefCounted {
 
    protected:
     static void _bind_methods();
-    EOS_HPlatform s_platformInterface = nullptr;
+    EOS_HAchievements s_achievementsInterface = nullptr;
     EOS_HAuth s_authInterface = nullptr;
+    EOS_HConnect s_connectInterface = nullptr;
+    EOS_HCustomInvites s_customInvitesInterface = nullptr;
+    EOS_HEcom s_ecomInterface = nullptr;
+    EOS_HFriends s_friendsInterface = nullptr;
+    EOS_HKWS s_kwsInterface = nullptr;
+    EOS_HLeaderboards s_leaderboardsInterface = nullptr;
+    EOS_HMetrics s_metricsInterface = nullptr;
+    EOS_HMods s_modsInterface = nullptr;
+    EOS_HPlayerDataStorage s_playerDataStorageInterface = nullptr;
+    EOS_HPresence s_presenceInterface = nullptr;
+    EOS_HProgressionSnapshot s_progressionSnapshotInterface = nullptr;
+    EOS_HReports s_reportsInterface = nullptr;
+    EOS_HStats s_statsInterface = nullptr;
+    EOS_HUI s_uiInterface = nullptr;
+    EOS_HUserInfo s_userInfoInterface = nullptr;
+    EOS_HPlatform s_platformInterface = nullptr;
 
    public:
     static IEOS* get_singleton();

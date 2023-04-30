@@ -23,7 +23,7 @@ enum States {
 var _state = States.ChooseMethod
 
 
-const login_types = {
+var login_types = {
 	DEVELOPER = {
 		name = "Developer App",
 		id_help = "Devtool Server URL",
@@ -60,7 +60,6 @@ func _ready() -> void:
 		login_type_btn.set_item_metadata(c, login_types[login_type])
 		c += 1
 
-
 	login_btn.connect("pressed", Callable(self, "_on_login_btn_pressed"))
 	back_btn.connect("pressed", Callable(self, "_on_back_btn_pressed"))
 	retry_login_btn.connect("pressed", Callable(self, "_on_retry_login_btn_pressed"))
@@ -78,11 +77,13 @@ func _ready() -> void:
 	# TODO: (Remove) Autologin for debug purpose
 	if OS.is_debug_build():
 		await Store.platform_create
+#		perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
 		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 
 
 func _on_auth_interface_login_callback(data: Dictionary):
 	print("--- Auth: login_callback: ", EOS.result_str(data))
+	print(data)
 
 	if data.pending:
 		print("--- Auth: Login Pending...")
@@ -158,7 +159,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		# Create user
 		var create_user_options = EOS.Connect.CreateUserOptions.new()
 		create_user_options.continuance_token = ctw
-		var _c = EOS.Connect.ConnectInterface.create_user(create_user_options)
+		EOS.Connect.ConnectInterface.create_user(create_user_options)
 		var ret = await EOS.get_instance().connect_interface_create_user_callback
 		print("--- Connect: create_user_callback: ", ret)
 
@@ -191,6 +192,8 @@ func _on_login_btn_pressed():
 	var login_id = enter_credentials.get_id_value()
 	var login_token = enter_credentials.get_token_value()
 
+	prints(login_type_data, login_type, login_id, login_token)
+
 	if _state == States.ChooseMethod:
 		# In ChooseMethod state
 		if login_type_data.id_help or login_type_data.token_help:
@@ -214,8 +217,8 @@ func _on_login_btn_pressed():
 				EOS.Auth.AuthInterface.delete_persistent_auth(EOS.Auth.DeletePersistentAuthOptions.new())
 				await EOS.get_instance().auth_interface_delete_persistent_auth_callback
 				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
-				options1.device_model = PackedStringArray([OS.get_name(), OS.get_model_name()]" ".join())
-				var _c = EOS.Connect.ConnectInterface.create_device_id(options1)
+				options1.device_model = " ".join(PackedStringArray([OS.get_name(), OS.get_model_name()]))
+				EOS.Connect.ConnectInterface.create_device_id(options1)
 				await EOS.get_instance().connect_interface_create_device_id_callback
 				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
 			"DISCORD":
@@ -256,12 +259,12 @@ func set_login_state(new_state: int):
 		login_status.visible = true
 
 	if _state == States.Success:
-		login_status.text = "Login sucess!"
+		login_status.text = "Login success!"
 		login_status.visible = true
 		logout_btn.visible = true
 
 
-func perform_auth_login(type: int, id = null, token = null, external_type = null):
+func perform_auth_login(type: int, id = "", token = "", external_type = -1):
 	login_status.text = "Login pending..."
 	set_login_state(States.Pending)
 
@@ -269,12 +272,13 @@ func perform_auth_login(type: int, id = null, token = null, external_type = null
 	credentials.type = type
 	credentials.id = id
 	credentials.token = token
-	if external_type != null:
+	if external_type != -1:
 		credentials.external_type = external_type
 
 	var login_options = EOS.Auth.LoginOptions.new()
 	login_options.credentials = credentials
 	login_options.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
+	login_options.client_data = {"data": "her", "name": [1, 2, "c"]}
 	EOS.Auth.AuthInterface.login(login_options)
 
 

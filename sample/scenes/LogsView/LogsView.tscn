@@ -39,5 +39,4 @@ theme_override_fonts/normal_font = ExtResource("1")
 bbcode_enabled = true
 text = "Logs
 "
-scroll_active = false
 selection_enabled = true

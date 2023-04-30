@@ -3,6 +3,7 @@
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
+#include "wrappers/continuance_token.h"
 
 using namespace godot;
 
@@ -16,6 +17,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<IEOS>();
     _ieos = memnew(IEOS);
     Engine::get_singleton()->register_singleton("IEOS", IEOS::get_singleton());
+    ClassDB::register_class<godot::ContinuanceTokenEOSG>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
