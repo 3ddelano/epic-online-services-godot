@@ -129,7 +129,7 @@ class Connect:
 			super._init("LoginOptions")
 
 		var credentials: Credentials
-		var user_login_info = null  # UserLoginInfo
+		var user_login_info: UserLoginInfo
 
 		var client_data = null
 

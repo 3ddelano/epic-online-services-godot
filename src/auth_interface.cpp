@@ -29,13 +29,13 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
     loginOptions.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
     loginOptions.Credentials = &credentials;
     loginOptions.ScopeFlags = static_cast<EOS_EAuthScopeFlags>((int)p_options->get("scope_flags"));
-
-    Variant* client_data = new Variant(p_options->get("client_data"));
-    EOS_Auth_Login(s_authInterface, &loginOptions, (void*)&client_data, [](const EOS_Auth_LoginCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_Login(s_authInterface, &loginOptions, (void*)*p_options, [](const EOS_Auth_LoginCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = (int)data->ResultCode;
-        Variant* client_data = reinterpret_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = "";
         if (data->LocalUserId != nullptr) {
             ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
@@ -70,7 +70,6 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
             ret["success"] = false;
         }
         IEOS::get_singleton()->emit_signal("auth_interface_login_callback", ret);
-        // delete client_data;
     });
     return;
 }
@@ -78,12 +77,13 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
 void IEOS::auth_interface_logout(Ref<RefCounted> p_options) {
     EOS_Auth_LogoutOptions logoutOptions;
     memset(&logoutOptions, 0, sizeof(logoutOptions));
-    Variant client_data = p_options->get("client_data");
-    EOS_Auth_Logout(s_authInterface, &logoutOptions, (void*)client_data, [](const EOS_Auth_LogoutCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_Logout(s_authInterface, &logoutOptions, (void*)*p_options, [](const EOS_Auth_LogoutCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = (int)data->ResultCode;
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = "";
         if (data->LocalUserId != nullptr) {
             ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
@@ -155,12 +155,13 @@ void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
     CharString refresh_token = p_refresh_token.utf8();
     options.RefreshToken = refresh_token.get_data();
 
-    Variant client_data = p_options->get("client_data");
-    EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void*)client_data, [](const EOS_Auth_DeletePersistentAuthCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_DeletePersistentAuthCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = (int)data->ResultCode;
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("auth_interface_delete_persistent_auth_callback", ret);
         return;
     });
@@ -223,13 +224,13 @@ void IEOS::auth_interface_query_id_token(Ref<RefCounted> p_options) {
     options.LocalUserId = localUserId;
     options.TargetAccountId = targetAccountId;
 
-    Variant client_data = p_options->get("client_data");
-
-    EOS_Auth_QueryIdToken(s_authInterface, &options, (void*)client_data, [](const EOS_Auth_QueryIdTokenCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_QueryIdToken(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_QueryIdTokenCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         if (data->ResultCode == EOS_EResult::EOS_Success) {
             ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
             ret["target_account_id"] = eosg_epic_account_id_to_string(data->TargetAccountId);
@@ -256,12 +257,13 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_AUTH_VERIFYIDTOKEN_API_LATEST;
     options.IdToken = &idToken;
 
-    Variant client_data = p_options->get("client_data");
-    EOS_Auth_VerifyIdToken(s_authInterface, &options, (void*)client_data, [](const EOS_Auth_VerifyIdTokenCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_VerifyIdToken(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_VerifyIdTokenCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         if (data->ResultCode == EOS_EResult::EOS_Success) {
             ret["application_id"] = String(data->ApplicationId);
             ret["client_id"] = String(data->ClientId);
@@ -293,12 +295,13 @@ void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
     options.LinkAccountFlags = static_cast<EOS_ELinkAccountFlags>((int)p_options->get("link_account_flags"));
     options.ContinuanceToken = p_continuance_token->get_token();
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
-    Variant client_data = p_options->get("client_data");
-    EOS_Auth_LinkAccount(s_authInterface, &options, (void*)client_data, [](const EOS_Auth_LinkAccountCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_LinkAccount(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_LinkAccountCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         if (data->ResultCode == EOS_EResult::EOS_Success) {
             ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
             ret["pin_grant_info"] = eosg_auth_pin_grant_info_to_dict(data->PinGrantInfo);
@@ -339,12 +342,13 @@ void IEOS::auth_interface_verify_user_auth(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_AUTH_VERIFYUSERAUTH_API_LATEST;
     options.AuthToken = &authToken;
-    Variant client_data = p_options->get("client_data");
-    EOS_Auth_VerifyUserAuth(s_authInterface, &options, (void*)client_data, [](const EOS_Auth_VerifyUserAuthCallbackInfo* data) {
+    p_options->reference();
+    EOS_Auth_VerifyUserAuth(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_VerifyUserAuthCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Variant client_data = *static_cast<Variant*>(data->ClientData);
-        ret["client_data"] = client_data;
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("auth_interface_verify_user_auth_callback", ret);
     });
     return;

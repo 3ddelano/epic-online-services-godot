@@ -77,13 +77,12 @@ func _ready() -> void:
 	# TODO: (Remove) Autologin for debug purpose
 	if OS.is_debug_build():
 		await Store.platform_create
-#		perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
+		# perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
 		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 
 
 func _on_auth_interface_login_callback(data: Dictionary):
 	print("--- Auth: login_callback: ", EOS.result_str(data))
-	print(data)
 
 	if data.pending:
 		print("--- Auth: Login Pending...")
@@ -192,8 +191,6 @@ func _on_login_btn_pressed():
 	var login_id = enter_credentials.get_id_value()
 	var login_token = enter_credentials.get_token_value()
 
-	prints(login_type_data, login_type, login_id, login_token)
-
 	if _state == States.ChooseMethod:
 		# In ChooseMethod state
 		if login_type_data.id_help or login_type_data.token_help:
@@ -278,7 +275,7 @@ func perform_auth_login(type: int, id = "", token = "", external_type = -1):
 	var login_options = EOS.Auth.LoginOptions.new()
 	login_options.credentials = credentials
 	login_options.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
-	login_options.client_data = {"data": "her", "name": [1, 2, "c"]}
+	login_options.client_data = {"data": "hello", "name": [1, 2, "world"]}
 	EOS.Auth.AuthInterface.login(login_options)
 
 
@@ -294,7 +291,6 @@ func connect_account(type: int, token = null, display_name = null):
 	if display_name:
 		login_options.user_login_info = EOS.Connect.UserLoginInfo.new()
 		login_options.user_login_info.display_name = display_name
-
 	EOS.Connect.ConnectInterface.login(login_options)
 
 

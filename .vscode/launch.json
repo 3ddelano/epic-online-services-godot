@@ -6,7 +6,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${config:godot_tools.editor_path_4}",
-            "args": ["--debug", "--headless"],
+            "args": ["--debug"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/sample",
             "environment": [],

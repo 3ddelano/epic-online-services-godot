@@ -1,21 +1,21 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "build",
-      "group": "build",
-      "type": "shell",
-      "command": "scons",
-      "args": ["dev_build=yes", "-j8"],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "build-release",
-      "group": "build",
-      "type": "shell",
-      "command": "scons",
-      "args": ["target=template_release", "-j8"],
-      "problemMatcher": "$msCompile"
-    }
-  ]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "group": "build",
+            "type": "shell",
+            "command": "scons",
+            "args": ["dev_build=yes", "-j7"],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-release",
+            "group": "build",
+            "type": "shell",
+            "command": "scons",
+            "args": ["target=template_release", "-j8"],
+            "problemMatcher": "$msCompile"
+        }
+    ]
 }
