@@ -77,6 +77,7 @@ func _ready() -> void:
 	# TODO: (Remove) Autologin for debug purpose
 	if OS.is_debug_build():
 		await Store.platform_create
+		# perform_auth_login(EOS.Auth.LoginCredentialType.AccountPortal)
 		# perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
 		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 

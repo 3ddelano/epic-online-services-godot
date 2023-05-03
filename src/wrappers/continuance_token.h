@@ -12,11 +12,17 @@ class ContinuanceTokenEOSG : public RefCounted {
     static void _bind_methods(){};
 
    public:
+    bool isSet = false;
     ContinuanceTokenEOSG(){};
     ~ContinuanceTokenEOSG(){};
 
     void set_token(EOS_ContinuanceToken token) {
         m_token = token;
+        if (token == nullptr) {
+            isSet = false;
+        } else {
+            isSet = true;
+        }
     }
 
     EOS_ContinuanceToken get_token() {
