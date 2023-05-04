@@ -53,6 +53,7 @@ class IEOS : public RefCounted {
 
     static void tick();
     int shutdown();
+    bool is_operation_complete(int result_code);
 
     // -----
     // Platform Interface

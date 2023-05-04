@@ -234,6 +234,10 @@ int IEOS::shutdown() {
     return static_cast<int>(result);
 }
 
+bool IEOS::is_operation_complete(int p_result_code) {
+    return EOSG_GET_BOOL(EOS_EResult_IsOperationComplete(static_cast<EOS_EResult>(p_result_code)));
+}
+
 IEOS *IEOS::singleton = nullptr;
 
 IEOS *IEOS::get_singleton() { return singleton; }

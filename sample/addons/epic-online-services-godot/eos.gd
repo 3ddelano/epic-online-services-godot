@@ -1956,6 +1956,10 @@ static func result_str(p_result) -> String:
 	return Result.keys()[idx]
 
 
+static func is_operation_complete(p_result_code: Result) -> bool:
+    return IEOS.is_operation_complete(p_result_code)
+
+
 enum Result {
 	Success = 0,
 	NoConnection = 1,
