@@ -20,7 +20,7 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     EOS_Connect_UserLoginInfo userLoginInfo;
     memset(&userLoginInfo, 0, sizeof(EOS_Connect_LoginOptions));
     if (!p_display_name.is_empty()) {
-        userLoginInfo.ApiVersion = EOS_CONNECT_LOGIN_API_LATEST;
+        userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
         userLoginInfo.DisplayName = display_name.get_data();
     }
 
@@ -286,7 +286,7 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
     CharString p_json_web_token = VARIANT_TO_CHARSTRING(p_id_token->get("json_web_token"));
     EOS_Connect_IdToken idToken;
     memset(&idToken, 0, sizeof(idToken));
-    idToken.ApiVersion = EOS_AUTH_IDTOKEN_API_LATEST;
+    idToken.ApiVersion = EOS_CONNECT_IDTOKEN_API_LATEST;
     idToken.ProductUserId = eosg_string_to_product_user_id(p_product_user_id.get_data());
     idToken.JsonWebToken = p_json_web_token.get_data();
 

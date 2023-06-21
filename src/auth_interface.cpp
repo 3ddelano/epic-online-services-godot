@@ -91,7 +91,7 @@ Dictionary IEOS::auth_interface_copy_id_token(Ref<RefCounted> p_options) {
 Dictionary IEOS::auth_interface_copy_user_auth_token(Ref<RefCounted> p_options, const String& p_local_user_id) {
     EOS_Auth_CopyUserAuthTokenOptions options;
     memset(&options, 0, sizeof(options));
-    options.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
+    options.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
     CharString local_user_id = p_local_user_id.utf8();
     EOS_Auth_Token* outToken = nullptr;
     EOS_EpicAccountId localUserId = eosg_string_to_epic_account_id(local_user_id.get_data());

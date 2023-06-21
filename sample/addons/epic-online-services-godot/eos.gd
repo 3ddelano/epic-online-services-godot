@@ -1955,7 +1955,7 @@ class Version:
 			return IEOS.version_interface_get_constants()
 
 
-static func print_result(p_result: int) -> void:
+static func print_result(p_result) -> void:
 	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
 
 
