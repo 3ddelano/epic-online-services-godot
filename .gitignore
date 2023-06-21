@@ -6,3 +6,7 @@ vc140.pdb
 .sconsign.dblite
 
 *.obj
+
+temp/
+
+release.zip
