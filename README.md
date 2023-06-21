@@ -11,14 +11,28 @@ Epic Online Services Godot (WIP)
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
 
-#### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3.x Mono (C#)
-#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4.x non-mono
+#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4
+#### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3 Mono (C#) (un maintained)
 
-## [View Current Status](#current-status)
+## [View Current Project Status](#current-project-status)
 
 ## [Demo Video (Coming Soon)](#)
 
 ## [Documentation (Coming Soon)](#)
+
+
+## Support Development
+
+#### Making this project took a lot of time and effort, reading the Epic Online Services documentation countless times and testing each method in Godot. I would really appreciate if you could support the project in any way.
+
+<a href="https://www.buymeacoffee.com/3ddelano" target="_blank"><img height="41" width="174" src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a>
+<br>
+<a href="https://github.com/sponsors/3ddelano" target="_blank">Github Sponsor</a>
+
+#### Want to support in other ways? Contact me on Discord: `@3ddelano`
+
+Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](https://discord.gg/FZY9TqW)
+
 
 How does it work
 --------------
@@ -111,7 +125,7 @@ To develop this plugin, follow the below steps:
    scons platform=windows -j4 target=template_release
    ```
 
-6. The build GDExtension library will be in the `addons/epic-online-services-godot/bin/` folder with a `/demo/addons/epic-online-services-godot/bin`.
+6. The built GDExtension library will be in the `addons/epic-online-services-godot/bin/` folder.
 
 
 ### How to run the sample project?
@@ -145,17 +159,8 @@ Follow the instructions in [Running the service for local development](https://d
   
   Bootstrap the exported game executable (eg. `My Amazing Game.exe`)
 
-# Support Development
 
-### Making this project took a lot of time and effort, reading the EOS documentation countless times and testing each method in Godot. I would really appreciate if you could support the project in any way.
-
-<a href="https://www.buymeacoffee.com/3ddelano" target="_blank"><img height="41" width="174" src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a>
-
-#### Want to support in other ways? Contact me on Discord: `@3ddelano#6033`
-
-Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](https://discord.gg/FZY9TqW)
-
-## Current Status
+## Current Project Status
 
 - Auth Interface
   - [x] Implementation
