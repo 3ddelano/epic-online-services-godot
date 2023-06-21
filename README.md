@@ -49,11 +49,11 @@ This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `addons/` folder in of your project.
 3. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.x` plugin.
 4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below simple script.
-   ```GDScript
-   # In main script
-   extends Node
+    ```GDScript
+    # In main script
+    extends Node
 
-   func _ready():
+    func _ready() -> void:
         # Initialize the SDK
         var init_options = EOS.Platform.InitializeOptions.new()
         init_options.product_name = "PRODUCT_NAME_HERE"
@@ -83,15 +83,46 @@ This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps
             return
 
         # Setup Logs from EOS
-        EOS.get_instance().connect("logging_interface_callback", Callable(self, "_on_logging_interface_callback"))
+        EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
         var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
         if res != EOS.Result.Success:
             print("Failed to set log level: ", EOS.result_str(res))
-    
-    func _on_logging_interface_callback(msg):
+
+        _anon_login()
+
+
+    func _on_logging_interface_callback(msg) -> void:
         msg = EOS.Logging.LogMessage.from(msg) as EOS.Logging.LogMessage
         print("SDK %s | %s" % [msg.category, msg.message])
-   ```
+
+
+    func _anon_login() -> void:
+        # Login using Device ID (no user interaction/credentials required)
+        var opts = EOS.Connect.CreateDeviceIdOptions.new()
+        opts.device_model = OS.get_name() + " " + OS.get_model_name()
+        EOS.Connect.ConnectInterface.create_device_id(opts)
+        await EOS.get_instance().connect_interface_create_device_id_callback
+
+        var credentials = EOS.Connect.Credentials.new()
+        credentials.token = null
+        credentials.type = EOS.ExternalCredentialType.DeviceidAccessToken
+
+        var login_options = EOS.Connect.LoginOptions.new()
+        login_options.credentials = credentials
+        var user_login_info = EOS.Connect.UserLoginInfo.new()
+        user_login_info.display_name = "User"
+        login_options.user_login_info = user_login_info
+        EOS.Connect.ConnectInterface.login(login_options)
+        EOS.get_instance().connect_interface_login_callback.connect(_on_connect_interface_login_callback)
+
+    func _on_connect_interface_login_callback(data: Dictionary) -> void:
+        if not data.success:
+            print("Login failed")
+            EOS.print_result(data)
+            return
+
+        print_rich("[b]Login successfull[/b]: local_user_id=", data.local_user_id)
+    ```
 
 
 Development Setup
