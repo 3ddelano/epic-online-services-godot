@@ -31,9 +31,9 @@ static EOS_EpicAccountId eosg_string_to_epic_account_id(const char* p_account_id
     return accountId;
 }
 
-static char const* eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
+static String eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
     if (localUserId == nullptr) {
-        return "";
+        return String("");
     }
 
     static char tempBuffer[EOS_PRODUCTUSERID_MAX_LENGTH + 1];
@@ -41,12 +41,12 @@ static char const* eosg_product_user_id_to_string(EOS_ProductUserId localUserId)
     EOS_EResult Result = EOS_ProductUserId_ToString(localUserId, tempBuffer, &tempBufferSize);
 
     if (Result == EOS_EResult::EOS_Success) {
-        return tempBuffer;
+        return String(tempBuffer);
     }
 
     UtilityFunctions::printerr("\nError: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n ");
 
-    return "";
+    return String("");
 }
 
 static EOS_ProductUserId eosg_string_to_product_user_id(const char* p_account_id) {
@@ -54,10 +54,9 @@ static EOS_ProductUserId eosg_string_to_product_user_id(const char* p_account_id
     return accountId;
 }
 
-static Dictionary
-eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo* pinGrantInfo) {
+static Variant eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo* pinGrantInfo) {
     if (pinGrantInfo == nullptr) {
-        return Dictionary();
+        return Variant();
     }
     Dictionary ret;
     ret["user_code"] = EOSG_GET_STRING(pinGrantInfo->UserCode);
@@ -68,50 +67,75 @@ eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo* pinGrantInfo) {
     return ret;
 }
 
-static Dictionary eosg_auth_account_feature_restricted_info_to_dict(const EOS_Auth_AccountFeatureRestrictedInfo* accountFeaturesRestrictedInfo) {
+static Variant eosg_auth_account_feature_restricted_info_to_dict(const EOS_Auth_AccountFeatureRestrictedInfo* accountFeaturesRestrictedInfo) {
     if (accountFeaturesRestrictedInfo == nullptr) {
-        return Dictionary();
+        return Variant();
     }
     Dictionary ret;
     ret["verification_uri"] = EOSG_GET_STRING(accountFeaturesRestrictedInfo->VerificationURI);
     return ret;
 }
 
-static Ref<ContinuanceTokenEOSG> eosg_continuance_token_to_wrapper(EOS_ContinuanceToken continuanceToken) {
+static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken continuanceToken) {
+    if (continuanceToken == nullptr) {
+        return Variant();
+    }
     Ref<ContinuanceTokenEOSG> continuance_token = memnew(ContinuanceTokenEOSG());
-    // if (continuanceToken == nullptr) {
-    //     return continuance_token;
-    // }
     continuance_token->set_token(continuanceToken);
     return continuance_token;
 }
 
-static Dictionary eosg_auth_id_token_to_dict(EOS_Auth_IdToken* authIdToken) {
+static Variant eosg_auth_id_token_to_dict(EOS_Auth_IdToken* authIdToken) {
     if (authIdToken == nullptr) {
-        return Dictionary();
+        return Variant();
     }
-    Dictionary token;
-    token["account_id"] = eosg_epic_account_id_to_string(authIdToken->AccountId);
-    token["json_web_token"] = String(authIdToken->JsonWebToken);
+    Dictionary ret;
+    ret["account_id"] = eosg_epic_account_id_to_string(authIdToken->AccountId);
+    ret["json_web_token"] = String(authIdToken->JsonWebToken);
     EOS_Auth_IdToken_Release(authIdToken);
-    return token;
+    return ret;
 }
 
-static Dictionary eosg_auth_token_to_dict(EOS_Auth_Token* authToken) {
-    if (authToken == nullptr) {
-        return Dictionary();
+static Variant eosg_connect_id_token_to_dict(EOS_Connect_IdToken* connectIdToken) {
+    if (connectIdToken == nullptr) {
+        return Variant();
     }
-    Dictionary token;
-    token["app"] = EOSG_GET_STRING(authToken->App);
-    token["client_id"] = EOSG_GET_STRING(authToken->ClientId);
-    token["account_id"] = eosg_epic_account_id_to_string(authToken->AccountId);
-    token["access_token"] = EOSG_GET_STRING(authToken->AccessToken);
-    token["expires_in"] = authToken->ExpiresIn;
-    token["expires_at"] = EOSG_GET_STRING(authToken->ExpiresAt);
-    token["auth_type"] = static_cast<int>(authToken->AuthType);
-    token["refresh_token"] = EOSG_GET_STRING(authToken->RefreshToken);
-    token["refresh_expires_in"] = authToken->RefreshExpiresIn;
-    token["refresh_expires_at"] = EOSG_GET_STRING(authToken->RefreshExpiresAt);
+    Dictionary ret;
+    ret["product_user_id"] = eosg_product_user_id_to_string(connectIdToken->ProductUserId);
+    ret["json_web_token"] = String(connectIdToken->JsonWebToken);
+    EOS_Connect_IdToken_Release(connectIdToken);
+    return ret;
+}
+
+static Variant eosg_auth_token_to_dict(EOS_Auth_Token* authToken) {
+    if (authToken == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["app"] = EOSG_GET_STRING(authToken->App);
+    ret["client_id"] = EOSG_GET_STRING(authToken->ClientId);
+    ret["account_id"] = eosg_epic_account_id_to_string(authToken->AccountId);
+    ret["access_token"] = EOSG_GET_STRING(authToken->AccessToken);
+    ret["expires_in"] = authToken->ExpiresIn;
+    ret["expires_at"] = EOSG_GET_STRING(authToken->ExpiresAt);
+    ret["auth_type"] = static_cast<int>(authToken->AuthType);
+    ret["refresh_token"] = EOSG_GET_STRING(authToken->RefreshToken);
+    ret["refresh_expires_in"] = authToken->RefreshExpiresIn;
+    ret["refresh_expires_at"] = EOSG_GET_STRING(authToken->RefreshExpiresAt);
     EOS_Auth_Token_Release(authToken);
-    return token;
+    return ret;
+}
+
+static Variant eosg_connect_external_account_info_to_dict(EOS_Connect_ExternalAccountInfo* externalAccountInfo) {
+    if (externalAccountInfo == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["product_user_id"] = eosg_product_user_id_to_string(externalAccountInfo->ProductUserId);
+    ret["display_name"] = EOSG_GET_STRING(externalAccountInfo->DisplayName);
+    ret["account_id"] = EOSG_GET_STRING(externalAccountInfo->AccountId);
+    ret["account_id_type"] = static_cast<int>(externalAccountInfo->AccountIdType);
+    ret["last_login_time"] = externalAccountInfo->LastLoginTime;
+    return ret;
 }

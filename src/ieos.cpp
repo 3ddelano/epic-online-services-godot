@@ -7,6 +7,7 @@ using namespace godot;
 void IEOS::_bind_methods() {
     ClassDB::bind_static_method("IEOS", D_METHOD("tick"), &IEOS::tick);
     IEOS_BIND_METHOD(shutdown);
+    IEOS_BIND_METHOD(is_operation_complete);
 
     // EOS Methods
     IEOS_BIND_METHOD(platform_interface_create);
@@ -57,6 +58,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(connect_interface_get_logged_in_users_count);
     IEOS_BIND_METHOD(connect_interface_get_login_status);
     IEOS_BIND_METHOD(connect_interface_get_product_user_external_account_count);
+    IEOS_BIND_METHOD(connect_interface_query_product_user_id_mapping);
     IEOS_BIND_METHOD(connect_interface_get_product_user_id_mapping);
     IEOS_BIND_METHOD(connect_interface_link_account);
     IEOS_BIND_METHOD(connect_interface_verify_id_token);
@@ -180,6 +182,7 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("connect_interface_create_device_id_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_delete_device_id_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_create_user_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("connect_interface_query_product_user_id_mappings_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_link_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_verify_id_token_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_transfer_device_id_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

@@ -100,67 +100,65 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     return true;
 }
 
-Dictionary IEOS::platform_interface_get_active_country_code(const String &p_user_id) {
-    CharString user_id = p_user_id.utf8();
-    EOS_EpicAccountId LocalUserId = EOS_EpicAccountId_FromString(user_id.get_data());
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH);
-    EOS_EResult result = EOS_Platform_GetActiveCountryCode(s_platformInterface, LocalUserId, OutBuffer, nullptr);
+Dictionary IEOS::platform_interface_get_active_country_code(const String &p_local_user_id) {
+    CharString user_id = p_local_user_id.utf8();
+    EOS_EpicAccountId localUserId = EOS_EpicAccountId_FromString(user_id.get_data());
+    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH + 1);
+    int OutBufferLength = 0;
+    EOS_EResult res = EOS_Platform_GetActiveCountryCode(s_platformInterface, localUserId, OutBuffer, &OutBufferLength);
 
-    Dictionary dict;
-    dict["result"] = (int)result;
-    if (result == EOS_EResult::EOS_Success) {
-        dict["country_code"] = String(OutBuffer);
-        // TODO: should this be freed?
-        // memfree(OutBuffer);
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(res);
+    ret["country_code"] = "";
+    if (res == EOS_EResult::EOS_Success) {
+        ret["country_code"] = String(OutBuffer);
     }
 
-    return dict;
+    return ret;
 }
 
 Dictionary IEOS::platform_interface_get_active_locale_code(const String &p_user_id) {
     CharString user_id = p_user_id.utf8();
     EOS_EpicAccountId LocalUserId = EOS_EpicAccountId_FromString(user_id.get_data());
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH);
-    EOS_EResult result = EOS_Platform_GetActiveLocaleCode(s_platformInterface, LocalUserId, OutBuffer, nullptr);
+    char *OutBuffer = (char *)memalloc(EOS_LOCALECODE_MAX_LENGTH + 1);
+    int OutBufferLength = 0;
+    EOS_EResult res = EOS_Platform_GetActiveLocaleCode(s_platformInterface, LocalUserId, OutBuffer, &OutBufferLength);
 
-    Dictionary dict;
-    dict["result"] = (int)result;
-    if (result == EOS_EResult::EOS_Success) {
-        dict["locale_code"] = String(OutBuffer);
-        // TODO: should this be freed?
-        // memfree(OutBuffer);
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(res);
+    ret["locale_code"] = "";
+    if (res == EOS_EResult::EOS_Success) {
+        ret["locale_code"] = String(OutBuffer);
     }
 
-    return dict;
+    return ret;
 }
 
 Dictionary IEOS::platform_interface_get_override_country_code() {
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH);
+    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH + 1);
     int32_t *OutBufferLength = (int32_t *)memalloc(sizeof(int32_t));
-    EOS_EResult result = EOS_Platform_GetOverrideCountryCode(s_platformInterface, OutBuffer, OutBufferLength);
+    EOS_EResult res = EOS_Platform_GetOverrideCountryCode(s_platformInterface, OutBuffer, OutBufferLength);
 
     Dictionary dict;
-    dict["result"] = (int)result;
-    if (result == EOS_EResult::EOS_Success) {
+    dict["result_code"] = static_cast<int>(res);
+    dict["country_code"] = "";
+    if (res == EOS_EResult::EOS_Success) {
         dict["country_code"] = String(OutBuffer);
-        // TODO: should this be freed?
-        // memfree(OutBuffer);
     }
 
     return dict;
 }
 
 Dictionary IEOS::platform_interface_get_override_locale_code() {
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH);
+    char *OutBuffer = (char *)memalloc(EOS_LOCALECODE_MAX_LENGTH + 1);
     int32_t *OutBufferLength = (int32_t *)memalloc(sizeof(int32_t));
-    EOS_EResult result = EOS_Platform_GetOverrideLocaleCode(s_platformInterface, OutBuffer, OutBufferLength);
+    EOS_EResult res = EOS_Platform_GetOverrideLocaleCode(s_platformInterface, OutBuffer, OutBufferLength);
 
     Dictionary dict;
-    dict["result"] = (int)result;
-    if (result == EOS_EResult::EOS_Success) {
+    dict["result_code"] = static_cast<int>(res);
+    dict["locale_code"] = "";
+    if (res == EOS_EResult::EOS_Success) {
         dict["locale_code"] = String(OutBuffer);
-        // TODO: should this be freed?
-        // memfree(OutBuffer);
     }
 
     return dict;
@@ -168,21 +166,16 @@ Dictionary IEOS::platform_interface_get_override_locale_code() {
 
 int IEOS::platform_interface_set_override_country_code(const String &p_country_code) {
     CharString country_code = p_country_code.utf8();
-    EOS_EResult result = EOS_Platform_SetOverrideCountryCode(s_platformInterface, country_code.get_data());
-
-    return (int)result;
+    return static_cast<int>(EOS_Platform_SetOverrideCountryCode(s_platformInterface, country_code.get_data()));
 }
 
 int IEOS::platform_interface_set_override_locale_code(const String &p_locale_code) {
     CharString locale_code = p_locale_code.utf8();
-    EOS_EResult result = EOS_Platform_SetOverrideLocaleCode(s_platformInterface, locale_code.get_data());
-
-    return (int)result;
+    return static_cast<int>(EOS_Platform_SetOverrideLocaleCode(s_platformInterface, locale_code.get_data()));
 }
 
 int IEOS::platform_interface_check_for_launcher_and_restart() {
-    EOS_EResult result = EOS_Platform_CheckForLauncherAndRestart(s_platformInterface);
-    return (int)result;
+    return static_cast<int>(EOS_Platform_CheckForLauncherAndRestart(s_platformInterface));
 }
 
 int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
@@ -215,7 +208,7 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
         UtilityFunctions::print("[EOS SDK] Failed to set logging callback: " + String(EOS_EResult_ToString(setCallbackResult)));
     }
 
-    return (int)res;
+    return static_cast<int>(res);
 }
 
 Dictionary IEOS::platform_interface_get_desktop_crossplay_status() {
@@ -225,7 +218,7 @@ Dictionary IEOS::platform_interface_get_desktop_crossplay_status() {
     EOS_EResult result = EOS_Platform_GetDesktopCrossplayStatus(s_platformInterface, &options, &outDesktopCrossplayStatusInfo);
 
     Dictionary dict;
-    dict["result"] = (int)result;
+    dict["result_code"] = static_cast<int>(result);
     Dictionary desktopCrossplayStatus = Dictionary();
     if (result == EOS_EResult::EOS_Success) {
         desktopCrossplayStatus["status"] = (int)outDesktopCrossplayStatusInfo.Status;
@@ -237,7 +230,7 @@ Dictionary IEOS::platform_interface_get_desktop_crossplay_status() {
 
 int IEOS::platform_interface_set_application_status(int p_status) {
     EOS_EResult result = EOS_Platform_SetApplicationStatus(s_platformInterface, static_cast<EOS_EApplicationStatus>(p_status));
-    return (int)result;
+    return static_cast<int>(result);
 }
 
 int IEOS::platform_interface_get_application_status() {

@@ -202,6 +202,13 @@ class Connect:
 
 		var target_user_id: String
 
+	class QueryProductUserIdMappingOptions extends BaseClass:
+		func _init():
+			super._init("QueryProductUserIdMappingOptions")
+
+		var local_user_id: String
+		var product_user_ids: Array[String]
+
 	class GetProductUserIdMappingOptions extends BaseClass:
 		func _init():
 			super._init("GetProductUserIdMappingOptions")
@@ -303,7 +310,10 @@ class Connect:
 		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions) -> int:
 			return IEOS.connect_interface_get_product_user_external_account_count(options)
 
-		static func get_product_user_id_mapping(options: GetProductUserIdMappingOptions):
+		static func query_product_user_id_mapping(options: QueryProductUserIdMappingOptions) -> void:
+			IEOS.connect_interface_query_product_user_id_mapping(options)
+
+		static func get_product_user_id_mapping(options: GetProductUserIdMappingOptions) -> Dictionary:
 			return IEOS.connect_interface_get_product_user_id_mapping(options)
 
 		static func link_account(options: LinkAccountOptions) -> void:
@@ -1957,7 +1967,7 @@ static func result_str(p_result) -> String:
 
 
 static func is_operation_complete(p_result_code: Result) -> bool:
-    return IEOS.is_operation_complete(p_result_code)
+	return IEOS.is_operation_complete(p_result_code)
 
 
 enum Result {

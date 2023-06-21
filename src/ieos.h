@@ -59,8 +59,8 @@ class IEOS : public RefCounted {
     // Platform Interface
     // -----
     bool platform_interface_create(Ref<RefCounted> options);
-    Dictionary platform_interface_get_active_country_code(const String& user_id);
-    Dictionary platform_interface_get_active_locale_code(const String& user_id);
+    Dictionary platform_interface_get_active_country_code(const String& local_user_id);
+    Dictionary platform_interface_get_active_locale_code(const String& local_user_id);
     Dictionary platform_interface_get_override_country_code();
     Dictionary platform_interface_get_override_locale_code();
     int platform_interface_set_override_country_code(const String& country_code);
@@ -122,6 +122,7 @@ class IEOS : public RefCounted {
     int connect_interface_get_logged_in_users_count();
     int connect_interface_get_login_status(const String& local_user_id);
     int connect_interface_get_product_user_external_account_count(Ref<RefCounted> options);
+    void connect_interface_query_product_user_id_mapping(Ref<RefCounted> options);
     Dictionary connect_interface_get_product_user_id_mapping(Ref<RefCounted> options);
     void connect_interface_link_account(Ref<RefCounted> options);
     void connect_interface_verify_id_token(Ref<RefCounted> options);
