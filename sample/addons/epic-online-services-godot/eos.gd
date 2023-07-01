@@ -582,7 +582,7 @@ class Stats:
 
 		var local_user_id: String
 		var target_user_id: String
-		var stats: Array # IngestData: {stat_name: String, ingest_amount: int}
+		var stats: Array[Dictionary] # IngestData: {stat_name: String, ingest_amount: int}
 
 		var client_data = null
 
@@ -739,7 +739,7 @@ class Ecom:
 			super._init("CheckoutOptions")
 
 		var local_user_id: String
-		var entries: Array # [{offer_id: String}]
+		var entries: Array[Dictionary] # [{offer_id: String}]
 		var override_catalog_namespace = null # String
 
 	class CopyEntitlementByIdOptions extends BaseClass:
@@ -890,7 +890,7 @@ class Ecom:
 			super._init("QueryEntitlementsOptions")
 
 		var local_user_id: String
-		var entitlement_names: Array # [String]
+		var entitlement_names: Array[String]
 		var include_redeemed: bool
 
 	class QueryOffersOptions extends BaseClass:
@@ -907,7 +907,7 @@ class Ecom:
 			super._init("QueryOwnershipOptions")
 
 		var local_user_id: String
-		var catalog_item_ids: Array # [String]
+		var catalog_item_ids: Array[String]
 		var catalog_namespace = null # String
 
 		var client_data = null
@@ -917,7 +917,7 @@ class Ecom:
 			super._init("QueryOwnershipTokenOptions")
 
 		var local_user_id: String
-		var catalog_item_ids: Array # [String]
+		var catalog_item_ids: Array[String]
 		var catalog_namespace = null # String
 
 		var client_data = null
@@ -927,7 +927,7 @@ class Ecom:
 			super._init("RedeemEntitlementsOptions")
 
 		var local_user_id: String
-		var entitlement_ids: Array # [String]
+		var entitlement_ids: Array[String]
 
 		var client_data = null
 
@@ -1122,7 +1122,7 @@ class KWS:
 			super._init("RequestPermissionsOptions")
 
 		var local_user_id: String
-		var permission_keys: Array # [String]
+		var permission_keys: Array[String]
 
 	class UpdateParentEmailOptions extends BaseClass:
 		func _init():
@@ -1406,13 +1406,13 @@ class Presence:
 		func _init():
 			super._init("PresenceModificationSetDataOptions")
 
-		var records: Array # [{key: string, value: string}]
+		var records: Array[Dictionary] # [{key: string, value: string}]
 
 	class PresenceModificationDeleteDataOptions extends BaseClass:
 		func _init():
 			super._init("PresenceModificationDeleteDataOptions")
 
-		var records: Array # [string]
+		var records: Array[String]
 
 	class PresenceModificationSetJoinInfoOptions extends BaseClass:
 		func _init():
