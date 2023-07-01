@@ -12,13 +12,13 @@ var achievements = {}
 
 func _ready() -> void:
 	# Achievements callbacks
-	var _c = EOS.get_instance().connect("achievements_interface_achievements_unlocked_callback", Callable(self, "_on_achievements_interface_achievements_unlocked_callback"))
-	_c = EOS.get_instance().connect("achievements_interface_unlock_achievements_complete_callback", Callable(self, "_on_achievements_interface_unlock_achievements_complete_callback"))
+	var _c = EOS.get_instance().achievements_interface_achievements_unlocked_callback.connect(_on_achievements_interface_achievements_unlocked_callback)
+	_c = EOS.get_instance().achievements_interface_unlock_achievements_complete_callback.connect(_on_achievements_interface_unlock_achievements_complete_callback)
 
-	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
-	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
-	_c = achievements_list.connect("achievement_pressed", Callable(self, "_on_achievement_pressed"))
-	_c = refresh_btn.connect("pressed", Callable(self, "_on_refresh_btn_pressed"))
+	_c = Store.login_success.connect(_on_login_success)
+	_c = Store.logout_success.connect(_on_logout_success)
+	_c = achievements_list.achievement_pressed.connect(_on_achievement_pressed)
+	_c = refresh_btn.pressed.connect(_on_refresh_btn_pressed)
 
 func _on_login_success():
 	var query_options = EOS.Achievements.QueryDefinitionsOptions.new()

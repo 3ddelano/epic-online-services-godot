@@ -23,7 +23,7 @@ func from_achievements_array(arr: Array):
 		var achievement = ACHIEVEMENTS_LIST_ACHIEVEMENT.instantiate()
 		$SC/VB.add_child(achievement)
 
-		achievement.connect("pressed", Callable(self, "_on_achievement_pressed"))
+		achievement.pressed.connect(_on_achievement_pressed)
 		achievement.from_achievement_data(achievement_data)
 
 

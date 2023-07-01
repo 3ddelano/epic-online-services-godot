@@ -14,11 +14,12 @@ enum States {
 var _state = States.Loading
 var _url: String
 
+
 func _ready() -> void:
 	set_state(States.Loading)
 
 
-func set_state(new_state: int):
+func set_state(new_state: States):
 	_state = new_state
 
 	if _state == States.Loading:
@@ -40,7 +41,7 @@ func fetch_image(url: String):
 	set_state(States.Loading)
 	var http_request = HTTPRequest.new()
 	add_child(http_request)
-	http_request.connect("request_completed", Callable(self, "_on_request_completed"))
+	http_request.request_completed.connect(_on_request_completed)
 	http_request.request(url)
 
 

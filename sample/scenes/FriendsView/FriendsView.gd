@@ -10,10 +10,11 @@ var friends = []
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
-	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
-	_c = EOS.get_instance().connect("friends_interface_query_friends_callback", Callable(self, "_on_query_friends_callback"))
-	_c = EOS.get_instance().connect("user_info_interface_query_user_info_callback", Callable(self, "_on_query_user_info_callback"))
+	_c = Store.login_success.connect(_on_login_success)
+	_c = Store.logout_success.connect(_on_logout_success)
+	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
+	_c = EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
+
 
 func _on_login_success():
 
@@ -72,6 +73,7 @@ func _on_query_user_info_callback(data: Dictionary):
 	else:
 		friends.append(user_info_data.user_info)
 		_update_friends_list()
+
 
 func _update_friends_list():
 	var base_bbcode = """[b]Friends List (%s)[/b]""" % str(friends.size())

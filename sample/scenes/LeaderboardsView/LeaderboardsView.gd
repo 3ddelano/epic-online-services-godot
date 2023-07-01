@@ -12,11 +12,11 @@ var leaderboards = []
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
-	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
-	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_definitions_complete_callback", Callable(self, "_on_query_leaderboard_defs_complete_callback"))
-	_c = EOS.get_instance().connect("leaderboards_interface_query_leaderboard_ranks_complete_callback", Callable(self, "_on_query_leaderboard_ranks_complete_callback"))
-	_c = view_leaderboard_btn.connect("pressed", Callable(self, "_on_view_leaderboard_btn_pressed"))
+	_c = Store.login_success.connect(_on_login_success)
+	_c = Store.logout_success.connect(_on_logout_success)
+	_c = EOS.get_instance().leaderboards_interface_query_leaderboard_definitions_complete_callback.connect(_on_query_leaderboard_defs_complete_callback)
+	_c = EOS.get_instance().leaderboards_interface_query_leaderboard_ranks_complete_callback.connect(_on_query_leaderboard_ranks_complete_callback)
+	_c = view_leaderboard_btn.pressed.connect(_on_view_leaderboard_btn_pressed)
 
 	_update_leaderboard("", [])
 
@@ -32,7 +32,7 @@ func _on_login_success():
 	#	}
 	#]
 	#EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_user_scores(query_userscores_options)
-	#print(yield(EOS.get_instance(), "leaderboards_interface_query_leaderboard_user_scores_complete_callback"))
+	#print(await EOS.get_instance().leaderboards_interface_query_leaderboard_user_scores_complete_callback)
 
 	#var user_score_count_options = EOS.Leaderboards.GetLeaderboardUserScoreCountOptions.new()
 	#user_score_count_options.stat_name = "stat_max"

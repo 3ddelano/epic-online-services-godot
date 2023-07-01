@@ -10,7 +10,7 @@ var _data: Dictionary
 @onready var fade_out_timer = $FadeOutTimer
 
 func _ready() -> void:
-	var _c = fade_out_timer.connect("timeout", Callable(self, "_on_fade_out_timer_timeout"))
+	var _c = fade_out_timer.timeout.connect(_on_fade_out_timer_timeout)
 
 
 func from_achievement_data(data: Dictionary):

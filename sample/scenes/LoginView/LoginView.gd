@@ -51,6 +51,7 @@ var login_types = {
 	}
 }
 
+
 func _ready() -> void:
 	# Generate login type dropdown
 	var c = 0
@@ -60,19 +61,19 @@ func _ready() -> void:
 		login_type_btn.set_item_metadata(c, login_types[login_type])
 		c += 1
 
-	login_btn.connect("pressed", Callable(self, "_on_login_btn_pressed"))
-	back_btn.connect("pressed", Callable(self, "_on_back_btn_pressed"))
-	retry_login_btn.connect("pressed", Callable(self, "_on_retry_login_btn_pressed"))
-	logout_btn.connect("pressed", Callable(self, "_on_logout_btn_pressed"))
+	login_btn.pressed.connect(_on_login_btn_pressed)
+	back_btn.pressed.connect(_on_back_btn_pressed)
+	retry_login_btn.pressed.connect(_on_retry_login_btn_pressed)
+	logout_btn.pressed.connect(_on_logout_btn_pressed)
 
 	# Auth Interface callbacks
 	var instance = EOS.get_instance()
-	c = instance.connect("auth_interface_login_callback", Callable(self, "_on_auth_interface_login_callback"))
-	c = instance.connect("auth_interface_logout_callback", Callable(self, "_on_auth_interface_logout_callback"))
+	c = instance.auth_interface_login_callback.connect(_on_auth_interface_login_callback)
+	c = instance.auth_interface_logout_callback.connect(_on_auth_interface_logout_callback)
 	# Connect Interface callbacks
-	c = instance.connect("connect_interface_login_callback", Callable(self, "_on_connect_interface_login_callback"))
-	c = instance.connect("connect_interface_login_status_changed", Callable(self, "_on_connect_interface_login_status_changed"))
-	c = instance.connect("user_info_interface_query_user_info_callback", Callable(self, "_on_query_user_info_callback"))
+	c = instance.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
+	c = instance.connect_interface_login_status_changed.connect(_on_connect_interface_login_status_changed)
+	c = instance.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
 	# TODO: (Remove) Autologin for debug purpose
 	if OS.is_debug_build():
@@ -233,7 +234,7 @@ func _on_logout_btn_pressed():
 	EOS.Auth.AuthInterface.logout(logout_options)
 
 
-func set_login_state(new_state: int):
+func set_login_state(new_state: States):
 	_state = new_state
 
 	for child in $HB/Right.get_children():

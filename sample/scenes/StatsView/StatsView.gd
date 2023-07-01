@@ -14,12 +14,12 @@ var stats = []
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
-	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
-	_c = EOS.get_instance().connect("stats_interface_query_stats_complete_callback", Callable(self, "_on_query_stats_complete_callback"))
-	_c = EOS.get_instance().connect("stats_interface_ingest_stat_complete_callback", Callable(self, "_on_ingest_stat_complete_callback"))
-	_c = ingest_btn.connect("pressed", Callable(self, "_on_ingest_btn_pressed"))
-	_c = refresh_my_stats_btn.connect("pressed", Callable(self, "_on_refresh_my_stats_btn_pressed"))
+	_c = Store.login_success.connect(_on_login_success)
+	_c = Store.logout_success.connect(_on_logout_success)
+	_c = EOS.get_instance().stats_interface_query_stats_complete_callback.connect(_on_query_stats_complete_callback)
+	_c = EOS.get_instance().stats_interface_ingest_stat_complete_callback.connect(_on_ingest_stat_complete_callback)
+	_c = ingest_btn.pressed.connect(_on_ingest_btn_pressed)
+	_c = refresh_my_stats_btn.pressed.connect(_on_refresh_my_stats_btn_pressed)
 
 
 func _on_login_success():

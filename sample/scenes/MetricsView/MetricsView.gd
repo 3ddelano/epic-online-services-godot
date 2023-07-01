@@ -7,11 +7,10 @@ extends VBoxContainer
 @onready var end_player_session_btn = $HB2/EndPlayerSessionBtn
 @onready var end_player_session_label = $HB2/EndPlayerSessionLabel
 
-func _ready() -> void:
-	var _c
 
-	start_player_session_btn.connect("pressed", Callable(self, "_on_start_player_session_btn_pressed"))
-	end_player_session_btn.connect("pressed", Callable(self, "_on_end_player_session_btn_pressed"))
+func _ready() -> void:
+	start_player_session_btn.pressed.connect(_on_start_player_session_btn_pressed)
+	end_player_session_btn.pressed.connect(_on_end_player_session_btn_pressed)
 
 
 func _on_start_player_session_btn_pressed():
@@ -31,6 +30,7 @@ func _on_start_player_session_btn_pressed():
 	options.controller_type = EOS.Metrics.UserControllerType.MouseKeyboard
 	var ret = EOS.Metrics.MetricsInterface.begin_player_session(options)
 	print("--- Metrics: start_player_session: %s" % EOS.result_str(ret))
+
 
 func _on_end_player_session_btn_pressed():
 	var options = EOS.Metrics.EndPlayerSessionOptions.new()

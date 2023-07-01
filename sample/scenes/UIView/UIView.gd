@@ -14,15 +14,15 @@ extends VBoxContainer
 
 func _ready() -> void:
 	var _c
-	_c = Store.connect("login_success", Callable(self, "_on_login_success"))
-	_c = Store.connect("logout_success", Callable(self, "_on_logout_success"))
+	_c = Store.login_success.connect(_on_login_success)
+	_c = Store.logout_success.connect(_on_logout_success)
 
-	_c = notification_location_btn.connect("pressed", Callable(self, "_on_notification_location_btn_pressed"))
-	_c = show_friends_btn.connect("pressed", Callable(self, "_on_show_friends_btn_pressed"))
+	_c = notification_location_btn.pressed.connect(_on_notification_location_btn_pressed)
+	_c = show_friends_btn.pressed.connect(_on_show_friends_btn_pressed)
 
-#	_c = EOS.get_instance().connect("ui_interface_show_friends_callback", self, "_on_friends_overlay_visibility_changed")
-#	_c = EOS.get_instance().connect("ui_interface_hide_friends_callback", self, "_on_friends_overlay_visibility_changed")
-	_c = EOS.get_instance().connect("ui_interface_display_settings_updated_callback", Callable(self, "_on_display_settings_updated_callback"))
+#	_c = EOS.get_instance().ui_interface_show_friends_callback.connect(_on_friends_overlay_visibility_changed
+#	_c = EOS.get_instance().ui_interface_hide_friends_callback.connect(_on_friends_overlay_visibility_changed
+	_c = EOS.get_instance().ui_interface_display_settings_updated_callback.connect(_on_display_settings_updated_callback)
 
 	loginwithepic.visible = true
 	container.visible = false

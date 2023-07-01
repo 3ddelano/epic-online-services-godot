@@ -13,6 +13,7 @@ extends Control
 @export var _views_path: NodePath
 @onready var views = get_node(_views_path) as VBoxContainer
 
+
 func _ready() -> void:
 	print("Ready!")
 	Store._main_node = self
@@ -53,7 +54,7 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	Store.emit_signal("platform_create")
 	# Debug
-	Store.connect("login_success", Callable(self, "_on_tab_pressed"))
+	Store.login_success.connect(_on_tab_pressed)
 
 
 func _input(event: InputEvent) -> void:
@@ -147,12 +148,12 @@ func _on_tab_pressed():
 #	options9.local_user_id = Store.product_user_id
 #	options9.continuance_token = ContinunanceTokenWrapperHere
 #	EOS.Connect.ConnectInterface.link_account(options9)
-#	print(yield(EOS.get_instance(), "connect_interface_link_account_callback"))
+#	print(await EOS.get_instance().connect_interface_link_account_callback)
 
 	var options10 = EOS.Connect.VerifyIdTokenOptions.new()
 	options10.id_token = id_token
 	EOS.Connect.ConnectInterface.verify_id_token(options10)
-	print("--- Connect: verify_id_token_callback: ", yield(EOS.get_instance(), "connect_interface_verify_id_token_callback"))
+	print("--- Connect: verify_id_token_callback: ", await EOS.get_instance().connect_interface_verify_id_token_callback)
 
 
 
@@ -160,7 +161,7 @@ func _on_tab_pressed():
 #	var offers_options = EOS.Ecom.QueryOffersOptions.new()
 #	offers_options.local_user_id = Store.epic_account_id
 #	EOS.Ecom.EcomInterface.query_offers(offers_options)
-#	print("--- Ecom: query_offers_callback", EOS.result_str(yield(EOS.get_instance(), "ecom_interface_query_offers_callback")))
+#	print("--- Ecom: query_offers_callback", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
 #
 #	var checkout_options = EOS.Ecom.CheckoutOptions.new()
 #	checkout_options.local_user_id = Store.epic_account_id
@@ -168,7 +169,7 @@ func _on_tab_pressed():
 #		offer_id = "1234"
 #	}]
 #	EOS.Ecom.EcomInterface.checkout(checkout_options)
-#	var checkout_data = yield(EOS.get_instance(), "ecom_interface_checkout_callback")
+#	var checkout_data = await EOS.get_instance().ecom_interface_checkout_callback
 #	print("--- Ecom: checkout_callback", checkout_data)
 
 
@@ -178,7 +179,7 @@ func _on_tab_pressed():
 #	enum_mods_options.local_user_id = Store.epic_account_id
 #	enum_mods_options.type = EOS.Mods.ModEnumerationType.AllAvailable
 #	EOS.Mods.ModsInterface.enumerate_mods(enum_mods_options)
-#	var enum_mods_callback_data = yield(EOS.get_instance(), "mods_interface_enumerate_mods_callback")
+#	var enum_mods_callback_data = await EOS.get_instance().mods_interface_enumerate_mods_callback
 #	print("--- Mods: enumerate_mods_callback: ", EOS.result_str(enum_mods_callback_data))
 #
 #	var copy_mod_info_options = EOS.Mods.CopyModInfoOptions.new()
@@ -197,7 +198,7 @@ func _on_tab_pressed():
 #	report_options.message = "this is test message"
 #	report_options.context = JSON.print({hello = "testing"})
 #	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
-#	print("--- Reports: send_player_behavior_report: ", EOS.result_str(yield(EOS.get_instance(), "reports_interface_report_callback")))
+#	print("--- Reports: send_player_behavior_report: ", EOS.result_str(await EOS.get_instance().reports_interface_report_callback))
 
 
 
@@ -207,7 +208,7 @@ func _on_tab_pressed():
 #	var begin_snapshot_ret = EOS.ProgressionSnapshot.ProgressionSnapshotInterface.begin_snapshot(begin_snapshot_options)
 #	print("--- ProgressionSnapshot: begin_snapshot: ", begin_snapshot_ret)
 #
-#	yield(get_tree().create_timer(3), "timeout")
+#	awit get_tree().create_timer(3).timeout
 #
 #	var add_progression_options = EOS.ProgressionSnapshot.AddProgressionOptions.new()
 #	add_progression_options.snapshot_id = begin_snapshot_ret.snapshot_id
@@ -215,19 +216,19 @@ func _on_tab_pressed():
 #	add_progression_options.value = "test_value 0123456789"
 #	print("--- ProgressionSnapshot: add_progression: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.add_progression(add_progression_options)))
 #
-#	yield(get_tree().create_timer(3), "timeout")
+#	await get_tree().create_timer(3).timeout
 #
 #	var submit_snapshot_options = EOS.ProgressionSnapshot.SubmitSnapshotOptions.new()
 #	submit_snapshot_options.snapshot_id = begin_snapshot_ret.snapshot_id
 #	print("--- ProgressionSnapshot: submit_snapshot: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.submit_snapshot(submit_snapshot_options)))
-#	print("--- ProgressionSnapshot: submit_snapshot_callback: ", yield(EOS.get_instance(), "progression_snapshot_interface_submit_snapshot_callback"))
+#	print("--- ProgressionSnapshot: submit_snapshot_callback: ", await EOS.get_instance().progression_snapshot_interface_submit_snapshot_callback)
 #
-#	yield(get_tree().create_timer(3), "timeout")
+#	await get_tree().create_timer(3).timeout
 #
 #	var delete_snapshot_options = EOS.ProgressionSnapshot.DeleteSnapshotOptions.new()
 #	delete_snapshot_options.local_user_id = Store.product_user_id
 #	print("--- ProgressionSnapshot: delete_snapshot: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.delete_snapshot(delete_snapshot_options)))
-#	print("--- ProgressionSnapshot: delete_snapshot_callback: ", yield(EOS.get_instance(), "progression_snapshot_interface_delete_snapshot_callback"))
+#	print("--- ProgressionSnapshot: delete_snapshot_callback: ", await EOS.get_instance().progression_snapshot_interface_delete_snapshot_callback)
 
 
 #	# Presence Interface
@@ -278,7 +279,7 @@ func _on_tab_pressed():
 #	query_presence_options.local_user_id = Store.epic_account_id
 #	query_presence_options.target_user_id = Store.epic_account_id
 #	EOS.Presence.PresenceInterface.query_presence(query_presence_options)
-#	print("--- Presence: query_presence_callback: ", EOS.result_str(yield(EOS.get_instance(), "presence_interface_query_presence_callback")))
+#	print("--- Presence: query_presence_callback: ", EOS.result_str(await EOS.get_instance().presence_interface_query_presence_callback))
 
 #	var copy_presence_options = EOS.Presence.CopyPresenceOptions.new()
 #	copy_presence_options.local_user_id = Store.epic_account_id
@@ -290,7 +291,7 @@ func _on_tab_pressed():
 #	set_presence_options.local_user_id = Store.epic_account_id
 #	set_presence_options.presence_modification = presence_modification
 #	var set_presence_ret = EOS.Presence.PresenceInterface.set_presence(set_presence_options)
-#	print("--- Presence: set_presence_callback: ", EOS.result_str(yield(EOS.get_instance(), "presence_interface_set_presence_callback")))
+#	print("--- Presence: set_presence_callback: ", EOS.result_str(await EOS.get_instance().presence_interface_set_presence_callback))
 
 
 
@@ -305,4 +306,4 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("Shutting down EOS...")
 		EOS.Platform.PlatformInterface.release()
-		var res = IEOS.shutdown()
+		var _res = EOS.Platform.PlatformInterface.shutdown()

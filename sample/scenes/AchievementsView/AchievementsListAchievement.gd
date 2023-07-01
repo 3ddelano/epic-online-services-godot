@@ -13,7 +13,9 @@ var _data: Dictionary
 
 
 func _ready():
-	button.connect("pressed", Callable(self, "emit_signal").bind("pressed", self))
+	button.pressed.connect(func ():
+		pressed.emit(self)
+	)
 
 
 func from_achievement_data(data: Dictionary):

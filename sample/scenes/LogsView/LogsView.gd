@@ -5,8 +5,8 @@ extends VBoxContainer
 
 
 func _ready() -> void:
-	var _c = EOS.get_instance().connect("logging_interface_callback", Callable(self, "_on_logging_interface_callback"))
-	_c = Store.connect("platform_create", Callable(self, "_on_platform_create"))
+	var _c = EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
+	_c = Store.platform_create.connect(_on_platform_create)
 
 
 func _on_platform_create():

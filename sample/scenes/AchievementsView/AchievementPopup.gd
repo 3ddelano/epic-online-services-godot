@@ -20,8 +20,10 @@ var achievement_node: AchievementsListAchievement
 
 
 func _ready() -> void:
-	unlock_btn.connect("pressed", Callable(self, "_on_unlock_btn_pressed"))
-	close_btn.connect("pressed", Callable(self, "set_visible").bind(false))
+	unlock_btn.pressed.connect(_on_unlock_btn_pressed)
+	close_btn.pressed.connect(func ():
+		set_visible(false)
+	)
 
 
 func from_achievement_node(node: AchievementsListAchievement):

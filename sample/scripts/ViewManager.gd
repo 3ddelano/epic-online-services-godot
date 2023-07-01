@@ -12,14 +12,14 @@ extends VBoxContainer
 
 
 func _ready() -> void:
-	var _c = auth_btn.connect("pressed", Callable(self, "set_view").bind("Login"))
-	_c = achievements_btn.connect("pressed", Callable(self, "set_view").bind("Achievements"))
-	_c = custominvites_btn.connect("pressed", Callable(self, "set_view").bind("CustomInvites"))
-	_c = stats_btn.connect("pressed", Callable(self, "set_view").bind("Stats"))
-	_c = leaderboards_btn.connect("pressed", Callable(self, "set_view").bind("Leaderboards"))
-	_c = friends_btn.connect("pressed", Callable(self, "set_view").bind("Friends"))
-	_c = ui_btn.connect("pressed", Callable(self, "set_view").bind("UI"))
-	_c = metrics_btn.connect("pressed", Callable(self, "set_view").bind("Metrics"))
+	var _c = auth_btn.pressed.connect(Callable(self, "set_view").bind("Login"))
+	_c = achievements_btn.pressed.connect(Callable(self, "set_view").bind("Achievements"))
+	_c = custominvites_btn.pressed.connect(Callable(self, "set_view").bind("CustomInvites"))
+	_c = stats_btn.pressed.connect(Callable(self, "set_view").bind("Stats"))
+	_c = leaderboards_btn.pressed.connect(Callable(self, "set_view").bind("Leaderboards"))
+	_c = friends_btn.pressed.connect(Callable(self, "set_view").bind("Friends"))
+	_c = ui_btn.pressed.connect(Callable(self, "set_view").bind("UI"))
+	_c = metrics_btn.pressed.connect(Callable(self, "set_view").bind("Metrics"))
 
 
 func get_view(view_name: String):
