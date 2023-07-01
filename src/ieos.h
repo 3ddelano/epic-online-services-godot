@@ -1,7 +1,7 @@
 #pragma once
 
 #include "eos_auth.h"
-#include "eos_init.h"
+#include "eos_ecom.h"
 #include "eos_logging.h"
 #include "eos_sdk.h"
 #include "eos_version.h"
@@ -226,6 +226,8 @@ class IEOS : public RefCounted {
     void ecom_interface_query_ownership(Ref<RefCounted> options);
     void ecom_interface_query_ownership_token(Ref<RefCounted> options);
     void ecom_interface_redeem_entitlements(Ref<RefCounted> options);
+    int ecom_interface_get_last_redeemed_entitlements_count(Ref<RefCounted> options);
+    Dictionary ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefCounted> options);
 
     // -----
     // UI Interface

@@ -2,9 +2,12 @@
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/char_string.hpp"
 #include "wrappers/continuance_token.h"
+#include "wrappers/transaction.h"
 using namespace godot;
 
 #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+#define VARIANT_TO_EOS_BOOL(var) \
+    ((var.get_type() == Variant::Type::BOOL) ? ((var.operator bool()) ? EOS_TRUE : EOS_FALSE) : EOS_FALSE)
 #define EOSG_GET_STRING(str) ((str == nullptr) ? "" : String(str))
 #define EOSG_GET_BOOL(eosBool) ((eosBool == EOS_TRUE) ? true : false)
 
@@ -76,12 +79,12 @@ static Variant eosg_auth_account_feature_restricted_info_to_dict(const EOS_Auth_
     return ret;
 }
 
-static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken continuanceToken) {
-    if (continuanceToken == nullptr) {
+static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continuance_token) {
+    if (p_continuance_token == nullptr) {
         return Variant();
     }
     Ref<ContinuanceTokenEOSG> continuance_token = memnew(ContinuanceTokenEOSG());
-    continuance_token->set_token(continuanceToken);
+    continuance_token->set_token(p_continuance_token);
     return continuance_token;
 }
 
@@ -91,7 +94,7 @@ static Variant eosg_auth_id_token_to_dict(EOS_Auth_IdToken* authIdToken) {
     }
     Dictionary ret;
     ret["account_id"] = eosg_epic_account_id_to_string(authIdToken->AccountId);
-    ret["json_web_token"] = String(authIdToken->JsonWebToken);
+    ret["json_web_token"] = EOSG_GET_STRING(authIdToken->JsonWebToken);
     EOS_Auth_IdToken_Release(authIdToken);
     return ret;
 }
@@ -102,7 +105,7 @@ static Variant eosg_connect_id_token_to_dict(EOS_Connect_IdToken* connectIdToken
     }
     Dictionary ret;
     ret["product_user_id"] = eosg_product_user_id_to_string(connectIdToken->ProductUserId);
-    ret["json_web_token"] = String(connectIdToken->JsonWebToken);
+    ret["json_web_token"] = EOSG_GET_STRING(connectIdToken->JsonWebToken);
     EOS_Connect_IdToken_Release(connectIdToken);
     return ret;
 }
@@ -138,4 +141,109 @@ static Variant eosg_connect_external_account_info_to_dict(EOS_Connect_ExternalAc
     ret["account_id_type"] = static_cast<int>(externalAccountInfo->AccountIdType);
     ret["last_login_time"] = externalAccountInfo->LastLoginTime;
     return ret;
+}
+
+static Variant eosg_ecom_entitlement_to_dict(EOS_Ecom_Entitlement* entitlement) {
+    if (entitlement == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["entitlement_name"] = EOSG_GET_STRING(entitlement->EntitlementName);
+    ret["entitlement_id"] = EOSG_GET_STRING(entitlement->EntitlementId);
+    ret["catalog_item_id"] = EOSG_GET_STRING(entitlement->CatalogItemId);
+    ret["server_id"] = entitlement->ServerIndex;
+    ret["redeemed"] = EOSG_GET_BOOL(entitlement->bRedeemed);
+    ret["end_timestamp"] = entitlement->EndTimestamp;
+
+    return ret;
+}
+
+static Variant eosg_ecom_catalog_item_to_dict(EOS_Ecom_CatalogItem* item) {
+    if (item == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["catalog_namespace"] = EOSG_GET_STRING(item->CatalogNamespace);
+    ret["id"] = EOSG_GET_STRING(item->Id);
+    ret["entitlement_name"] = EOSG_GET_STRING(item->EntitlementName);
+    ret["title_text"] = EOSG_GET_STRING(item->TitleText);
+    ret["description_text"] = EOSG_GET_STRING(item->DescriptionText);
+    ret["long_description_text"] = EOSG_GET_STRING(item->LongDescriptionText);
+    ret["technical_details_text"] = EOSG_GET_STRING(item->TechnicalDetailsText);
+    ret["developer_text"] = EOSG_GET_STRING(item->DeveloperText);
+    ret["item_type"] = static_cast<int>(item->ItemType);
+    ret["entitlement_end_timestamp"] = item->EntitlementEndTimestamp;
+
+    return ret;
+}
+
+static Variant eosg_ecom_key_image_info_to_dict(EOS_Ecom_KeyImageInfo* keyInfo) {
+    if (keyInfo == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["type"] = EOSG_GET_STRING(keyInfo->Type);
+    ret["url"] = EOSG_GET_STRING(keyInfo->Url);
+    ret["width"] = keyInfo->Width;
+    ret["height"] = keyInfo->Height;
+
+    return ret;
+}
+
+static Variant eosg_ecom_catalog_release_to_dict(EOS_Ecom_CatalogRelease* release) {
+    if (release == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    Array compatible_app_ids = Array();
+    for (int i = 0; i < release->CompatibleAppIdCount; i++) {
+        compatible_app_ids.append(EOSG_GET_STRING(release->CompatibleAppIds[i]));
+    }
+    ret["compatible_app_ids"] = compatible_app_ids;
+    Array compatible_platforms = Array();
+    for (int i = 0; i < release->CompatiblePlatformCount; i++) {
+        compatible_platforms.append(EOSG_GET_STRING(release->CompatiblePlatforms[i]));
+    }
+    ret["compatible_platforms"] = compatible_platforms;
+    ret["release_note"] = EOSG_GET_STRING(release->ReleaseNote);
+    return ret;
+}
+
+static Variant eosg_ecom_catalog_offer_to_dict(EOS_Ecom_CatalogOffer* offer) {
+    if (offer == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["server_index"] = offer->ServerIndex;
+    ret["catalog_namespace"] = EOSG_GET_STRING(offer->CatalogNamespace);
+    ret["id"] = EOSG_GET_STRING(offer->Id);
+    ret["title_text"] = EOSG_GET_STRING(offer->TitleText);
+    ret["description_text"] = EOSG_GET_STRING(offer->DescriptionText);
+    ret["long_description_text"] = EOSG_GET_STRING(offer->LongDescriptionText);
+    ret["currency_code"] = EOSG_GET_STRING(offer->CurrencyCode);
+    ret["discount_percentage"] = offer->DiscountPercentage;
+    ret["expiration_timestamp"] = offer->ExpirationTimestamp;
+    ret["purchase_limit"] = offer->PurchaseLimit;
+    ret["available_for_purchase"] = EOSG_GET_BOOL(offer->bAvailableForPurchase);
+    ret["price_result"] = static_cast<int>(offer->PriceResult);
+    ret["original_price"] = offer->OriginalPrice64;
+    ret["current_price"] = offer->CurrentPrice64;
+    ret["decimal_point"] = offer->DecimalPoint;
+    ret["release_date_timstamp"] = offer->ReleaseDateTimestamp;
+    ret["effective_date_timestamp"] = offer->EffectiveDateTimestamp;
+    return ret;
+}
+
+static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transaction) {
+    if (p_transaction == nullptr) {
+        return Variant();
+    }
+    Ref<TransactionEOSG> transaction = memnew(TransactionEOSG());
+    transaction->set_transaction(p_transaction);
+    return transaction;
 }

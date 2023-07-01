@@ -9,6 +9,25 @@ class_name EOS
 static func get_instance():
 	return IEOS
 
+
+static func print_result(p_result) -> void:
+	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
+
+
+static func result_str(p_result) -> String:
+	if typeof(p_result) == TYPE_DICTIONARY:
+		p_result = p_result["result_code"]
+	var idx := Result.values().find(p_result)
+	return Result.keys()[idx]
+
+
+static func is_operation_complete(p_result_code: Result) -> bool:
+	return IEOS.is_operation_complete(p_result_code)
+
+
+
+
+
 class Achievements:
 	class CopyAchievementDefinitionV2ByAchievementIdOptions extends BaseClass:
 		func _init():
@@ -70,7 +89,7 @@ class Achievements:
 			super._init("UnlockAchievementsOptions")
 
 		var user_id: String
-		var achievement_ids = []  # [String]
+		var achievement_ids: Array # Array[String]
 		var client_data = null
 
 	class AchievementsInterface:
@@ -110,12 +129,15 @@ class Achievements:
 			IEOS.achievements_interface_unlock_achievements(options)
 
 
+
+
+
 class Connect:
 	class Credentials extends BaseClass:
 		func _init():
 			super._init("Credentials")
 
-		var type: int  # ExternalCredentialType
+		var type: ExternalCredentialType = -1
 		var token = null
 
 	class UserLoginInfo extends BaseClass:
@@ -151,7 +173,7 @@ class Connect:
 			super._init("CopyProductUserExternalAccountByAccountTypeOptions")
 
 		var target_user_id: String
-		var account_id_type: int  # ExternalAccountType
+		var account_id_type: ExternalAccountType = -1
 
 	class CopyProductUserExternalAccountByIndexOptions extends BaseClass:
 		func _init():
@@ -207,7 +229,7 @@ class Connect:
 			super._init("QueryProductUserIdMappingOptions")
 
 		var local_user_id: String
-		var product_user_ids: Array[String]
+		var product_user_ids: Array # Array[String]
 
 	class GetProductUserIdMappingOptions extends BaseClass:
 		func _init():
@@ -327,6 +349,9 @@ class Connect:
 
 		static func unlink_account(options: UnlinkAccountOptions) -> void:
 			IEOS.connect_interface_unlink_account(options)
+
+
+
 
 
 class Auth:
@@ -518,6 +543,9 @@ class Auth:
 			IEOS.auth_interface_verify_user_auth(options)
 
 
+
+
+
 class CustomInvites:
 
 	class SetCustomInviteOptions extends BaseClass:
@@ -553,6 +581,9 @@ class CustomInvites:
 
 		static func finalize_invite(options: FinalizeInviteOptions) -> int:
 			return IEOS.custom_invites_interface_finalize_invite(options)
+
+
+
 
 
 class Stats:
@@ -613,6 +644,9 @@ class Stats:
 
 		static func query_stats(options: QueryStatsOptions) -> void:
 			IEOS.stats_interface_query_stats(options)
+
+
+
 
 
 class Platform extends RefCounted:
@@ -729,6 +763,9 @@ class Platform extends RefCounted:
 			return IEOS.platform_interface_shutdown()
 
 
+
+
+
 class Ecom:
 	enum ItemType { Durable = 0, Consumable = 1, Other = 2 }
 
@@ -739,8 +776,8 @@ class Ecom:
 			super._init("CheckoutOptions")
 
 		var local_user_id: String
-		var entries: Array[Dictionary] # [{offer_id: String}]
-		var override_catalog_namespace = null # String
+		var entries: Array # [{offer_id: String}]
+		var override_catalog_namespace: String
 
 	class CopyEntitlementByIdOptions extends BaseClass:
 		func _init():
@@ -890,7 +927,7 @@ class Ecom:
 			super._init("QueryEntitlementsOptions")
 
 		var local_user_id: String
-		var entitlement_names: Array[String]
+		var entitlement_names: Array # Array[String]
 		var include_redeemed: bool
 
 	class QueryOffersOptions extends BaseClass:
@@ -907,7 +944,7 @@ class Ecom:
 			super._init("QueryOwnershipOptions")
 
 		var local_user_id: String
-		var catalog_item_ids: Array[String]
+		var catalog_item_ids: Array # Array[String]
 		var catalog_namespace = null # String
 
 		var client_data = null
@@ -917,7 +954,7 @@ class Ecom:
 			super._init("QueryOwnershipTokenOptions")
 
 		var local_user_id: String
-		var catalog_item_ids: Array[String]
+		var catalog_item_ids: Array # Array[String]
 		var catalog_namespace = null # String
 
 		var client_data = null
@@ -927,9 +964,23 @@ class Ecom:
 			super._init("RedeemEntitlementsOptions")
 
 		var local_user_id: String
-		var entitlement_ids: Array[String]
+		var entitlement_ids:  Array # Array[String]
 
 		var client_data = null
+
+	class GetLastRedeemedEntitlementsCountOptions extends BaseClass:
+		func _init():
+			super._init("GetLastRedeemedEntitlementsCountOptions")
+
+		var local_user_id: String
+
+	class CopyLastRedeemedEntitlementByIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyLastRedeemedEntitlementByIndexOptions")
+
+		var local_user_id: String
+		var redeemed_entitlement_index: String
+
 
 	class EcomInterface:
 		static func checkout(options: CheckoutOptions) -> void:
@@ -1010,6 +1061,15 @@ class Ecom:
 		static func redeem_entitlements(options: RedeemEntitlementsOptions) -> void:
 			IEOS.ecom_interface_redeem_entitlements(options)
 
+		static func get_last_redeemed_entitlements_count(options: GetLastRedeemedEntitlementsCountOptions) -> int:
+			return IEOS.ecom_interface_get_last_redeemed_entitlements_count(options)
+
+		static func copy_last_redeemed_entitlement_by_index(options: CopyLastRedeemedEntitlementByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_last_redeemed_entitlement_by_index(options)
+
+
+
+
 
 class Friends:
 	enum FriendsStatus { NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3 }
@@ -1076,6 +1136,9 @@ class Friends:
 			IEOS.friends_interface_reject_invite(options)
 
 
+
+
+
 class KWS:
 	enum KWSPermissionStatus { Granted = 0, Rejected = 1, Pending = 2 }
 
@@ -1122,7 +1185,7 @@ class KWS:
 			super._init("RequestPermissionsOptions")
 
 		var local_user_id: String
-		var permission_keys: Array[String]
+		var permission_keys: Array # Array[String]
 
 	class UpdateParentEmailOptions extends BaseClass:
 		func _init():
@@ -1154,6 +1217,9 @@ class KWS:
 
 	static func update_parent_email(options: UpdateParentEmailOptions) -> void:
 		IEOS.kws_interface_update_parent_email(options)
+
+
+
 
 
 class Leaderboards:
@@ -1235,8 +1301,8 @@ class Leaderboards:
 			super._init("QueryLeaderboardUserScoresOptions")
 
 		var local_user_id: String
-		var user_ids = [] # [String]
-		var stat_info = [] # [{stat_name: String, aggregation: LeaderboardAggregation}]
+		var user_ids: Array # Array[String]
+		var stat_info: Array[Dictionary] # [{stat_name: String, aggregation: LeaderboardAggregation}]
 		var start_time = null # String
 		var end_time = null # String
 
@@ -1280,6 +1346,9 @@ class Leaderboards:
 			IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
 
 
+
+
+
 class Lobby:
 	enum LobbyAttributeVisibility { Public = 0, Private = 1 }
 
@@ -1295,6 +1364,9 @@ class Lobby:
 	enum LobbyPermissionLevel { Publicadvertised = 0, Joinviapresence = 1, Inviteonly = 2 }
 
 
+
+
+
 class Metrics:
 	enum MetricsAccountIdType { Epic = 0, External = 1 }
 
@@ -1304,10 +1376,10 @@ class Metrics:
 		func _init():
 			super._init("BeginPlayerSessionOptions")
 
-		var account_id_type: int # MetricsAccountIdType
+		var account_id_type: MetricsAccountIdType
 		var account_id: String
 		var display_name: String
-		var controller_type: int # UserControllerType
+		var controller_type: UserControllerType
 		var server_ip = null # String
 		var game_session_id = null # String
 
@@ -1315,7 +1387,7 @@ class Metrics:
 		func _init():
 			super._init("EndPlayerSessionOptions")
 
-		var account_id_type: int # MetricsAccountIdType
+		var account_id_type: MetricsAccountIdType
 		var account_id: String
 
 	class MetricsInterface:
@@ -1326,6 +1398,9 @@ class Metrics:
 			return IEOS.metrics_interface_end_player_session(options)
 
 
+
+
+
 class Mods:
 	enum ModEnumerationType { Installed = 0, AllAvailable }
 
@@ -1334,14 +1409,14 @@ class Mods:
 			super._init("CopyModInfoOptions")
 
 		var local_user_id: String
-		var type: int # ModEnumerationType
+		var type: ModEnumerationType
 
 	class EnumerateModsOptions extends BaseClass:
 		func _init():
 			super._init("EnumerateModsOptions")
 
 		var local_user_id: String
-		var type: int # ModEnumerationType
+		var type: ModEnumerationType
 
 	class ModsInterface:
 		static func copy_mod_info(options: CopyModInfoOptions) -> Dictionary:
@@ -1349,6 +1424,9 @@ class Mods:
 
 		static func enumerate_mods(options: EnumerateModsOptions) -> void:
 			IEOS.mods_interface_enumerate_mods(options)
+
+
+
 
 
 class P2P:
@@ -1375,6 +1453,9 @@ class P2P:
 	enum RelayControl { NoRelays = 0, AllowRelays = 1, ForceRelays = 2 }
 
 
+
+
+
 class PlayerDataStorage:
 	enum ReadResult { ContinueReading = 1, FailRequest = 2, CancelRequest = 3 }
 
@@ -1384,6 +1465,9 @@ class PlayerDataStorage:
 		FailRequest = 3,
 		CancelRequest = 4
 	}
+
+
+
 
 
 class Presence:
@@ -1412,7 +1496,7 @@ class Presence:
 		func _init():
 			super._init("PresenceModificationDeleteDataOptions")
 
-		var records: Array[String]
+		var records: Array # Array[String]
 
 	class PresenceModificationSetJoinInfoOptions extends BaseClass:
 		func _init():
@@ -1484,6 +1568,10 @@ class Presence:
 		static func set_presence(options: SetPresenceOptions) -> void:
 			IEOS.presence_interface_set_presence(options)
 
+
+
+
+
 class Reports:
 	enum PlayerReportsCategory {
 		Invalid = 0,
@@ -1502,7 +1590,7 @@ class Reports:
 
 		var reporter_user_id: String
 		var reported_user_id: String
-		var category: int # PlayerReportsCategory
+		var category: PlayerReportsCategory
 		var message: String
 		var context: String
 
@@ -1511,6 +1599,9 @@ class Reports:
 	class ReportsInterface:
 		static func send_player_behavior_report(options: SendPlayerBehaviorReportOptions) -> void:
 			IEOS.reports_interface_send_player_behavior_report(options)
+
+
+
 
 
 class ProgressionSnapshot:
@@ -1559,8 +1650,14 @@ class ProgressionSnapshot:
 			IEOS.progression_snapshot_interface_delete_snapshot(options)
 
 
+
+
+
 class RTC:
 	enum RTCParticipantStatus { Joined = 0, Left = 1 }
+
+
+
 
 
 class Sessions:
@@ -1579,8 +1676,14 @@ class Sessions:
 	enum SessionAttributeAdvertisementType { DontAdvertise = 0, Advertise = 1 }
 
 
+
+
+
 class TitleStorage:
 	enum ReadResult { RrContinuereading = 1, RrFailrequest = 2, RrCancelrequest = 3 }
+
+
+
 
 
 class UI:
@@ -1738,13 +1841,13 @@ class UI:
 		func _init():
 			super._init("SetDisplayPreferenceOptions")
 
-		var notification_location: int # NotificationLocation
+		var notification_location: NotificationLocation
 
 	class SetToggleFriendsKeyOptions extends BaseClass:
 		func _init():
 			super._init("SetToggleFriendsKeyOptions")
 
-		var key_combination: int # KeyCombination
+		var key_combination: KeyCombination
 
 	class ShowFriendsOptions extends BaseClass:
 		func _init():
@@ -1783,6 +1886,9 @@ class UI:
 			IEOS.ui_interface_show_friends(options)
 
 
+
+
+
 class UserInfo:
 
 	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
@@ -1799,7 +1905,7 @@ class UserInfo:
 
 		var local_user_id: String
 		var target_user_id: String
-		var account_type: int # ExternalAccountType
+		var account_type: ExternalAccountType
 
 	class CopyExternalUserInfoByIndexOptions extends BaseClass:
 		func _init():
@@ -1847,7 +1953,7 @@ class UserInfo:
 
 		var local_user_id: String
 		var external_account_id: String
-		var account_type: int # ExternalAccountType
+		var account_type: ExternalAccountType
 
 		var client_data = null
 
@@ -1875,6 +1981,9 @@ class UserInfo:
 
 		static func query_user_info_by_external_account(options: QueryUserInfoByExternalAccountOptions) -> void:
 			IEOS.user_info_interface_query_user_info_by_external_account(options)
+
+
+
 
 
 class Logging:
@@ -1929,7 +2038,7 @@ class Logging:
 			super._init("LogMessage")
 
 		var category: String
-		var level: int  # LogLevel enum
+		var level: LogLevel
 		var message: String
 
 		static func from(msg_dict: Dictionary) -> LogMessage:
@@ -1946,6 +2055,9 @@ class Logging:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
 
+
+
+
 class Version:
 	class VersionInterface:
 		static func get_version() -> String:
@@ -1955,19 +2067,7 @@ class Version:
 			return IEOS.version_interface_get_constants()
 
 
-static func print_result(p_result) -> void:
-	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
 
-
-static func result_str(p_result) -> String:
-	if typeof(p_result) == TYPE_DICTIONARY:
-		p_result = p_result["result_code"]
-	var idx := Result.values().find(p_result)
-	return Result.keys()[idx]
-
-
-static func is_operation_complete(p_result_code: Result) -> bool:
-	return IEOS.is_operation_complete(p_result_code)
 
 
 enum Result {

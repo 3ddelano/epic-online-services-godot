@@ -134,6 +134,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(ecom_interface_query_ownership);
     IEOS_BIND_METHOD(ecom_interface_query_ownership_token);
     IEOS_BIND_METHOD(ecom_interface_redeem_entitlements);
+    IEOS_BIND_METHOD(ecom_interface_get_last_redeemed_entitlements_count);
+    IEOS_BIND_METHOD(ecom_interface_copy_last_redeemed_entitlement_by_index);
     IEOS_BIND_METHOD(ui_interface_acknowledge_event_id);
     IEOS_BIND_METHOD(ui_interface_get_friends_visible);
     IEOS_BIND_METHOD(ui_interface_get_notification_location_preference);

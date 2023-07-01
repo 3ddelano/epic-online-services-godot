@@ -168,19 +168,21 @@ func _on_tab_pressed():
 
 
 #	# Ecom interface
-	var offers_options = EOS.Ecom.QueryOffersOptions.new()
-	offers_options.local_user_id = Store.epic_account_id
-	EOS.Ecom.EcomInterface.query_offers(offers_options)
-	print("--- Ecom: query_offers_callback", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
+#	var offers_options = EOS.Ecom.QueryOffersOptions.new()
+#	offers_options.local_user_id = Store.epic_account_id
+#	EOS.Ecom.EcomInterface.query_offers(offers_options)
+#	print("--- Ecom: query_offers_callback: ", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
 
-	var checkout_options = EOS.Ecom.CheckoutOptions.new()
-	checkout_options.local_user_id = Store.epic_account_id
-	checkout_options.entries = [{
-		offer_id = "1234"
-	}]
-	EOS.Ecom.EcomInterface.checkout(checkout_options)
-	var checkout_data = await EOS.get_instance().ecom_interface_checkout_callback
-	print("--- Ecom: checkout_callback", checkout_data)
+#	var checkout_options = EOS.Ecom.CheckoutOptions.new()
+#	checkout_options.local_user_id = Store.epic_account_id
+#	checkout_options.entries = [{
+#		offer_id = "1234"
+#	}]
+#	EOS.Ecom.EcomInterface.checkout(checkout_options)
+#	var checkout_data = await EOS.get_instance().ecom_interface_checkout_callback
+#	print("--- Ecom: checkout_callback: ", checkout_data)
+
+
 
 
 

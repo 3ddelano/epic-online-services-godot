@@ -5,7 +5,6 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     CharString productId = VARIANT_TO_CHARSTRING(p_options->get("product_id"));
     CharString sandboxId = VARIANT_TO_CHARSTRING(p_options->get("sandbox_id"));
     CharString deploymentId = VARIANT_TO_CHARSTRING(p_options->get("deployment_id"));
-    bool isServer = p_options->get("is_server");
     CharString encryptionKey = VARIANT_TO_CHARSTRING(p_options->get("encryption_key"));
     int flags = p_options->get("flags");
     int tickBudgetInMilliseconds = p_options->get("tick_budget_in_milliseconds");
@@ -26,10 +25,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     if (clientSecret.length() != 0) {
         platformOptions.ClientCredentials.ClientSecret = clientSecret.get_data();
     }
-    platformOptions.bIsServer = EOS_FALSE;
-    if (isServer) {
-        platformOptions.bIsServer = EOS_TRUE;
-    }
+    platformOptions.bIsServer = VARIANT_TO_EOS_BOOL(p_options->get("is_server"));
     if (encryptionKey.length() != 0) {
         platformOptions.EncryptionKey = encryptionKey.get_data();
     }

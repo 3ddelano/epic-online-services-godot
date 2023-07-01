@@ -4,6 +4,7 @@
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
 #include "wrappers/continuance_token.h"
+#include "wrappers/transaction.h"
 
 using namespace godot;
 
@@ -18,6 +19,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     _ieos = memnew(IEOS);
     Engine::get_singleton()->register_singleton("IEOS", IEOS::get_singleton());
     ClassDB::register_class<godot::ContinuanceTokenEOSG>();
+    ClassDB::register_class<godot::TransactionEOSG>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {

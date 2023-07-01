@@ -122,7 +122,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_index(R
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.ExternalAccountInfoIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("external_account_info_index")));
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo;
+    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserExternalAccountByIndex(s_connectInterface, &options, &outExternalAccountInfo);
 
     Dictionary ret;
@@ -139,7 +139,7 @@ Dictionary IEOS::connect_interface_copy_product_user_info(Ref<RefCounted> p_opti
     options.ApiVersion = EOS_CONNECT_COPYPRODUCTUSERINFO_API_LATEST;
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo;
+    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserInfo(s_connectInterface, &options, &outExternalAccountInfo);
 
     Dictionary ret;
@@ -355,7 +355,7 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["product_user_id"] = eosg_product_user_id_to_string(data->ProductUserId);
-        ret["is_account_info_present"] = data->bIsAccountInfoPresent == EOS_TRUE ? true : false;
+        ret["is_account_info_present"] = EOSG_GET_BOOL(data->bIsAccountInfoPresent);
         ret["account_id_type"] = static_cast<int>(data->AccountIdType);
         ret["account_id"] = String(data->AccountId);
 
