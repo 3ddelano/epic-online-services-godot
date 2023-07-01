@@ -4,6 +4,7 @@
 #include "eos_ecom.h"
 #include "eos_logging.h"
 #include "eos_sdk.h"
+#include "eos_ui.h"
 #include "eos_version.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
@@ -241,6 +242,11 @@ class IEOS : public RefCounted {
     int ui_interface_set_display_preference(Ref<RefCounted> options);
     int ui_interface_set_toggle_friends_key(Ref<RefCounted> options);
     void ui_interface_show_friends(Ref<RefCounted> options);
+    bool IEOS::ui_interface_get_friends_exclusive_input(Ref<RefCounted> options);
+    void IEOS::ui_interface_show_block_player(Ref<RefCounted> options);
+    void IEOS::ui_interface_show_report_player(Ref<RefCounted> options);
+    int IEOS::ui_interface_pause_social_overlay(Ref<RefCounted> options);
+    bool IEOS::ui_interface_is_social_overlay_paused(Ref<RefCounted> options);
 
     // -----
     // KWS Interface

@@ -52,4 +52,3 @@ func log_msg(level: int, msg: String, category := ""):
 
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
 	logs_label.text += "[color=#%s]%s | %s |[/color] [color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]
-	logs_label.get_parent().set_deferred("scroll_vertical", 100000)

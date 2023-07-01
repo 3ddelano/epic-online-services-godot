@@ -145,6 +145,11 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(ui_interface_set_display_preference);
     IEOS_BIND_METHOD(ui_interface_set_toggle_friends_key);
     IEOS_BIND_METHOD(ui_interface_show_friends);
+    IEOS_BIND_METHOD(ui_interface_get_friends_exclusive_input);
+    IEOS_BIND_METHOD(ui_interface_show_block_player);
+    IEOS_BIND_METHOD(ui_interface_show_report_player);
+    IEOS_BIND_METHOD(ui_interface_pause_social_overlay);
+    IEOS_BIND_METHOD(ui_interface_is_social_overlay_paused);
     IEOS_BIND_METHOD(kws_interface_copy_permission_by_index);
     IEOS_BIND_METHOD(kws_interface_create_user);
     IEOS_BIND_METHOD(kws_interface_get_permission_by_key);

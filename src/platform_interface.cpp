@@ -91,6 +91,15 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_reportsInterface = EOS_Platform_GetReportsInterface(s_platformInterface);
     s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
     s_uiInterface = EOS_Platform_GetUIInterface(s_platformInterface);
+    EOS_UI_AddNotifyDisplaySettingsUpdatedOptions options;
+    options.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
+    EOS_UI_AddNotifyDisplaySettingsUpdated(s_uiInterface, &options, nullptr, [](const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo *data) {
+        Dictionary ret;
+        ret["is_visible"] = EOSG_GET_BOOL(data->bIsVisible);
+        ret["is_exclusive_input"] = EOSG_GET_BOOL(data->bIsExclusiveInput);
+        IEOS::get_singleton()->emit_signal("ui_interface_display_settings_updated_callback", ret);
+    });
+
     s_userInfoInterface = EOS_Platform_GetUserInfoInterface(s_platformInterface);
 
     return true;

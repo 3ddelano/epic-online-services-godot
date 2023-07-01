@@ -1857,6 +1857,37 @@ class UI:
 
 		var client_data = null
 
+	class GetFriendsExclusiveInputOptions extends BaseClass:
+		func _init():
+			super._init("GetFriendsExclusiveInputOptions")
+
+		var local_user_id: String
+
+	class ShowBlockPlayerOptions extends BaseClass:
+		func _init():
+			super._init("ShowBlockPlayerOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class ShowReportPlayerOptions extends BaseClass:
+		func _init():
+			super._init("ShowReportPlayerOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+
+	class PauseSocialOverlayOptions extends BaseClass:
+		func _init():
+			super._init("PauseSocialOverlayOptions")
+
+		var is_paused: bool
+
+	class IsSocialOverlayPausedOptions extends BaseClass:
+		func _init():
+			super._init("IsSocialOverlayPausedOptions")
+
+
 	class UIInterface:
 		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> int:
 			return IEOS.ui_interface_acknowledge_event_id(options)
@@ -1884,6 +1915,21 @@ class UI:
 
 		static func show_friends(options: ShowFriendsOptions) -> void:
 			IEOS.ui_interface_show_friends(options)
+
+		static func get_friends_exclusive_input(options: GetFriendsExclusiveInputOptions) -> bool:
+			return IEOS.ui_interface_get_friends_exclusive_input(options)
+
+		static func show_block_player(options: ShowBlockPlayerOptions) -> void:
+			IEOS.ui_interface_show_block_player(options)
+
+		static func show_report_player(options: ShowReportPlayerOptions) -> void:
+			IEOS.ui_interface_show_report_player(options)
+
+		static func pause_social_overlay(options: PauseSocialOverlayOptions) -> int:
+			return IEOS.ui_interface_pause_social_overlay(options)
+
+		static func is_social_overlay_paused(options: IsSocialOverlayPausedOptions) -> bool:
+			return IEOS.ui_interface_is_social_overlay_paused(options)
 
 
 
