@@ -4,6 +4,7 @@ import glob
 
 addon_folder = "./sample/addons/epic-online-services-godot"
 readme_path = "./README.md"
+output_zip = "epic-online-services-godot-addon"
 
 # Make a temp folder and copy the addon_folder to it
 temp_folder = "./temp"
@@ -27,7 +28,7 @@ for ext in glob_delete:
         os.remove(f)
 
 # Zip the temp folder
-shutil.make_archive("./release", "zip", temp_folder)
+shutil.make_archive(output_zip, "zip", temp_folder)
 
 # Delete the temp folder
 shutil.rmtree(temp_folder)
