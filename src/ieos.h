@@ -4,6 +4,7 @@
 #include "eos_ecom.h"
 #include "eos_logging.h"
 #include "eos_mods.h"
+#include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
 #include "eos_sdk.h"
 #include "eos_ui.h"
@@ -290,6 +291,7 @@ class IEOS : public RefCounted {
     int progression_snapshot_interface_add_progression(Ref<RefCounted> options);
     void progression_snapshot_interface_submit_snapshot(Ref<RefCounted> options);
     void progression_snapshot_interface_delete_snapshot(Ref<RefCounted> options);
+    int progression_snapshot_interface_end_snapshot(Ref<RefCounted> options);
 
     // -----
     // Presence Interface

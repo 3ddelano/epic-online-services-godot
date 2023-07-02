@@ -77,36 +77,8 @@ func _on_tab_pressed():
 #	test_user_info_interface()
 #	test_mods_interface()
 #	test_reports_interface()
+#	test_progression_snapshot_interface()
 
-
-
-#	# ProgressionSnapshot Interface
-#	var begin_snapshot_options = EOS.ProgressionSnapshot.BeginSnapshotOptions.new()
-#	begin_snapshot_options.local_user_id = Store.product_user_id
-#	var begin_snapshot_ret = EOS.ProgressionSnapshot.ProgressionSnapshotInterface.begin_snapshot(begin_snapshot_options)
-#	print("--- ProgressionSnapshot: begin_snapshot: ", begin_snapshot_ret)
-#
-#	awit get_tree().create_timer(3).timeout
-#
-#	var add_progression_options = EOS.ProgressionSnapshot.AddProgressionOptions.new()
-#	add_progression_options.snapshot_id = begin_snapshot_ret.snapshot_id
-#	add_progression_options.key = "test_key"
-#	add_progression_options.value = "test_value 0123456789"
-#	print("--- ProgressionSnapshot: add_progression: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.add_progression(add_progression_options)))
-#
-#	await get_tree().create_timer(3).timeout
-#
-#	var submit_snapshot_options = EOS.ProgressionSnapshot.SubmitSnapshotOptions.new()
-#	submit_snapshot_options.snapshot_id = begin_snapshot_ret.snapshot_id
-#	print("--- ProgressionSnapshot: submit_snapshot: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.submit_snapshot(submit_snapshot_options)))
-#	print("--- ProgressionSnapshot: submit_snapshot: ", await EOS.get_instance().progression_snapshot_interface_submit_snapshot_callback)
-#
-#	await get_tree().create_timer(3).timeout
-#
-#	var delete_snapshot_options = EOS.ProgressionSnapshot.DeleteSnapshotOptions.new()
-#	delete_snapshot_options.local_user_id = Store.product_user_id
-#	print("--- ProgressionSnapshot: delete_snapshot: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.delete_snapshot(delete_snapshot_options)))
-#	print("--- ProgressionSnapshot: delete_snapshot: ", await EOS.get_instance().progression_snapshot_interface_delete_snapshot_callback)
 
 
 #	# Presence Interface
@@ -188,6 +160,8 @@ func test_auth_interface():
 	EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
 	var verify_user_auth_ret = await EOS.get_instance().auth_interface_verify_user_auth_callback
 	print("--- Auth: verify_user_auth: ", verify_user_auth_ret)
+
+
 	var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
 	copy_id_token_options.account_id = Store.epic_account_id
 	print("--- Auth: copy_id_token: ", EOS.result_str(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options)))
@@ -206,19 +180,23 @@ func test_connect_interface():
 	opts1.account_id = Store.epic_account_id
 	print("--- Connect: copy_product_user_external_account: By account Id: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_id(opts1))
 
+
 	var opts2 = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
 	opts2.target_user_id = Store.product_user_id
 	opts2.account_id_type = EOS.ExternalAccountType.Epic
 	print("--- Connect: copy_product_user_external_account: By account type: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(opts2))
+
 
 	var opts3 = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
 	opts3.target_user_id = Store.product_user_id
 	opts3.external_account_info_index = 0
 	print("--- Connect: copy_product_user_external_account: By account index: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(opts3))
 
+
 	var opts4 = EOS.Connect.CopyProductUserInfoOptions.new()
 	opts4.target_user_id = Store.product_user_id
 	print("--- Connect: copy_product_user_info: ", EOS.Connect.ConnectInterface.copy_product_user_info(opts4))
+
 
 	var opts5 = EOS.Connect.CopyIdTokenOptions.new()
 	opts5.local_user_id = Store.product_user_id
@@ -227,6 +205,7 @@ func test_connect_interface():
 	id_token.json_web_token = ret5.id_token.json_web_token
 	id_token.product_user_id = ret5.id_token.product_user_id
 	print("-- Connect: copy_id_token: Id token: ", id_token)
+
 
 	var opts6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
 	opts6.local_user_id = Store.product_user_id
@@ -238,9 +217,11 @@ func test_connect_interface():
 	print("--- Connect: get_logged_in_users_count: ", EOS.Connect.ConnectInterface.get_logged_in_users_count())
 	print("--- Connecet: get_login_status: ", EOS.Connect.ConnectInterface.get_login_status(Store.product_user_id))
 
+
 	var opts7 = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
 	opts7.target_user_id = Store.product_user_id
 	print("--- Connect: get_product_user_external_account_count: ", EOS.Connect.ConnectInterface.get_product_user_external_account_count(opts7))
+
 
 	var opts8 = EOS.Connect.GetProductUserIdMappingOptions.new()
 	opts8.local_user_id = Store.product_user_id
@@ -248,11 +229,13 @@ func test_connect_interface():
 	opts8.target_product_user_id  = "External Account Id Here"
 	print("--- Connect: get_product_user_id_mapping: ", EOS.Connect.ConnectInterface.get_product_user_id_mapping(opts8))
 
+
 	var opts9 = EOS.Connect.LinkAccountOptions.new()
 	opts9.local_user_id = Store.product_user_id
 #	opts9.continuance_token = ContinunanceTokenEOSG object here
 	EOS.Connect.ConnectInterface.link_account(opts9)
 	print(await EOS.get_instance().connect_interface_link_account_callback)
+
 
 	var opts10 = EOS.Connect.VerifyIdTokenOptions.new()
 	opts10.id_token = id_token
@@ -265,6 +248,7 @@ func test_ecom_interface():
 	offers_options.local_user_id = Store.epic_account_id
 	EOS.Ecom.EcomInterface.query_offers(offers_options)
 	print("--- Ecom: query_offers: ", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
+
 
 	var checkout_options = EOS.Ecom.CheckoutOptions.new()
 	checkout_options.local_user_id = Store.epic_account_id
@@ -283,16 +267,19 @@ func test_user_info_interface():
 	EOS.UserInfo.UserInfoInterface.query_user_info(opts1)
 	print("--- UserInfo: query_user_info: ", EOS.result_str(await EOS.get_instance().user_info_interface_query_user_info_callback))
 
+
 	var opts2 = EOS.UserInfo.CopyUserInfoOptions.new()
 	opts1.local_user_id = Store.epic_account_id
 	opts1.target_user_id = Store.epic_account_id
 	print("--- UserInfo: copy_user_info: ", EOS.UserInfo.UserInfoInterface.copy_user_info(opts2))
+
 
 	var opts3 = EOS.UserInfo.QueryUserInfoByDisplayNameOptions.new()
 	opts3.local_user_id = Store.epic_account_id
 	opts3.display_name = "3ddelano"
 	EOS.UserInfo.UserInfoInterface.query_user_info_by_display_name(opts3)
 	print("--- UserInfo: query_user_info_by_display_name: ", EOS.result_str(await EOS.get_instance().user_info_interface_query_user_info_by_display_name_callback))
+
 
 	var opts4 = EOS.UserInfo.QueryUserInfoByExternalAccountOptions.new()
 	opts4.local_user_id = Store.epic_account_id
@@ -301,11 +288,13 @@ func test_user_info_interface():
 	EOS.UserInfo.UserInfoInterface.query_user_info_by_external_account(opts4)
 	print("--- UserInfo: query_user_info_by_external_account: ", EOS.result_str(await EOS.get_instance().user_info_interface_query_user_info_by_external_account_callback))
 
+
 	var opts5 = EOS.UserInfo.CopyExternalUserInfoByAccountIdOptions.new()
 	opts5.local_user_id = Store.epic_account_id
 	opts5.target_user_id = Store.epic_account_id
 	opts5.account_id = Store.epic_account_id
 	print("--- UserInfo: copy_external_user_info_by_account_id: ", EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_id(opts5))
+
 
 	var opts6 = EOS.UserInfo.CopyExternalUserInfoByAccountTypeOptions.new()
 	opts6.local_user_id = Store.epic_account_id
@@ -313,11 +302,13 @@ func test_user_info_interface():
 	opts6.account_type = EOS.ExternalAccountType.Epic
 	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_type(opts6)
 
+
 	var opts7 = EOS.UserInfo.CopyExternalUserInfoByIndexOptions.new()
 	opts7.local_user_id = Store.epic_account_id
 	opts7.target_user_id = Store.epic_account_id
 	opts7.index = 0
 	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_index(opts7)
+
 
 	var opts8 = EOS.UserInfo.GetExternalUserInfoCountOptions.new()
 	opts8.local_user_id = Store.epic_account_id
@@ -332,6 +323,7 @@ func test_mods_interface():
 	EOS.Mods.ModsInterface.enumerate_mods(opts1)
 	print("--- Mods: enumerate_mods: ", EOS.result_str(await EOS.get_instance().mods_interface_enumerate_mods_callback))
 
+
 	var opts2 = EOS.Mods.CopyModInfoOptions.new()
 	opts2.local_user_id = Store.epic_account_id
 	opts2.type = EOS.Mods.ModEnumerationType.AllAvailable
@@ -341,6 +333,8 @@ func test_mods_interface():
 	var mod = {}
 	if copy_mods_info_data.mods != null:
 		mod = copy_mods_info_data.mods.mods[0]
+
+
 	var opts3 = EOS.Mods.InstallModOptions.new()
 	opts3.local_user_id = Store.epic_account_id
 	opts3.mod = mod
@@ -357,6 +351,39 @@ func test_reports_interface():
 	report_options.context = JSON.stringify({hello = "testing"})
 	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
 	print("--- Reports: send_player_behavior_report: ", EOS.result_str(await EOS.get_instance().reports_interface_send_player_behavior_report_callback))
+
+
+func test_progression_snapshot_interface():
+	var opts1 = EOS.ProgressionSnapshot.BeginSnapshotOptions.new()
+	opts1.local_user_id = Store.product_user_id
+	var begin_snapshot_ret = EOS.ProgressionSnapshot.ProgressionSnapshotInterface.begin_snapshot(opts1)
+	print("--- ProgressionSnapshot: begin_snapshot: ", EOS.result_str(begin_snapshot_ret))
+
+	var key_values = {
+		test_key = "test_value",
+		health = "100",
+		pos_x = "-158.6",
+		pos_y = "14.7"
+	}
+	for key in key_values:
+		var opts2 = EOS.ProgressionSnapshot.AddProgressionOptions.new()
+		opts2.snapshot_id = begin_snapshot_ret.snapshot_id
+		opts2.key = key
+		opts2.value = str(key_values[key])
+		print("--- ProgressionSnapshot: add_progression: ", EOS.result_str(EOS.ProgressionSnapshot.ProgressionSnapshotInterface.add_progression(opts2)))
+
+
+	var opts3 = EOS.ProgressionSnapshot.SubmitSnapshotOptions.new()
+	opts3.snapshot_id = begin_snapshot_ret.snapshot_id
+	EOS.ProgressionSnapshot.ProgressionSnapshotInterface.submit_snapshot(opts3)
+	print("--- ProgressionSnapshot: submit_snapshot_callback: ", EOS.result_str(await EOS.get_instance().progression_snapshot_interface_submit_snapshot_callback))
+
+
+	var opts4 = EOS.ProgressionSnapshot.DeleteSnapshotOptions.new()
+	opts4.local_user_id = Store.product_user_id
+	EOS.ProgressionSnapshot.ProgressionSnapshotInterface.delete_snapshot(opts4)
+	print("--- ProgressionSnapshot: delete_snapshot_callback: ", EOS.result_str(await EOS.get_instance().progression_snapshot_interface_delete_snapshot_callback))
+
 
 
 func get_view_manager():

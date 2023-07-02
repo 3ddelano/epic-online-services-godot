@@ -170,6 +170,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(progression_snapshot_interface_add_progression);
     IEOS_BIND_METHOD(progression_snapshot_interface_submit_snapshot);
     IEOS_BIND_METHOD(progression_snapshot_interface_delete_snapshot);
+    IEOS_BIND_METHOD(progression_snapshot_interface_end_snapshot);
     IEOS_BIND_METHOD(presence_interface_copy_presence);
     IEOS_BIND_METHOD(presence_interface_create_presence_modification);
     IEOS_BIND_METHOD(presence_interface_get_join_info);

@@ -548,7 +548,6 @@ class Auth:
 
 
 class CustomInvites:
-
 	class SetCustomInviteOptions extends BaseClass:
 		func _init():
 			super._init("SetCustomInviteOptions")
@@ -1636,7 +1635,6 @@ class Reports:
 
 
 class ProgressionSnapshot:
-
 	class BeginSnapshotOptions extends BaseClass:
 		func _init():
 			super._init("BeginSnapshotOptions")
@@ -1667,6 +1665,12 @@ class ProgressionSnapshot:
 
 		var client_data = null
 
+	class EndSnapshotOptions extends BaseClass:
+		func _init():
+			super._init("EndSnapshotOptions")
+
+		var snapshot_id: int
+
 	class ProgressionSnapshotInterface:
 		static func begin_snapshot(options: BeginSnapshotOptions) -> Dictionary:
 			return IEOS.progression_snapshot_interface_begin_snapshot(options)
@@ -1679,6 +1683,9 @@ class ProgressionSnapshot:
 
 		static func delete_snapshot(options: DeleteSnapshotOptions) -> void:
 			IEOS.progression_snapshot_interface_delete_snapshot(options)
+
+		static func end_snapshot(options: EndSnapshotOptions) -> void:
+			IEOS.progression_snapshot_interface_end_snapshot(options)
 
 
 
