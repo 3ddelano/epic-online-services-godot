@@ -12,7 +12,7 @@ func _ready() -> void:
 	var _c
 	_c = Store.login_success.connect(_on_login_success)
 	_c = Store.logout_success.connect(_on_logout_success)
-	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
+	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(Callable(self, "_on_query_friends_callback").bind("friends_list"))
 	_c = EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
 
@@ -35,7 +35,8 @@ func _on_logout_success():
 	loginwithepic.visible = true
 
 
-func _on_query_friends_callback(data: Dictionary):
+func _on_query_friends_callback(from: String, data: Dictionary):
+	if from != "friends_list": return
 	print("--- Friends: query_friends_callback: ", EOS.result_str(data))
 
 	var get_friends_count_options = EOS.Friends.GetFriendsCountOptions.new()
@@ -58,6 +59,7 @@ func _on_query_friends_callback(data: Dictionary):
 
 
 func _on_query_user_info_callback(data: Dictionary):
+	if data.client_data != "friends_list": return
 	print("--- Friends: UserInfo: query_user_info_callback: ", EOS.result_str(data))
 	if data.client_data != "friends_list":
 		# Not the callback for the FriendsView

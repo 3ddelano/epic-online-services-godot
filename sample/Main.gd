@@ -70,117 +70,11 @@ func _input(event: InputEvent) -> void:
 func _on_tab_pressed():
 	print("Tab pressed")
 
-
-	# Auth interface
-#	print("--- Auth: get_logged_in_accounts_count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
-#	print("--- Auth: Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
-#	print("--- Auth: get_login_status: ", EOS.Auth.AuthInterface.get_login_status(Store.epic_account_id))
-#	print("--- Auth: get_merged_accounts_count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(Store.epic_account_id))
-#	print("--- Auth: Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(Store.epic_account_id, 0))
-#	print("--- Auth: get_selected_account_id: ", EOS.Auth.AuthInterface.get_selected_account_id(Store.epic_account_id))
-
-#	var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
-#	var token = copy_user_auth_token.token
-#	var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
-#	verify_user_auth_options.auth_token = token
-#	EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
-#	var verify_user_auth_ret = await EOS.get_instance().auth_interface_verify_user_auth_callback
-#	print("--- Auth: verify_user_auth: ", verify_user_auth_ret)
-#	var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
-#	copy_id_token_options.account_id = Store.epic_account_id
-#	print("--- Auth: copy_id_token: ", EOS.result_str(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options)))
-
-
-
-
-
-	# Platform interface
-#	print("--- Platform: get_active_country_code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.epic_account_id))
-#	print("--- Platform: get_active_locale_code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.epic_account_id))
-#	print("--- Platform: get_override_country_code: ", EOS.Platform.PlatformInterface.get_override_country_code())
-#	print("--- Platform: get_override_locale_code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
-
-
-
-
-
-	# Connect interface
-#	var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
-#	options1.target_user_id = Store.product_user_id
-#	options1.account_id = Store.epic_account_id
-#	print("copy_product_user_external_account: By account Id: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_id(options1))
-#
-#	var options2 = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
-#	options2.target_user_id = Store.product_user_id
-#	options2.account_id_type = EOS.ExternalAccountType.Epic
-#	print("copy_product_user_external_account: By account type: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(options2))
-#
-#	var options3 = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
-#	options3.target_user_id = Store.product_user_id
-#	options3.external_account_info_index = 0
-#	print("copy_product_user_external_account: By account index: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(options3))
-#
-#	var options4 = EOS.Connect.CopyProductUserInfoOptions.new()
-#	options4.target_user_id = Store.product_user_id
-#	print("--- Connect: copy_product_user_info: ", EOS.Connect.ConnectInterface.copy_product_user_info(options4))
-#
-#	var options5 = EOS.Connect.CopyIdTokenOptions.new()
-#	options5.local_user_id = Store.product_user_id
-#	var ret5 = EOS.Connect.ConnectInterface.copy_id_token(options5)
-#	var id_token = EOS.Connect.IdToken.new()
-#	id_token.json_web_token = ret5.id_token.json_web_token
-#	id_token.product_user_id = ret5.id_token.product_user_id
-#	print("-- Connect: copy_id_token: Id token: ", id_token)
-#
-#	var options6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
-#	options6.local_user_id = Store.product_user_id
-#	options6.account_id_type = EOS.ExternalAccountType.Discord
-#	options6.target_external_user_id  = "External Account Id Here"
-#	print("External account mapping: ", EOS.Connect.ConnectInterface.get_external_account_mapping(options6))
-#
-#	print("--- Connect: get_logged_in_user_by_index(0): ", EOS.Connect.ConnectInterface.get_logged_in_user_by_index(0))
-#	print("--- Connect: get_logged_in_users_count: ", EOS.Connect.ConnectInterface.get_logged_in_users_count())
-#	print("--- Connecet: get_login_status: ", EOS.Connect.ConnectInterface.get_login_status(Store.product_user_id))
-#
-#	var options7 = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
-#	options7.target_user_id = Store.product_user_id
-#	print("--- Connect: get_product_user_external_account_count: ", EOS.Connect.ConnectInterface.get_product_user_external_account_count(options7))
-#
-#	var options8 = EOS.Connect.GetProductUserIdMappingOptions.new()
-#	options8.local_user_id = Store.product_user_id
-#	options8.account_id_type = EOS.ExternalAccountType.Discord
-#	options8.target_product_user_id  = "External Account Id Here"
-#	print("--- Connect: get_product_user_id_mapping: ", EOS.Connect.ConnectInterface.get_product_user_id_mapping(options8))
-
-#	var options9 = EOS.Connect.LinkAccountOptions.new()
-#	options9.local_user_id = Store.product_user_id
-#	options9.continuance_token = ContinunanceTokenWrapperHere
-#	EOS.Connect.ConnectInterface.link_account(options9)
-#	print(await EOS.get_instance().connect_interface_link_account_callback)
-
-#	var options10 = EOS.Connect.VerifyIdTokenOptions.new()
-#	options10.id_token = id_token
-#	EOS.Connect.ConnectInterface.verify_id_token(options10)
-#	print("--- Connect: verify_id_token_callback: ", await EOS.get_instance().connect_interface_verify_id_token_callback)
-
-
-
-
-
-#	# Ecom interface
-#	var offers_options = EOS.Ecom.QueryOffersOptions.new()
-#	offers_options.local_user_id = Store.epic_account_id
-#	EOS.Ecom.EcomInterface.query_offers(offers_options)
-#	print("--- Ecom: query_offers_callback: ", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
-
-#	var checkout_options = EOS.Ecom.CheckoutOptions.new()
-#	checkout_options.local_user_id = Store.epic_account_id
-#	checkout_options.entries = [{
-#		offer_id = "1234"
-#	}]
-#	EOS.Ecom.EcomInterface.checkout(checkout_options)
-#	var checkout_data = await EOS.get_instance().ecom_interface_checkout_callback
-#	print("--- Ecom: checkout_callback: ", checkout_data)
+#	test_auth_interface()
+#	test_platform_interface()
+#	test_connect_interface()
+#	test_ecom_interface()
+#	test_user_info_interface()
 
 
 
@@ -308,6 +202,157 @@ func _on_tab_pressed():
 
 
 	pass
+
+
+func test_auth_interface():
+	print("--- Auth: get_logged_in_accounts_count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())
+	print("--- Auth: Logged in account by index(0): ", EOS.Auth.AuthInterface.get_logged_in_account_by_index(0))
+	print("--- Auth: get_login_status: ", EOS.Auth.AuthInterface.get_login_status(Store.epic_account_id))
+	print("--- Auth: get_merged_accounts_count: ", EOS.Auth.AuthInterface.get_merged_accounts_count(Store.epic_account_id))
+	print("--- Auth: Get merged account by index(0): ", EOS.Auth.AuthInterface.get_merged_account_by_index(Store.epic_account_id, 0))
+	print("--- Auth: get_selected_account_id: ", EOS.Auth.AuthInterface.get_selected_account_id(Store.epic_account_id))
+
+	var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
+	var token = copy_user_auth_token.token
+	var verify_user_auth_options = EOS.Auth.VerifyUserAuthOptions.new()
+	verify_user_auth_options.auth_token = token
+	EOS.Auth.AuthInterface.verify_user_auth(verify_user_auth_options)
+	var verify_user_auth_ret = await EOS.get_instance().auth_interface_verify_user_auth_callback
+	print("--- Auth: verify_user_auth: ", verify_user_auth_ret)
+	var copy_id_token_options = EOS.Auth.CopyIdTokenOptions.new()
+	copy_id_token_options.account_id = Store.epic_account_id
+	print("--- Auth: copy_id_token: ", EOS.result_str(EOS.Auth.AuthInterface.copy_id_token(copy_id_token_options)))
+
+
+func test_platform_interface():
+	print("--- Platform: get_active_country_code: ", EOS.Platform.PlatformInterface.get_active_country_code(Store.epic_account_id))
+	print("--- Platform: get_active_locale_code: ", EOS.Platform.PlatformInterface.get_active_locale_code(Store.epic_account_id))
+	print("--- Platform: get_override_country_code: ", EOS.Platform.PlatformInterface.get_override_country_code())
+	print("--- Platform: get_override_locale_code: ", EOS.Platform.PlatformInterface.get_override_locale_code())
+
+
+func test_connect_interface():
+	var options1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
+	options1.target_user_id = Store.product_user_id
+	options1.account_id = Store.epic_account_id
+	print("copy_product_user_external_account: By account Id: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_id(options1))
+
+	var options2 = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
+	options2.target_user_id = Store.product_user_id
+	options2.account_id_type = EOS.ExternalAccountType.Epic
+	print("copy_product_user_external_account: By account type: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(options2))
+
+	var options3 = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
+	options3.target_user_id = Store.product_user_id
+	options3.external_account_info_index = 0
+	print("copy_product_user_external_account: By account index: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(options3))
+
+	var options4 = EOS.Connect.CopyProductUserInfoOptions.new()
+	options4.target_user_id = Store.product_user_id
+	print("--- Connect: copy_product_user_info: ", EOS.Connect.ConnectInterface.copy_product_user_info(options4))
+
+	var options5 = EOS.Connect.CopyIdTokenOptions.new()
+	options5.local_user_id = Store.product_user_id
+	var ret5 = EOS.Connect.ConnectInterface.copy_id_token(options5)
+	var id_token = EOS.Connect.IdToken.new()
+	id_token.json_web_token = ret5.id_token.json_web_token
+	id_token.product_user_id = ret5.id_token.product_user_id
+	print("-- Connect: copy_id_token: Id token: ", id_token)
+
+	var options6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
+	options6.local_user_id = Store.product_user_id
+	options6.account_id_type = EOS.ExternalAccountType.Discord
+	options6.target_external_user_id  = "External Account Id Here"
+	print("External account mapping: ", EOS.Connect.ConnectInterface.get_external_account_mapping(options6))
+
+	print("--- Connect: get_logged_in_user_by_index(0): ", EOS.Connect.ConnectInterface.get_logged_in_user_by_index(0))
+	print("--- Connect: get_logged_in_users_count: ", EOS.Connect.ConnectInterface.get_logged_in_users_count())
+	print("--- Connecet: get_login_status: ", EOS.Connect.ConnectInterface.get_login_status(Store.product_user_id))
+
+	var options7 = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
+	options7.target_user_id = Store.product_user_id
+	print("--- Connect: get_product_user_external_account_count: ", EOS.Connect.ConnectInterface.get_product_user_external_account_count(options7))
+
+	var options8 = EOS.Connect.GetProductUserIdMappingOptions.new()
+	options8.local_user_id = Store.product_user_id
+	options8.account_id_type = EOS.ExternalAccountType.Discord
+	options8.target_product_user_id  = "External Account Id Here"
+	print("--- Connect: get_product_user_id_mapping: ", EOS.Connect.ConnectInterface.get_product_user_id_mapping(options8))
+
+	var options9 = EOS.Connect.LinkAccountOptions.new()
+	options9.local_user_id = Store.product_user_id
+#	options9.continuance_token = ContinunanceTokenWrapperHere
+	EOS.Connect.ConnectInterface.link_account(options9)
+	print(await EOS.get_instance().connect_interface_link_account_callback)
+
+	var options10 = EOS.Connect.VerifyIdTokenOptions.new()
+	options10.id_token = id_token
+	EOS.Connect.ConnectInterface.verify_id_token(options10)
+	print("--- Connect: verify_id_token_callback: ", await EOS.get_instance().connect_interface_verify_id_token_callback)
+
+
+func test_ecom_interface():
+	var offers_options = EOS.Ecom.QueryOffersOptions.new()
+	offers_options.local_user_id = Store.epic_account_id
+	EOS.Ecom.EcomInterface.query_offers(offers_options)
+	print("--- Ecom: query_offers_callback: ", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
+
+	var checkout_options = EOS.Ecom.CheckoutOptions.new()
+	checkout_options.local_user_id = Store.epic_account_id
+	checkout_options.entries = [{
+		offer_id = "OFFER ID HERE"
+	}]
+	EOS.Ecom.EcomInterface.checkout(checkout_options)
+	var checkout_data = await EOS.get_instance().ecom_interface_checkout_callback
+	print("--- Ecom: checkout_callback: ", checkout_data)
+
+
+func test_user_info_interface():
+	var opts1 = EOS.UserInfo.QueryUserInfoOptions.new()
+	opts1.local_user_id = Store.epic_account_id
+	opts1.target_user_id = Store.epic_account_id
+	EOS.UserInfo.UserInfoInterface.query_user_info(opts1)
+	await EOS.get_instance().user_info_interface_query_user_info_callback
+
+	var opts2 = EOS.UserInfo.CopyUserInfoOptions.new()
+	print(EOS.UserInfo.UserInfoInterface.copy_user_info(opts2))
+
+	var opts3 = EOS.UserInfo.QueryUserInfoByDisplayNameOptions.new()
+	opts3.local_user_id = Store.epic_account_id
+	opts3.display_name = "3ddelano"
+	EOS.UserInfo.UserInfoInterface.query_user_info_by_display_name(opts3)
+
+	var opts4 = EOS.UserInfo.QueryUserInfoByExternalAccountOptions.new()
+	opts4.local_user_id = Store.epic_account_id
+	opts4.account_type = EOS.ExternalAccountType.Epic
+	opts4.external_account_id = Store.epic_account_id
+	EOS.UserInfo.UserInfoInterface.query_user_info_by_external_account(opts4)
+	await EOS.get_instance().user_info_interface_query_user_info_by_external_account_callback
+
+	var opts5 = EOS.UserInfo.CopyExternalUserInfoByAccountIdOptions.new()
+	opts5.local_user_id = Store.epic_account_id
+	opts5.target_user_id = Store.epic_account_id
+	opts5.account_id = Store.epic_account_id
+	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_id(opts5)
+
+	var opts6 = EOS.UserInfo.CopyExternalUserInfoByAccountTypeOptions.new()
+	opts6.local_user_id = Store.epic_account_id
+	opts6.target_user_id = Store.epic_account_id
+	opts6.account_type = EOS.ExternalAccountType.Epic
+	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_type(opts6)
+
+	var opts7 = EOS.UserInfo.CopyExternalUserInfoByIndexOptions.new()
+	opts7.local_user_id = Store.epic_account_id
+	opts7.target_user_id = Store.epic_account_id
+	opts7.index = 0
+	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_index(opts7)
+
+	var opts8 = EOS.UserInfo.GetExternalUserInfoCountOptions.new()
+	opts8.local_user_id = Store.epic_account_id
+	opts8.target_user_id = Store.epic_account_id
+	EOS.UserInfo.UserInfoInterface.get_external_user_info_count(opts8)
+
+
 
 
 func get_view_manager():

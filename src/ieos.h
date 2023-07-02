@@ -5,6 +5,7 @@
 #include "eos_logging.h"
 #include "eos_sdk.h"
 #include "eos_ui.h"
+#include "eos_userinfo.h"
 #include "eos_version.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/project_settings.hpp"

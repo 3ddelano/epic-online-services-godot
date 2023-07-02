@@ -2,7 +2,7 @@
 using namespace godot;
 
 String IEOS::version_interface_get_version() {
-    return String(EOS_GetVersion());
+    return EOSG_GET_STRING(EOS_GetVersion());
 }
 
 Dictionary IEOS::version_interface_get_constants() {

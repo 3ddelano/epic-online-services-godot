@@ -8,7 +8,7 @@ using namespace godot;
 #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
 #define VARIANT_TO_EOS_BOOL(var) \
     ((var.get_type() == Variant::Type::BOOL) ? ((var.operator bool()) ? EOS_TRUE : EOS_FALSE) : EOS_FALSE)
-#define EOSG_GET_STRING(str) ((str == nullptr) ? "" : String(str))
+#define EOSG_GET_STRING(str) ((str == nullptr) ? String("") : String(str))
 #define EOSG_GET_BOOL(eosBool) ((eosBool == EOS_TRUE) ? true : false)
 
 static char const* eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
@@ -249,4 +249,34 @@ static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transact
     Ref<TransactionEOSG> transaction = memnew(TransactionEOSG());
     transaction->set_transaction(p_transaction);
     return transaction;
+}
+
+static Variant eosg_user_info_external_user_info_to_dict(EOS_UserInfo_ExternalUserInfo* externalUserInfo) {
+    if (externalUserInfo == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["account_type"] = static_cast<int>(externalUserInfo->AccountType);
+    ret["account_id"] = EOSG_GET_STRING(externalUserInfo->AccountId);
+    ret["display_name"] = EOSG_GET_STRING(externalUserInfo->DisplayName);
+    ret["display_name_sanitized"] = EOSG_GET_STRING(externalUserInfo->DisplayNameSanitized);
+    EOS_UserInfo_ExternalUserInfo_Release(externalUserInfo);
+    return ret;
+}
+
+static Variant eosg_user_info_user_info_to_dict(EOS_UserInfo* userInfo) {
+    if (userInfo == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["user_id"] = eosg_epic_account_id_to_string(userInfo->UserId);
+    ret["country"] = EOSG_GET_STRING(userInfo->Country);
+    ret["display_name"] = EOSG_GET_STRING(userInfo->DisplayName);
+    ret["display_name_sanitized"] = EOSG_GET_STRING(userInfo->DisplayNameSanitized);
+    ret["preferred_language"] = EOSG_GET_STRING(userInfo->PreferredLanguage);
+    ret["nickname"] = EOSG_GET_STRING(userInfo->Nickname);
+    EOS_UserInfo_Release(userInfo);
+    return ret;
 }

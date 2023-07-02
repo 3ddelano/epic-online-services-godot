@@ -352,7 +352,6 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
         ret["is_account_info_present"] = EOSG_GET_BOOL(data->bIsAccountInfoPresent);
         ret["account_id_type"] = static_cast<int>(data->AccountIdType);
         ret["account_id"] = String(data->AccountId);
-
         IEOS::get_singleton()->emit_signal("connect_interface_verify_id_token_callback", ret);
     });
     return;
