@@ -62,8 +62,8 @@ func _input(event: InputEvent) -> void:
 		if event.keycode == KEY_QUOTELEFT: # ` key to toggle Logs
 			Store.get_view("Logs").visible = not Store.get_view("Logs").visible
 		elif event.keycode == KEY_TAB:
-			if Store.product_user_id:
-				_on_tab_pressed()
+			#if Store.product_user_id:
+			_on_tab_pressed()
 
 
 # Dev testing stuff
@@ -76,17 +76,7 @@ func _on_tab_pressed():
 #	test_ecom_interface()
 #	test_user_info_interface()
 #	test_mods_interface()
-
-
-	# Reports interface
-#	var report_options = EOS.Reports.SendPlayerBehaviorReportOptions.new()
-#	report_options.reporter_user_id = Store.product_user_id
-#	report_options.reported_user_id = "e5d94c924f204a63bd343b976ae662cd"
-#	report_options.category = EOS.Reports.PlayerReportsCategory.Spamming
-#	report_options.message = "this is test message"
-#	report_options.context = JSON.print({hello = "testing"})
-#	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
-#	print("--- Reports: send_player_behavior_report: ", EOS.result_str(await EOS.get_instance().reports_interface_report_callback))
+#	test_reports_interface()
 
 
 
@@ -356,6 +346,17 @@ func test_mods_interface():
 	opts3.mod = mod
 	EOS.Mods.ModsInterface.install_mod(opts3)
 	print("--- Mods: install_mod: ", EOS.result_str(await EOS.get_instance().mods_interface_install_mod_callback))
+
+
+func test_reports_interface():
+	var report_options = EOS.Reports.SendPlayerBehaviorReportOptions.new()
+	report_options.reporter_user_id = Store.product_user_id
+	report_options.reported_user_id = "e5d94c924f204a63bd343b976ae662cd"
+	report_options.category = EOS.Reports.PlayerReportsCategory.Cheating
+	report_options.message = "this is a test report from godot"
+	report_options.context = JSON.stringify({hello = "testing"})
+	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
+	print("--- Reports: send_player_behavior_report: ", EOS.result_str(await EOS.get_instance().reports_interface_send_player_behavior_report_callback))
 
 
 func get_view_manager():

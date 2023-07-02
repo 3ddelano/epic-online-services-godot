@@ -236,7 +236,7 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("mods_interface_install_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_uninstall_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_update_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("reports_interface_report_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("reports_interface_send_player_behavior_report_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("progression_snapshot_interface_submit_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("progression_snapshot_interface_delete_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_join_game_accepted", PropertyInfo(Variant::DICTIONARY, "callback_data")));

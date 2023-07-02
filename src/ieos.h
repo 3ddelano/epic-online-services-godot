@@ -4,6 +4,7 @@
 #include "eos_ecom.h"
 #include "eos_logging.h"
 #include "eos_mods.h"
+#include "eos_reports.h"
 #include "eos_sdk.h"
 #include "eos_ui.h"
 #include "eos_userinfo.h"

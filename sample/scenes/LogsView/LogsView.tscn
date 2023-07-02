@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cl2qvlvdhn2iw"]
+[gd_scene load_steps=5 format=3 uid="uid://cl2qvlvdhn2iw"]
 
 [ext_resource type="FontFile" path="res://fonts/roboto-13r.tres" id="1"]
 [ext_resource type="Script" path="res://scenes/LogsView/LogsView.gd" id="2"]
@@ -10,6 +10,8 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.427451, 0.427451, 0.427451, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p3j38"]
 
 [node name="LogsView" type="VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -36,6 +38,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 2
 theme_override_fonts/normal_font = ExtResource("1")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p3j38")
 bbcode_enabled = true
 text = "Logs
 "
