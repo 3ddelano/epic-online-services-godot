@@ -280,3 +280,62 @@ static Variant eosg_user_info_user_info_to_dict(EOS_UserInfo* userInfo) {
     EOS_UserInfo_Release(userInfo);
     return ret;
 }
+
+static Variant eosg_mods_mod_info_to_dict(EOS_Mods_ModInfo* modsInfo) {
+    if (modsInfo == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["mods_count"] = static_cast<int>(modsInfo->ModsCount);
+    ret["type"] = static_cast<int>(modsInfo->Type);
+    Array mods = Array();
+
+    if (modsInfo->ModsCount > 0 && modsInfo->Mods != nullptr) {
+        for (int i = 0; i < modsInfo->ModsCount; i++) {
+            EOS_Mod_Identifier mod = modsInfo->Mods[i];
+            Dictionary mod_dict;
+            mod_dict["namespace_id"] = EOSG_GET_STRING(mod.NamespaceId);
+            mod_dict["item_id"] = EOSG_GET_STRING(mod.ItemId);
+            mod_dict["artifact_id"] = EOSG_GET_STRING(mod.ArtifactId);
+            mod_dict["title"] = EOSG_GET_STRING(mod.Title);
+            mod_dict["version"] = EOSG_GET_STRING(mod.Version);
+            mods.append(mod_dict);
+        }
+    }
+    ret["mods"] = mods;
+    EOS_Mods_ModInfo_Release(modsInfo);
+    return ret;
+}
+
+static EOS_Mod_Identifier eosg_dict_to_mods_mod_identifier(Dictionary p_mod) {
+    CharString namespace_id = VARIANT_TO_CHARSTRING(p_mod["namespace_id"]);
+    CharString item_id = VARIANT_TO_CHARSTRING(p_mod["item_id"]);
+    CharString artifact_id = VARIANT_TO_CHARSTRING(p_mod["artifact_id"]);
+    CharString title = VARIANT_TO_CHARSTRING(p_mod["title"]);
+    CharString version = VARIANT_TO_CHARSTRING(p_mod["version"]);
+
+    EOS_Mod_Identifier mod;
+    memset(&mod, 0, sizeof(mod));
+    mod.ApiVersion = EOS_MOD_IDENTIFIER_API_LATEST;
+    mod.NamespaceId = namespace_id.get_data();
+    mod.ItemId = item_id.get_data();
+    mod.ArtifactId = artifact_id.get_data();
+    mod.Title = title.get_data();
+    mod.Version = version.get_data();
+
+    return mod;
+}
+
+static Variant eosg_mods_mod_identifier_to_dict(const EOS_Mod_Identifier* mod) {
+    if (mod == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["namespace_id"] = EOSG_GET_STRING(mod->NamespaceId);
+    ret["item_id"] = EOSG_GET_STRING(mod->ItemId);
+    ret["artifact_id"] = EOSG_GET_STRING(mod->ArtifactId);
+    ret["title"] = EOSG_GET_STRING(mod->Title);
+    ret["version"] = EOSG_GET_STRING(mod->Version);
+    return ret;
+}

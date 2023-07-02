@@ -3,6 +3,7 @@
 #include "eos_auth.h"
 #include "eos_ecom.h"
 #include "eos_logging.h"
+#include "eos_mods.h"
 #include "eos_sdk.h"
 #include "eos_ui.h"
 #include "eos_userinfo.h"
@@ -272,6 +273,9 @@ class IEOS : public RefCounted {
     // -----
     Dictionary mods_interface_copy_mod_info(Ref<RefCounted> options);
     void mods_interface_enumerate_mods(Ref<RefCounted> options);
+    void mods_interface_install_mod(Ref<RefCounted> options);
+    void mods_interface_uninstall_mod(Ref<RefCounted> options);
+    void mods_interface_update_mod(Ref<RefCounted> options);
 
     // -----
     // Reports Interface

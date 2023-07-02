@@ -162,6 +162,9 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(metrics_interface_end_player_session);
     IEOS_BIND_METHOD(mods_interface_copy_mod_info);
     IEOS_BIND_METHOD(mods_interface_enumerate_mods);
+    IEOS_BIND_METHOD(mods_interface_install_mod);
+    IEOS_BIND_METHOD(mods_interface_uninstall_mod);
+    IEOS_BIND_METHOD(mods_interface_update_mod);
     IEOS_BIND_METHOD(reports_interface_send_player_behavior_report);
     IEOS_BIND_METHOD(progression_snapshot_interface_begin_snapshot);
     IEOS_BIND_METHOD(progression_snapshot_interface_add_progression);
@@ -230,6 +233,9 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("kws_interface_request_permissions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_update_parent_email_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_enumerate_mods_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("mods_interface_install_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("mods_interface_uninstall_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("mods_interface_update_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("reports_interface_report_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("progression_snapshot_interface_submit_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("progression_snapshot_interface_delete_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

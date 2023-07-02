@@ -1419,12 +1419,42 @@ class Mods:
 		var local_user_id: String
 		var type: ModEnumerationType
 
+	class InstallModOptions extends BaseClass:
+		func _init():
+			super._init("InstallModOptions")
+
+		var local_user_id: String
+		var mod: Dictionary
+
+	class UninstallModOptions extends BaseClass:
+		func _init():
+			super._init("UninstallModOptions")
+
+		var local_user_id: String
+		var mod: Dictionary
+
+	class UpdateModOptions extends BaseClass:
+		func _init():
+			super._init("UpdateModOptions")
+
+		var local_user_id: String
+		var mod: Dictionary
+
 	class ModsInterface:
 		static func copy_mod_info(options: CopyModInfoOptions) -> Dictionary:
 			return IEOS.mods_interface_copy_mod_info(options)
 
 		static func enumerate_mods(options: EnumerateModsOptions) -> void:
 			IEOS.mods_interface_enumerate_mods(options)
+
+		static func install_mod(options: InstallModOptions) -> void:
+			IEOS.mods_interface_install_mod(options)
+
+		static func uninstall_mod(options: UninstallModOptions) -> void:
+			IEOS.mods_interface_uninstall_mod(options)
+
+		static func update_mod(options: UpdateModOptions) -> void:
+			IEOS.mods_interface_update_mod(options)
 
 
 
