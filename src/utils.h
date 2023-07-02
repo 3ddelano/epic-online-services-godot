@@ -140,6 +140,7 @@ static Variant eosg_connect_external_account_info_to_dict(EOS_Connect_ExternalAc
     ret["account_id"] = EOSG_GET_STRING(externalAccountInfo->AccountId);
     ret["account_id_type"] = static_cast<int>(externalAccountInfo->AccountIdType);
     ret["last_login_time"] = externalAccountInfo->LastLoginTime;
+    EOS_Connect_ExternalAccountInfo_Release(externalAccountInfo);
     return ret;
 }
 
@@ -155,7 +156,7 @@ static Variant eosg_ecom_entitlement_to_dict(EOS_Ecom_Entitlement* entitlement) 
     ret["server_id"] = entitlement->ServerIndex;
     ret["redeemed"] = EOSG_GET_BOOL(entitlement->bRedeemed);
     ret["end_timestamp"] = entitlement->EndTimestamp;
-
+    EOS_Ecom_Entitlement_Release(entitlement);
     return ret;
 }
 
@@ -175,7 +176,7 @@ static Variant eosg_ecom_catalog_item_to_dict(EOS_Ecom_CatalogItem* item) {
     ret["developer_text"] = EOSG_GET_STRING(item->DeveloperText);
     ret["item_type"] = static_cast<int>(item->ItemType);
     ret["entitlement_end_timestamp"] = item->EntitlementEndTimestamp;
-
+    EOS_Ecom_CatalogItem_Release(item);
     return ret;
 }
 
@@ -189,7 +190,7 @@ static Variant eosg_ecom_key_image_info_to_dict(EOS_Ecom_KeyImageInfo* keyInfo) 
     ret["url"] = EOSG_GET_STRING(keyInfo->Url);
     ret["width"] = keyInfo->Width;
     ret["height"] = keyInfo->Height;
-
+    EOS_Ecom_KeyImageInfo_Release(keyInfo);
     return ret;
 }
 
@@ -210,6 +211,7 @@ static Variant eosg_ecom_catalog_release_to_dict(EOS_Ecom_CatalogRelease* releas
     }
     ret["compatible_platforms"] = compatible_platforms;
     ret["release_note"] = EOSG_GET_STRING(release->ReleaseNote);
+    EOS_Ecom_CatalogRelease_Release(release);
     return ret;
 }
 
@@ -236,6 +238,7 @@ static Variant eosg_ecom_catalog_offer_to_dict(EOS_Ecom_CatalogOffer* offer) {
     ret["decimal_point"] = offer->DecimalPoint;
     ret["release_date_timstamp"] = offer->ReleaseDateTimestamp;
     ret["effective_date_timestamp"] = offer->EffectiveDateTimestamp;
+    EOS_Ecom_CatalogOffer_Release(offer);
     return ret;
 }
 

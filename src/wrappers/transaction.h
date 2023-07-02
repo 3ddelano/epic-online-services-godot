@@ -53,7 +53,9 @@ class TransactionEOSG : public RefCounted {
     bool isSet = false;
     TransactionEOSG(){};
     ~TransactionEOSG() {
-        EOS_Ecom_Transaction_Release(m_transaction);
+        if (m_transaction != nullptr) {
+            EOS_Ecom_Transaction_Release(m_transaction);
+        }
     };
 
     void set_transaction(EOS_Ecom_HTransaction transaction) {

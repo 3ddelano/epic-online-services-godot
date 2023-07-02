@@ -369,6 +369,7 @@ class Auth:
 	enum LinkAccountFlags { NoFlags = 0x0, NintendoNsaId = 0x1 }
 
 	enum LoginCredentialType {
+        None = -1,
 		Password = 0,
 		ExchangeCode = 1,
 		PersistentAuth = 2,
@@ -2358,6 +2359,7 @@ enum ExternalAccountType {
 }
 
 enum ExternalCredentialType {
+    None = -1,
 	Epic = 0,
 	SteamAppTicket = 1,
 	PsnIdToken = 2,

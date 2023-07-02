@@ -28,8 +28,9 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
     memset(&loginOptions, 0, sizeof(loginOptions));
     loginOptions.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
     loginOptions.Credentials = &credentials;
-    loginOptions.ScopeFlags = static_cast<EOS_EAuthScopeFlags>((int)p_options->get("scope_flags"));
+    loginOptions.ScopeFlags = static_cast<EOS_EAuthScopeFlags>(static_cast<int>(p_options->get("scope_flags")));
     p_options->reference();
+
     EOS_Auth_Login(s_authInterface, &loginOptions, (void*)*p_options, [](const EOS_Auth_LoginCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
@@ -113,14 +114,14 @@ Dictionary IEOS::auth_interface_copy_user_auth_token(Ref<RefCounted> p_options, 
 }
 
 void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
+    CharString refresh_token = VARIANT_TO_CHARSTRING(p_options->get("refresh_token"));
+
     EOS_Auth_DeletePersistentAuthOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
-    String p_refresh_token = p_options->get("refresh_token");
-    CharString refresh_token = p_refresh_token.utf8();
     options.RefreshToken = refresh_token.get_data();
-
     p_options->reference();
+
     EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_DeletePersistentAuthCallbackInfo* data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
@@ -128,8 +129,8 @@ void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("auth_interface_delete_persistent_auth_callback", ret);
-        return;
     });
+    return;
 }
 
 String IEOS::auth_interface_get_logged_in_account_by_index(int index) {
@@ -192,7 +193,6 @@ void IEOS::auth_interface_query_id_token(Ref<RefCounted> p_options) {
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["target_account_id"] = eosg_epic_account_id_to_string(data->TargetAccountId);
         IEOS::get_singleton()->emit_signal("auth_interface_query_id_token_callback", ret);
-        return;
     });
     return;
 }

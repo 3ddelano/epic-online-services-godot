@@ -91,7 +91,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["id_token"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
+    ret["external_account_info"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
     return ret;
 }
 
@@ -264,11 +264,7 @@ Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["account_id"] = "";
-    if (res == EOS_EResult::EOS_Success) {
-        ret["account_id"] = String(outAccountId);
-    }
-
+    ret["account_id"] = EOSG_GET_STRING(outAccountId);
     return ret;
 }
 
@@ -279,7 +275,7 @@ void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_opt
     // Convert the p_product_user_ids to array of EOS_ProductUserId*
     EOS_ProductUserId* product_user_ids = nullptr;
     if (p_product_user_ids.size() > 0) {
-        product_user_ids = new EOS_ProductUserId[p_product_user_ids.size()];
+        product_user_ids = (EOS_ProductUserId*)memalloc(sizeof(EOS_ProductUserId) * p_product_user_ids.size());
         for (int i = 0; i < p_product_user_ids.size(); i++) {
             String product_user_id = p_product_user_ids[i];
             CharString product_user_id_cstr = product_user_id.utf8();
@@ -314,10 +310,8 @@ void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
     EOS_Connect_LinkAccountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_LINKACCOUNT_API_LATEST;
-    ;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.ContinuanceToken = p_continuance_token->get_token();
-    ;
     p_options->reference();
 
     EOS_Connect_LinkAccount(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_LinkAccountCallbackInfo* data) {
