@@ -227,6 +227,8 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("ui_interface_display_settings_updated_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_hide_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("ui_interface_show_block_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("ui_interface_show_report_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_permissions_update_received", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_create_user_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_query_age_gate_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

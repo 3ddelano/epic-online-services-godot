@@ -75,3 +75,23 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Show Friends Overlay"
+
+[node name="HB5" type="HBoxContainer" parent="VB"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ShowBlockPlayerBtn" parent="VB/HB5" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Show Block Player"
+
+[node name="HB6" type="HBoxContainer" parent="VB"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ShowReportPlayerBtn" parent="VB/HB6" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Show Report Player"

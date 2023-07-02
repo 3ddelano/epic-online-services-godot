@@ -13,6 +13,8 @@ extends VBoxContainer
 @onready var get_toggle_friends_key_label = %GetToggleFriendsKeyLabel
 
 @onready var show_friends_btn = %ShowFriendsBtn
+@onready var show_block_player_btn = %ShowBlockPlayerBtn
+@onready var show_report_player_btn = %ShowReportPlayerBtn
 
 
 func _ready() -> void:
@@ -23,9 +25,9 @@ func _ready() -> void:
 	_c = notification_location_btn.pressed.connect(_on_notification_location_btn_pressed)
 	_c = get_toggle_friends_key_btn.pressed.connect(_on_get_toggle_friends_key_btn)
 	_c = show_friends_btn.pressed.connect(_on_show_friends_btn_pressed)
+	_c = show_block_player_btn.pressed.connect(_on_show_block_player_btn_pressed)
+	_c = show_report_player_btn.pressed.connect(_on_show_report_player_btn_pressed)
 
-#	_c = EOS.get_instance().ui_interface_show_friends_callback.connect(_on_friends_overlay_visibility_changed)
-#	_c = EOS.get_instance().ui_interface_hide_friends_callback.connect(_on_friends_overlay_visibility_changed)
 	_c = EOS.get_instance().ui_interface_display_settings_updated_callback.connect(_on_display_settings_updated_callback)
 
 	loginwithepic.visible = true
@@ -47,17 +49,6 @@ func _on_logout_success():
 	container.visible = false
 
 
-#func _on_friends_visible_btn_pressed():
-#	var options = EOS.UI.GetFriendsVisibleOptions.new()
-#	options.local_user_id = Store.epic_account_id
-#	var is_friends_visible = EOS.UI.UIInterface.get_friends_visible(options)
-#
-#	if is_friends_visible:
-#		friends_visible_label.text = "Yes"
-#	else:
-#		friends_visible_label.text = "No"
-
-
 func _on_notification_location_btn_pressed():
 	var notification_location = EOS.UI.UIInterface.get_notification_location_preference()
 	notification_location_label.text = EOS.UI.NotificationLocation.keys()[notification_location]
@@ -70,6 +61,7 @@ func _on_get_toggle_friends_key_btn():
 	var key_combination = []
 	var keys = EOS.UI.KeyCombination.keys()
 	for key in keys:
+		if key == "None" or key == "Numpad0": continue
 		if toggle_friends_key & EOS.UI.KeyCombination[key] == EOS.UI.KeyCombination[key]:
 			key_combination.append(key)
 	get_toggle_friends_key_label.text = " + ".join(key_combination)
@@ -81,8 +73,21 @@ func _on_show_friends_btn_pressed():
 	EOS.UI.UIInterface.show_friends(options)
 
 
-#func _on_friends_overlay_visibility_changed(_data: Dictionary):
-#	_on_friends_visible_btn_pressed()
+func _on_show_block_player_btn_pressed():
+	var opts = EOS.UI.ShowBlockPlayerOptions.new()
+	opts.local_user_id = Store.epic_account_id
+	opts.target_user_id = Store.epic_account_id
+	EOS.UI.UIInterface.show_block_player(opts)
+	print("--- UI: show_block_player_callback: ", await EOS.get_instance().ui_interface_show_block_player_callback)
+
+
+func _on_show_report_player_btn_pressed():
+	var opts = EOS.UI.ShowReportPlayerOptions.new()
+	opts.local_user_id = Store.epic_account_id
+	opts.target_user_id = Store.epic_account_id
+	EOS.UI.UIInterface.show_report_player(opts)
+	print("--- UI: show_report_player_callback: ", await EOS.get_instance().ui_interface_show_report_player_callback)
+
 
 
 func _on_display_settings_updated_callback(data: Dictionary):
