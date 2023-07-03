@@ -104,7 +104,7 @@ void IEOS::presence_interface_set_presence(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PRESENCE_SETPRESENCE_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
-    options.PresenceModificationHandle = presence_modification->get_presence_modification();
+    options.PresenceModificationHandle = presence_modification->get_internal();
     p_options->reference();
 
     EOS_Presence_SetPresence(s_presenceInterface, &options, (void*)*p_options, [](const EOS_Presence_SetPresenceCallbackInfo* data) {

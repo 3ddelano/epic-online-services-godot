@@ -18,7 +18,7 @@ int PresenceModificationEOSG::set_status(int new_status) {
     options.ApiVersion = EOS_PRESENCE_SETPRESENCE_API_LATEST;
     options.Status = static_cast<EOS_Presence_EStatus>(new_status);
 
-    return static_cast<int>(EOS_PresenceModification_SetStatus(m_presence_modification, &options));
+    return static_cast<int>(EOS_PresenceModification_SetStatus(m_internal, &options));
 }
 
 int PresenceModificationEOSG::set_raw_rich_text(const String& p_raw_rich_text) {
@@ -29,7 +29,7 @@ int PresenceModificationEOSG::set_raw_rich_text(const String& p_raw_rich_text) {
     options.ApiVersion = EOS_PRESENCE_SETRAWRICHTEXT_API_LATEST;
     options.RichText = new_raw_rich_text.get_data();
 
-    return static_cast<int>(EOS_PresenceModification_SetRawRichText(m_presence_modification, &options));
+    return static_cast<int>(EOS_PresenceModification_SetRawRichText(m_internal, &options));
 }
 
 int PresenceModificationEOSG::set_data(Dictionary p_data) {
@@ -54,7 +54,7 @@ int PresenceModificationEOSG::set_data(Dictionary p_data) {
     options.RecordsCount = static_cast<int32_t>(records_count);
     options.Records = records;
 
-    return static_cast<int>(EOS_PresenceModification_SetData(m_presence_modification, &options));
+    return static_cast<int>(EOS_PresenceModification_SetData(m_internal, &options));
 }
 
 int PresenceModificationEOSG::delete_data(Array p_keys) {
@@ -75,7 +75,7 @@ int PresenceModificationEOSG::delete_data(Array p_keys) {
     options.RecordsCount = records_count;
     options.Records = records;
 
-    return static_cast<int>(EOS_PresenceModification_DeleteData(m_presence_modification, &options));
+    return static_cast<int>(EOS_PresenceModification_DeleteData(m_internal, &options));
 }
 
 int PresenceModificationEOSG::set_join_info(const String& p_join_info) {
@@ -86,5 +86,5 @@ int PresenceModificationEOSG::set_join_info(const String& p_join_info) {
     options.ApiVersion = EOS_PRESENCEMODIFICATION_SETJOININFO_API_LATEST;
     options.JoinInfo = new_join_info.get_data();
 
-    return static_cast<int>(EOS_PresenceModification_SetJoinInfo(m_presence_modification, &options));
+    return static_cast<int>(EOS_PresenceModification_SetJoinInfo(m_internal, &options));
 }

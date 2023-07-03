@@ -8,7 +8,7 @@ class TransactionEOSG : public RefCounted {
     GDCLASS(TransactionEOSG, RefCounted)
 
    protected:
-    EOS_Ecom_HTransaction m_transaction = nullptr;
+    EOS_Ecom_HTransaction m_internal = nullptr;
     static void _bind_methods();
 
    public:
@@ -18,17 +18,17 @@ class TransactionEOSG : public RefCounted {
 
     TransactionEOSG(){};
     ~TransactionEOSG() {
-        if (m_transaction != nullptr) {
-            EOS_Ecom_Transaction_Release(m_transaction);
+        if (m_internal != nullptr) {
+            EOS_Ecom_Transaction_Release(m_internal);
         }
     };
 
-    void set_transaction(EOS_Ecom_HTransaction transaction) {
-        m_transaction = transaction;
+    void set_internal(EOS_Ecom_HTransaction p_internal) {
+        m_internal = p_internal;
     }
 
-    EOS_Ecom_HTransaction get_transaction() {
-        return m_transaction;
+    EOS_Ecom_HTransaction get_internal() {
+        return m_internal;
     }
 };
 }  // namespace godot

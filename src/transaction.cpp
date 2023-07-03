@@ -13,7 +13,7 @@ void TransactionEOSG::_bind_methods() {
 String TransactionEOSG::get_id() {
     char* outBuffer = (char*)memalloc(256);
     int32_t outLength = 0;
-    EOS_Ecom_Transaction_GetTransactionId(m_transaction, outBuffer, &outLength);
+    EOS_Ecom_Transaction_GetTransactionId(m_internal, outBuffer, &outLength);
     return String(outBuffer);
 }
 
@@ -22,7 +22,7 @@ int TransactionEOSG::get_entitlement_count() {
     memset(&options, 0, sizeof(EOS_Ecom_Transaction_GetEntitlementsCountOptions));
     options.ApiVersion = EOS_ECOM_TRANSACTION_GETENTITLEMENTSCOUNT_API_LATEST;
 
-    return static_cast<int>(EOS_Ecom_Transaction_GetEntitlementsCount(m_transaction, &options));
+    return static_cast<int>(EOS_Ecom_Transaction_GetEntitlementsCount(m_internal, &options));
 }
 
 Dictionary TransactionEOSG::copy_entitlement_by_index(int p_entitlement_index) {
@@ -32,7 +32,7 @@ Dictionary TransactionEOSG::copy_entitlement_by_index(int p_entitlement_index) {
     options.EntitlementIndex = static_cast<uint32_t>(p_entitlement_index);
 
     EOS_Ecom_Entitlement* outEntitlement;
-    EOS_EResult res = EOS_Ecom_Transaction_CopyEntitlementByIndex(m_transaction, &options, &outEntitlement);
+    EOS_EResult res = EOS_Ecom_Transaction_CopyEntitlementByIndex(m_internal, &options, &outEntitlement);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);

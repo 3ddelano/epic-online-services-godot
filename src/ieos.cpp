@@ -247,6 +247,15 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("presence_interface_presence_changed_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_query_presence_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_set_presence_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_member_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_member_status_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_invite_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_invite_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_invite_rejected_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_join_lobby_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_send_lobby_native_invite_requested_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("lobby_interface_rtc_room_connection_changed_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 int IEOS::shutdown() {

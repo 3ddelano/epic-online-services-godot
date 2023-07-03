@@ -1,4 +1,3 @@
-// #include "helpers/account_helpers.h"
 #include "ieos.h"
 using namespace godot;
 
@@ -244,7 +243,7 @@ void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_AUTH_LINKACCOUNT_API_LATEST;
     options.LinkAccountFlags = static_cast<EOS_ELinkAccountFlags>((int)p_options->get("link_account_flags"));
-    options.ContinuanceToken = p_continuance_token->get_token();
+    options.ContinuanceToken = p_continuance_token->get_internal();
     options.LocalUserId = eosg_string_to_epic_account_id(p_local_user_id.get_data());
     p_options->reference();
 

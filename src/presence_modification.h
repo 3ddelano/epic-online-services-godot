@@ -8,7 +8,7 @@ class PresenceModificationEOSG : public RefCounted {
     GDCLASS(PresenceModificationEOSG, RefCounted)
 
    protected:
-    EOS_HPresenceModification m_presence_modification = nullptr;
+    EOS_HPresenceModification m_internal = nullptr;
     static void _bind_methods();
 
    public:
@@ -20,17 +20,17 @@ class PresenceModificationEOSG : public RefCounted {
 
     PresenceModificationEOSG(){};
     ~PresenceModificationEOSG() {
-        if (m_presence_modification != nullptr) {
-            EOS_PresenceModification_Release(m_presence_modification);
+        if (m_internal != nullptr) {
+            EOS_PresenceModification_Release(m_internal);
         }
     };
 
-    void set_presence_modification(EOS_HPresenceModification presence_modification) {
-        m_presence_modification = presence_modification;
+    void set_internal(EOS_HPresenceModification p_internal) {
+        m_internal = p_internal;
     }
 
-    EOS_HPresenceModification get_presence_modification() {
-        return m_presence_modification;
+    EOS_HPresenceModification get_internal() {
+        return m_internal;
     }
 };
 

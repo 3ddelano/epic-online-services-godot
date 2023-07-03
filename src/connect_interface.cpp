@@ -191,7 +191,7 @@ void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
     EOS_Connect_CreateUserOptions options;
     memset(&options, 0, sizeof(EOS_Connect_CreateUserOptions));
     options.ApiVersion = EOS_CONNECT_CREATEUSER_API_LATEST;
-    options.ContinuanceToken = p_continuance_token->get_token();
+    options.ContinuanceToken = p_continuance_token->get_internal();
     p_options->reference();
 
     EOS_Connect_CreateUser(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_CreateUserCallbackInfo* data) {
@@ -311,7 +311,7 @@ void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_LINKACCOUNT_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.ContinuanceToken = p_continuance_token->get_token();
+    options.ContinuanceToken = p_continuance_token->get_internal();
     p_options->reference();
 
     EOS_Connect_LinkAccount(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_LinkAccountCallbackInfo* data) {

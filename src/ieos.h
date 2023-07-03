@@ -7,6 +7,7 @@
 #include "eos_friends.h"
 #include "eos_kws.h"
 #include "eos_leaderboards.h"
+#include "eos_lobby.h"
 #include "eos_logging.h"
 #include "eos_metrics.h"
 #include "eos_mods.h"
@@ -57,6 +58,7 @@ class IEOS : public RefCounted {
     EOS_HStats s_statsInterface = nullptr;
     EOS_HUI s_uiInterface = nullptr;
     EOS_HUserInfo s_userInfoInterface = nullptr;
+    EOS_HLobby s_lobbyInterface = nullptr;
     EOS_HPlatform s_platformInterface = nullptr;
 
    public:
@@ -311,6 +313,31 @@ class IEOS : public RefCounted {
     bool presence_interface_has_presence(Ref<RefCounted> options);
     void presence_interface_query_presence(Ref<RefCounted> options);
     void presence_interface_set_presence(Ref<RefCounted> options);
+
+    // -----
+    // Lobby Interface
+    // -----
+    void lobby_interface_create_lobby(Ref<RefCounted> options);
+    void lobby_interface_destroy_lobby(Ref<RefCounted> options);
+    void lobby_interface_join_lobby(Ref<RefCounted> options);
+    void lobby_interface_join_lobby_by_id(Ref<RefCounted> options);
+    void lobby_interface_leave_lobby(Ref<RefCounted> options);
+    int lobby_interface_update_lobby_modification(Ref<RefCounted> options);
+    void lobby_interface_update_lobby(Ref<RefCounted> options);
+    void lobby_interface_promote_member(Ref<RefCounted> options);
+    void lobby_interface_kick_member(Ref<RefCounted> options);
+    void lobby_interface_hard_mute_member(Ref<RefCounted> options);
+    void lobby_interface_send_invite(Ref<RefCounted> options);
+    void lobby_interface_reject_invite(Ref<RefCounted> options);
+    void lobby_interface_query_invites(Ref<RefCounted> options);
+    int lobby_interface_get_invite_count(Ref<RefCounted> options);
+    int lobby_interface_get_invite_id_by_index(Ref<RefCounted> options);
+    int lobby_interface_create_lobby_search(Ref<RefCounted> options);
+    int lobby_interface_copy_lobby_details_handle_by_invite_id(Ref<RefCounted> options);
+    int lobby_interface_copy_lobby_details_handle_by_ui_event_id(Ref<RefCounted> options);
+    int lobby_interface_copy_lobby_details_handle(Ref<RefCounted> options);
+    int lobby_interface_get_rtc_room_name(Ref<RefCounted> options);
+    int lobby_interface_is_rtc_room_connected(Ref<RefCounted> options);
 };
 
 }  // namespace godot

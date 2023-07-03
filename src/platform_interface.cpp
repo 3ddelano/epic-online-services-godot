@@ -150,7 +150,6 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
     s_modsInterface = EOS_Platform_GetModsInterface(s_platformInterface);
     s_playerDataStorageInterface = EOS_Platform_GetPlayerDataStorageInterface(s_platformInterface);
-
     s_presenceInterface = EOS_Platform_GetPresenceInterface(s_platformInterface);
     EOS_Presence_AddNotifyOnPresenceChangedOptions notifyOnPresenceChangedOptions;
     notifyOnPresenceChangedOptions.ApiVersion = EOS_PRESENCE_ADDNOTIFYONPRESENCECHANGED_API_LATEST;
@@ -174,7 +173,6 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_progressionSnapshotInterface = EOS_Platform_GetProgressionSnapshotInterface(s_platformInterface);
     s_reportsInterface = EOS_Platform_GetReportsInterface(s_platformInterface);
     s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
-
     s_uiInterface = EOS_Platform_GetUIInterface(s_platformInterface);
     EOS_UI_AddNotifyDisplaySettingsUpdatedOptions notifyDisplaySettingsUpdatedOptions;
     notifyDisplaySettingsUpdatedOptions.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
@@ -186,6 +184,89 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     });
 
     s_userInfoInterface = EOS_Platform_GetUserInfoInterface(s_platformInterface);
+    s_lobbyInterface = EOS_Platform_GetLobbyInterface(s_platformInterface);
+    EOS_Lobby_AddNotifyLobbyUpdateReceivedOptions notifyLobbyUpdateReceivedOptions;
+    notifyLobbyUpdateReceivedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYUPDATERECEIVED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyUpdateReceived(s_lobbyInterface, &notifyLobbyUpdateReceivedOptions, nullptr, [](const EOS_Lobby_LobbyUpdateReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_update_received_callback", ret);
+    });
+    EOS_Lobby_AddNotifyLobbyMemberUpdateReceivedOptions notifyLobbyMemberUpdateReceivedOptions;
+    notifyLobbyMemberUpdateReceivedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYMEMBERUPDATERECEIVED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyMemberUpdateReceived(s_lobbyInterface, &notifyLobbyMemberUpdateReceivedOptions, nullptr, [](const EOS_Lobby_LobbyMemberUpdateReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_member_update_received_callback", ret);
+    });
+    EOS_Lobby_AddNotifyLobbyMemberStatusReceivedOptions notifyLobbyMemberStatusReceivedOptions;
+    notifyLobbyMemberStatusReceivedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYMEMBERSTATUSRECEIVED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyMemberStatusReceived(s_lobbyInterface, &notifyLobbyMemberStatusReceivedOptions, nullptr, [](const EOS_Lobby_LobbyMemberStatusReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["current_status"] = static_cast<int>(data->CurrentStatus);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_member_status_received_callback", ret);
+    });
+    EOS_Lobby_AddNotifyLobbyInviteReceivedOptions notifyLobbyInviteReceivedOptions;
+    notifyLobbyInviteReceivedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYINVITERECEIVED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyInviteReceived(s_lobbyInterface, &notifyLobbyInviteReceivedOptions, nullptr, [](const EOS_Lobby_LobbyInviteReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["invite_id"] = EOSG_GET_STRING(data->InviteId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_invite_received_callback", ret);
+    });
+    EOS_Lobby_AddNotifyLobbyInviteAcceptedOptions notifyLobbyInviteAcceptedOptions;
+    notifyLobbyInviteAcceptedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYINVITEACCEPTED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyInviteAccepted(s_lobbyInterface, &notifyLobbyInviteAcceptedOptions, nullptr, [](const EOS_Lobby_LobbyInviteAcceptedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["invite_id"] = EOSG_GET_STRING(data->InviteId);
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_invite_accepted_callback", ret);
+    });
+    EOS_Lobby_AddNotifyLobbyInviteRejectedOptions notifyLobbyInviteRejectedOptions;
+    notifyLobbyInviteRejectedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLOBBYINVITEREJECTED_API_LATEST;
+    EOS_Lobby_AddNotifyLobbyInviteRejected(s_lobbyInterface, &notifyLobbyInviteRejectedOptions, nullptr, [](const EOS_Lobby_LobbyInviteRejectedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["invite_id"] = EOSG_GET_STRING(data->InviteId);
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_lobby_invite_rejected_callback", ret);
+    });
+    EOS_Lobby_AddNotifyJoinLobbyAcceptedOptions notifyJoinLobbyAcceptedOptions;
+    notifyJoinLobbyAcceptedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYJOINLOBBYACCEPTED_API_LATEST;
+    EOS_Lobby_AddNotifyJoinLobbyAccepted(s_lobbyInterface, &notifyJoinLobbyAcceptedOptions, nullptr, [](const EOS_Lobby_JoinLobbyAcceptedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["ui_event_id"] = data->UiEventId;
+        IEOS::get_singleton()->emit_signal("lobby_interface_join_lobby_accepted_callback", ret);
+    });
+    EOS_Lobby_AddNotifySendLobbyNativeInviteRequestedOptions notifySendLobbyNativeInviteRequestedOptions;
+    notifySendLobbyNativeInviteRequestedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYSENDLOBBYNATIVEINVITEREQUESTED_API_LATEST;
+    EOS_Lobby_AddNotifySendLobbyNativeInviteRequested(s_lobbyInterface, &notifySendLobbyNativeInviteRequestedOptions, nullptr, [](const EOS_Lobby_SendLobbyNativeInviteRequestedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["ui_event_id"] = data->UiEventId;
+        ret["target_native_account_type"] = EOSG_GET_STRING(data->TargetNativeAccountType);
+        ret["target_native_account_id"] = EOSG_GET_STRING(data->TargetUserNativeAccountId);
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_send_lobby_native_invite_requested_callback", ret);
+    });
+    EOS_Lobby_AddNotifyRTCRoomConnectionChangedOptions notifyRTCRoomConnectionChangedOptions;
+    notifyRTCRoomConnectionChangedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYRTCROOMCONNECTIONCHANGED_API_LATEST;
+    EOS_Lobby_AddNotifyRTCRoomConnectionChanged(s_lobbyInterface, &notifyRTCRoomConnectionChangedOptions, nullptr, [](const EOS_Lobby_RTCRoomConnectionChangedCallbackInfo *data) {
+        Dictionary ret;
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["is_connected"] = EOSG_GET_BOOL(data->bIsConnected);
+        ret["disconnect_reason"] = static_cast<int>(data->DisconnectReason);
+        IEOS::get_singleton()->emit_signal("lobby_interface_rtc_room_connection_changed_callback", ret);
+    });
 
     return true;
 }
@@ -357,6 +438,7 @@ void IEOS::platform_interface_release() {
     s_statsInterface = nullptr;
     s_uiInterface = nullptr;
     s_userInfoInterface = nullptr;
+    s_lobbyInterface = nullptr;
     EOS_Platform_Release(s_platformInterface);
 }
 

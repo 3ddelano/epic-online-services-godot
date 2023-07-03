@@ -88,7 +88,7 @@ static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continua
         return Variant();
     }
     Ref<ContinuanceTokenEOSG> continuance_token = memnew(ContinuanceTokenEOSG());
-    continuance_token->set_token(p_continuance_token);
+    continuance_token->set_internal(p_continuance_token);
     return continuance_token;
 }
 
@@ -251,7 +251,7 @@ static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transact
         return Variant();
     }
     Ref<TransactionEOSG> transaction = memnew(TransactionEOSG());
-    transaction->set_transaction(p_transaction);
+    transaction->set_internal(p_transaction);
     return transaction;
 }
 
@@ -378,7 +378,7 @@ static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModif
         return Variant();
     }
     Ref<PresenceModificationEOSG> presence_modification = memnew(PresenceModificationEOSG());
-    presence_modification->set_presence_modification(p_presence_modification);
+    presence_modification->set_internal(p_presence_modification);
     return presence_modification;
 }
 
