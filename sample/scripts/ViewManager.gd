@@ -1,14 +1,15 @@
 class_name ViewManager
 extends VBoxContainer
 
-@onready var auth_btn = $HB/AuthBtn
-@onready var achievements_btn = $HB/AchievementsBtn
-@onready var custominvites_btn = $HB/CustomInvitesBtn
-@onready var stats_btn = $HB/StatsBtn
-@onready var leaderboards_btn = $HB/LeaderboardsBtn
-@onready var friends_btn = $HB/FriendsBtn
-@onready var ui_btn = $HB/UIBtn
-@onready var metrics_btn = $HB/MetricsBtn
+@onready var auth_btn = %AuthBtn
+@onready var achievements_btn = %AchievementsBtn
+@onready var custominvites_btn = %CustomInvitesBtn
+@onready var stats_btn = %StatsBtn
+@onready var leaderboards_btn = %LeaderboardsBtn
+@onready var friends_btn = %FriendsBtn
+@onready var ui_btn = %UIBtn
+@onready var metrics_btn = %MetricsBtn
+@onready var lobbies_btn = %LobbiesBtn
 
 
 func _ready() -> void:
@@ -20,6 +21,7 @@ func _ready() -> void:
 	_c = friends_btn.pressed.connect(Callable(self, "set_view").bind("Friends"))
 	_c = ui_btn.pressed.connect(Callable(self, "set_view").bind("UI"))
 	_c = metrics_btn.pressed.connect(Callable(self, "set_view").bind("Metrics"))
+	_c = lobbies_btn.pressed.connect(Callable(self, "set_view").bind("Lobbies"))
 
 
 func get_view(view_name: String):

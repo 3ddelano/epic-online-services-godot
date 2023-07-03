@@ -177,6 +177,27 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(presence_interface_has_presence);
     IEOS_BIND_METHOD(presence_interface_query_presence);
     IEOS_BIND_METHOD(presence_interface_set_presence);
+    IEOS_BIND_METHOD(lobby_interface_create_lobby);
+    IEOS_BIND_METHOD(lobby_interface_destroy_lobby);
+    IEOS_BIND_METHOD(lobby_interface_join_lobby);
+    IEOS_BIND_METHOD(lobby_interface_join_lobby_by_id);
+    IEOS_BIND_METHOD(lobby_interface_leave_lobby);
+    IEOS_BIND_METHOD(lobby_interface_update_lobby_modification);
+    IEOS_BIND_METHOD(lobby_interface_update_lobby);
+    IEOS_BIND_METHOD(lobby_interface_promote_member);
+    IEOS_BIND_METHOD(lobby_interface_kick_member);
+    IEOS_BIND_METHOD(lobby_interface_hard_mute_member);
+    IEOS_BIND_METHOD(lobby_interface_send_invite);
+    IEOS_BIND_METHOD(lobby_interface_reject_invite);
+    IEOS_BIND_METHOD(lobby_interface_query_invites);
+    IEOS_BIND_METHOD(lobby_interface_get_invite_count);
+    IEOS_BIND_METHOD(lobby_interface_get_invite_id_by_index);
+    IEOS_BIND_METHOD(lobby_interface_create_lobby_search);
+    IEOS_BIND_METHOD(lobby_interface_copy_lobby_details_by_invite_id);
+    IEOS_BIND_METHOD(lobby_interface_copy_lobby_details_by_ui_event_id);
+    IEOS_BIND_METHOD(lobby_interface_copy_lobby_details);
+    IEOS_BIND_METHOD(lobby_interface_get_rtc_room_name);
+    IEOS_BIND_METHOD(lobby_interface_is_rtc_room_connected);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
     ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

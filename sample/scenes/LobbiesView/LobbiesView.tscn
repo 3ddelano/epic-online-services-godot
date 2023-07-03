@@ -1,0 +1,70 @@
+[gd_scene load_steps=7 format=3 uid="uid://dsiyt23hnmngd"]
+
+[ext_resource type="Script" path="res://scenes/LobbiesView/LobbiesView.gd" id="1_gvnj5"]
+[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2_88tr1"]
+[ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="4_5s7iv"]
+[ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="5_bpr7u"]
+[ext_resource type="Script" path="res://scenes/LobbiesView/CreateLobbyPopup.gd" id="6_bpgu2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgtn6"]
+
+[node name="LobbiesView" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_gvnj5")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_88tr1")
+text = "Leaderboards"
+
+[node name="VB" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LeaderboardDataRichTextLabel" type="RichTextLabel" parent="VB"]
+layout_mode = 2
+focus_mode = 2
+theme_override_constants/table_h_separation = 16
+theme_override_constants/table_v_separation = 4
+theme_override_fonts/bold_font = ExtResource("4_5s7iv")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tgtn6")
+bbcode_enabled = true
+text = "RankScoreUser"
+fit_content = true
+context_menu_enabled = true
+selection_enabled = true
+
+[node name="CreateLobbyPopup" parent="." instance=ExtResource("5_bpr7u")]
+unique_name_in_owner = true
+title = "CREATE LOBBY"
+visible = false
+script = ExtResource("6_bpgu2")
+
+[node name="VB" parent="CreateLobbyPopup/VB/MC" index="0"]
+theme_override_constants/separation = 16
+
+[node name="BucketId" type="LineEdit" parent="CreateLobbyPopup/VB/MC/VB" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Bucket Id"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CreateLobbyPopup/VB/MC/VB" index="1"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MapOptionBtn" type="OptionButton" parent="CreateLobbyPopup/VB/MC/VB/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="MaxPlayersOptionsBtn" type="OptionButton" parent="CreateLobbyPopup/VB/MC/VB/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[editable path="CreateLobbyPopup"]

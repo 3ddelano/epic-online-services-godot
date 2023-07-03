@@ -1385,7 +1385,235 @@ class Lobby:
 		Closed = 5
 	}
 
-	enum LobbyPermissionLevel { Publicadvertised = 0, Joinviapresence = 1, Inviteonly = 2 }
+	enum LobbyPermissionLevel { PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2 }
+
+	const LOBBY_SEARCH_BUCKET_ID = "bucket"
+	const LOBBY_SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
+	const LOBBY_SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
+
+	class CreateLobbyOptions extends BaseClass:
+		func _init():
+			super._init("CreateLobbyOptions")
+
+		var local_user_id: String
+		var bucket_id: String
+		var lobby_id: String
+		var max_lobby_members: int
+		var permission_level: LobbyPermissionLevel
+		var presence_enabled: bool
+		var allow_invites: bool
+		var disable_host_migration: bool
+		var enable_rtc_room: bool
+		var enable_join_by_id: bool
+		var rejoin_after_kick_requires_invite: bool
+
+	class DestroyLobbyOptions extends BaseClass:
+		func _init():
+			super._init("DestroyLobbyOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+	class JoinLobbyOptions extends BaseClass:
+		func _init():
+			super._init("JoinLobbyOptions")
+
+		var local_user_id: String
+		var lobby_detals: LobbyDetailsEOSG
+		var presence_enabled: bool
+
+	class JoinLobbyByIdOptions extends BaseClass:
+		func _init():
+			super._init("JoinLobbyByIdOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+		var presence_enabled: bool
+
+	class LeaveLobbyOptions extends BaseClass:
+		func _init():
+			super._init("LeaveLobbyOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+	class UpdateLobbyModificationOptions extends BaseClass:
+		func _init():
+			super._init("UpdateLobbyModificationOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+	class UpdateLobbyOptions extends BaseClass:
+		func _init():
+			super._init("UpdateLobbyOptions")
+
+		var lobby_modification: LobbyModificationEOSG
+
+	class PromoteMemberOptions extends BaseClass:
+		func _init():
+			super._init("PromoteMemberOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var lobby_id: String
+
+	class KickMemberOptions extends BaseClass:
+		func _init():
+			super._init("KickMemberOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var lobby_id: String
+
+	class HardMuteMemberOptions extends BaseClass:
+		func _init():
+			super._init("HardMuteMemberOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var lobby_id: String
+		var hard_mute: bool
+
+	class SendInviteOptions extends BaseClass:
+		func _init():
+			super._init("SendInviteOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var lobby_id: String
+
+	class RejectInviteOptions extends BaseClass:
+		func _init():
+			super._init("RejectInviteOptions")
+
+		var local_user_id: String
+		var invite_id: String
+
+	class QueryInvitesOptions extends BaseClass:
+		func _init():
+			super._init("QueryInvitesOptions")
+
+		var local_user_id: String
+
+	class GetInviteCountOptions extends BaseClass:
+		func _init():
+			super._init("GetInviteCountOptions")
+
+		var local_user_id: String
+
+	class GetInviteIdByIndexOptions extends BaseClass:
+		func _init():
+			super._init("GetInviteIdByIndexOptions")
+
+		var local_user_id: String
+		var index: int
+
+	class CreateLobbySearchOptions extends BaseClass:
+		func _init():
+			super._init("CreateLobbySearchOptions")
+
+		var max_results: int
+
+	class CopyLobbyDetailsByInviteIdOptions extends BaseClass:
+		func _init():
+			super._init("CopyLobbyDetailsByInviteIdOptions")
+
+		var invite_id: String
+
+	class CopyLobbyDetailsByUiEventIdOptions extends BaseClass:
+		func _init():
+			super._init("CopyLobbyDetailsByUiEventIdOptions")
+
+		var ui_event_id: String
+
+	class CopyLobbyDetailsOptions extends BaseClass:
+		func _init():
+			super._init("CopyLobbyDetailsOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+	class GetRtcRoomNameOptions extends BaseClass:
+		func _init():
+			super._init("GetRtcRoomNameOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+	class IsRtcRoomConnectedOptions extends BaseClass:
+		func _init():
+			super._init("IsRtcRoomConnectedOptions")
+
+		var local_user_id: String
+		var lobby_id: String
+
+
+	class LobbyInterface:
+		static func lobby_interface_create_lobby(options: CreateLobbyOptions) -> void:
+			IEOS.lobby_interface_create_lobby(options)
+
+		static func lobby_interface_destroy_lobby(options: DestroyLobbyOptions) -> void:
+			IEOS.lobby_interface_destroy_lobby(options)
+
+		static func lobby_interface_join_lobby(options: JoinLobbyOptions) -> void:
+			IEOS.lobby_interface_join_lobby(options)
+
+		static func lobby_interface_join_lobby_by_id(options: JoinLobbyByIdOptions) -> void:
+			IEOS.lobby_interface_join_lobby_by_id(options)
+
+		static func lobby_interface_leave_lobby(options: LeaveLobbyOptions) -> void:
+			IEOS.lobby_interface_leave_lobby(options)
+
+		static func lobby_interface_update_lobby_modification(options: UpdateLobbyModificationOptions) -> Dictionary:
+			return IEOS.lobby_interface_update_lobby_modification(options)
+
+		static func lobby_interface_update_lobby(options: UpdateLobbyOptions) -> void:
+			IEOS.lobby_interface_update_lobby(options)
+
+		static func lobby_interface_promote_member(options: PromoteMemberOptions) -> void:
+			IEOS.lobby_interface_promote_member(options)
+
+		static func lobby_interface_kick_member(options: KickMemberOptions) -> void:
+			IEOS.lobby_interface_kick_member(options)
+
+		static func lobby_interface_hard_mute_member(options: HardMuteMemberOptions) -> void:
+			IEOS.lobby_interface_hard_mute_member(options)
+
+		static func lobby_interface_send_invite(options: SendInviteOptions) -> void:
+			IEOS.lobby_interface_send_invite(options)
+
+		static func lobby_interface_reject_invite(options: RejectInviteOptions) -> void:
+			IEOS.lobby_interface_reject_invite(options)
+
+		static func lobby_interface_query_invites(options: QueryInvitesOptions) -> void:
+			IEOS.lobby_interface_query_invites(options)
+
+		static func lobby_interface_get_invite_count(options: GetInviteCountOptions) -> int:
+			return IEOS.lobby_interface_get_invite_count(options)
+
+		static func lobby_interface_get_invite_id_by_index(options: GetInviteIdByIndexOptions) -> Dictionary:
+			return IEOS.lobby_interface_get_invite_id_by_index(options)
+
+		static func lobby_interface_create_lobby_search(options: CreateLobbySearchOptions) -> Dictionary:
+			return IEOS.lobby_interface_create_lobby_search(options)
+
+		static func lobby_interface_copy_lobby_details_by_invite_id(options: CopyLobbyDetailsByInviteIdOptions) -> Dictionary:
+			return IEOS.lobby_interface_copy_lobby_details_by_invite_id(options)
+
+		static func lobby_interface_copy_lobby_details_by_ui_event_id(options: CopyLobbyDetailsByUiEventIdOptions) -> Dictionary:
+			return IEOS.lobby_interface_copy_lobby_details_by_ui_event_id(options)
+
+		static func lobby_interface_copy_lobby_details(options: CopyLobbyDetailsOptions) -> Dictionary:
+			return IEOS.lobby_interface_copy_lobby_details(options)
+
+		static func lobby_interface_get_rtc_room_name(options: GetRtcRoomNameOptions) -> Dictionary:
+			return IEOS.lobby_interface_get_rtc_room_name(options)
+
+		static func lobby_interface_is_rtc_room_connected(options: IsRtcRoomConnectedOptions) -> Dictionary:
+			return IEOS.lobby_interface_is_rtc_room_connected(options)
+
+
 
 
 

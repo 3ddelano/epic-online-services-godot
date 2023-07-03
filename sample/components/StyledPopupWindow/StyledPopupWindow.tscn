@@ -1,0 +1,64 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkprjbptror6n"]
+
+[ext_resource type="Theme" uid="uid://dwns7wwoyi1hy" path="res://components/StyledPopupWindow/StyledPopupWindowTheme.tres" id="1_72hut"]
+[ext_resource type="Script" path="res://components/StyledPopupWindow/StyledPopupWindow.gd" id="1_xtvca"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pe58l"]
+content_margin_left = 7.0
+content_margin_right = 6.0
+bg_color = Color(0.196078, 0.196078, 0.196078, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.192157, 0.192157, 0.192157, 1)
+
+[node name="StyledPopupWindow" type="PopupPanel"]
+disable_3d = true
+size = Vector2i(572, 534)
+visible = true
+theme = ExtResource("1_72hut")
+script = ExtResource("1_xtvca")
+
+[node name="VB" type="VBoxContainer" parent="."]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 568.0
+offset_bottom = 530.0
+theme_type_variation = &"Panel_TitleBar"
+
+[node name="PanelContainer" type="PanelContainer" parent="VB"]
+layout_mode = 2
+theme_type_variation = &"Panel_TitleBar"
+
+[node name="TitleBar" type="HBoxContainer" parent="VB/PanelContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VB/PanelContainer/TitleBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "POPUP WINDOW TITLE"
+horizontal_alignment = 1
+
+[node name="CloseBtn" type="Button" parent="VB/PanelContainer/TitleBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.345098, 0.345098, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_pe58l")
+text = "x"
+
+[node name="MC" type="MarginContainer" parent="VB"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VB" type="VBoxContainer" parent="VB/MC"]
+layout_mode = 2

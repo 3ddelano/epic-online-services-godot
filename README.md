@@ -221,7 +221,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [ ] Sample (No general access yet)
 - Lobby Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - Metrics Interface
   - [x] Implementation

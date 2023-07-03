@@ -4,6 +4,7 @@
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
+#include "lobby_details.h"
 #include "lobby_modification.h"
 #include "lobby_search.h"
 #include "presence_modification.h"
@@ -26,6 +27,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<godot::PresenceModificationEOSG>();
     ClassDB::register_class<godot::LobbyModificationEOSG>();
     ClassDB::register_class<godot::LobbySearchEOSG>();
+    ClassDB::register_class<godot::LobbyDetailsEOSG>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {

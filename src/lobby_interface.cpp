@@ -236,7 +236,7 @@ void IEOS::lobby_interface_hard_mute_member(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.LobbyId = lobby_id.get_data();
-    options.bHardMute = VARIANT_TO_EOS_BOOL(p_options->get("b_hard_mute"));
+    options.bHardMute = VARIANT_TO_EOS_BOOL(p_options->get("hard_mute"));
     p_options->reference();
 
     EOS_Lobby_HardMuteMember(s_lobbyInterface, &options, (void*)*p_options, [](const EOS_Lobby_HardMuteMemberCallbackInfo* data) {
@@ -341,8 +341,8 @@ Dictionary IEOS::lobby_interface_get_invite_id_by_index(Ref<RefCounted> p_option
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.Index = static_cast<uint32_t>(static_cast<int>(p_options->get("index")));
 
-    char* outBuffer = (char*)memalloc(256);  // TODO: what is the actual max size for the outBuffer?
-    int outBufferSize = 256;
+    char* outBuffer = (char*)memalloc(EOS_LOBBY_INVITEID_MAX_LENGTH + 1);
+    int outBufferSize = EOS_LOBBY_INVITEID_MAX_LENGTH + 1;
     EOS_EResult result = EOS_Lobby_GetInviteIdByIndex(s_lobbyInterface, &options, outBuffer, &outBufferSize);
 
     Dictionary ret;
@@ -456,30 +456,3 @@ Dictionary IEOS::lobby_interface_is_rtc_room_connected(Ref<RefCounted> p_options
     ret["is_connected"] = EOSG_GET_BOOL(outIsConnected);
     return ret;
 }
-
-// int EOS_LobbyModification_SetBucketId(EOS_HLobbyModification Handle, const EOS_LobbyModification_SetBucketIdOptions* Options);
-// int EOS_LobbyModification_SetPermissionLevel(EOS_HLobbyModification Handle, const EOS_LobbyModification_SetPermissionLevelOptions* Options);
-// int EOS_LobbyModification_SetMaxMembers(EOS_HLobbyModification Handle, const EOS_LobbyModification_SetMaxMembersOptions* Options);
-// int EOS_LobbyModification_SetInvitesAllowed(EOS_HLobbyModification Handle, const EOS_LobbyModification_SetInvitesAllowedOptions* Options);
-// int EOS_LobbyModification_AddAttribute(EOS_HLobbyModification Handle, const EOS_LobbyModification_AddAttributeOptions* Options);
-// int EOS_LobbyModification_RemoveAttribute(EOS_HLobbyModification Handle, const EOS_LobbyModification_RemoveAttributeOptions* Options);
-// int EOS_LobbyModification_AddMemberAttribute(EOS_HLobbyModification Handle, const EOS_LobbyModification_AddMemberAttributeOptions* Options);
-// int EOS_LobbyModification_RemoveMemberAttribute(EOS_HLobbyModification Handle, const EOS_LobbyModification_RemoveMemberAttributeOptions* Options);
-// String EOS_LobbyDetails_GetLobbyOwner(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_GetLobbyOwnerOptions* Options);
-// int EOS_LobbyDetails_CopyInfo(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_CopyInfoOptions* Options, EOS_LobbyDetails_Info** OutLobbyDetailsInfo);
-// int EOS_LobbyDetails_GetAttributeCount(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_GetAttributeCountOptions* Options);
-// int EOS_LobbyDetails_CopyAttributeByIndex(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_CopyAttributeByIndexOptions* Options, EOS_Lobby_Attribute** OutAttribute);
-// int EOS_LobbyDetails_CopyAttributeByKey(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_CopyAttributeByKeyOptions* Options, EOS_Lobby_Attribute** OutAttribute);
-// int EOS_LobbyDetails_GetMemberCount(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_GetMemberCountOptions* Options);
-// String EOS_LobbyDetails_GetMemberByIndex(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_GetMemberByIndexOptions* Options);
-// int EOS_LobbyDetails_GetMemberAttributeCount(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_GetMemberAttributeCountOptions* Options);
-// int EOS_LobbyDetails_CopyMemberAttributeByIndex(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_CopyMemberAttributeByIndexOptions* Options, EOS_Lobby_Attribute** OutAttribute);
-// int EOS_LobbyDetails_CopyMemberAttributeByKey(EOS_HLobbyDetails Handle, const EOS_LobbyDetails_CopyMemberAttributeByKeyOptions* Options, EOS_Lobby_Attribute** OutAttribute);
-// void IEOS::lobby_interfaceSearch_find(Ref<RefCounted> p_options);
-// int EOS_LobbySearch_SetLobbyId(EOS_HLobbySearch Handle, const EOS_LobbySearch_SetLobbyIdOptions* Options);
-// int EOS_LobbySearch_SetTargetUserId(EOS_HLobbySearch Handle, const EOS_LobbySearch_SetTargetUserIdOptions* Options);
-// int EOS_LobbySearch_SetParameter(EOS_HLobbySearch Handle, const EOS_LobbySearch_SetParameterOptions* Options);
-// int EOS_LobbySearch_RemoveParameter(EOS_HLobbySearch Handle, const EOS_LobbySearch_RemoveParameterOptions* Options);
-// int EOS_LobbySearch_SetMaxResults(EOS_HLobbySearch Handle, const EOS_LobbySearch_SetMaxResultsOptions* Options);
-// int EOS_LobbySearch_GetSearchResultCount(EOS_HLobbySearch Handle, const EOS_LobbySearch_GetSearchResultCountOptions* Options);
-// int EOS_LobbySearch_CopySearchResultByIndex(EOS_HLobbySearch Handle, const EOS_LobbySearch_CopySearchResultByIndexOptions* Options, EOS_HLobbyDetails* OutLobbyDetailsHandle);

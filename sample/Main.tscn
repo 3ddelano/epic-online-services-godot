@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://gcoi8ld0uvkl"]
+[gd_scene load_steps=18 format=3 uid="uid://gcoi8ld0uvkl"]
 
 [ext_resource type="FontFile" path="res://fonts/roboto-16r.tres" id="1_j7moy"]
 [ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://5xrk7nvpwosj" path="res://scenes/LeaderboardsView/LeaderboardsView.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://t016k2yh382d" path="res://scenes/FriendsView/FriendsView.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://b51w7a6ofuubp" path="res://scenes/UIView/UIView.tscn" id="13"]
+[ext_resource type="PackedScene" uid="uid://dsiyt23hnmngd" path="res://scenes/LobbiesView/LobbiesView.tscn" id="13_eyvcp"]
 [ext_resource type="PackedScene" uid="uid://bd06h3ufkhfd7" path="res://scenes/MetricsView/MetricsView.tscn" id="14"]
 [ext_resource type="Script" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
 
@@ -55,54 +56,67 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="AuthBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Auth"
 
 [node name="AchievementsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Achievements"
 
 [node name="CustomInvitesBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Custom Invites"
 
 [node name="StatsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Stats"
 
 [node name="LeaderboardsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Leaderboards"
 
 [node name="FriendsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Friends"
 
 [node name="UIBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "UI"
 
 [node name="MetricsBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Metrics"
 
 [node name="LobbiesBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Lobbies"
 
 [node name="P2PBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "P2P"
 
 [node name="PlayerDataBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Player Data"
 
 [node name="ReportBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Reports"
 
 [node name="TitleStorageBtn" parent="MC/ViewManager/HB" instance=ExtResource("6")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Title Storage"
 
@@ -122,30 +136,42 @@ layout_mode = 2
 
 [node name="AchievementsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("2")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="CustomInvitesView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("9")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="StatsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("10")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="LeaderboardsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("11")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="FriendsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("12")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="UIView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("13")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="MetricsView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("14")]
 visible = false
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="LobbiesView" parent="MC/ViewManager/VSC/VB" instance=ExtResource("13_eyvcp")]
+visible = false
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
 [node name="NotificationsLayer" type="CanvasLayer" parent="MC/ViewManager/VSC/VB"]
