@@ -322,7 +322,7 @@ class IEOS : public RefCounted {
     void lobby_interface_join_lobby(Ref<RefCounted> options);
     void lobby_interface_join_lobby_by_id(Ref<RefCounted> options);
     void lobby_interface_leave_lobby(Ref<RefCounted> options);
-    int lobby_interface_update_lobby_modification(Ref<RefCounted> options);
+    Dictionary lobby_interface_update_lobby_modification(Ref<RefCounted> options);
     void lobby_interface_update_lobby(Ref<RefCounted> options);
     void lobby_interface_promote_member(Ref<RefCounted> options);
     void lobby_interface_kick_member(Ref<RefCounted> options);
@@ -331,13 +331,13 @@ class IEOS : public RefCounted {
     void lobby_interface_reject_invite(Ref<RefCounted> options);
     void lobby_interface_query_invites(Ref<RefCounted> options);
     int lobby_interface_get_invite_count(Ref<RefCounted> options);
-    int lobby_interface_get_invite_id_by_index(Ref<RefCounted> options);
-    int lobby_interface_create_lobby_search(Ref<RefCounted> options);
-    int lobby_interface_copy_lobby_details_handle_by_invite_id(Ref<RefCounted> options);
-    int lobby_interface_copy_lobby_details_handle_by_ui_event_id(Ref<RefCounted> options);
-    int lobby_interface_copy_lobby_details_handle(Ref<RefCounted> options);
-    int lobby_interface_get_rtc_room_name(Ref<RefCounted> options);
-    int lobby_interface_is_rtc_room_connected(Ref<RefCounted> options);
+    Dictionary lobby_interface_get_invite_id_by_index(Ref<RefCounted> options);
+    Dictionary lobby_interface_create_lobby_search(Ref<RefCounted> options);
+    Dictionary lobby_interface_copy_lobby_details_by_invite_id(Ref<RefCounted> options);
+    Dictionary lobby_interface_copy_lobby_details_by_ui_event_id(Ref<RefCounted> options);
+    Dictionary lobby_interface_copy_lobby_details(Ref<RefCounted> options);
+    Dictionary lobby_interface_get_rtc_room_name(Ref<RefCounted> options);
+    Dictionary lobby_interface_is_rtc_room_connected(Ref<RefCounted> options);
 };
 
 }  // namespace godot

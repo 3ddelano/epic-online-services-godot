@@ -6,6 +6,10 @@ addon_folder = "./sample/addons/epic-online-services-godot"
 readme_path = "./README.md"
 output_zip = "epic-online-services-godot-addon"
 
+os.system("scons target=template_debug dev_build=yes")
+os.system("scons target=template_release")
+
+
 # Make a temp folder and copy the addon_folder to it
 temp_folder = "./temp"
 if os.path.exists(temp_folder):

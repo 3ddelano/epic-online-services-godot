@@ -4,6 +4,9 @@
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "ieos.h"
+#include "lobby_details.h"
+#include "lobby_modification.h"
+#include "lobby_search.h"
 #include "presence_modification.h"
 #include "transaction.h"
 
@@ -28,7 +31,7 @@ static char const* eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
         return tempBuffer;
     }
 
-    UtilityFunctions::printerr("\nError: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n ");
+    UtilityFunctions::printerr("\nError: EOSG Utils: eosg_epic_account_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
 
     return "";
 }
@@ -51,7 +54,7 @@ static String eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
         return String(tempBuffer);
     }
 
-    UtilityFunctions::printerr("\nError: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n ");
+    UtilityFunctions::printerr("\nError: EOSG Utils: eosg_product_user_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
 
     return String("");
 }
@@ -494,4 +497,91 @@ static Variant eosg_kws_permission_status_to_dict(EOS_KWS_PermissionStatus* perm
     ret["status"] = static_cast<int>(permission->Status);
     EOS_KWS_PermissionStatus_Release(permission);
     return ret;
+}
+
+static Variant eos_lobby_details_info_to_dict(EOS_LobbyDetails_Info* lobbyDetails) {
+    if (lobbyDetails == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["lobby_id"] = EOSG_GET_STRING(lobbyDetails->LobbyId);
+    ret["lobby_owner_user_id"] = eosg_product_user_id_to_string(lobbyDetails->LobbyOwnerUserId);
+    ret["permission_level"] = static_cast<int>(lobbyDetails->PermissionLevel);
+    ret["available_slots"] = lobbyDetails->AvailableSlots;
+    ret["max_members"] = lobbyDetails->MaxMembers;
+    ret["allow_invites"] = EOSG_GET_BOOL(lobbyDetails->bAllowInvites);
+    ret["bucket_id"] = EOSG_GET_STRING(lobbyDetails->BucketId);
+    ret["allow_host_migration"] = EOSG_GET_BOOL(lobbyDetails->bAllowHostMigration);
+    ret["rtc_room_enabled"] = EOSG_GET_BOOL(lobbyDetails->bRTCRoomEnabled);
+    ret["allow_join_by_id"] = EOSG_GET_BOOL(lobbyDetails->bAllowJoinById);
+    ret["rejoin_after_kick_requires_invite"] = EOSG_GET_BOOL(lobbyDetails->bRejoinAfterKickRequiresInvite);
+    EOS_LobbyDetails_Info_Release(lobbyDetails);
+    return ret;
+}
+
+static Variant eos_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData* attributeData) {
+    if (attributeData == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["key"] = EOSG_GET_STRING(attributeData->Key);
+    ret["value_type"] = static_cast<int>(attributeData->ValueType);
+
+    switch (attributeData->ValueType) {
+        case EOS_EAttributeType::EOS_AT_INT64:
+            ret["value"] = attributeData->Value.AsInt64;
+            break;
+        case EOS_EAttributeType::EOS_AT_DOUBLE:
+            ret["value"] = attributeData->Value.AsDouble;
+            break;
+        case EOS_EAttributeType::EOS_AT_STRING:
+            ret["value"] = EOSG_GET_STRING(attributeData->Value.AsUtf8);
+            break;
+        default:
+            UtilityFunctions::printerr("\nError: EOSG Utils: eos_lobby_attribute_data_to_dict: Unknown value type: ", static_cast<int>(attributeData->ValueType), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
+            break;
+    }
+
+    return ret;
+}
+
+static Variant eos_lobby_attribute_to_dict(EOS_Lobby_Attribute* attribute) {
+    if (attribute == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["visibility"] = static_cast<int>(attribute->Visibility);
+    ret["data"] = eos_lobby_attribute_data_to_dict(attribute->Data);
+    EOS_Lobby_Attribute_Release(attribute);
+    return ret;
+}
+
+static Variant eosg_lobby_lobby_modification_to_wrapper(EOS_HLobbyModification lobbyModification) {
+    if (lobbyModification == nullptr) {
+        return Variant();
+    }
+
+    Ref<LobbyModificationEOSG> lobby_modification = memnew(LobbyModificationEOSG());
+    lobby_modification->set_internal(lobbyModification);
+    return lobby_modification;
+}
+
+static Variant eosg_lobby_lobby_search_to_wrapper(EOS_HLobbySearch lobbySearch) {
+    if (lobbySearch == nullptr) {
+        return Variant();
+    }
+
+    Ref<LobbySearchEOSG> lobby_search = memnew(LobbySearchEOSG());
+    lobby_search->set_internal(lobbySearch);
+    return lobby_search;
+}
+
+static Variant eosg_lobby_lobby_details_to_wrapper(EOS_HLobbyDetails lobbyDetails) {
+    if (lobbyDetails == nullptr) {
+        return Variant();
+    }
+
+    Ref<LobbyDetailsEOSG> lobby_details = memnew(LobbyDetailsEOSG());
+    lobby_details->set_internal(lobbyDetails);
+    return lobby_details;
 }
