@@ -433,3 +433,16 @@ static Variant eosg_achievements_player_achievement_to_dict(EOS_Achievements_Pla
     EOS_Achievements_PlayerAchievement_Release(achievement);
     return ret;
 }
+
+static Variant eosg_stats_stat_to_dict(EOS_Stats_Stat* stat) {
+    if (stat == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["name"] = EOSG_GET_STRING(stat->Name);
+    ret["start_time"] = stat->StartTime;
+    ret["end_time"] = stat->EndTime;
+    ret["value"] = stat->Value;
+    EOS_Stats_Stat_Release(stat);
+    return ret;
+}

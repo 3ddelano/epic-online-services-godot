@@ -589,6 +589,8 @@ class CustomInvites:
 
 
 class Stats:
+	const STATS_TIME_UNDEFINED = -1
+
 	class CopyStatByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyStatByIndexOptions")
@@ -626,8 +628,8 @@ class Stats:
 		var local_user_id: String
 		var target_user_id: String
 		var stat_names: Array # Array[String]
-		var start_time: String
-		var end_time: String
+		var start_time = STATS_TIME_UNDEFINED
+		var end_time = STATS_TIME_UNDEFINED
 
 		var client_data = null
 

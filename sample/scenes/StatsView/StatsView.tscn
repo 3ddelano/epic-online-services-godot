@@ -1,106 +1,79 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3 uid="uid://dgi7j5qx3xt84"]
 
 [ext_resource type="Script" path="res://scenes/StatsView/StatsView.gd" id="1"]
 [ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
 [ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m0bq4"]
+
 [node name="StatsView" type="VBoxContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
 [node name="Title" type="Label" parent="."]
-offset_right = 1024.0
-offset_bottom = 38.0
+layout_mode = 2
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource( 2 )
+theme_override_fonts/font = ExtResource("2")
 text = "Stats"
 
 [node name="VB" type="VBoxContainer" parent="."]
-offset_top = 42.0
-offset_right = 1024.0
-offset_bottom = 226.0
+layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="StatName" type="LineEdit" parent="VB"]
-offset_right = 250.0
-offset_bottom = 24.0
-custom_minimum_size = Vector2( 250, 0 )
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
 size_flags_horizontal = 0
 placeholder_text = "Enter stat name"
 
 [node name="IngestAmount" type="SpinBox" parent="VB"]
-offset_top = 32.0
-offset_right = 74.0
-offset_bottom = 56.0
+layout_mode = 2
 size_flags_horizontal = 0
 max_value = 900000.0
 rounded = true
 
 [node name="HB" type="HBoxContainer" parent="VB"]
-offset_top = 64.0
-offset_right = 1024.0
-offset_bottom = 82.0
+layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="IngestBtn" parent="VB/HB" instance=ExtResource( 5 )]
-offset_right = 56.0
-offset_bottom = 18.0
+[node name="IngestBtn" parent="VB/HB" instance=ExtResource("5")]
+layout_mode = 2
 size_flags_horizontal = 0
 text = "Ingest"
 
 [node name="StatusLabel" type="Label" parent="VB/HB"]
-offset_left = 72.0
-offset_top = 2.0
-offset_right = 72.0
-offset_bottom = 16.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
 
-[node name="RefreshMyStatsBtn" parent="VB" instance=ExtResource( 5 )]
-offset_top = 90.0
-offset_right = 123.0
-offset_bottom = 108.0
+[node name="RefreshMyStatsBtn" parent="VB" instance=ExtResource("5")]
+layout_mode = 2
 size_flags_horizontal = 0
 text = "Refresh my stats"
 
 [node name="HSeparator" type="HSeparator" parent="VB"]
-offset_top = 116.0
-offset_right = 1024.0
-offset_bottom = 120.0
+layout_mode = 2
 
 [node name="MyStatsLabel" type="Label" parent="VB"]
-offset_top = 128.0
-offset_right = 1024.0
-offset_bottom = 147.0
-theme_override_fonts/font = ExtResource( 3 )
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
 text = "My Stats"
 
 [node name="VB" type="VBoxContainer" parent="VB"]
-offset_top = 155.0
-offset_right = 1024.0
-offset_bottom = 184.0
+layout_mode = 2
 
 [node name="MyStatsRichTextLabel" type="RichTextLabel" parent="VB/VB"]
-offset_right = 1024.0
-offset_bottom = 29.0
-theme_override_constants/table_v_separation = 4
+layout_mode = 2
+focus_mode = 2
 theme_override_constants/table_h_separation = 16
-theme_override_fonts/bold_font = ExtResource( 3 )
+theme_override_constants/table_v_separation = 4
+theme_override_fonts/bold_font = ExtResource("3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_m0bq4")
 bbcode_enabled = true
-text = "[table=4]
-[cell][b]Stat Name[/b][/cell]
-[cell][b]Value[/b][/cell]
-[cell][b]Start Time[/b][/cell]
-[cell][b]End Time[/b][/cell]
-
-[/table]"
 text = "Stat NameValueStart TimeEnd Time"
-fit_content_height = true
+fit_content = true
+context_menu_enabled = true
+selection_enabled = true

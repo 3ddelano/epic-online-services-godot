@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bht0ln2ftshrw" path="res://scenes/LoginView/LoginView.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/CustomInvitesView/CustomInvitesView.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/StatsView/StatsView.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://dgi7j5qx3xt84" path="res://scenes/StatsView/StatsView.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/LeaderboardsView/LeaderboardsView.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://t016k2yh382d" path="res://scenes/FriendsView/FriendsView.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://b51w7a6ofuubp" path="res://scenes/UIView/UIView.tscn" id="13"]

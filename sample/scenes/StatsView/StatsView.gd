@@ -67,8 +67,6 @@ func _on_query_stats_callback(data: Dictionary):
 
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
-	print("--- Stats: Ingesting stat: name=%s amount=%s" % [_stat_name, _ingest_amount])
-
 	var ingest_stat_options = EOS.Stats.IngestStatOptions.new()
 	ingest_stat_options.local_user_id = Store.product_user_id
 	ingest_stat_options.target_user_id = Store.product_user_id
@@ -82,10 +80,9 @@ func _on_ingest_stat_callback(data: Dictionary):
 	print("--- Stats: ingest_stat_callback: ", EOS.result_str(data))
 
 	if data.result_code != EOS.Result.Success:
-		status_label.text = "Ingesting Failed: " + EOS.result_str(data)
+		status_label.text = "Stat Ingesting Failed: " + EOS.result_str(data)
 		return
 
-	print("--- Stats: Stat ingested")
 	status_label.text = "Ingesting success"
 	_on_login_success() # Query the stats
 
@@ -102,11 +99,17 @@ func _update_stats():
 	var rows_bbcode = ""
 	for stat in stats:
 		rows_bbcode += "[cell]%s[/cell]" % stat.name
-		if stat.value != null:
-			rows_bbcode += "[cell]%s[/cell]" % stat.value
-		if stat.start_time != null:
-			rows_bbcode += "[cell]%s[/cell]" % stat.start_time
-		if stat.end_time != null:
-			rows_bbcode += "[cell]%s[/cell]" % stat.end_time
+		rows_bbcode += "[cell]%s[/cell]" % stat.value
+		if stat.start_time != EOS.Stats.STATS_TIME_UNDEFINED:
+			var time_str = Time.get_datetime_string_from_unix_time(stat.start_time)
+			rows_bbcode += "[cell]%s[/cell]" % time_str
+		else:
+			rows_bbcode += "[cell]Undefined[/cell]"
+
+		if stat.end_time != EOS.Stats.STATS_TIME_UNDEFINED:
+			var time_str = Time.get_datetime_string_from_unix_time(stat.end_time)
+			rows_bbcode += "[cell]%s[/cell]" % time_str
+		else:
+			rows_bbcode += "[cell]Undefined[/cell]"
 
 	my_stats.text = base_bbcode % rows_bbcode

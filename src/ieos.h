@@ -11,6 +11,7 @@
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
 #include "eos_sdk.h"
+#include "eos_stats.h"
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
