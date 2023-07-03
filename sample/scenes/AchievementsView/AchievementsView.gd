@@ -12,8 +12,8 @@ var achievements = {}
 
 func _ready() -> void:
 	# Achievements callbacks
-	var _c = EOS.get_instance().achievements_interface_achievements_unlocked_callback.connect(_on_achievements_interface_achievements_unlocked_callback)
-	_c = EOS.get_instance().achievements_interface_unlock_achievements_complete_callback.connect(_on_achievements_interface_unlock_achievements_complete_callback)
+	var _c = EOS.get_instance().achievements_interface_achievements_unlocked_v2_callback.connect(_on_achievements_interface_achievements_unlocked_v2_callback)
+	_c = EOS.get_instance().achievements_interface_unlock_achievements_callback.connect(_on_achievements_interface_unlock_achievements_callback)
 
 	_c = Store.login_success.connect(_on_login_success)
 	_c = Store.logout_success.connect(_on_logout_success)
@@ -24,7 +24,7 @@ func _on_login_success():
 	var query_options = EOS.Achievements.QueryDefinitionsOptions.new()
 	query_options.local_user_id = Store.product_user_id
 	EOS.Achievements.AchievementsInterface.query_definitions(query_options)
-	await EOS.get_instance().achievements_interface_query_definitions_complete_callback
+	await EOS.get_instance().achievements_interface_query_definitions_callback
 
 	var definition_count_options = EOS.Achievements.GetAchievementDefinitionCountOptions.new()
 	var definition_count = EOS.Achievements.AchievementsInterface.get_achievement_definition_count(definition_count_options)
@@ -35,15 +35,14 @@ func _on_login_success():
 		copy_by_index_options.achievement_index = i
 
 		var achievement_definition = EOS.Achievements.AchievementsInterface.copy_achievement_definition_v2_by_index(copy_by_index_options).definition_v2
-		achievement_definition.unlock_time = ""
 		achievements[achievement_definition.achievement_id] = achievement_definition
+		achievements[achievement_definition.achievement_id].unlock_time = EOS.Achievements.UNLOCK_TIME_UNDEFINED
 
 	var player_query_options = EOS.Achievements.QueryPlayerAchievementsOptions.new()
 	player_query_options.local_user_id = Store.product_user_id
 	player_query_options.target_user_id = Store.product_user_id
 	EOS.Achievements.AchievementsInterface.query_player_achievements(player_query_options)
-	await EOS.get_instance().achievements_interface_query_player_achievements_complete_callback
-	print("Done query player achievements")
+	print("--- Achievements: achievements_interface_query_player_achievements_callback: ", EOS.result_str(await EOS.get_instance().achievements_interface_query_player_achievements_callback))
 
 	var player_achievement_count_options = EOS.Achievements.GetPlayerAchievementCountOptions.new()
 	player_achievement_count_options.user_id = Store.product_user_id
@@ -87,8 +86,8 @@ func _on_achievement_pressed(node: AchievementsListAchievement):
 	achievement_popup.popup_centered()
 
 
-func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary):
-	print("--- Achievements: achievements_unlocked_callback ")
+func _on_achievements_interface_achievements_unlocked_v2_callback(data: Dictionary):
+	print("--- Achievements: achievements_unlocked_v2_callback: ", data)
 
 	if data.user_id == Store.product_user_id:
 		achievements[data.achievement_id].unlock_time = data.unlock_time
@@ -100,8 +99,8 @@ func _on_achievements_interface_achievements_unlocked_callback(data: Dictionary)
 	achievement_unlock_notification.from_achievement_data(achievements[data.achievement_id])
 
 
-func _on_achievements_interface_unlock_achievements_complete_callback(data: Dictionary):
-	print("--- Achievements: unlock_achievements_complete_callback: ", EOS.result_str(data))
+func _on_achievements_interface_unlock_achievements_callback(data: Dictionary):
+	print("--- Achievements: unlock_achievements_callback: ", EOS.result_str(data))
 
 
 func _on_refresh_btn_pressed():

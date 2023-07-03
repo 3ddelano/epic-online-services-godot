@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://gcoi8ld0uvkl"]
 
 [ext_resource type="FontFile" path="res://fonts/roboto-16r.tres" id="1_j7moy"]
-[ext_resource type="PackedScene" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
 [ext_resource type="Script" path="res://Main.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ViewManager.gd" id="3_j157n"]
 [ext_resource type="PackedScene" uid="uid://cl2qvlvdhn2iw" path="res://scenes/LogsView/LogsView.tscn" id="4"]

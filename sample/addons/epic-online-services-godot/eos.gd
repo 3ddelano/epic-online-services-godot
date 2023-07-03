@@ -29,6 +29,8 @@ static func is_operation_complete(p_result_code: Result) -> bool:
 
 
 class Achievements:
+	const UNLOCK_TIME_UNDEFINED = -1
+
 	class CopyAchievementDefinitionV2ByAchievementIdOptions extends BaseClass:
 		func _init():
 			super._init("CopyAchievementDefinitionV2ByAchievementIdOptions")

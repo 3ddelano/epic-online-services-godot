@@ -381,3 +381,55 @@ static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModif
     presence_modification->set_presence_modification(p_presence_modification);
     return presence_modification;
 }
+
+static Variant eosg_achievements_definition_to_dict(EOS_Achievements_DefinitionV2* definition) {
+    if (definition == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["achievement_id"] = EOSG_GET_STRING(definition->AchievementId);
+    ret["unlocked_display_name"] = EOSG_GET_STRING(definition->UnlockedDisplayName);
+    ret["unlocked_description"] = EOSG_GET_STRING(definition->UnlockedDescription);
+    ret["locked_display_name"] = EOSG_GET_STRING(definition->LockedDisplayName);
+    ret["locked_description"] = EOSG_GET_STRING(definition->LockedDescription);
+    ret["flavor_text"] = EOSG_GET_STRING(definition->FlavorText);
+    ret["unlocked_icon_url"] = EOSG_GET_STRING(definition->UnlockedIconURL);
+    ret["locked_icon_url"] = EOSG_GET_STRING(definition->LockedIconURL);
+    ret["is_hidden"] = EOSG_GET_BOOL(definition->bIsHidden);
+
+    Array stat_thresholds = Array();
+    for (int i = 0; i < definition->StatThresholdsCount; i++) {
+        Dictionary stat_threshold_dict;
+        stat_threshold_dict["name"] = EOSG_GET_STRING(definition->StatThresholds[i].Name);
+        stat_threshold_dict["threshold"] = definition->StatThresholds[i].Threshold;
+        stat_thresholds.append(stat_threshold_dict);
+    }
+    ret["stat_thresholds"] = stat_thresholds;
+    EOS_Achievements_DefinitionV2_Release(definition);
+    return ret;
+}
+
+static Variant eosg_achievements_player_achievement_to_dict(EOS_Achievements_PlayerAchievement* achievement) {
+    if (achievement == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["achievement_id"] = EOSG_GET_STRING(achievement->AchievementId);
+    ret["progress"] = achievement->Progress;
+    ret["unlock_time"] = achievement->UnlockTime;
+    ret["display_name"] = EOSG_GET_STRING(achievement->DisplayName);
+    ret["description"] = EOSG_GET_STRING(achievement->Description);
+    ret["icon_url"] = EOSG_GET_STRING(achievement->IconURL);
+    ret["flavor_text"] = EOSG_GET_STRING(achievement->FlavorText);
+    Array stat_infos = Array();
+    for (int i = 0; i < achievement->StatInfoCount; i++) {
+        Dictionary stat_info_dict;
+        stat_info_dict["name"] = EOSG_GET_STRING(achievement->StatInfo[i].Name);
+        stat_info_dict["current_value"] = achievement->StatInfo[i].CurrentValue;
+        stat_info_dict["threshold_value"] = achievement->StatInfo[i].ThresholdValue;
+        stat_infos.append(stat_info_dict);
+    }
+    ret["stat_infos"] = stat_infos;
+    EOS_Achievements_PlayerAchievement_Release(achievement);
+    return ret;
+}

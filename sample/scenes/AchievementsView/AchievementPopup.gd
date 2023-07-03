@@ -40,11 +40,12 @@ func from_achievement_node(node: AchievementsListAchievement):
 	else:
 		is_visible_label.text = "Is Visible: NA"
 
-	if data.unlock_time == "":
+	if data.unlock_time == EOS.Achievements.UNLOCK_TIME_UNDEFINED:
 		is_unlocked_label.text = "Is Unlocked: No"
 		unlock_btn.disabled = false
 	else:
-		is_unlocked_label.text = "Is Unlocked: Yes on " + data.unlock_time
+		var time_str = Time.get_datetime_string_from_unix_time(data.unlock_time)
+		is_unlocked_label.text = "Is Unlocked: Yes at " + time_str
 		unlock_btn.disabled = true
 
 	for child in stat_thresholds_vb.get_children():

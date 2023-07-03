@@ -16,8 +16,8 @@ func _ready() -> void:
 	var _c
 	_c = Store.login_success.connect(_on_login_success)
 	_c = Store.logout_success.connect(_on_logout_success)
-	_c = EOS.get_instance().stats_interface_query_stats_complete_callback.connect(_on_query_stats_complete_callback)
-	_c = EOS.get_instance().stats_interface_ingest_stat_complete_callback.connect(_on_ingest_stat_complete_callback)
+	_c = EOS.get_instance().stats_interface_query_stats_callback.connect(_on_query_stats_callback)
+	_c = EOS.get_instance().stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
 	_c = ingest_btn.pressed.connect(_on_ingest_btn_pressed)
 	_c = refresh_my_stats_btn.pressed.connect(_on_refresh_my_stats_btn_pressed)
 
@@ -45,8 +45,8 @@ func _on_refresh_my_stats_btn_pressed():
 	_on_login_success()
 
 
-func _on_query_stats_complete_callback(data: Dictionary):
-	print("--- Stats: query_stats_complete_callback: ", EOS.result_str(data) )
+func _on_query_stats_callback(data: Dictionary):
+	print("--- Stats: query_stats_callback: ", EOS.result_str(data) )
 
 	var stats_count_options = EOS.Stats.GetStatsCountOptions.new()
 	stats_count_options.target_user_id = Store.product_user_id
@@ -78,8 +78,8 @@ func ingest_stat(_stat_name: String, _ingest_amount: int):
 	EOS.Stats.StatsInterface.ingest_stat(ingest_stat_options)
 
 
-func _on_ingest_stat_complete_callback(data: Dictionary):
-	print("--- Stats: ingest_stat_complete_callback: ", EOS.result_str(data))
+func _on_ingest_stat_callback(data: Dictionary):
+	print("--- Stats: ingest_stat_callback: ", EOS.result_str(data))
 
 	if data.result_code != EOS.Result.Success:
 		status_label.text = "Ingesting Failed: " + EOS.result_str(data)

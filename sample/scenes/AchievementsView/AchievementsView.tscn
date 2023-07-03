@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3 uid="uid://d3hxdkoy73pf1"]
 
 [ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsView.gd" id="1"]
 [ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
@@ -8,247 +8,168 @@
 [ext_resource type="Script" path="res://scenes/AchievementsView/AchievementPopup.gd" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/AchievementsView/AchievementsListAchievement.tscn" id="7"]
 
-[sub_resource type="StyleBoxEmpty" id=1]
+[sub_resource type="StyleBoxEmpty" id="1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6nfih"]
 
 [node name="AchievementsView" type="VBoxContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
 [node name="Title" type="Label" parent="."]
-offset_right = 1024.0
-offset_bottom = 38.0
+layout_mode = 2
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource( 2 )
+theme_override_fonts/font = ExtResource("2")
 text = "Achievements"
 
 [node name="MC" type="MarginContainer" parent="."]
-offset_top = 42.0
-offset_right = 1024.0
-offset_bottom = 76.0
+layout_mode = 2
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="RefreshBtn" parent="MC" instance=ExtResource( 5 )]
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 26.0
+[node name="RefreshBtn" parent="MC" instance=ExtResource("5")]
+layout_mode = 2
 size_flags_horizontal = 0
 text = "Refresh"
 
 [node name="RR" type="ReferenceRect" parent="."]
-offset_top = 80.0
-offset_right = 1024.0
-offset_bottom = 600.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-border_color = Color( 1, 0, 0, 0 )
+border_color = Color(1, 0, 0, 0)
 
 [node name="AchievementsList" type="MarginContainer" parent="RR"]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 4 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("4")
 
 [node name="SC" type="ScrollContainer" parent="RR/AchievementsList"]
-offset_right = 1024.0
-offset_bottom = 520.0
+layout_mode = 2
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementsList/SC"]
-offset_right = 326.0
-offset_bottom = 156.0
+layout_mode = 2
 theme_override_constants/separation = 12
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="AchievementsListAchievement" parent="RR/AchievementsList/SC/VB" instance=ExtResource( 7 )]
+[node name="AchievementsListAchievement" parent="RR/AchievementsList/SC/VB" instance=ExtResource("7")]
+layout_mode = 2
 
-[node name="AchievementsListAchievement2" parent="RR/AchievementsList/SC/VB" instance=ExtResource( 7 )]
-offset_top = 84.0
-offset_bottom = 156.0
+[node name="AchievementsListAchievement2" parent="RR/AchievementsList/SC/VB" instance=ExtResource("7")]
+layout_mode = 2
 
 [node name="AchievementPopup" type="PopupPanel" parent="RR"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -274.0
-offset_top = -193.0
-offset_right = 274.0
-offset_bottom = 193.0
-script = ExtResource( 6 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+size = Vector2i(540, 446)
+script = ExtResource("6")
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementPopup"]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 544.0
-offset_bottom = 428.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_right = 536.0
+offset_bottom = 442.0
 
 [node name="CloseBtn" type="Button" parent="RR/AchievementPopup/VB"]
-offset_left = 521.0
-offset_right = 540.0
-offset_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 8
 text = "x"
 
 [node name="MC" type="MarginContainer" parent="RR/AchievementPopup/VB"]
-offset_top = 24.0
-offset_right = 540.0
-offset_bottom = 424.0
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_top = 4
+layout_mode = 2
 theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC"]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 536.0
-offset_bottom = 396.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
 
 [node name="Title" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_right = 532.0
-offset_bottom = 14.0
+layout_mode = 2
 text = "Achievement"
-align = 1
 
 [node name="IdLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 18.0
-offset_right = 532.0
-offset_bottom = 32.0
+layout_mode = 2
 text = "Id: "
 
 [node name="FlavorLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 36.0
-offset_right = 532.0
-offset_bottom = 50.0
+layout_mode = 2
 text = "Flavor Text:"
 
 [node name="IsVisibleLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 54.0
-offset_right = 532.0
-offset_bottom = 68.0
+layout_mode = 2
 text = "Is Visible: Yes"
 
 [node name="IsUnlockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 72.0
-offset_right = 532.0
-offset_bottom = 86.0
+layout_mode = 2
 text = "Is Unlocked: Yes"
 
 [node name="MC" type="MarginContainer" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 90.0
-offset_right = 532.0
-offset_bottom = 174.0
+layout_mode = 2
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_bottom = 8
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/MC"]
-offset_top = 8.0
-offset_right = 532.0
-offset_bottom = 76.0
+layout_mode = 2
 
 [node name="StatThesholdsLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/MC/VB"]
-offset_right = 532.0
-offset_bottom = 14.0
+layout_mode = 2
 text = "Stat Thresholds"
 
 [node name="SC" type="ScrollContainer" parent="RR/AchievementPopup/VB/MC/VB/MC/VB"]
-offset_top = 18.0
-offset_right = 532.0
-offset_bottom = 68.0
-custom_minimum_size = Vector2( 0, 50 )
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
 
 [node name="StatThesholdsVB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/MC/VB/SC"]
+layout_mode = 2
 
 [node name="HB" type="HBoxContainer" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 178.0
-offset_right = 532.0
-offset_bottom = 362.0
+layout_mode = 2
 
 [node name="VB" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/HB"]
-offset_right = 250.0
-offset_bottom = 184.0
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="LockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB" instance=ExtResource( 3 )]
-offset_left = 93.0
-offset_right = 157.0
+[node name="LockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB" instance=ExtResource("3")]
+layout_mode = 2
 
 [node name="LockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/HB/VB"]
-offset_top = 72.0
-offset_right = 250.0
-offset_bottom = 86.0
+layout_mode = 2
 text = "Locked Name"
 
 [node name="LockedDescLabel" type="RichTextLabel" parent="RR/AchievementPopup/VB/MC/VB/HB/VB"]
-offset_top = 94.0
-offset_right = 250.0
-offset_bottom = 184.0
-custom_minimum_size = Vector2( 250, 0 )
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
 text = "(LOCK) Desc for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet blandit lectus, ac eleifend erat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-fit_content_height = true
 
 [node name="VS" type="VSeparator" parent="RR/AchievementPopup/VB/MC/VB/HB"]
-offset_left = 254.0
-offset_right = 270.0
-offset_bottom = 184.0
-custom_minimum_size = Vector2( 16, 0 )
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
 
 [node name="VB2" type="VBoxContainer" parent="RR/AchievementPopup/VB/MC/VB/HB"]
-offset_left = 274.0
-offset_right = 524.0
-offset_bottom = 184.0
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="UnlockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2" instance=ExtResource( 3 )]
-offset_left = 93.0
-offset_right = 157.0
+[node name="UnlockedImage" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2" instance=ExtResource("3")]
+layout_mode = 2
 
 [node name="UnlockedLabel" type="Label" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2"]
-offset_top = 72.0
-offset_right = 250.0
-offset_bottom = 86.0
+layout_mode = 2
 text = "Unlocked Name"
 
 [node name="UnlockedDescLabel" type="RichTextLabel" parent="RR/AchievementPopup/VB/MC/VB/HB/VB2"]
-offset_top = 94.0
-offset_right = 250.0
-offset_bottom = 184.0
-custom_minimum_size = Vector2( 250, 0 )
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
 text = "Desc for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sit amet blandit lectus, ac eleifend erat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
-fit_content_height = true
 
 [node name="HSeparator" type="HSeparator" parent="RR/AchievementPopup/VB/MC/VB"]
-offset_top = 366.0
-offset_right = 532.0
-offset_bottom = 370.0
-theme_override_styles/separator = SubResource( 1 )
+layout_mode = 2
+theme_override_styles/separator = SubResource("1")
 
-[node name="UnlockBtn" parent="RR/AchievementPopup/VB/MC/VB" instance=ExtResource( 5 )]
-offset_left = 472.0
-offset_top = 374.0
-offset_right = 532.0
-offset_bottom = 392.0
+[node name="UnlockBtn" parent="RR/AchievementPopup/VB/MC/VB" instance=ExtResource("5")]
+layout_mode = 2
 size_flags_horizontal = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6nfih")
 text = "Unlock"

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "eos_achievements.h"
 #include "eos_auth.h"
 #include "eos_custominvites.h"
 #include "eos_ecom.h"
@@ -141,15 +142,15 @@ class IEOS : public RefCounted {
     // -----
     // Achievement Interface
     // -----
-    Dictionary achievements_interface_copy_achievement_definition_v2_by_achievement_id(Ref<RefCounted> p_options);
-    Dictionary achievements_interface_copy_achievement_definition_v2_by_index(Ref<RefCounted> p_options);
-    Dictionary achievements_interface_copy_player_achievement_by_achievement_id(Ref<RefCounted> p_options);
-    Dictionary achievements_interface_copy_player_achievement_by_index(Ref<RefCounted> p_options);
-    int achievements_interface_get_achievement_definition_count(Ref<RefCounted> p_options);
-    void achievements_interface_query_definitions(Ref<RefCounted> p_options);
-    int achievements_interface_get_player_achievement_count(Ref<RefCounted> p_options);
-    void achievements_interface_query_player_achievements(Ref<RefCounted> p_options);
-    void achievements_interface_unlock_achievements(Ref<RefCounted> p_options);
+    Dictionary achievements_interface_copy_achievement_definition_v2_by_achievement_id(Ref<RefCounted> options);
+    Dictionary achievements_interface_copy_achievement_definition_v2_by_index(Ref<RefCounted> options);
+    Dictionary achievements_interface_copy_player_achievement_by_achievement_id(Ref<RefCounted> options);
+    Dictionary achievements_interface_copy_player_achievement_by_index(Ref<RefCounted> options);
+    int achievements_interface_get_achievement_definition_count(Ref<RefCounted> options);
+    void achievements_interface_query_definitions(Ref<RefCounted> options);
+    int achievements_interface_get_player_achievement_count(Ref<RefCounted> options);
+    void achievements_interface_query_player_achievements(Ref<RefCounted> options);
+    void achievements_interface_unlock_achievements(Ref<RefCounted> options);
 
     // -----
     // Custom Invites Interface

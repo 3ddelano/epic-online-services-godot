@@ -81,6 +81,15 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
 
     // Get interface handles
     s_achievementsInterface = EOS_Platform_GetAchievementsInterface(s_platformInterface);
+    EOS_Achievements_AddNotifyAchievementsUnlockedV2Options notifyAchievementsUnlockedV2Options;
+    notifyAchievementsUnlockedV2Options.ApiVersion = EOS_ACHIEVEMENTS_ADDNOTIFYACHIEVEMENTSUNLOCKEDV2_API_LATEST;
+    EOS_Achievements_AddNotifyAchievementsUnlockedV2(s_achievementsInterface, &notifyAchievementsUnlockedV2Options, nullptr, [](const EOS_Achievements_OnAchievementsUnlockedCallbackV2Info *data) {
+        Dictionary ret;
+        ret["user_id"] = eosg_product_user_id_to_string(data->UserId);
+        ret["achievement_id"] = EOSG_GET_STRING(data->AchievementId);
+        ret["unlock_time"] = data->UnlockTime;
+        IEOS::get_singleton()->emit_signal("achievements_interface_achievements_unlocked_v2_callback", ret);
+    });
     s_authInterface = EOS_Platform_GetAuthInterface(s_platformInterface);
     s_connectInterface = EOS_Platform_GetConnectInterface(s_platformInterface);
     s_customInvitesInterface = EOS_Platform_GetCustomInvitesInterface(s_platformInterface);
