@@ -484,3 +484,14 @@ static Variant eosg_leaderboards_leaderboard_user_score_to_dict(EOS_Leaderboards
     EOS_Leaderboards_LeaderboardUserScore_Release(userScore);
     return ret;
 }
+
+static Variant eosg_kws_permission_status_to_dict(EOS_KWS_PermissionStatus* permission) {
+    if (permission == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["name"] = EOSG_GET_STRING(permission->Name);
+    ret["status"] = static_cast<int>(permission->Status);
+    EOS_KWS_PermissionStatus_Release(permission);
+    return ret;
+}

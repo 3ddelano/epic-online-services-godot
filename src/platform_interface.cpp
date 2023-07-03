@@ -138,6 +138,14 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     });
 
     s_kwsInterface = EOS_Platform_GetKWSInterface(s_platformInterface);
+    EOS_KWS_AddNotifyPermissionsUpdateReceivedOptions notifyPermissionsUpdateReceivedOptions;
+    notifyPermissionsUpdateReceivedOptions.ApiVersion = EOS_KWS_ADDNOTIFYPERMISSIONSUPDATERECEIVED_API_LATEST;
+    EOS_KWS_AddNotifyPermissionsUpdateReceived(s_kwsInterface, &notifyPermissionsUpdateReceivedOptions, nullptr, [](const EOS_KWS_PermissionsUpdateReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        IEOS::get_singleton()->emit_signal("kws_interface_permissions_update_received_callback", ret);
+    });
+
     s_leaderboardsInterface = EOS_Platform_GetLeaderboardsInterface(s_platformInterface);
     s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
     s_modsInterface = EOS_Platform_GetModsInterface(s_platformInterface);

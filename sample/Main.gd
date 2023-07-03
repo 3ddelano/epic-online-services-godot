@@ -79,6 +79,7 @@ func _on_tab_pressed():
 #	test_reports_interface()
 #	test_progression_snapshot_interface()
 #	test_presence_interface()
+#	test_kws_interface()
 
 
 func test_auth_interface():
@@ -409,6 +410,35 @@ func test_presence_interface():
 	var copy_presence_ret = EOS.Presence.PresenceInterface.copy_presence(opts5)
 	print("--- Presence: copy_presence: ", EOS.result_str(copy_presence_ret))
 	print(JSON.stringify(copy_presence_ret, "\t", true, true))
+
+
+
+
+
+func test_kws_interface():
+	var opts1 = EOS.KWS.CreateUserOptions.new()
+	opts1.local_user_id = Store.product_user_id
+	opts1.parent_email = "3ddelano1@gmail.com"
+	opts1.date_of_birth = "2002-01-01"
+	EOS.KWS.KWSInterface.create_user(opts1)
+	var create_user_ret = await EOS.get_instance().kws_interface_create_user_callback
+	print("--- KWS: create_user_callback: ", EOS.result_str(create_user_ret))
+
+
+	var opts2 = EOS.KWS.QueryPermissionsOptions.new()
+	opts2.local_user_id = Store.product_user_id
+	EOS.KWS.KWSInterface.query_permissions(opts2)
+	print("--- KWS: query_permissions_callback: ", await EOS.get_instance().kws_interface_query_permissions_callback)
+    
+	# EOS.KWS.KWSInterface.get_permissions_count()
+	# EOS.KWS.KWSInterface.get_permission_by_key()
+	# KWS.KWSInterface.copy_permission_by_index()
+
+	# KWS.KWSInterface.query_age_gate()
+	# EOS.KWS.KWSInterface.request_permissions()
+	# EOS.KWS.KWSInterface.update_parent_email()
+
+
 
 
 

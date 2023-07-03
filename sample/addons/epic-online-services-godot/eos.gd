@@ -1174,7 +1174,8 @@ class KWS:
 			super._init("CreateUserOptions")
 
 		var local_user_id: String
-		var date_of_birth: String # Date of birth in ISO8601 form (YYYY-MM-DD)
+		## Date of birth in ISO8601 form (YYYY-MM-DD)
+		var date_of_birth: String
 		var parent_email: String
 
 	class GetPermissionByKeyOptions extends BaseClass:
@@ -1214,29 +1215,30 @@ class KWS:
 		var local_user_id: String
 		var parent_email: String
 
-	static func copy_permission_by_index(options: CopyPermissionByIndexOptions) -> Dictionary:
-		return IEOS.kws_interface_copy_permission_by_index(options)
+	class KWSInterface:
+		static func copy_permission_by_index(options: CopyPermissionByIndexOptions) -> Dictionary:
+			return IEOS.kws_interface_copy_permission_by_index(options)
 
-	static func create_user(options: CreateUserOptions) -> void:
-		IEOS.kws_interface_create_user(options)
+		static func create_user(options: CreateUserOptions) -> void:
+			IEOS.kws_interface_create_user(options)
 
-	static func get_permission_by_key(options: GetPermissionByKeyOptions) -> Dictionary:
-		return IEOS.kws_interface_get_permission_by_key(options)
+		static func get_permission_by_key(options: GetPermissionByKeyOptions) -> Dictionary:
+			return IEOS.kws_interface_get_permission_by_key(options)
 
-	static func get_permissions_count(options: GetPermissionsCountOptions) -> int:
-		return IEOS.kws_interface_get_permissions_count(options)
+		static func get_permissions_count(options: GetPermissionsCountOptions) -> int:
+			return IEOS.kws_interface_get_permissions_count(options)
 
-	static func query_age_gate(options: QueryAgeGateOptions) -> void:
-		IEOS.kws_interface_query_age_gate(options)
+		static func query_age_gate(options: QueryAgeGateOptions) -> void:
+			IEOS.kws_interface_query_age_gate(options)
 
-	static func query_permissions(options: QueryPermissionsOptions) -> void:
-		IEOS.kws_interface_query_permissions(options)
+		static func query_permissions(options: QueryPermissionsOptions) -> void:
+			IEOS.kws_interface_query_permissions(options)
 
-	static func request_permissions(options: RequestPermissionsOptions) -> void:
-		IEOS.kws_interface_request_permissions(options)
+		static func request_permissions(options: RequestPermissionsOptions) -> void:
+			IEOS.kws_interface_request_permissions(options)
 
-	static func update_parent_email(options: UpdateParentEmailOptions) -> void:
-		IEOS.kws_interface_update_parent_email(options)
+		static func update_parent_email(options: UpdateParentEmailOptions) -> void:
+			IEOS.kws_interface_update_parent_email(options)
 
 
 

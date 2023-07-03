@@ -5,6 +5,7 @@
 #include "eos_custominvites.h"
 #include "eos_ecom.h"
 #include "eos_friends.h"
+#include "eos_kws.h"
 #include "eos_leaderboards.h"
 #include "eos_logging.h"
 #include "eos_mods.h"
