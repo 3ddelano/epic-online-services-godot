@@ -7,6 +7,7 @@ int IEOS::custom_invites_interface_finalize_invite(Ref<RefCounted> p_options) {
     CharString custom_invite_id = VARIANT_TO_CHARSTRING(p_options->get("custom_invite_id"));
 
     EOS_CustomInvites_FinalizeInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_FINALIZEINVITE_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
@@ -28,6 +29,7 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
     }
 
     EOS_CustomInvites_SendCustomInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_SENDCUSTOMINVITE_API_LATEST;
     options.TargetUserIds = targetUserIds;
     options.TargetUserIdsCount = target_user_ids_count;
@@ -56,6 +58,7 @@ int IEOS::custom_invites_interface_set_custom_invite(Ref<RefCounted> p_options) 
     CharString payload = VARIANT_TO_CHARSTRING(p_options->get("payload"));
 
     EOS_CustomInvites_SetCustomInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_SETCUSTOMINVITE_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.Payload = payload.get_data();

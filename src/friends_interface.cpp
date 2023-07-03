@@ -6,6 +6,7 @@ void IEOS::friends_interface_accept_invite(Ref<RefCounted> p_options) {
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Friends_AcceptInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_ACCEPTINVITE_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
@@ -28,6 +29,7 @@ String IEOS::friends_interface_get_friend_at_index(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Friends_GetFriendAtIndexOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_GETFRIENDATINDEX_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.Index = static_cast<int32_t>(p_options->get("index"));
@@ -39,6 +41,7 @@ int IEOS::friends_interface_get_friends_count(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Friends_GetFriendsCountOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_GETFRIENDSCOUNT_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
 
@@ -50,6 +53,7 @@ int IEOS::friends_interface_get_status(Ref<RefCounted> p_options) {
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Friends_GetStatusOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_GETSTATUS_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
@@ -61,6 +65,7 @@ void IEOS::friends_interface_query_friends(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Friends_QueryFriendsOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_QUERYFRIENDS_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     p_options->reference();
@@ -82,6 +87,7 @@ void IEOS::friends_interface_reject_invite(Ref<RefCounted> p_options) {
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Friends_RejectInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_REJECTINVITE_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
@@ -104,6 +110,7 @@ void IEOS::friends_interface_send_invite(Ref<RefCounted> p_options) {
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Friends_SendInviteOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_FRIENDS_SENDINVITE_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
