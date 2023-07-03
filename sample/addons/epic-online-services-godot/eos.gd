@@ -1243,6 +1243,8 @@ class KWS:
 
 
 class Leaderboards:
+	const LEADERBOARD_TIME_UNDEFINED = -1
+
 	enum LeaderboardAggregation { Min = 0, Max = 1, Sum = 2, Latest = 3 }
 
 	class CopyLeaderboardDefinitionByIndexOptions extends BaseClass:
@@ -1302,8 +1304,8 @@ class Leaderboards:
 			super._init("QueryLeaderboardDefinitionsOptions")
 
 		var local_user_id: String
-		var start_time = null # String
-		var end_time = null # String
+		var start_time = LEADERBOARD_TIME_UNDEFINED
+		var end_time = LEADERBOARD_TIME_UNDEFINED
 
 		var client_data = null
 

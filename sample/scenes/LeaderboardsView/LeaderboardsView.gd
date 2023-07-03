@@ -88,7 +88,7 @@ func _update_select_leaderboard_button():
 func _on_view_leaderboard_btn_pressed():
 	var selected_leaderboard_id = select_leaderboard_btn.get_selected_metadata()
 
-	if not selected_leaderboard_id:
+	if selected_leaderboard_id == "":
 		return
 
 	var query_leaderboard_ranks_options = EOS.Leaderboards.QueryLeaderboardRanksOptions.new()
@@ -111,7 +111,7 @@ func _on_query_leaderboard_ranks_callback(data: Dictionary):
 		if leaderboard_record_data.result_code != EOS.Result.Success:
 			print("--- Leaderboards: copy_leaderboard_record_by_index: ", EOS.result_str(data))
 			continue
-		leaderboard_records.append(leaderboard_record_data.leaderboard_record)
+		leaderboard_records.append(leaderboard_record_data.record)
 
 	_update_leaderboard(data.client_data, leaderboard_records)
 

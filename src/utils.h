@@ -446,3 +446,41 @@ static Variant eosg_stats_stat_to_dict(EOS_Stats_Stat* stat) {
     EOS_Stats_Stat_Release(stat);
     return ret;
 }
+
+static Variant eosg_leaderboards_definition_to_dict(EOS_Leaderboards_Definition* definition) {
+    if (definition == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["leaderboard_id"] = EOSG_GET_STRING(definition->LeaderboardId);
+    ret["stat_name"] = EOSG_GET_STRING(definition->StatName);
+    ret["aggregation"] = static_cast<int>(definition->Aggregation);
+    ret["start_time"] = definition->StartTime;
+    ret["end_time"] = definition->EndTime;
+    EOS_Leaderboards_Definition_Release(definition);
+    return ret;
+}
+
+static Variant eosg_leaderboards_leaderboard_record_to_dict(EOS_Leaderboards_LeaderboardRecord* record) {
+    if (record == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["user_id"] = eosg_product_user_id_to_string(record->UserId);
+    ret["rank"] = record->Rank;
+    ret["score"] = record->Score;
+    ret["user_display_name"] = EOSG_GET_STRING(record->UserDisplayName);
+    EOS_Leaderboards_LeaderboardRecord_Release(record);
+    return ret;
+}
+
+static Variant eosg_leaderboards_leaderboard_user_score_to_dict(EOS_Leaderboards_LeaderboardUserScore* userScore) {
+    if (userScore == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["user_id"] = eosg_product_user_id_to_string(userScore->UserId);
+    ret["score"] = userScore->Score;
+    EOS_Leaderboards_LeaderboardUserScore_Release(userScore);
+    return ret;
+}
