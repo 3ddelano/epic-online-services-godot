@@ -78,7 +78,7 @@ func _on_tab_pressed():
 #	test_mods_interface()
 #	test_reports_interface()
 #	test_progression_snapshot_interface()
-	test_presence_interface()
+#	test_presence_interface()
 
 
 func test_auth_interface():
@@ -299,7 +299,7 @@ func test_mods_interface():
 func test_reports_interface():
 	var report_options = EOS.Reports.SendPlayerBehaviorReportOptions.new()
 	report_options.reporter_user_id = Store.product_user_id
-	report_options.reported_user_id = "e5d94c924f204a63bd343b976ae662cd"
+	report_options.reported_user_id = Store.second_product_user_id
 	report_options.category = EOS.Reports.PlayerReportsCategory.Cheating
 	report_options.message = "this is a test report from godot"
 	report_options.context = JSON.stringify({hello = "testing"})

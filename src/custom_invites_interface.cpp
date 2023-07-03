@@ -1,14 +1,64 @@
 #include "ieos.h"
 using namespace std;
 
-int IEOS::custom_invites_interface_finalize_invite(Ref<RefCounted> options) {
-    return 1;
+int IEOS::custom_invites_interface_finalize_invite(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
+    CharString custom_invite_id = VARIANT_TO_CHARSTRING(p_options->get("custom_invite_id"));
+
+    EOS_CustomInvites_FinalizeInviteOptions options;
+    options.ApiVersion = EOS_CUSTOMINVITES_FINALIZEINVITE_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
+    options.CustomInviteId = custom_invite_id.get_data();
+    options.ProcessingResult = static_cast<EOS_EResult>(static_cast<int>(p_options->get("processing_result")));
+
+    return static_cast<int>(EOS_CustomInvites_FinalizeInvite(s_customInvitesInterface, &options));
 }
 
-void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> options) {
+void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    Array p_target_user_ids = p_options->get("target_user_ids");
+    int target_user_ids_count = p_target_user_ids.size();
+
+    EOS_ProductUserId* targetUserIds = (EOS_ProductUserId*)memalloc(sizeof(EOS_ProductUserId) * target_user_ids_count);
+    for (int i = 0; i < target_user_ids_count; i++) {
+        CharString target_user_id = VARIANT_TO_CHARSTRING(p_target_user_ids[i]);
+        targetUserIds[i] = eosg_string_to_product_user_id(target_user_id.get_data());
+    }
+
+    EOS_CustomInvites_SendCustomInviteOptions options;
+    options.ApiVersion = EOS_CUSTOMINVITES_SENDCUSTOMINVITE_API_LATEST;
+    options.TargetUserIds = targetUserIds;
+    options.TargetUserIdsCount = target_user_ids_count;
+    p_options->reference();
+
+    EOS_CustomInvites_SendCustomInvite(s_customInvitesInterface, &options, (void*)*p_options, [](const EOS_CustomInvites_SendCustomInviteCallbackInfo* data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+
+        Array target_user_ids = Array();
+        for (int i = 0; i < data->TargetUserIdsCount; i++) {
+            target_user_ids.append(eosg_product_user_id_to_string(data->TargetUserIds[i]));
+        }
+        ret["target_user_ids"] = target_user_ids;
+        IEOS::get_singleton()->emit_signal("custom_invites_interface_send_custom_invite_callback", ret);
+    });
     return;
 }
 
-int IEOS::custom_invites_interface_set_custom_invite(Ref<RefCounted> options) {
-    return 1;
+int IEOS::custom_invites_interface_set_custom_invite(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString payload = VARIANT_TO_CHARSTRING(p_options->get("payload"));
+
+    EOS_CustomInvites_SetCustomInviteOptions options;
+    options.ApiVersion = EOS_CUSTOMINVITES_SETCUSTOMINVITE_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    options.Payload = payload.get_data();
+
+    return static_cast<int>(EOS_CustomInvites_SetCustomInvite(s_customInvitesInterface, &options));
 }

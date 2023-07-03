@@ -84,6 +84,37 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_authInterface = EOS_Platform_GetAuthInterface(s_platformInterface);
     s_connectInterface = EOS_Platform_GetConnectInterface(s_platformInterface);
     s_customInvitesInterface = EOS_Platform_GetCustomInvitesInterface(s_platformInterface);
+    EOS_CustomInvites_AddNotifyCustomInviteReceivedOptions notifyCustomInviteReceivedOptions;
+    notifyCustomInviteReceivedOptions.ApiVersion = EOS_CUSTOMINVITES_ADDNOTIFYCUSTOMINVITERECEIVED_API_LATEST;
+    EOS_CustomInvites_AddNotifyCustomInviteReceived(s_customInvitesInterface, &notifyCustomInviteReceivedOptions, nullptr, [](const EOS_CustomInvites_OnCustomInviteReceivedCallbackInfo *data) {
+        Dictionary ret;
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["custom_invite_id"] = EOSG_GET_STRING(data->CustomInviteId);
+        ret["payload"] = EOSG_GET_STRING(data->Payload);
+        IEOS::get_singleton()->emit_signal("custom_invites_interface_custom_invite_received_callback", ret);
+    });
+    EOS_CustomInvites_AddNotifyCustomInviteAcceptedOptions notifyCustomInviteAcceptedOptions;
+    notifyCustomInviteAcceptedOptions.ApiVersion = EOS_CUSTOMINVITES_ADDNOTIFYCUSTOMINVITEACCEPTED_API_LATEST;
+    EOS_CustomInvites_AddNotifyCustomInviteAccepted(s_customInvitesInterface, &notifyCustomInviteAcceptedOptions, nullptr, [](const EOS_CustomInvites_OnCustomInviteAcceptedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["custom_invite_id"] = EOSG_GET_STRING(data->CustomInviteId);
+        ret["payload"] = EOSG_GET_STRING(data->Payload);
+        IEOS::get_singleton()->emit_signal("custom_invites_interface_custom_invite_accepted_callback", ret);
+    });
+    EOS_CustomInvites_AddNotifyCustomInviteRejectedOptions notifyCustomInviteRejectedOptions;
+    notifyCustomInviteRejectedOptions.ApiVersion = EOS_CUSTOMINVITES_ADDNOTIFYCUSTOMINVITEREJECTED_API_LATEST;
+    EOS_CustomInvites_AddNotifyCustomInviteRejected(s_customInvitesInterface, &notifyCustomInviteRejectedOptions, nullptr, [](const EOS_CustomInvites_CustomInviteRejectedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
+        ret["custom_invite_id"] = EOSG_GET_STRING(data->CustomInviteId);
+        ret["payload"] = EOSG_GET_STRING(data->Payload);
+        IEOS::get_singleton()->emit_signal("custom_invites_interface_custom_invite_rejected_callback", ret);
+    });
+
     s_ecomInterface = EOS_Platform_GetEcomInterface(s_platformInterface);
     s_friendsInterface = EOS_Platform_GetFriendsInterface(s_platformInterface);
     s_kwsInterface = EOS_Platform_GetKWSInterface(s_platformInterface);

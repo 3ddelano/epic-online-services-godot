@@ -326,7 +326,7 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id: String) -> int:
+		static func get_login_status(local_user_id: String) -> EOS.LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
 		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions) -> int:
@@ -519,7 +519,7 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id: String) -> int:
+		static func get_login_status(local_user_id: String) -> EOS.LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
@@ -560,7 +560,7 @@ class CustomInvites:
 			super._init("SendCustomInviteOptions")
 
 		var local_user_id: String
-		var target_user_ids = [] # [String]
+		var target_user_ids = [] # Array[String]
 		var client_data = null
 
 	class FinalizeInviteOptions extends BaseClass:
@@ -570,16 +570,16 @@ class CustomInvites:
 		var target_user_id: String
 		var local_user_id: String
 		var custom_invite_id: String
-		var processing_result: int # Result
+		var processing_result: EOS.Result
 
 	class CustomInvitesInterface:
-		static func set_custom_invite(options: SetCustomInviteOptions) -> int:
+		static func set_custom_invite(options: SetCustomInviteOptions) -> EOS.Result:
 			return IEOS.custom_invites_interface_set_custom_invite(options)
 
 		static func send_custom_invite(options: SendCustomInviteOptions) -> void:
 			IEOS.custom_invites_interface_send_custom_invite(options)
 
-		static func finalize_invite(options: FinalizeInviteOptions) -> int:
+		static func finalize_invite(options: FinalizeInviteOptions) -> EOS.Result:
 			return IEOS.custom_invites_interface_finalize_invite(options)
 
 
@@ -613,7 +613,7 @@ class Stats:
 
 		var local_user_id: String
 		var target_user_id: String
-		var stats: Array[Dictionary] # IngestData: {stat_name: String, ingest_amount: int}
+		var stats: Array # Array[Dictionary] IngestData: {stat_name: String, ingest_amount: int}
 
 		var client_data = null
 
@@ -623,9 +623,9 @@ class Stats:
 
 		var local_user_id: String
 		var target_user_id: String
-		var stat_names = null # [String]
-		var start_time = null # String
-		var end_time = null # String
+		var stat_names: Array # Array[String]
+		var start_time: String
+		var end_time: String
 
 		var client_data = null
 
@@ -759,7 +759,7 @@ class Platform extends RefCounted:
 		static func release() -> void:
 			IEOS.platform_interface_release()
 
-		static func shutdown() -> int:
+		static func shutdown() -> EOS.Result:
 			return IEOS.platform_interface_shutdown()
 
 
@@ -1126,7 +1126,7 @@ class Friends:
 		static func get_friends_count(options: GetFriendsCountOptions) -> int:
 			return IEOS.friends_interface_get_friends_count(options)
 
-		static func get_status(options: GetStatusOptions) -> int:
+		static func get_status(options: GetStatusOptions) -> EOS.Friends.FriendsStatus:
 			return IEOS.friends_interface_get_status(options)
 
 		static func query_friends(options: QueryFriendsOptions) -> void:
@@ -1391,10 +1391,10 @@ class Metrics:
 		var account_id: String
 
 	class MetricsInterface:
-		static func begin_player_session(options: BeginPlayerSessionOptions) -> int:
+		static func begin_player_session(options: BeginPlayerSessionOptions) -> EOS.Result:
 			return IEOS.metrics_interface_begin_player_session(options)
 
-		static func end_player_session(options: EndPlayerSessionOptions) -> int:
+		static func end_player_session(options: EndPlayerSessionOptions) -> EOS.Result:
 			return IEOS.metrics_interface_end_player_session(options)
 
 
@@ -1675,7 +1675,7 @@ class ProgressionSnapshot:
 		static func begin_snapshot(options: BeginSnapshotOptions) -> Dictionary:
 			return IEOS.progression_snapshot_interface_begin_snapshot(options)
 
-		static func add_progression(options: AddProgressionOptions) -> int:
+		static func add_progression(options: AddProgressionOptions) -> EOS.Result:
 			return IEOS.progression_snapshot_interface_add_progression(options)
 
 		static func submit_snapshot(options: SubmitSnapshotOptions) -> void:
@@ -1927,28 +1927,28 @@ class UI:
 
 
 	class UIInterface:
-		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> int:
+		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> EOS.Result:
 			return IEOS.ui_interface_acknowledge_event_id(options)
 
 		static func get_friends_visible(options: GetFriendsVisibleOptions) -> bool:
 			return IEOS.ui_interface_get_friends_visible(options)
 
-		static func get_notification_location_preference() -> int:
+		static func get_notification_location_preference() -> EOS.UI.NotificationLocation:
 			return IEOS.ui_interface_get_notification_location_preference()
 
-		static func get_toggle_friends_key(options: GetToggleFriendsKeyOptions) -> int:
+		static func get_toggle_friends_key(options: GetToggleFriendsKeyOptions) -> EOS.UI.KeyCombination:
 			return IEOS.ui_interface_get_toggle_friends_key(options)
 
 		static func hide_friends(options: HideFriendsOptions) -> void:
 			IEOS.ui_interface_hide_friends(options)
 
-		static func is_valid_key_combination(key_combination: int) -> bool:
+		static func is_valid_key_combination(key_combination: EOS.UI.KeyCombination) -> bool:
 			return IEOS.ui_interface_is_valid_key_combination(key_combination)
 
-		static func set_display_preference(options: SetDisplayPreferenceOptions) -> int:
+		static func set_display_preference(options: SetDisplayPreferenceOptions) -> EOS.UI.NotificationLocation:
 			return IEOS.ui_interface_set_display_preference(options)
 
-		static func set_toggle_friends_key(options: SetToggleFriendsKeyOptions) -> int:
+		static func set_toggle_friends_key(options: SetToggleFriendsKeyOptions) -> EOS.Result:
 			return IEOS.ui_interface_set_toggle_friends_key(options)
 
 		static func show_friends(options: ShowFriendsOptions) -> void:
@@ -1963,7 +1963,7 @@ class UI:
 		static func show_report_player(options: ShowReportPlayerOptions) -> void:
 			IEOS.ui_interface_show_report_player(options)
 
-		static func pause_social_overlay(options: PauseSocialOverlayOptions) -> int:
+		static func pause_social_overlay(options: PauseSocialOverlayOptions) -> EOS.Result:
 			return IEOS.ui_interface_pause_social_overlay(options)
 
 		static func is_social_overlay_paused(options: IsSocialOverlayPausedOptions) -> bool:
@@ -2135,7 +2135,7 @@ class Logging:
 		func _to_string() -> String:
 			return "%s | %s | %s" % [category, level, message]
 
-	static func set_log_level(log_category: int, log_level: int) -> int:
+	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> EOS.Result:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
 
