@@ -78,7 +78,7 @@ func _on_show_block_player_btn_pressed():
 	opts.local_user_id = Store.epic_account_id
 	opts.target_user_id = Store.epic_account_id
 	EOS.UI.UIInterface.show_block_player(opts)
-	print("--- UI: show_block_player_callback: ", await EOS.get_instance().ui_interface_show_block_player_callback)
+	print("--- UI: show_block_player_callback: ", EOS.result_str(await EOS.get_instance().ui_interface_show_block_player_callback))
 
 
 func _on_show_report_player_btn_pressed():
@@ -86,7 +86,7 @@ func _on_show_report_player_btn_pressed():
 	opts.local_user_id = Store.epic_account_id
 	opts.target_user_id = Store.epic_account_id
 	EOS.UI.UIInterface.show_report_player(opts)
-	print("--- UI: show_report_player_callback: ", await EOS.get_instance().ui_interface_show_report_player_callback)
+	print("--- UI: show_report_player_callback: ", EOS.result_str(await EOS.get_instance().ui_interface_show_report_player_callback))
 
 
 

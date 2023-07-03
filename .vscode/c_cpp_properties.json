@@ -1,22 +1,24 @@
 {
-  "configurations": [
-    {
-      "name": "Win32",
-      "includePath": [
-        "${workspaceFolder}/godot-cpp/**",
-        "${workspaceFolder}/godot-cpp/gen/include/**",
-        "${workspaceFolder}/godot-cpp/include/**",
-        "${workspaceFolder}/godot-cpp/gdextension/**",
-        "${workspaceFolder}/thirdparty/eos-sdk/Include/**",
-        "${workspaceFolder}/src/**"
-      ],
-      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
-      "windowsSdkVersion": "10.0.19041.0",
-      "compilerPath": "cl.exe",
-      "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "windows-msvc-x64"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/godot-cpp/**",
+                "${workspaceFolder}/godot-cpp/gen/include/**",
+                "${workspaceFolder}/godot-cpp/include/**",
+                "${workspaceFolder}/godot-cpp/gdextension/**",
+                "${workspaceFolder}/thirdparty/eos-sdk/Include/",
+                "${workspaceFolder}/thirdparty/eos-sdk/Include/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/src"
+            ],
+            "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+            "windowsSdkVersion": "10.0.19041.0",
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
 }

@@ -24,7 +24,6 @@ sources = Glob("src/*.cpp")
 env.Append(LIBPATH=[eos_sdk_folder + "Lib/"])
 if env["platform"] == "windows":
     env.Append(LIBS=["EOSSDK-Win64-Shipping"])
-    # env.Append(LIBS=["EOSSDK-Win64-Shipping.dll"])
 # elif env["platform"] == "linux":
 #     env.Append(LIBS=["EOSSDK-Linux-Shipping.so"])
 # elif env["platform"] == "macos":

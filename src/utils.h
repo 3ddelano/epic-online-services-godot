@@ -1,8 +1,12 @@
 #pragma once
+#include "continuance_token.h"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/char_string.hpp"
-#include "wrappers/continuance_token.h"
-#include "wrappers/transaction.h"
+#include "godot_cpp/variant/utility_functions.hpp"
+#include "ieos.h"
+#include "presence_modification.h"
+#include "transaction.h"
+
 using namespace godot;
 
 #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
@@ -338,4 +342,42 @@ static Variant eosg_mods_mod_identifier_to_dict(const EOS_Mod_Identifier* mod) {
     ret["title"] = EOSG_GET_STRING(mod->Title);
     ret["version"] = EOSG_GET_STRING(mod->Version);
     return ret;
+}
+
+static Variant eosg_presence_presence_info_to_dict(EOS_Presence_Info* presence) {
+    if (presence == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["status"] = static_cast<int>(presence->Status);
+    ret["user_id"] = eosg_epic_account_id_to_string(presence->UserId);
+    ret["product_id"] = EOSG_GET_STRING(presence->ProductId);
+    ret["product_version"] = EOSG_GET_STRING(presence->ProductVersion);
+    ret["platform"] = EOSG_GET_STRING(presence->Platform);
+    ret["rich_text"] = EOSG_GET_STRING(presence->RichText);
+    ret["product_name"] = EOSG_GET_STRING(presence->ProductName);
+    ret["integrated_platform"] = EOSG_GET_STRING(presence->IntegratedPlatform);
+
+    Array records = Array();
+    if (presence->RecordsCount > 0 && presence->Records != nullptr) {
+        for (int i = 0; i < presence->RecordsCount; i++) {
+            EOS_Presence_DataRecord record = presence->Records[i];
+            Dictionary record_dict;
+            record_dict["key"] = EOSG_GET_STRING(record.Key);
+            record_dict["value"] = EOSG_GET_STRING(record.Value);
+            records.append(record_dict);
+        }
+    }
+    ret["records"] = records;
+    EOS_Presence_Info_Release(presence);
+    return ret;
+}
+
+static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModification p_presence_modification) {
+    if (p_presence_modification == nullptr) {
+        return Variant();
+    }
+    Ref<PresenceModificationEOSG> presence_modification = memnew(PresenceModificationEOSG());
+    presence_modification->set_presence_modification(p_presence_modification);
+    return presence_modification;
 }

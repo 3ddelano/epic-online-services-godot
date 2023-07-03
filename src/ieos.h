@@ -4,6 +4,7 @@
 #include "eos_ecom.h"
 #include "eos_logging.h"
 #include "eos_mods.h"
+#include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
 #include "eos_sdk.h"
@@ -19,7 +20,6 @@
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "utils.h"
-#include "wrappers/continuance_token.h"
 #ifdef _WIN32
 #include "Windows/eos_Windows.h"
 #endif

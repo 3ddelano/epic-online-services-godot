@@ -91,14 +91,35 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
     s_modsInterface = EOS_Platform_GetModsInterface(s_platformInterface);
     s_playerDataStorageInterface = EOS_Platform_GetPlayerDataStorageInterface(s_platformInterface);
+
     s_presenceInterface = EOS_Platform_GetPresenceInterface(s_platformInterface);
+    EOS_Presence_AddNotifyOnPresenceChangedOptions notifyOnPresenceChangedOptions;
+    notifyOnPresenceChangedOptions.ApiVersion = EOS_PRESENCE_ADDNOTIFYONPRESENCECHANGED_API_LATEST;
+    EOS_Presence_AddNotifyOnPresenceChanged(s_presenceInterface, &notifyOnPresenceChangedOptions, nullptr, [](const EOS_Presence_PresenceChangedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+        ret["presence_user_id"] = eosg_epic_account_id_to_string(data->PresenceUserId);
+        IEOS::get_singleton()->emit_signal("presence_interface_presence_changed_callback", ret);
+    });
+    EOS_Presence_AddNotifyJoinGameAcceptedOptions notifyJoinGameAcceptedOptions;
+    notifyJoinGameAcceptedOptions.ApiVersion = EOS_PRESENCE_ADDNOTIFYJOINGAMEACCEPTED_API_LATEST;
+    EOS_Presence_AddNotifyJoinGameAccepted(s_presenceInterface, &notifyJoinGameAcceptedOptions, nullptr, [](const EOS_Presence_JoinGameAcceptedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_epic_account_id_to_string(data->TargetUserId);
+        ret["ui_event_id"] = data->UiEventId;
+        ret["join_info"] = EOSG_GET_STRING(data->JoinInfo);
+        IEOS::get_singleton()->emit_signal("presence_interface_join_game_accepted_callback", ret);
+    });
+
     s_progressionSnapshotInterface = EOS_Platform_GetProgressionSnapshotInterface(s_platformInterface);
     s_reportsInterface = EOS_Platform_GetReportsInterface(s_platformInterface);
     s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
+
     s_uiInterface = EOS_Platform_GetUIInterface(s_platformInterface);
-    EOS_UI_AddNotifyDisplaySettingsUpdatedOptions options;
-    options.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
-    EOS_UI_AddNotifyDisplaySettingsUpdated(s_uiInterface, &options, nullptr, [](const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo *data) {
+    EOS_UI_AddNotifyDisplaySettingsUpdatedOptions notifyDisplaySettingsUpdatedOptions;
+    notifyDisplaySettingsUpdatedOptions.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
+    EOS_UI_AddNotifyDisplaySettingsUpdated(s_uiInterface, &notifyDisplaySettingsUpdatedOptions, nullptr, [](const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo *data) {
         Dictionary ret;
         ret["is_visible"] = EOSG_GET_BOOL(data->bIsVisible);
         ret["is_exclusive_input"] = EOSG_GET_BOOL(data->bIsExclusiveInput);

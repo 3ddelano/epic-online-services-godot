@@ -1,10 +1,11 @@
 #include "register_types.h"
 
+#include "continuance_token.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
-#include "wrappers/continuance_token.h"
-#include "wrappers/transaction.h"
+#include "presence_modification.h"
+#include "transaction.h"
 
 using namespace godot;
 
@@ -20,6 +21,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     Engine::get_singleton()->register_singleton("IEOS", IEOS::get_singleton());
     ClassDB::register_class<godot::ContinuanceTokenEOSG>();
     ClassDB::register_class<godot::TransactionEOSG>();
+    ClassDB::register_class<godot::PresenceModificationEOSG>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
