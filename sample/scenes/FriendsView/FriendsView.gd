@@ -12,12 +12,11 @@ func _ready() -> void:
 	var _c
 	_c = Store.login_success.connect(_on_login_success)
 	_c = Store.logout_success.connect(_on_logout_success)
-	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(Callable(self, "_on_query_friends_callback").bind("friends_list"))
+	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
 	_c = EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
 
 func _on_login_success():
-
 	if Store.epic_account_id == "":
 		loginwithepic.visible = true
 		return
@@ -26,6 +25,7 @@ func _on_login_success():
 
 	var query_friends_options = EOS.Friends.QueryFriendsOptions.new()
 	query_friends_options.local_user_id = Store.epic_account_id
+	query_friends_options.client_data = "friends_list"
 	EOS.Friends.FriendsInterface.query_friends(query_friends_options)
 
 
@@ -35,8 +35,8 @@ func _on_logout_success():
 	loginwithepic.visible = true
 
 
-func _on_query_friends_callback(from: String, data: Dictionary):
-	if from != "friends_list": return
+func _on_query_friends_callback(data: Dictionary):
+	if data.client_data != "friends_list": return
 	print("--- Friends: query_friends_callback: ", EOS.result_str(data))
 
 	var get_friends_count_options = EOS.Friends.GetFriendsCountOptions.new()
@@ -61,9 +61,6 @@ func _on_query_friends_callback(from: String, data: Dictionary):
 func _on_query_user_info_callback(data: Dictionary):
 	if data.client_data != "friends_list": return
 	print("--- Friends: UserInfo: query_user_info_callback: ", EOS.result_str(data))
-	if data.client_data != "friends_list":
-		# Not the callback for the FriendsView
-		return
 
 	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_user_info_options.local_user_id = Store.epic_account_id
@@ -83,9 +80,7 @@ func _update_friends_list():
 	var rows_bbcode = ""
 	for friend in friends:
 		rows_bbcode += "\n"
-		if friend.display_name != null:
-			rows_bbcode += friend.display_name
-		if friend.country != null:
-			rows_bbcode += " (country=%s)" % friend.country
+		rows_bbcode += '%s (user_id="%s", country="%s", nickname="%s")' \
+			% [friend.display_name_sanitized, friend.user_id, friend.country, friend.nickname]
 	friend_richtextlabel.text = base_bbcode + rows_bbcode
 

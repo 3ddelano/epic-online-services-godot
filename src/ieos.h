@@ -3,6 +3,7 @@
 #include "eos_auth.h"
 #include "eos_custominvites.h"
 #include "eos_ecom.h"
+#include "eos_friends.h"
 #include "eos_logging.h"
 #include "eos_mods.h"
 #include "eos_presence.h"

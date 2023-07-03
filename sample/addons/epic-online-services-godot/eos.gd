@@ -1109,12 +1109,25 @@ class Friends:
 
 		var local_user_id: String
 
+		var client_data = null
+
 	class RejectInviteOptions extends BaseClass:
 		func _init():
 			super._init("RejectInviteOptions")
 
 		var local_user_id: String
 		var target_user_id: String
+
+		var client_data = null
+
+	class SendInviteOptions extends BaseClass:
+		func _init():
+			super._init("SendInviteOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
 
 	class FriendsInterface:
 		static func accept_invite(options: AcceptInviteOptions) -> void:
@@ -1134,6 +1147,9 @@ class Friends:
 
 		static func reject_invite(options: RejectInviteOptions) -> void:
 			IEOS.friends_interface_reject_invite(options)
+
+		static func send_invite(options: SendInviteOptions) -> void:
+			IEOS.friends_interface_send_invite(options)
 
 
 

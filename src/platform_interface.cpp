@@ -117,6 +117,17 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
 
     s_ecomInterface = EOS_Platform_GetEcomInterface(s_platformInterface);
     s_friendsInterface = EOS_Platform_GetFriendsInterface(s_platformInterface);
+    EOS_Friends_AddNotifyFriendsUpdateOptions notifyFriendsUpdateOptions;
+    notifyFriendsUpdateOptions.ApiVersion = EOS_FRIENDS_ADDNOTIFYFRIENDSUPDATE_API_LATEST;
+    EOS_Friends_AddNotifyFriendsUpdate(s_friendsInterface, &notifyFriendsUpdateOptions, nullptr, [](const EOS_Friends_OnFriendsUpdateInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_epic_account_id_to_string(data->TargetUserId);
+        ret["previous_status"] = static_cast<int>(data->PreviousStatus);
+        ret["current_status"] = static_cast<int>(data->CurrentStatus);
+        IEOS::get_singleton()->emit_signal("friends_interface_friends_update_callback", ret);
+    });
+
     s_kwsInterface = EOS_Platform_GetKWSInterface(s_platformInterface);
     s_leaderboardsInterface = EOS_Platform_GetLeaderboardsInterface(s_platformInterface);
     s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
