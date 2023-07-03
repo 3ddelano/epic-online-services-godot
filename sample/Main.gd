@@ -429,7 +429,7 @@ func test_kws_interface():
 	opts2.local_user_id = Store.product_user_id
 	EOS.KWS.KWSInterface.query_permissions(opts2)
 	print("--- KWS: query_permissions_callback: ", await EOS.get_instance().kws_interface_query_permissions_callback)
-    
+
 	# EOS.KWS.KWSInterface.get_permissions_count()
 	# EOS.KWS.KWSInterface.get_permission_by_key()
 	# KWS.KWSInterface.copy_permission_by_index()

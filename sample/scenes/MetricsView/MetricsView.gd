@@ -2,10 +2,8 @@ class_name MetricView
 extends VBoxContainer
 
 @onready var start_player_session_btn = $HB/StartPlayerSessionBtn
-@onready var start_player_session_label = $HB/StartPlayerSessionLabel
 
 @onready var end_player_session_btn = $HB2/EndPlayerSessionBtn
-@onready var end_player_session_label = $HB2/EndPlayerSessionLabel
 
 
 func _ready() -> void:

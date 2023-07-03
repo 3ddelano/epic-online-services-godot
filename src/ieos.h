@@ -8,6 +8,7 @@
 #include "eos_kws.h"
 #include "eos_leaderboards.h"
 #include "eos_logging.h"
+#include "eos_metrics.h"
 #include "eos_mods.h"
 #include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
