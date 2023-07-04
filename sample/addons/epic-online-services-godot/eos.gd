@@ -563,6 +563,7 @@ class CustomInvites:
 
 		var local_user_id: String
 		var target_user_ids = [] # Array[String]
+
 		var client_data = null
 
 	class FinalizeInviteOptions extends BaseClass:
@@ -1550,67 +1551,67 @@ class Lobby:
 
 
 	class LobbyInterface:
-		static func lobby_interface_create_lobby(options: CreateLobbyOptions) -> void:
+		static func create_lobby(options: CreateLobbyOptions) -> void:
 			IEOS.lobby_interface_create_lobby(options)
 
-		static func lobby_interface_destroy_lobby(options: DestroyLobbyOptions) -> void:
+		static func destroy_lobby(options: DestroyLobbyOptions) -> void:
 			IEOS.lobby_interface_destroy_lobby(options)
 
-		static func lobby_interface_join_lobby(options: JoinLobbyOptions) -> void:
+		static func join_lobby(options: JoinLobbyOptions) -> void:
 			IEOS.lobby_interface_join_lobby(options)
 
-		static func lobby_interface_join_lobby_by_id(options: JoinLobbyByIdOptions) -> void:
+		static func join_lobby_by_id(options: JoinLobbyByIdOptions) -> void:
 			IEOS.lobby_interface_join_lobby_by_id(options)
 
-		static func lobby_interface_leave_lobby(options: LeaveLobbyOptions) -> void:
+		static func leave_lobby(options: LeaveLobbyOptions) -> void:
 			IEOS.lobby_interface_leave_lobby(options)
 
-		static func lobby_interface_update_lobby_modification(options: UpdateLobbyModificationOptions) -> Dictionary:
+		static func update_lobby_modification(options: UpdateLobbyModificationOptions) -> Dictionary:
 			return IEOS.lobby_interface_update_lobby_modification(options)
 
-		static func lobby_interface_update_lobby(options: UpdateLobbyOptions) -> void:
+		static func update_lobby(options: UpdateLobbyOptions) -> void:
 			IEOS.lobby_interface_update_lobby(options)
 
-		static func lobby_interface_promote_member(options: PromoteMemberOptions) -> void:
+		static func promote_member(options: PromoteMemberOptions) -> void:
 			IEOS.lobby_interface_promote_member(options)
 
-		static func lobby_interface_kick_member(options: KickMemberOptions) -> void:
+		static func kick_member(options: KickMemberOptions) -> void:
 			IEOS.lobby_interface_kick_member(options)
 
-		static func lobby_interface_hard_mute_member(options: HardMuteMemberOptions) -> void:
+		static func hard_mute_member(options: HardMuteMemberOptions) -> void:
 			IEOS.lobby_interface_hard_mute_member(options)
 
-		static func lobby_interface_send_invite(options: SendInviteOptions) -> void:
+		static func send_invite(options: SendInviteOptions) -> void:
 			IEOS.lobby_interface_send_invite(options)
 
-		static func lobby_interface_reject_invite(options: RejectInviteOptions) -> void:
+		static func reject_invite(options: RejectInviteOptions) -> void:
 			IEOS.lobby_interface_reject_invite(options)
 
-		static func lobby_interface_query_invites(options: QueryInvitesOptions) -> void:
+		static func query_invites(options: QueryInvitesOptions) -> void:
 			IEOS.lobby_interface_query_invites(options)
 
-		static func lobby_interface_get_invite_count(options: GetInviteCountOptions) -> int:
+		static func get_invite_count(options: GetInviteCountOptions) -> int:
 			return IEOS.lobby_interface_get_invite_count(options)
 
-		static func lobby_interface_get_invite_id_by_index(options: GetInviteIdByIndexOptions) -> Dictionary:
+		static func get_invite_id_by_index(options: GetInviteIdByIndexOptions) -> Dictionary:
 			return IEOS.lobby_interface_get_invite_id_by_index(options)
 
-		static func lobby_interface_create_lobby_search(options: CreateLobbySearchOptions) -> Dictionary:
+		static func create_lobby_search(options: CreateLobbySearchOptions) -> Dictionary:
 			return IEOS.lobby_interface_create_lobby_search(options)
 
-		static func lobby_interface_copy_lobby_details_by_invite_id(options: CopyLobbyDetailsByInviteIdOptions) -> Dictionary:
+		static func copy_lobby_details_by_invite_id(options: CopyLobbyDetailsByInviteIdOptions) -> Dictionary:
 			return IEOS.lobby_interface_copy_lobby_details_by_invite_id(options)
 
-		static func lobby_interface_copy_lobby_details_by_ui_event_id(options: CopyLobbyDetailsByUiEventIdOptions) -> Dictionary:
+		static func copy_lobby_details_by_ui_event_id(options: CopyLobbyDetailsByUiEventIdOptions) -> Dictionary:
 			return IEOS.lobby_interface_copy_lobby_details_by_ui_event_id(options)
 
-		static func lobby_interface_copy_lobby_details(options: CopyLobbyDetailsOptions) -> Dictionary:
+		static func copy_lobby_details(options: CopyLobbyDetailsOptions) -> Dictionary:
 			return IEOS.lobby_interface_copy_lobby_details(options)
 
-		static func lobby_interface_get_rtc_room_name(options: GetRtcRoomNameOptions) -> Dictionary:
+		static func get_rtc_room_name(options: GetRtcRoomNameOptions) -> Dictionary:
 			return IEOS.lobby_interface_get_rtc_room_name(options)
 
-		static func lobby_interface_is_rtc_room_connected(options: IsRtcRoomConnectedOptions) -> Dictionary:
+		static func is_rtc_room_connected(options: IsRtcRoomConnectedOptions) -> Dictionary:
 			return IEOS.lobby_interface_is_rtc_room_connected(options)
 
 

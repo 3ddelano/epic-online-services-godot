@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://dgi7j5qx3xt84"]
 
 [ext_resource type="Script" path="res://scenes/StatsView/StatsView.gd" id="1"]
-[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
+[ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_8cl02"]
 [ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m0bq4"]
 
@@ -18,20 +18,31 @@ script = ExtResource("1")
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource("2")
 text = "Stats"
+label_settings = ExtResource("2_8cl02")
 
 [node name="VB" type="VBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="StatName" type="LineEdit" parent="VB"]
+[node name="StatNameLineEdit" type="LineEdit" parent="VB"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 placeholder_text = "Enter stat name"
 
-[node name="IngestAmount" type="SpinBox" parent="VB"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VB"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AmountLabel" type="Label" parent="VB/HBoxContainer"]
+layout_mode = 2
+text = "Amount"
+vertical_alignment = 1
+
+[node name="IngestAmount" type="SpinBox" parent="VB/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 max_value = 900000.0
@@ -42,20 +53,25 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="IngestBtn" parent="VB/HB" instance=ExtResource("5")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Ingest"
+disabled = true
+text = "Ingest Stat"
 
 [node name="StatusLabel" type="Label" parent="VB/HB"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="RefreshMyStatsBtn" parent="VB" instance=ExtResource("5")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Refresh my stats"
 
 [node name="HSeparator" type="HSeparator" parent="VB"]
 layout_mode = 2
+theme_override_constants/separation = 16
 
 [node name="MyStatsLabel" type="Label" parent="VB"]
 layout_mode = 2
@@ -66,6 +82,7 @@ text = "My Stats"
 layout_mode = 2
 
 [node name="MyStatsRichTextLabel" type="RichTextLabel" parent="VB/VB"]
+unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 2
 theme_override_constants/table_h_separation = 16
@@ -73,7 +90,6 @@ theme_override_constants/table_v_separation = 4
 theme_override_fonts/bold_font = ExtResource("3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_m0bq4")
 bbcode_enabled = true
-text = "Stat NameValueStart TimeEnd Time"
 fit_content = true
 context_menu_enabled = true
 selection_enabled = true

@@ -4,92 +4,96 @@ extends VBoxContainer
 # Local cache of stats
 var stats = []
 
-@onready var stat_name = $VB/StatName
-@onready var ingest_amount = $VB/IngestAmount
-@onready var ingest_btn = $VB/HB/IngestBtn
-@onready var refresh_my_stats_btn = $VB/RefreshMyStatsBtn
-@onready var my_stats = $VB/VB/MyStatsRichTextLabel
-@onready var status_label = $VB/HB/StatusLabel
+@onready var stat_name = %StatNameLineEdit
+@onready var ingest_amount = %IngestAmount
+@onready var ingest_btn = %IngestBtn
+@onready var refresh_my_stats_btn = %RefreshMyStatsBtn
+@onready var my_stats = %MyStatsRichTextLabel
+@onready var status_label = %StatusLabel
 
 
 func _ready() -> void:
-	var _c
-	_c = Store.login_success.connect(_on_login_success)
-	_c = Store.logout_success.connect(_on_logout_success)
-	_c = EOS.get_instance().stats_interface_query_stats_callback.connect(_on_query_stats_callback)
-	_c = EOS.get_instance().stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
-	_c = ingest_btn.pressed.connect(_on_ingest_btn_pressed)
-	_c = refresh_my_stats_btn.pressed.connect(_on_refresh_my_stats_btn_pressed)
+	visibility_changed.connect(_on_query_stats)
+	Store.logout_success.connect(_on_logout_success)
+	EOS.get_instance().stats_interface_query_stats_callback.connect(_on_query_stats_callback)
+	EOS.get_instance().stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
+
+	stat_name.text_changed.connect(_on_stat_name_text_changed)
+	ingest_btn.pressed.connect(_on_ingest_btn_pressed)
+	refresh_my_stats_btn.pressed.connect(_on_query_stats)
 
 
-func _on_login_success():
-	var query_stats_options = EOS.Stats.QueryStatsOptions.new()
-	query_stats_options.local_user_id = Store.product_user_id
-	query_stats_options.target_user_id = Store.product_user_id
-	EOS.Stats.StatsInterface.query_stats(query_stats_options)
+func _on_query_stats():
+	if not visible: return
+
+	var query_opts = EOS.Stats.QueryStatsOptions.new()
+	query_opts.local_user_id = Store.product_user_id
+	query_opts.target_user_id = Store.product_user_id
+	EOS.Stats.StatsInterface.query_stats(query_opts)
 
 
 func _on_logout_success():
 	stats = []
-	_update_stats()
+	_rebuild_ui()
+
+
+func _on_stat_name_text_changed(new_text: String):
+	if new_text.strip_edges() == "":
+		ingest_btn.disabled = true
+	else:
+		ingest_btn.disabled = false
 
 
 func _on_ingest_btn_pressed():
-	if stat_name.text == "" or ingest_amount.value == 0:
-		return
-
 	ingest_stat(stat_name.text, ingest_amount.value)
-
-
-func _on_refresh_my_stats_btn_pressed():
-	_on_login_success()
 
 
 func _on_query_stats_callback(data: Dictionary):
 	print("--- Stats: query_stats_callback: ", EOS.result_str(data) )
 
-	var stats_count_options = EOS.Stats.GetStatsCountOptions.new()
-	stats_count_options.target_user_id = Store.product_user_id
-	var stats_count = EOS.Stats.StatsInterface.get_stats_count(stats_count_options)
+	var count_opts = EOS.Stats.GetStatsCountOptions.new()
+	count_opts.target_user_id = Store.product_user_id
+	var stats_count: int = EOS.Stats.StatsInterface.get_stats_count(count_opts)
 
 	stats = []
 	for i in range(stats_count):
-		var copy_stat_options = EOS.Stats.CopyStatByIndexOptions.new()
-		copy_stat_options.target_user_id = Store.product_user_id
-		copy_stat_options.stat_index = i
-		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_stat_options)
+		var copy_opts = EOS.Stats.CopyStatByIndexOptions.new()
+		copy_opts.target_user_id = Store.product_user_id
+		copy_opts.stat_index = i
+
+		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_opts)
 		if ret.result_code != EOS.Result.Success:
 			print("--- Stats: copy_stat_by_index: Invalid stat: ", ret)
 		else:
 			stats.append(ret.stat)
-	_update_stats()
+	_rebuild_ui()
 
 
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
-	var ingest_stat_options = EOS.Stats.IngestStatOptions.new()
-	ingest_stat_options.local_user_id = Store.product_user_id
-	ingest_stat_options.target_user_id = Store.product_user_id
-	ingest_stat_options.stats = [
+	var ingest_opts = EOS.Stats.IngestStatOptions.new()
+	ingest_opts.local_user_id = Store.product_user_id
+	ingest_opts.target_user_id = Store.product_user_id
+	ingest_opts.stats = [
 		{stat_name = _stat_name, ingest_amount = _ingest_amount},
 	]
-	EOS.Stats.StatsInterface.ingest_stat(ingest_stat_options)
+	EOS.Stats.StatsInterface.ingest_stat(ingest_opts)
 
 
 func _on_ingest_stat_callback(data: Dictionary):
 	print("--- Stats: ingest_stat_callback: ", EOS.result_str(data))
 
 	if data.result_code != EOS.Result.Success:
-		status_label.text = "Stat Ingesting Failed: " + EOS.result_str(data)
+		status_label.text = "Ingesting Failed: " + EOS.result_str(data)
 		return
 
-	status_label.text = "Ingesting success"
-	_on_login_success() # Query the stats
+	status_label.text = "Ingesting Success"
+	_on_query_stats()
 
 
-func _update_stats():
+func _rebuild_ui():
 	var base_bbcode = """[table=4]
-[cell][b]Stat Name[/b][/cell]
+[cell][b]Name[/b][/cell]
 [cell][b]Value[/b][/cell]
 [cell][b]Start Time[/b][/cell]
 [cell][b]End Time[/b][/cell]

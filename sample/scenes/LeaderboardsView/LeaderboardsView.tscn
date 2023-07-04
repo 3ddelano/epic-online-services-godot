@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://5xrk7nvpwosj"]
 
 [ext_resource type="Script" path="res://scenes/LeaderboardsView/LeaderboardsView.gd" id="1"]
-[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="2"]
+[ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_6kpeu"]
 [ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgtn6"]
 
@@ -18,30 +18,33 @@ script = ExtResource("1")
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource("2")
 text = "Leaderboards"
+label_settings = ExtResource("2_6kpeu")
 
 [node name="VB" type="VBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="SelectLeaderboardBtn" type="OptionButton" parent="VB"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 
 [node name="ViewLeaderboardBtn" parent="VB" instance=ExtResource("5")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "View"
 
-[node name="LeaderboardName" type="Label" parent="VB"]
+[node name="LeaderboardId" type="Label" parent="VB"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3")
 text = "Leaderboard Id"
 
 [node name="LeaderboardDataRichTextLabel" type="RichTextLabel" parent="VB"]
+unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 2
 theme_override_constants/table_h_separation = 16
 theme_override_constants/table_v_separation = 4
 theme_override_fonts/bold_font = ExtResource("3")

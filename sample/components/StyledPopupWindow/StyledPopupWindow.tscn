@@ -15,7 +15,7 @@ border_color = Color(0.192157, 0.192157, 0.192157, 1)
 
 [node name="StyledPopupWindow" type="PopupPanel"]
 disable_3d = true
-size = Vector2i(572, 534)
+size = Vector2i(250, 100)
 visible = true
 theme = ExtResource("1_72hut")
 script = ExtResource("1_xtvca")
@@ -23,8 +23,8 @@ script = ExtResource("1_xtvca")
 [node name="VB" type="VBoxContainer" parent="."]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 568.0
-offset_bottom = 530.0
+offset_right = 246.0
+offset_bottom = 96.0
 theme_type_variation = &"Panel_TitleBar"
 
 [node name="PanelContainer" type="PanelContainer" parent="VB"]

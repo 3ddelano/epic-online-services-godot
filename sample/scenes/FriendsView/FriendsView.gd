@@ -4,83 +4,91 @@ extends VBoxContainer
 # Local cache of friends data
 var friends = []
 
-@onready var loginwithepic = $VB/LoginWithEpic
-@onready var friend_richtextlabel = $VB/FriendsRichTextLabel
+@onready var list_title_rich_text_label = %ListTitleRichTextLabel
+@onready var friend_richtextlabel = %FriendsRichTextLabel
 
 
 func _ready() -> void:
-	var _c
-	_c = Store.login_success.connect(_on_login_success)
-	_c = Store.logout_success.connect(_on_logout_success)
-	_c = EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
-	_c = EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
+	visibility_changed.connect(_query_friends)
+	Store.logout_success.connect(_on_logout_success)
+	EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
+	EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
 
-func _on_login_success():
+func _query_friends():
+	if not visible: return
+
 	if Store.epic_account_id == "":
-		loginwithepic.visible = true
+		print("Unable to query friends. Needs to login with Epic Games account.")
 		return
-
-	loginwithepic.visible = false
-
-	var query_friends_options = EOS.Friends.QueryFriendsOptions.new()
-	query_friends_options.local_user_id = Store.epic_account_id
-	query_friends_options.client_data = "friends_list"
-	EOS.Friends.FriendsInterface.query_friends(query_friends_options)
+	var query_opts = EOS.Friends.QueryFriendsOptions.new()
+	query_opts.local_user_id = Store.epic_account_id
+	query_opts.client_data = "friends_list"
+	EOS.Friends.FriendsInterface.query_friends(query_opts)
 
 
 func _on_logout_success():
 	friends = []
-	_update_friends_list()
-	loginwithepic.visible = true
+	_rebuild_ui()
 
 
 func _on_query_friends_callback(data: Dictionary):
 	if data.client_data != "friends_list": return
 	print("--- Friends: query_friends_callback: ", EOS.result_str(data))
 
-	var get_friends_count_options = EOS.Friends.GetFriendsCountOptions.new()
-	get_friends_count_options.local_user_id = Store.epic_account_id
-	var friends_count = EOS.Friends.FriendsInterface.get_friends_count(get_friends_count_options)
-	print("Friends Count: ", friends_count)
+	_copy_all_friends()
+
+
+func _copy_all_friends():
+	var get_count_opts = EOS.Friends.GetFriendsCountOptions.new()
+	get_count_opts.local_user_id = Store.epic_account_id
+	var friends_count: int = EOS.Friends.FriendsInterface.get_friends_count(get_count_opts)
 
 	friends = []
 	for i in friends_count:
-		var get_friend_options = EOS.Friends.GetFriendAtIndexOptions.new()
-		get_friend_options.local_user_id = Store.epic_account_id
-		get_friend_options.index = i
+		var get_friend_opts = EOS.Friends.GetFriendAtIndexOptions.new()
+		get_friend_opts.local_user_id = Store.epic_account_id
+		get_friend_opts.index = i
 
-		var friend_id = EOS.Friends.FriendsInterface.get_friend_at_index(get_friend_options)
-		var query_user_info_options = EOS.UserInfo.QueryUserInfoOptions.new()
-		query_user_info_options.local_user_id = Store.epic_account_id
-		query_user_info_options.target_user_id = friend_id
-		query_user_info_options.client_data = "friends_list"
-		EOS.UserInfo.UserInfoInterface.query_user_info(query_user_info_options)
+		var friend_epic_account_id = EOS.Friends.FriendsInterface.get_friend_at_index(get_friend_opts)
+		var query_user_opts = EOS.UserInfo.QueryUserInfoOptions.new()
+		query_user_opts.local_user_id = Store.epic_account_id
+		query_user_opts.target_user_id = friend_epic_account_id
+		query_user_opts.client_data = "friends_list"
+		EOS.UserInfo.UserInfoInterface.query_user_info(query_user_opts)
 
 
 func _on_query_user_info_callback(data: Dictionary):
 	if data.client_data != "friends_list": return
 	print("--- Friends: UserInfo: query_user_info_callback: ", EOS.result_str(data))
 
-	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
-	copy_user_info_options.local_user_id = Store.epic_account_id
-	copy_user_info_options.target_user_id = data.target_user_id
+	var copy_user_opts = EOS.UserInfo.CopyUserInfoOptions.new()
+	copy_user_opts.local_user_id = Store.epic_account_id
+	copy_user_opts.target_user_id = data.target_user_id
 
-	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_info_options)
+	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_opts)
 	if user_info_data.result_code != EOS.Result.Success:
-		print("--- Friends: user info data: result: ", EOS.result_str(user_info_data))
+		print("--- Friends: UserInfo: copy_user_info Error: ", EOS.result_str(user_info_data))
 	else:
 		friends.append(user_info_data.user_info)
-		_update_friends_list()
+		_rebuild_ui()
 
 
-func _update_friends_list():
-	var base_bbcode = """[b]Friends List (%s)[/b]""" % str(friends.size())
+func _rebuild_ui():
+	list_title_rich_text_label.text = "[b]Friends List (%s)[/b]" % str(friends.size())
 
+	var table_bbcode = """[table=4]
+[cell][b]Display Name[/b][/cell]
+[cell][b]User Id[/b][/cell]
+[cell][b]Nickname[/b][/cell]
+[cell][b]Country[/b][/cell]
+%s
+[/table]
+"""
 	var rows_bbcode = ""
 	for friend in friends:
-		rows_bbcode += "\n"
-		rows_bbcode += '%s (user_id="%s", country="%s", nickname="%s")' \
-			% [friend.display_name_sanitized, friend.user_id, friend.country, friend.nickname]
-	friend_richtextlabel.text = base_bbcode + rows_bbcode
-
+		var nickname = friend.nickname if friend.nickname != "" else "-"
+		var country = friend.country if friend.country != "" else "-"
+		rows_bbcode += "[cell]%s[/cell][cell]%s[/cell][cell]%s[/cell][cell]%s[/cell]" % \
+			 [friend.display_name_sanitized, friend.user_id, nickname, country]
+	friend_richtextlabel.text = table_bbcode % rows_bbcode

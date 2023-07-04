@@ -89,7 +89,7 @@ func _on_auth_interface_login_callback(data: Dictionary):
 	if data.pending:
 		print("--- Auth: Login Pending...")
 
-	if data.local_user_id != null and data.local_user_id != "":
+	if data.local_user_id != "":
 		Store.epic_account_id = data.local_user_id
 		print("Epic Account Id: ", Store.epic_account_id)
 
@@ -107,7 +107,7 @@ func _on_auth_interface_login_callback(data: Dictionary):
 	if data.pin_grant_info != null:
 		var pin_grant_info = data.pin_grant_info
 		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link before %s seconds [url]%s[/url]" % [pin_grant_info.expires_in, pin_grant_info.verification_uri_complete])
-		var _c = OS.shell_open(pin_grant_info.verification_uri_complete)
+		OS.shell_open(pin_grant_info.verification_uri_complete)
 
 	if data.continuance_token != null:
 		print("--- Auth: Got continuance_token, use it to link an account")
@@ -115,8 +115,8 @@ func _on_auth_interface_login_callback(data: Dictionary):
 
 	if data.account_feature_restricted_info != null:
 		var account_feature_restricted_info = data.account_feature_restricted_info
-		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info.verification_uri_complete)
-		var _c = OS.shell_open(account_feature_restricted_info.verification_uri_complete)
+		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info.verification_uri)
+		OS.shell_open(account_feature_restricted_info.verification_uri)
 
 	if not (data.pending or data.success):
 		print("--- Auth: Login Failed: ", data)
@@ -170,7 +170,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		set_login_status("Login Error: " + EOS.result_str(data.result_code))
 		return
 
-	if data.local_user_id != null and data.local_user_id != "":
+	if data.local_user_id != "":
 		Store.product_user_id = data.local_user_id
 		print("Product User Id: ", Store.product_user_id)
 		set_login_status("Connected account successfully")
@@ -201,7 +201,7 @@ func _on_login_btn_pressed():
 			set_login_state(States.EnterCredentials)
 
 			if login_type == "DISCORD":
-				var _c = OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
+				OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
 		else:
 			# No data entry is required
 			match login_type:

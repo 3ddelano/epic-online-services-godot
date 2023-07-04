@@ -1,45 +1,45 @@
 class_name MetricView
 extends VBoxContainer
 
-@onready var start_player_session_btn = $HB/StartPlayerSessionBtn
-
-@onready var end_player_session_btn = $HB2/EndPlayerSessionBtn
+@onready var begin_player_session_btn = %BeginPlayerSessionBtn
+@onready var end_player_session_btn = %EndPlayerSessionBtn
 
 
 func _ready() -> void:
-	start_player_session_btn.pressed.connect(_on_start_player_session_btn_pressed)
+	begin_player_session_btn.pressed.connect(_on_begin_player_session_btn_pressed)
 	end_player_session_btn.pressed.connect(_on_end_player_session_btn_pressed)
 
 
-func _on_start_player_session_btn_pressed():
-	var options = EOS.Metrics.BeginPlayerSessionOptions.new()
+func _on_begin_player_session_btn_pressed():
+	var begin_sess_opts = EOS.Metrics.BeginPlayerSessionOptions.new()
+	begin_sess_opts.controller_type = EOS.Metrics.UserControllerType.MouseKeyboard
+
 	if Store.epic_account_id != "":
-		options.account_id_type = EOS.Metrics.MetricsAccountIdType.Epic
-		options.account_id = Store.epic_account_id
+		begin_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.Epic
+		begin_sess_opts.account_id = Store.epic_account_id
 	else:
-		options.account_id_type = EOS.Metrics.MetricsAccountIdType.External
-		options.account_id = Store.product_user_id
+		begin_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.External
+		begin_sess_opts.account_id = Store.product_user_id
 
 	if Store.display_name != "":
-		options.display_name = Store.display_name
+		begin_sess_opts.display_name = Store.display_name
 	else:
-		options.display_name = "Unnamed user"
+		begin_sess_opts.display_name = "Unnamed user"
 
-	options.controller_type = EOS.Metrics.UserControllerType.MouseKeyboard
-	var ret = EOS.Metrics.MetricsInterface.begin_player_session(options)
-	print("--- Metrics: start_player_session: %s" % EOS.result_str(ret))
+	var begin_sess_ret = EOS.Metrics.MetricsInterface.begin_player_session(begin_sess_opts)
+	print("--- Metrics: begin_player_session: ",EOS.result_str(begin_sess_ret))
 
 
 func _on_end_player_session_btn_pressed():
-	var options = EOS.Metrics.EndPlayerSessionOptions.new()
+	var end_sess_opts = EOS.Metrics.EndPlayerSessionOptions.new()
 
 	if Store.epic_account_id != "":
-		options.account_id_type = EOS.Metrics.MetricsAccountIdType.Epic
-		options.account_id = Store.epic_account_id
+		end_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.Epic
+		end_sess_opts.account_id = Store.epic_account_id
 	else:
-		options.account_id_type = EOS.Metrics.MetricsAccountIdType.External
-		options.account_id = Store.product_user_id
+		end_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.External
+		end_sess_opts.account_id = Store.product_user_id
 
-	var ret = EOS.Metrics.MetricsInterface.end_player_session(options)
-	print("--- Metrics: end_player_session: %s" % EOS.result_str(ret))
+	var end_sess_ret = EOS.Metrics.MetricsInterface.end_player_session(end_sess_opts)
+	print("--- Metrics: end_player_session: ", EOS.result_str(end_sess_ret))
 

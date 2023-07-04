@@ -1,25 +1,23 @@
 class_name LogsView
 extends VBoxContainer
 
-@onready var logs_label = $PC/SC/LogsLabel
+@onready var logs_label = %LogsLabel
 
 
 func _ready() -> void:
-	var _c = EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
-	_c = Store.platform_create.connect(_on_platform_create)
+	EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
+	Store.platform_create.connect(_on_platform_create)
 
 
 func _on_platform_create():
 	# Set logging categories and level
-	var res = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
+	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
 	if res != EOS.Result.Success:
 		print("Failed to set log level: ", EOS.result_str(res))
 
 
-func _on_logging_interface_callback(msg):
-	msg = EOS.Logging.LogMessage.from(msg) as EOS.Logging.LogMessage
-	if msg == null:
-		return
+func _on_logging_interface_callback(p_msg: Dictionary):
+	var msg = EOS.Logging.LogMessage.from(p_msg) as EOS.Logging.LogMessage
 	log_msg(msg.level, msg.message, msg.category)
 
 
@@ -51,4 +49,4 @@ func log_msg(level: int, msg: String, category := ""):
 #		print("%s | %s | %s" % [_category, level_str, msg])
 
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
-	logs_label.text += "[color=#%s]%s | %s |[/color] [color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]
+	logs_label.text += "[color=#%s]%s\t%s\t[/color][color=%s]%s\n[/color]" % [darkened_color, _category, level_str, color, msg]

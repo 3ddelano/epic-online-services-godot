@@ -7,7 +7,7 @@ extends PopupPanel
 
 
 func _ready() -> void:
-	hide()
+	visible = false
 	_close_btn.pressed.connect(hide)
 
 	_title.text = title

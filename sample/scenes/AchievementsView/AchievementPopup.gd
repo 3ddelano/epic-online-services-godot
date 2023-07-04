@@ -1,11 +1,11 @@
 class_name AchievementPopup
-extends PopupPanel
+extends StyledPopupWindow
 
-@onready var id_label = $VB/MC/VB/IdLabel
-@onready var flavor_label = $VB/MC/VB/FlavorLabel
-@onready var is_visible_label = $VB/MC/VB/IsVisibleLabel
-@onready var is_unlocked_label = $VB/MC/VB/IsUnlockedLabel
-@onready var stat_thresholds_vb = $VB/MC/VB/MC/VB/SC/StatThesholdsVB
+@onready var id_label = $VB/MC/VB/GridContainer/IdLabel
+@onready var flavor_label = $VB/MC/VB/GridContainer/FlavorLabel
+@onready var is_visible_label = $VB/MC/VB/GridContainer/IsVisibleLabel
+@onready var is_unlocked_label = $VB/MC/VB/GridContainer/IsUnlockedLabel
+@onready var stat_thresholds_vb = $VB/MC/VB/MC/VB/SC/StatThresholdsVB
 @onready var locked_image = $VB/MC/VB/HB/VB/LockedImage
 @onready var locked_label = $VB/MC/VB/HB/VB/LockedLabel
 @onready var locked_desc_label = $VB/MC/VB/HB/VB/LockedDescLabel
@@ -14,38 +14,35 @@ extends PopupPanel
 @onready var unlocked_desc_label = $VB/MC/VB/HB/VB2/UnlockedDescLabel
 
 @onready var unlock_btn = $VB/MC/VB/UnlockBtn
-@onready var close_btn = $VB/CloseBtn
 
 var achievement_node: AchievementsListAchievement
 
 
 func _ready() -> void:
+	super._ready()
 	unlock_btn.pressed.connect(_on_unlock_btn_pressed)
-	close_btn.pressed.connect(func ():
-		set_visible(false)
-	)
 
 
 func from_achievement_node(node: AchievementsListAchievement):
 	achievement_node = node
 	var data = achievement_node.get_data()
 
-	id_label.text = "Id: " + data.achievement_id
-	flavor_label.text = "Flavor Text: " + data.flavor_text
+	id_label.text = data.achievement_id
+	flavor_label.text = data.flavor_text
 	if data.is_hidden != null:
 		if data.is_hidden:
-			is_visible_label.text = "Is Visible: False"
+			is_visible_label.text = "False"
 		else:
-			is_visible_label.text = "Is Visible: True"
+			is_visible_label.text = "True"
 	else:
-		is_visible_label.text = "Is Visible: NA"
+		is_visible_label.text = "NA"
 
 	if data.unlock_time == EOS.Achievements.UNLOCK_TIME_UNDEFINED:
-		is_unlocked_label.text = "Is Unlocked: No"
+		is_unlocked_label.text = "No"
 		unlock_btn.disabled = false
 	else:
 		var time_str = Time.get_datetime_string_from_unix_time(data.unlock_time)
-		is_unlocked_label.text = "Is Unlocked: Yes at " + time_str
+		is_unlocked_label.text = "Yes at " + time_str
 		unlock_btn.disabled = true
 
 	for child in stat_thresholds_vb.get_children():
