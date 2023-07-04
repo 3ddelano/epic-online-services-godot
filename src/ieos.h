@@ -19,7 +19,6 @@
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
-#include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"

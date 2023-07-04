@@ -46,7 +46,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     EOS_Windows_RTCOptions windowsRTCOptions;
     memset(&windowsRTCOptions, 0, sizeof(windowsRTCOptions));
     windowsRTCOptions.ApiVersion = EOS_WINDOWS_RTCOPTIONS_API_LATEST;
-    if (Engine::get_singleton()->is_editor_hint()) {
+    if (OS::get_singleton()->has_feature("editor")) {
         CharString xAudio29DllPath = ProjectSettings::get_singleton()->globalize_path("res://addons/epic-online-services-godot/bin/x64/xaudio2_9redist.dll").utf8();
         windowsRTCOptions.XAudio29DllPath = xAudio29DllPath.get_data();
     } else {
