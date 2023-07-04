@@ -18,7 +18,12 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     options.BucketId = bucket_id.get_data();
     options.bDisableHostMigration = VARIANT_TO_EOS_BOOL(p_options->get("disable_host_migration"));
     options.bEnableRTCRoom = VARIANT_TO_EOS_BOOL(p_options->get("enable_rtc_room"));
-    // Todo: handle options.LocalRTCOptions
+
+    Variant local_rtc_options = p_options->get("local_rtc_options");
+    if (options.bEnableRTCRoom && local_rtc_options.get_type() != Variant::NIL) {
+        EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
+        options.LocalRTCOptions = &localRTCOptions;
+    }
     if (lobby_id.length() != 0) {
         options.LobbyId = lobby_id.get_data();
     }
@@ -70,7 +75,11 @@ void IEOS::lobby_interface_join_lobby(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_LOBBY_JOINLOBBY_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.bPresenceEnabled = VARIANT_TO_EOS_BOOL(p_options->get("presence_enabled"));
-    // TODO: handle options.LocalRTCOptions
+    Variant local_rtc_options = p_options->get("local_rtc_options");
+    if (local_rtc_options.get_type() != Variant::NIL) {
+        EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
+        options.LocalRTCOptions = &localRTCOptions;
+    }
     options.LobbyDetailsHandle = p_lobby_details->get_internal();
     p_options->reference();
 
@@ -96,7 +105,11 @@ void IEOS::lobby_interface_join_lobby_by_id(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.LobbyId = lobby_id.get_data();
     options.bPresenceEnabled = VARIANT_TO_EOS_BOOL(p_options->get("presence_enabled"));
-    // TODO: handle options.LocalRTCOptions
+    Variant local_rtc_options = p_options->get("local_rtc_options");
+    if (local_rtc_options.get_type() != Variant::NIL) {
+        EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
+        options.LocalRTCOptions = &localRTCOptions;
+    }
     p_options->reference();
 
     EOS_Lobby_JoinLobbyById(s_lobbyInterface, &options, (void*)*p_options, [](const EOS_Lobby_JoinLobbyByIdCallbackInfo* data) {

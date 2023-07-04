@@ -1,11 +1,23 @@
-[gd_scene load_steps=7 format=3 uid="uid://dsiyt23hnmngd"]
+[gd_scene load_steps=9 format=3 uid="uid://dsiyt23hnmngd"]
 
 [ext_resource type="Script" path="res://scenes/LobbiesView/LobbiesView.gd" id="1_gvnj5"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_guetp"]
+[ext_resource type="Script" path="res://scenes/LobbiesView/SearchLobby.gd" id="4_pnhqb"]
 [ext_resource type="FontFile" uid="uid://bvjo321fa54x8" path="res://fonts/Roboto-Bold.ttf" id="4_vb7hx"]
 [ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="5_bpr7u"]
 [ext_resource type="Script" path="res://scenes/LobbiesView/CreateLobbyPopup.gd" id="6_bpgu2"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="6_uc41g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6m7w5"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="LobbiesView" type="VBoxContainer"]
 anchors_preset = 15
@@ -33,30 +45,35 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Create Lobby"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VB/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VB/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+theme_override_styles/panel = SubResource("StyleBoxFlat_6m7w5")
 
-[node name="SearchLobbyType" type="OptionButton" parent="VB/HBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
+[node name="SearchLobby" type="HBoxContainer" parent="VB/HBoxContainer/PanelContainer"]
 layout_mode = 2
-item_count = 2
-selected = 0
-popup/item_0/text = "Search: By map"
-popup/item_0/id = 0
-popup/item_1/text = "Search: By Bucket Id"
-popup/item_1/id = 1
+script = ExtResource("4_pnhqb")
 
-[node name="SearchLobbyLineEdit" type="LineEdit" parent="VB/HBoxContainer/HBoxContainer"]
+[node name="SearchLobbyType" type="OptionButton" parent="VB/HBoxContainer/PanelContainer/SearchLobby"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="SearchLobbyLineEdit" type="LineEdit" parent="VB/HBoxContainer/PanelContainer/SearchLobby"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 placeholder_text = "Search string"
 
-[node name="SearchLobbyBtn" parent="VB/HBoxContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
+[node name="SearchLobbyBtn" parent="VB/HBoxContainer/PanelContainer/SearchLobby" instance=ExtResource("6_uc41g")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Search"
+
+[node name="ClearSearchLobbyBtn" parent="VB/HBoxContainer/PanelContainer/SearchLobby" instance=ExtResource("6_uc41g")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Clear"
 
 [node name="HSeparator" type="HSeparator" parent="VB"]
 layout_mode = 2
@@ -64,6 +81,7 @@ theme_override_constants/separation = 16
 
 [node name="MyLobby" type="VBoxContainer" parent="VB"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="MyLobbyDetails" type="HBoxContainer" parent="VB/MyLobby"]
@@ -113,25 +131,33 @@ text = "Talking?"
 [node name="Label" type="Label" parent="VB/MyLobby/MyLobbyMembers"]
 layout_mode = 2
 
-[node name="SearchLobbyResults" type="GridContainer" parent="VB"]
+[node name="SearchLobbyResults" type="VBoxContainer" parent="VB"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VB/SearchLobbyResults"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_vb7hx")
+text = "Search Results"
+
+[node name="GridContainer" type="GridContainer" parent="VB/SearchLobbyResults"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 64
 columns = 4
 
-[node name="OwnerName" type="Label" parent="VB/SearchLobbyResults"]
+[node name="OwnerName" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2
 text = "Owner Name"
 
-[node name="Members" type="Label" parent="VB/SearchLobbyResults"]
+[node name="Members" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2
 text = "Members"
 
-[node name="Map" type="Label" parent="VB/SearchLobbyResults"]
+[node name="Map" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2
 text = "Map"
 
-[node name="Label" type="Label" parent="VB/SearchLobbyResults"]
+[node name="Label" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2
 
 [node name="CreateLobbyPopup" parent="." instance=ExtResource("5_bpr7u")]
@@ -174,6 +200,7 @@ theme_override_constants/v_separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
+button_pressed = true
 text = "Public"
 
 [node name="AllowInvitesCheckBox" type="CheckBox" parent="CreateLobbyPopup/VB/MC/VB/HFlowContainer"]
@@ -191,7 +218,6 @@ text = "Presence"
 [node name="RTCVoiceRoomCheckBox" type="CheckBox" parent="CreateLobbyPopup/VB/MC/VB/HFlowContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
-button_pressed = true
 text = "RTC Voice Room"
 
 [node name="CreateLobbyBtn" parent="CreateLobbyPopup/VB/MC/VB" index="3" instance=ExtResource("6_uc41g")]

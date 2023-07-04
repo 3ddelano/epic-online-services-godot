@@ -10,10 +10,14 @@ static func get_instance():
 	return IEOS
 
 
+## Pretty prints the [EOS.Result] code and its string representation.[br]
+## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
 static func print_result(p_result) -> void:
 	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
 
 
+## Returns a string representation of the [EOS.Result] code.[br]
+## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
 static func result_str(p_result) -> String:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
@@ -21,10 +25,20 @@ static func result_str(p_result) -> String:
 	return Result.keys()[idx]
 
 
-static func is_operation_complete(p_result_code: Result) -> bool:
-	return IEOS.is_operation_complete(p_result_code)
+## Returns whether the operation was completed.[br]
+## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+static func is_operation_complete(p_result) -> bool:
+	if typeof(p_result) == TYPE_DICTIONARY:
+		p_result = p_result["result_code"]
+	return IEOS.is_operation_complete(p_result)
 
 
+## Returns whether the operation was successful.[br]
+## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+static func is_success(p_result) -> bool:
+	if typeof(p_result) == TYPE_DICTIONARY:
+		p_result = p_result["result_code"]
+	return p_result == EOS.Result.Success
 
 
 
@@ -1408,12 +1422,24 @@ class Lobby:
 		var enable_join_by_id: bool
 		var rejoin_after_kick_requires_invite: bool
 
+		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
+		## A [Dictionary] with keys: [br]
+		## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
+		## - use_manual_audio_input: [bool],[br]
+		## - use_manual_audio_output: [bool],[br]
+		## - local_audio_device_input_starts_muted: [bool]
+		var local_rtc_options = null
+
+		var client_data = null
+
 	class DestroyLobbyOptions extends BaseClass:
 		func _init():
 			super._init("DestroyLobbyOptions")
 
 		var local_user_id: String
 		var lobby_id: String
+
+		var client_data = null
 
 	class JoinLobbyOptions extends BaseClass:
 		func _init():
@@ -1422,6 +1448,15 @@ class Lobby:
 		var local_user_id: String
 		var lobby_detals: LobbyDetailsEOSG
 		var presence_enabled: bool
+		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
+		## A [Dictionary] with keys: [br]
+		## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
+		## - use_manual_audio_input: [bool],[br]
+		## - use_manual_audio_output: [bool],[br]
+		## - local_audio_device_input_starts_muted: [bool]
+		var local_rtc_options = null
+
+		var client_data = null
 
 	class JoinLobbyByIdOptions extends BaseClass:
 		func _init():
@@ -1430,6 +1465,15 @@ class Lobby:
 		var local_user_id: String
 		var lobby_id: String
 		var presence_enabled: bool
+		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
+		## A [Dictionary] with keys: [br]
+		## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
+		## - use_manual_audio_input: [bool],[br]
+		## - use_manual_audio_output: [bool],[br]
+		## - local_audio_device_input_starts_muted: [bool]
+		var local_rtc_options = null
+
+		var client_data = null
 
 	class LeaveLobbyOptions extends BaseClass:
 		func _init():
@@ -1438,6 +1482,8 @@ class Lobby:
 		var local_user_id: String
 		var lobby_id: String
 
+		var client_data = null
+
 	class UpdateLobbyModificationOptions extends BaseClass:
 		func _init():
 			super._init("UpdateLobbyModificationOptions")
@@ -1445,11 +1491,15 @@ class Lobby:
 		var local_user_id: String
 		var lobby_id: String
 
+		var client_data = null
+
 	class UpdateLobbyOptions extends BaseClass:
 		func _init():
 			super._init("UpdateLobbyOptions")
 
 		var lobby_modification: LobbyModificationEOSG
+
+		var client_data = null
 
 	class PromoteMemberOptions extends BaseClass:
 		func _init():
@@ -1459,6 +1509,8 @@ class Lobby:
 		var target_user_id: String
 		var lobby_id: String
 
+		var client_data = null
+
 	class KickMemberOptions extends BaseClass:
 		func _init():
 			super._init("KickMemberOptions")
@@ -1466,6 +1518,8 @@ class Lobby:
 		var local_user_id: String
 		var target_user_id: String
 		var lobby_id: String
+
+		var client_data = null
 
 	class HardMuteMemberOptions extends BaseClass:
 		func _init():
@@ -1476,6 +1530,8 @@ class Lobby:
 		var lobby_id: String
 		var hard_mute: bool
 
+		var client_data = null
+
 	class SendInviteOptions extends BaseClass:
 		func _init():
 			super._init("SendInviteOptions")
@@ -1484,6 +1540,8 @@ class Lobby:
 		var target_user_id: String
 		var lobby_id: String
 
+		var client_data = null
+
 	class RejectInviteOptions extends BaseClass:
 		func _init():
 			super._init("RejectInviteOptions")
@@ -1491,11 +1549,15 @@ class Lobby:
 		var local_user_id: String
 		var invite_id: String
 
+		var client_data = null
+
 	class QueryInvitesOptions extends BaseClass:
 		func _init():
 			super._init("QueryInvitesOptions")
 
 		var local_user_id: String
+
+		var client_data = null
 
 	class GetInviteCountOptions extends BaseClass:
 		func _init():
@@ -1945,9 +2007,11 @@ class ProgressionSnapshot:
 
 
 class RTC:
-	enum RTCParticipantStatus { Joined = 0, Left = 1 }
+	enum ParticipantStatus { Joined = 0, Left = 1 }
 
-
+	enum JoinRoomFlags {
+		EnableEcho = 0x01,
+	}
 
 
 
@@ -2696,4 +2760,26 @@ enum RTCAudioStatus {
 	Disabled = 2,
 	AdminDisabled = 3,
 	NotListeningDisabled = 4
+}
+
+enum AttributeType {
+	Boolean = 0,
+	Int64 = 1,
+	Double = 2,
+	String = 3
+}
+
+enum ComparisonOp {
+	Equal = 0,
+	NotEqual = 1,
+	GreaterThan = 2,
+	GreaterThanOrEqual = 3,
+	LessThan = 4,
+	LessThanOrEqual = 5,
+	Distance = 6,
+	AnyOf = 7,
+	NotAnyOf = 8,
+	OneOf = 9,
+	NotOneOf = 10,
+	Contains = 11
 }

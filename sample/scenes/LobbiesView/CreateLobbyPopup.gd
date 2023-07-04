@@ -35,15 +35,14 @@ func _populate_options_btns():
 
 func _on_create_lobby_btn_pressed():
 	var _view: LobbiesView = Store.get_view("Lobbies")
-	_view.create_lobby({
-		local_user_id = Store.product_user_id,
+	_view.create_lobby(LobbiesView.GameLobby.new().from_dict({
 		bucket_id = _bucket_id.text.strip_edges(),
 		max_lobby_members = _max_players_options_btn.get_selected_metadata(),
 		presence_enabled = _presence_check_box.button_pressed,
 		enable_rtc_room = _rtc_voice_room_check_box.button_pressed,
 		permission_level = EOS.Lobby.LobbyPermissionLevel.PublicAdvertised if _public_check_box.button_pressed else EOS.Lobby.LobbyPermissionLevel.InviteOnly,
 		allow_invites = _allow_invites_check_box.button_pressed,
-	})
+	}))
 	hide()
 
 

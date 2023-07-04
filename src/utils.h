@@ -14,7 +14,7 @@ using namespace godot;
 
 #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
 #define VARIANT_TO_EOS_BOOL(var) \
-    ((var.get_type() == Variant::Type::BOOL) ? ((var.operator bool()) ? EOS_TRUE : EOS_FALSE) : EOS_FALSE)
+    ((var.get_type() == Variant::BOOL) ? ((var.operator bool()) ? EOS_TRUE : EOS_FALSE) : EOS_FALSE)
 #define EOSG_GET_STRING(str) ((str == nullptr) ? String("") : String(str))
 #define EOSG_GET_BOOL(eosBool) ((eosBool == EOS_TRUE) ? true : false)
 
@@ -584,4 +584,34 @@ static Variant eosg_lobby_lobby_details_to_wrapper(EOS_HLobbyDetails lobbyDetail
     Ref<LobbyDetailsEOSG> lobby_details = memnew(LobbyDetailsEOSG());
     lobby_details->set_internal(lobbyDetails);
     return lobby_details;
+}
+
+static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant p_local_rtc_options) {
+    Dictionary local_rtc_options = p_local_rtc_options;
+
+    int flags = 0;
+    if (local_rtc_options.has("flags")) {
+        flags = local_rtc_options["flags"];
+    }
+    bool use_manual_audio_input = false;
+    if (local_rtc_options.has("use_manual_audio_input")) {
+        use_manual_audio_input = local_rtc_options["use_manual_audio_input"];
+    }
+    bool use_manual_audio_output = false;
+    if (local_rtc_options.has("use_manual_audio_output")) {
+        use_manual_audio_output = local_rtc_options["use_manual_audio_output"];
+    }
+    bool local_audio_device_input_starts_muted = false;
+    if (local_rtc_options.has("local_audio_device_input_starts_muted")) {
+        local_audio_device_input_starts_muted = local_rtc_options["local_audio_device_input_starts_muted"];
+    }
+
+    EOS_Lobby_LocalRTCOptions options;
+    options.ApiVersion = EOS_LOBBY_LOCALRTCOPTIONS_API_LATEST;
+    options.Flags = flags;
+    options.bUseManualAudioInput = use_manual_audio_input;
+    options.bUseManualAudioOutput = use_manual_audio_output;
+    options.bLocalAudioDeviceInputStartsMuted = local_audio_device_input_starts_muted;
+
+    return options;
 }
