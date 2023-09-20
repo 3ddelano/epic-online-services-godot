@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Epic Online Services Godot 4.x"
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.0")
+config/features=PackedStringArray("4.1")
 config/icon="res://logo.png"
 
 [autoload]
@@ -20,6 +20,10 @@ config/icon="res://logo.png"
 Env="*res://scripts/Env.gd"
 Store="*res://scripts/Store.gd"
 EOS_tick="*res://addons/epic-online-services-godot/tick.gd"
+
+[dotnet]
+
+project/assembly_name="Epic Online Services Godot 4.x"
 
 [editor_plugins]
 
