@@ -198,6 +198,13 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(lobby_interface_copy_lobby_details);
     IEOS_BIND_METHOD(lobby_interface_get_rtc_room_name);
     IEOS_BIND_METHOD(lobby_interface_is_rtc_room_connected);
+    IEOS_BIND_METHOD(p2p_query_nat_type);
+    IEOS_BIND_METHOD(p2p_get_nat_type);
+    IEOS_BIND_METHOD(p2p_set_relay_control);
+    IEOS_BIND_METHOD(p2p_get_relay_control);
+    IEOS_BIND_METHOD(p2p_set_port_range);
+    IEOS_BIND_METHOD(p2p_get_port_range);
+    IEOS_BIND_METHOD(p2p_set_packet_queue_size);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
     ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -290,6 +297,8 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("lobby_interface_reject_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_interface_query_invites_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_search_find_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("p2p_query_nat_type_completed", PropertyInfo(Variant::INT, "nat_type")));
+    ADD_SIGNAL(MethodInfo("p2p_incoming_packet_queue_full", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 int IEOS::shutdown() {

@@ -19,6 +19,7 @@
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
+#include "eos_p2p.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
@@ -59,6 +60,7 @@ class IEOS : public RefCounted {
     EOS_HUserInfo s_userInfoInterface = nullptr;
     EOS_HLobby s_lobbyInterface = nullptr;
     EOS_HPlatform s_platformInterface = nullptr;
+    EOS_HP2P s_p2pInterface = nullptr;
 
    public:
     static IEOS* get_singleton();
@@ -337,6 +339,42 @@ class IEOS : public RefCounted {
     Dictionary lobby_interface_copy_lobby_details(Ref<RefCounted> options);
     Dictionary lobby_interface_get_rtc_room_name(Ref<RefCounted> options);
     Dictionary lobby_interface_is_rtc_room_connected(Ref<RefCounted> options);
+
+    // -----
+    // P2P Interface
+    // -----
+
+    //Binded functions
+    void p2p_query_nat_type();
+    int p2p_get_nat_type();
+    void p2p_set_relay_control(int control);
+    int p2p_get_relay_control();
+    void p2p_set_port_range(Ref<RefCounted> options);
+    Dictionary p2p_get_port_range();
+    void p2p_set_packet_queue_size(Ref<RefCounted> options);
+
+    //Not binded. Called by EOSGMultiplayerPeer
+    EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
+    EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, uint8_t *out_packet_data, int32_t *out_packet_size,
+        uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
+    EOS_EResult p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
+    EOS_EResult p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);
+    EOS_EResult p2p_close_all_connections(const EOS_P2P_CloseConnectionsOptions *options);
+    EOS_EResult p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size);
+    EOS_EResult p2p_get_packet_queue_info(const EOS_P2P_GetPacketQueueInfoOptions *options, EOS_P2P_PacketQueueInfo *out_info);
+    EOS_EResult p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *options);
+    EOS_NotificationId p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options,
+        EOS_P2P_OnPeerConnectionEstablishedCallback callback);
+    EOS_NotificationId p2p_add_notify_peer_connection_closed(const EOS_P2P_AddNotifyPeerConnectionClosedOptions *options,
+        EOS_P2P_OnRemoteConnectionClosedCallback callback);
+    EOS_NotificationId p2p_add_notify_peer_connection_request(const EOS_P2P_AddNotifyPeerConnectionRequestOptions *options,
+        EOS_P2P_OnIncomingConnectionRequestCallback callback);
+    EOS_NotificationId p2p_add_notify_peer_connection_interrupted(const EOS_P2P_AddNotifyPeerConnectionInterruptedOptions *options,
+        EOS_P2P_OnPeerConnectionInterruptedCallback callback);
+    void p2p_remove_notify_peer_connection_established(EOS_NotificationId callback_id);
+    void p2p_remove_notify_peer_connection_interrupted(EOS_NotificationId callback_id);
+    void p2p_remove_notify_peer_connection_closed(EOS_NotificationId callback_id);
+    void p2p_remove_notify_peer_connection_request(EOS_NotificationId callback_id);
 };
 
 }  // namespace godot
