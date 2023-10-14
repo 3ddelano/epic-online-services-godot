@@ -82,6 +82,9 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Mode active_mode = MODE_NONE;
 	EOS_Bool allow_delayed_delivery = EOS_TRUE;
 	bool auto_accept_connection_requests = false;
+	TransferMode transfer_mode = TransferMode::TRANSFER_MODE_RELIABLE;
+	uint32_t transfer_channel = CH_RELIABLE;
+	bool refusing_connections = false;
 
 	HashMap<uint32_t, EOSGPeerInfo> peers;
 	List<EOS_P2P_SocketId> sockets;
@@ -92,7 +95,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
 	EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
 
-    protected:
     static void _bind_methods();
 
     public:
@@ -107,10 +109,10 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	void close_mesh_socket(const String &socket_id);
 	Error add_mesh_peer(int p_id, const String &socket_id);
 
-	bool find_all_connecetion_requests_for_user(const String &user_id, Array out_connection_requests);
-	bool find_all_connecetion_requests_for_socket(const String &socket_id, Array out_connection_requests);
+	Array find_all_connecetion_requests_for_user(const String &user_id);
+	Array find_all_connecetion_requests_for_socket(const String &socket_id);
 	Array get_all_connection_requests();
-	bool get_peer_info(int p_id, Dictionary out_peer_info);
+	Dictionary get_peer_info(int p_id);
 	int find_peer_id(const String &user_id);
 	bool has_peer(const String &user_id);
 	Array get_all_sockets();

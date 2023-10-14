@@ -125,57 +125,57 @@ Array EOSGMultiplayerPeer::get_all_connection_requests() {
         Dictionary connection_request_data;
         connection_request_data["remote_user"] = eosg_product_user_id_to_string(connection_request.remote_user);
         String socket_name = connection_request.socket->SocketName;
-        connection_request_data["socket_name"] = socket_name;
+        connection_request_data["socket"] = socket_name;
         ret.push_back(connection_request_data);
     }
     return ret;
 }
 
-bool EOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String &user_id, Array out_connection_requests) {
-    bool success = false;
+Array EOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String &user_id) {
+    Array ret = Array();
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
         String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
         if (remote_user_id_str == user_id) {
-            Dictionary ret;
-            ret["remote_user"] = remote_user_id_str;
+            Dictionary connection_request_data;
+            connection_request_data["remote_user"] = remote_user_id_str;
             String socket_name = connection_request.socket->SocketName;
-            ret["socket_name"] = socket_name;
-            out_connection_requests.push_back(ret);
-            success = true;
+            connection_request_data["socket"] = socket_name;
+            ret.push_back(connection_request_data);
         }
     }
-    return success;
+    return ret;
 }
 
-bool EOSGMultiplayerPeer::find_all_connecetion_requests_for_socket(const String &socket_id, Array out_connection_requests) {
-    bool success = false;
+Array EOSGMultiplayerPeer::find_all_connecetion_requests_for_socket(const String &socket_id) {
+    Array ret = Array();
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
         String socket_name = connection_request.socket->SocketName;
         if (socket_id == socket_name) {
-            Dictionary ret;
-            ret["remote_user"] = eosg_product_user_id_to_string(connection_request.remote_user);
-            ret["socket_name"] = socket_name;
-            out_connection_requests.push_back(ret);
-            success = true;
+            Dictionary connection_request_data;
+            connection_request_data["remote_user"] = eosg_product_user_id_to_string(connection_request.remote_user);
+            connection_request_data["socket"] = socket_name;
+            ret.push_back(connection_request_data);
         }
     }
-    return success;
+    return ret;
 }
 
-bool EOSGMultiplayerPeer::get_peer_info(int p_id, Dictionary out_peer_info) {
+Dictionary EOSGMultiplayerPeer::get_peer_info(int p_id) {
+    Dictionary ret = Dictionary();
     if (!peers.has(p_id)) {
-        return false;
+        return ret;
     }
 
     EOSGPeerInfo peer_info = peers.get(p_id);
-    Array socket_names;
-    out_peer_info["user_id"] = eosg_product_user_id_to_string(peer_info.user_id);
+    ret["user_id"] = eosg_product_user_id_to_string(peer_info.user_id);
 
+    Array socket_names;
     for (const EOS_P2P_SocketId *sockets : peer_info.sockets) {
         socket_names.push_back(sockets->SocketName);
     }
-    out_peer_info["sockets"] = socket_names;
-    return true;
+    ret["sockets"] = socket_names;
+
+    return ret;
 }
 
 int EOSGMultiplayerPeer::find_peer_id(const String &user_id) {
@@ -413,19 +413,19 @@ MultiplayerPeer::TransferMode EOSGMultiplayerPeer::_get_packet_mode() const {
 }
 
 void EOSGMultiplayerPeer::_set_transfer_channel(int32_t p_channel) {
-    set_transfer_channel(p_channel);
+    transfer_channel = p_channel;
 }
 
 int32_t EOSGMultiplayerPeer::_get_transfer_channel() const {
-    return get_transfer_channel();
+    return transfer_channel;
 }
 
 void EOSGMultiplayerPeer::_set_transfer_mode(MultiplayerPeer::TransferMode p_mode) {
-    set_transfer_mode(p_mode);
+    transfer_mode = p_mode;
 }
 
 MultiplayerPeer::TransferMode EOSGMultiplayerPeer::_get_transfer_mode() const {
-    return get_transfer_mode();
+    return transfer_mode;
 }
 
 void EOSGMultiplayerPeer::_set_target_peer(int32_t p_peer) {
@@ -487,7 +487,7 @@ void EOSGMultiplayerPeer::_poll() {
     packet_info.packet = packet;
     packet_info.from = find_peer_id(remote_user_str);
 
-    incoming_packets.push_front(packet_info);
+    incoming_packets.push_back(packet_info);
 }
 
 void EOSGMultiplayerPeer::_close() {
@@ -541,11 +541,11 @@ int32_t EOSGMultiplayerPeer::_get_unique_id() const {
 }
 
 void EOSGMultiplayerPeer::_set_refuse_new_connections(bool p_enable) {
-    set_refuse_new_connections(p_enable);
+    refusing_connections = p_enable;
 }
 
 bool EOSGMultiplayerPeer::_is_refusing_new_connections() const {
-    return is_refusing_new_connections();
+    return refusing_connections;
 }
 
 bool EOSGMultiplayerPeer::_is_server_relay_supported() const {
