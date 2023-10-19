@@ -32,6 +32,8 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("deny_connection_request"), &EOSGMultiplayerPeer::deny_connection_request);
     ClassDB::bind_method(D_METHOD("accept_all_connection_requests"), &EOSGMultiplayerPeer::accept_all_connection_requests);
     ClassDB::bind_method(D_METHOD("deny_all_connection_requests"), &EOSGMultiplayerPeer::deny_all_connection_requests);
+    ClassDB::bind_method(D_METHOD("get_active_mode"), &EOSGMultiplayerPeer::get_active_mode);
+    ClassDB::bind_method(D_METHOD("get_all_peers"), &EOSGMultiplayerPeer::get_all_peers);
 
     ADD_SIGNAL(MethodInfo("p2p_peer_connection_established", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("p2p_peer_connection_interrupted", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -62,15 +64,15 @@ Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
 }
 
 Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &remote_user_id) {
-    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create server. Local user id has not been set.");
-    ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create server. Multiplayer instance is already active.");
+    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create client. Local user id has not been set.");
+    ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create client. Multiplayer instance is already active.");
 
     EOS_P2P_SocketId socket;
     socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
     strncpy_s(socket.SocketName, socket_id.utf8(), socket_id.length());
     sockets.push_back(socket);
 
-    unique_id = get_unique_id();
+    unique_id = generate_unique_id();
     active_mode = MODE_CLIENT;
     connection_status = CONNECTION_CONNECTING;
 
@@ -82,9 +84,7 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     send_packet_options.bAllowDelayedDelivery = EOS_TRUE;
     send_packet_options.bDisableAutoAcceptConnection = EOS_FALSE;
     send_packet_options.Channel = CH_RELIABLE;
-    uint32_t *id_ptr = nullptr;
-    *id_ptr = unique_id;
-    send_packet_options.Data = reinterpret_cast<void*>(id_ptr);
+    send_packet_options.Data = reinterpret_cast<void*>(&unique_id);
     send_packet_options.DataLengthBytes = sizeof(uint32_t);
     send_packet_options.Reliability = EOS_EPacketReliability::EOS_PR_ReliableUnordered;
     send_packet_options.SocketId = &sockets[0];
@@ -205,6 +205,23 @@ Array EOSGMultiplayerPeer::get_all_sockets() {
     return ret;
 }
 
+Array EOSGMultiplayerPeer::get_all_peers() {
+    Array ret;
+    for (KeyValue<uint32_t, EOSGPeerInfo> &E : peers) {
+        EOSGPeerInfo peer_info = E.value;
+        Dictionary data;
+        Array sockets;
+        data["user_id"] = eosg_product_user_id_to_string(peer_info.user_id);
+        for (const EOS_P2P_SocketId* socket_id : peer_info.sockets) {
+            String socket_name = socket_id->SocketName;
+            sockets.push_back(socket_name);
+        }
+        data["sockets"] = sockets;
+        ret.push_back(data);
+    }
+    return ret;
+}
+
 void EOSGMultiplayerPeer::set_allow_delayed_delivery(bool allow) {
     allow_delayed_delivery = allow;
 }
@@ -304,6 +321,10 @@ void EOSGMultiplayerPeer::deny_all_connection_requests() {
     pending_connection_requests.clear();
 }
 
+int EOSGMultiplayerPeer::get_active_mode() {
+    return static_cast<int>(active_mode);
+}
+
 Error EOSGMultiplayerPeer::_get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) {
     ERR_FAIL_COND_V_MSG(incoming_packets.size() == 0, ERR_UNAVAILABLE, "No incoming packets available.");
 
@@ -380,14 +401,7 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
 }
 
 int32_t EOSGMultiplayerPeer::_get_available_packet_count() const {
-    EOS_P2P_GetPacketQueueInfoOptions options;
-    options.ApiVersion = EOS_P2P_GETPACKETQUEUEINFO_API_LATEST;
-    EOS_P2P_PacketQueueInfo info;
-    EOS_EResult result = IEOS::get_singleton()->p2p_get_packet_queue_info(&options, &info);
-
-    ERR_FAIL_COND_V_MSG(result == EOS_EResult::EOS_InvalidParameters, 0, "Failed to get packet queue info. Invalid parameters.");
-
-    return info.IncomingPacketQueueCurrentPacketCount;
+    return incoming_packets.size();
 }
 
 int32_t EOSGMultiplayerPeer::_get_max_packet_size() const {
@@ -448,8 +462,8 @@ void EOSGMultiplayerPeer::_poll() {
     EOS_P2P_GetNextReceivedPacketSizeOptions packet_size_options;
     packet_size_options.ApiVersion = EOS_P2P_GETNEXTRECEIVEDPACKETSIZE_API_LATEST;
     packet_size_options.LocalUserId = s_local_user_id;
-    uint32_t *max_packet_size = nullptr;
-    EOS_EResult result = IEOS::get_singleton()->p2p_get_next_packet_size(&packet_size_options, max_packet_size);
+    uint32_t max_packet_size;
+    EOS_EResult result = IEOS::get_singleton()->p2p_get_next_packet_size(&packet_size_options, &max_packet_size);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet size! Invalid parameters.");
 
@@ -460,7 +474,7 @@ void EOSGMultiplayerPeer::_poll() {
     EOS_P2P_ReceivePacketOptions options;
     options.ApiVersion = EOS_P2P_RECEIVEPACKET_API_LATEST;
     options.LocalUserId = s_local_user_id;
-    options.MaxDataSizeBytes = *max_packet_size;
+    options.MaxDataSizeBytes = max_packet_size;
 
     uint8_t *packet_data = nullptr;
     int32_t buffer_size;
@@ -473,7 +487,8 @@ void EOSGMultiplayerPeer::_poll() {
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
 
     String remote_user_str = eosg_product_user_id_to_string(remote_user);
-    if (find_peer_id(remote_user_str) == 0) {
+    int peer_id = find_peer_id(remote_user_str);
+    if (peer_id == 0) {
         return; //ignore the packet.
     }
 
@@ -485,7 +500,7 @@ void EOSGMultiplayerPeer::_poll() {
 
     PacketInfo packet_info;
     packet_info.packet = packet;
-    packet_info.from = find_peer_id(remote_user_str);
+    packet_info.from = peer_id;
 
     incoming_packets.push_back(packet_info);
 }

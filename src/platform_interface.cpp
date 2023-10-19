@@ -267,6 +267,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         ret["disconnect_reason"] = static_cast<int>(data->DisconnectReason);
         IEOS::get_singleton()->emit_signal("lobby_interface_rtc_room_connection_changed_callback", ret);
     });
+    s_p2pInterface = EOS_Platform_GetP2PInterface(s_platformInterface);
 
     return true;
 }
@@ -439,6 +440,7 @@ void IEOS::platform_interface_release() {
     s_uiInterface = nullptr;
     s_userInfoInterface = nullptr;
     s_lobbyInterface = nullptr;
+    s_p2pInterface = nullptr;
     EOS_Platform_Release(s_platformInterface);
 }
 

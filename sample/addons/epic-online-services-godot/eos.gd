@@ -1799,6 +1799,10 @@ class P2P:
 
 	enum NetworkType { NoConnection = 0, DirectConnection = 1, RelayedConnection = 2 }
 
+	enum Mode { None = 0, Server = 1, Client = 2, Mesh = 3 }
+
+	enum ConnectionStatus { Disconnected = 0, Connecting = 1, Connected = 2 }
+
 	class SetPortRangeOptions extends BaseClass:
 		func _init():
 			super._init("SetPortRangeOptions")

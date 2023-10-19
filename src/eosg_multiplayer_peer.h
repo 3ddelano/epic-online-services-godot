@@ -116,6 +116,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	int find_peer_id(const String &user_id);
 	bool has_peer(const String &user_id);
 	Array get_all_sockets();
+	Array get_all_peers();
 	void set_allow_delayed_delivery(bool allow);
 	bool is_allowing_delayed_delivery();
 	void set_auto_accept_connection_requests(bool enable);
@@ -125,6 +126,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	void deny_connection_request(const String &remote_user, const String &socket_id);
 	void accept_all_connection_requests();
 	void deny_all_connection_requests();
+	int get_active_mode();
 
     virtual Error _get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) override;
 	virtual Error _put_packet(const uint8_t *p_buffer, int32_t p_buffer_size);
