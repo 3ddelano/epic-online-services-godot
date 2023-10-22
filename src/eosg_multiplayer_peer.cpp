@@ -84,8 +84,8 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     send_packet_options.bAllowDelayedDelivery = EOS_TRUE;
     send_packet_options.bDisableAutoAcceptConnection = EOS_FALSE;
     send_packet_options.Channel = CH_RELIABLE;
-    send_packet_options.Data = reinterpret_cast<void*>(&unique_id);
-    send_packet_options.DataLengthBytes = sizeof(uint32_t);
+    send_packet_options.Data = "";
+    send_packet_options.DataLengthBytes = 1;
     send_packet_options.Reliability = EOS_EPacketReliability::EOS_PR_ReliableUnordered;
     send_packet_options.SocketId = &sockets[0];
 
@@ -205,8 +205,8 @@ Array EOSGMultiplayerPeer::get_all_sockets() {
     return ret;
 }
 
-Array EOSGMultiplayerPeer::get_all_peers() {
-    Array ret;
+Dictionary EOSGMultiplayerPeer::get_all_peers() {
+    Dictionary ret;
     for (KeyValue<uint32_t, EOSGPeerInfo> &E : peers) {
         EOSGPeerInfo peer_info = E.value;
         Dictionary data;
@@ -217,7 +217,7 @@ Array EOSGMultiplayerPeer::get_all_peers() {
             sockets.push_back(socket_name);
         }
         data["sockets"] = sockets;
-        ret.push_back(data);
+        ret[E.key] = data;
     }
     return ret;
 }
@@ -328,11 +328,11 @@ int EOSGMultiplayerPeer::get_active_mode() {
 Error EOSGMultiplayerPeer::_get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) {
     ERR_FAIL_COND_V_MSG(incoming_packets.size() == 0, ERR_UNAVAILABLE, "No incoming packets available.");
 
-    incoming_packets.pop_front();
-    PacketInfo packet_info = incoming_packets.front()->get();
+    EOSGPacket packet = incoming_packets.front()->get();
+    incoming_packets.pop_front();  
 
-    *r_buffer = reinterpret_cast<const uint8_t*>(packet_info.packet.data);
-    r_buffer_size = &packet_info.packet.size_bytes;
+    *r_buffer = packet.get_payload();
+    *r_buffer_size = packet.payload_size();
 
     return OK;
 }
@@ -340,7 +340,7 @@ Error EOSGMultiplayerPeer::_get_packet(const uint8_t **r_buffer, int32_t *r_buff
 Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer_size) {
     ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Local user id has not been set.");
     ERR_FAIL_COND_V_MSG(!_is_active(), ERR_UNCONFIGURED, "The multiplayer instance isn't currently active.");
-    ERR_FAIL_COND_V_MSG(connection_status != CONNECTION_CONNECTED, ERR_UNCONFIGURED, "The multiplayer instance isn't currently connected to any server or client.");
+    ERR_FAIL_COND_V_MSG(connection_status != CONNECTION_CONNECTED, ERR_UNCONFIGURED, "The multiplayer instance isn't currently connected");
     ERR_FAIL_COND_V_MSG(target_peer != 0 && !peers.has(ABS(target_peer)), ERR_INVALID_PARAMETER, vformat("Invalid target peer: %d", target_peer));
 	ERR_FAIL_COND_V(active_mode == MODE_CLIENT && !peers.has(1), ERR_BUG);
 
@@ -349,6 +349,8 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
     channel = CH_RELIABLE;
     EOS_EPacketReliability reliability;
 
+
+    //todo:: Research more into this. The transfer modes don't match because packet reliability is a bit different in EOS. Whats the best way to approach this?...
     switch (_get_transfer_mode())
     {
         case TRANSFER_MODE_UNRELIABLE: {
@@ -370,13 +372,12 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
 	}
 
     EOSGPacket packet;
-    uint8_t *packet_data = new uint8_t[p_buffer_size + 1];
-    packet_data[0] = static_cast<uint8_t>(reliability);
-    memcpy(reinterpret_cast<void*>(packet_data + 1), reinterpret_cast<const void*>(p_buffer), p_buffer_size);
-    packet.data = reinterpret_cast<void*>(packet_data);
-    packet.size_bytes = p_buffer_size + 1;
-    packet.channel = channel;
-    packet.reliability = reliability;
+    packet.set_sender(unique_id);
+    packet.set_reliability(reliability);
+    packet.set_channel(channel);
+    packet.set_event(EVENT_STORE_PACKET);
+    packet.store_payload(p_buffer, p_buffer_size);
+    packet.prepare_packet();
 
     Error result;
     if (_is_server())
@@ -396,7 +397,6 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
 
     }
 
-    delete[] packet_data;
     return result;
 }
 
@@ -417,13 +417,13 @@ Error EOSGMultiplayerPeer::_put_packet_script(const PackedByteArray &p_buffer) {
 }
 
 int32_t EOSGMultiplayerPeer::_get_packet_channel() const {
-    PacketInfo packet_info = incoming_packets.front()->get();
-    return packet_info.packet.channel;
+    EOSGPacket packet = incoming_packets.front()->get();
+    return packet.get_channel();
 }
 
 MultiplayerPeer::TransferMode EOSGMultiplayerPeer::_get_packet_mode() const {
-    PacketInfo packet_info = incoming_packets.front()->get();
-    return _convert_eos_reliability_to_transfer_mode(packet_info.packet.reliability);
+    EOSGPacket packet = incoming_packets.front()->get();
+    return _convert_eos_reliability_to_transfer_mode(packet.get_reliability());
 }
 
 void EOSGMultiplayerPeer::_set_transfer_channel(int32_t p_channel) {
@@ -447,8 +447,8 @@ void EOSGMultiplayerPeer::_set_target_peer(int32_t p_peer) {
 }
 
 int32_t EOSGMultiplayerPeer::_get_packet_peer() const {
-    PacketInfo packet_info = incoming_packets.front()->get();
-    return packet_info.from;
+    EOSGPacket packet = incoming_packets.front()->get();
+    return packet.get_sender();
 }
 
 bool EOSGMultiplayerPeer::_is_server() const {
@@ -476,33 +476,54 @@ void EOSGMultiplayerPeer::_poll() {
     options.LocalUserId = s_local_user_id;
     options.MaxDataSizeBytes = max_packet_size;
 
-    uint8_t *packet_data = nullptr;
-    int32_t buffer_size;
+    uint8_t packet_data;
+    uint32_t buffer_size;
     uint8_t channel;
     EOS_P2P_SocketId socket;
-    EOS_ProductUserId remote_user = nullptr;
-    result = IEOS::get_singleton()->p2p_receive_packet(&options, packet_data, &buffer_size, 
-        &channel, &remote_user, &socket);
+    EOS_ProductUserId remote_user;
+    result = IEOS::get_singleton()->p2p_receive_packet(&options, &packet_data, &buffer_size, &channel, &remote_user, &socket);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
 
-    String remote_user_str = eosg_product_user_id_to_string(remote_user);
-    int peer_id = find_peer_id(remote_user_str);
-    if (peer_id == 0) {
-        return; //ignore the packet.
+    int e = reinterpret_cast<int>(&packet_data + INDEX_EVENT_TYPE);
+    Event event = static_cast<Event>(e);
+    switch (event) {
+        case Event::EVENT_STORE_PACKET: {
+            uint32_t peer_id = reinterpret_cast<uint32_t>(&packet_data + INDEX_PEER_ID);
+            if (!peers.has(peer_id)) {
+                return; //ignore the packet
+            }
+
+            int r = reinterpret_cast<int>(&packet_data + INDEX_TRANSFER_MODE);
+            EOS_EPacketReliability reliability = static_cast<EOS_EPacketReliability>(r);
+
+            EOSGPacket packet;
+            packet.store_payload(&packet_data + INDEX_PAYLOAD_DATA, buffer_size - PACKET_HEADER_SIZE);
+            packet.set_event(event);
+            packet.set_sender(peer_id);
+            packet.set_reliability(reliability);
+            packet.set_channel(channel);
+
+            incoming_packets.push_back(packet);
+            break;
+        }
+        case Event::EVENT_RECIEVE_PEER_ID: {
+            uint32_t peer_id = reinterpret_cast<uint32_t>(&packet_data);
+            const EOS_P2P_SocketId *found_socket = _get_socket(socket.SocketName);
+            ERR_FAIL_NULL_MSG(found_socket, "Failed to recieve client id. Socket that user was attempting to connecting to was not found.");
+
+            if (active_mode == MODE_MESH && peers.has(peer_id)) {
+                peers[peer_id].sockets.push_back(found_socket);
+            } else {
+                ERR_FAIL_COND_MSG(peers.has(peer_id), "Did not add peer. Peer was already added.");
+                EOSGPeerInfo peer_info;
+                peer_info.user_id = remote_user;
+                peer_info.sockets.push_back(found_socket);
+                peers.insert(peer_id, peer_info);
+            }
+            break;
+        }
     }
-
-    EOSGPacket packet;
-    packet.data = reinterpret_cast<void*>(packet_data + 1);
-    uint8_t reliability = *reinterpret_cast<uint8_t*>(packet_data);
-    packet.reliability = static_cast<EOS_EPacketReliability>(reliability);
-    packet.size_bytes = buffer_size;
-
-    PacketInfo packet_info;
-    packet_info.packet = packet;
-    packet_info.from = peer_id;
-
-    incoming_packets.push_back(packet_info);
 }
 
 void EOSGMultiplayerPeer::_close() {
@@ -533,17 +554,10 @@ void EOSGMultiplayerPeer::_close() {
 void EOSGMultiplayerPeer::_disconnect_peer(int32_t p_peer, bool p_force) {
     ERR_FAIL_COND(!_is_active() || !peers.has(p_peer));
     ERR_FAIL_NULL_MSG(s_local_user_id, "Cannot close connection. Local user id is not set");
+
     EOSGPeerInfo peer = peers.get(p_peer);
-
-    EOS_P2P_CloseConnectionOptions options;
-    options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
-    options.LocalUserId = s_local_user_id;
-    options.RemoteUserId = peer.user_id;
-
     for (const EOS_P2P_SocketId *socket : peer.sockets) {
-        options.SocketId = socket;
-        EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
-        ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
+        _disconnect_remote_user(peer.user_id, *socket);
     }
 
     if (p_force) {
@@ -582,17 +596,15 @@ String EOSGMultiplayerPeer::get_local_user_id() {
 }
 
 Error EOSGMultiplayerPeer::_broadcast(const EOSGPacket &packet, int exclude) {
-    ERR_FAIL_COND_V(_is_server(), ERR_BUG);
-
     EOS_P2P_SendPacketOptions options;
     options.ApiVersion = EOS_P2P_SENDPACKET_API_LATEST;
     options.LocalUserId = s_local_user_id;
     options.SocketId = &sockets[0];
-    options.Channel = packet.channel;
-    options.DataLengthBytes = packet.size_bytes;
-    options.Data = packet.data;
+    options.Channel = packet.get_channel();
+    options.DataLengthBytes = packet.packet_size();
+    options.Data = packet.get_packet();
     options.bAllowDelayedDelivery = allow_delayed_delivery;
-    options.Reliability = packet.reliability;
+    options.Reliability = packet.get_reliability();
     options.bDisableAutoAcceptConnection = EOS_FALSE;
 
     for (KeyValue<uint32_t, EOSGPeerInfo> &E : peers) {
@@ -619,11 +631,11 @@ Error EOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const 
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = remote_peer;
     options.SocketId = socket;
-    options.Channel = packet.channel;
-    options.DataLengthBytes = packet.size_bytes;
-    options.Data = packet.data;
+    options.Channel = packet.get_channel();
+    options.DataLengthBytes = packet.packet_size();
+    options.Data = packet.get_packet();
     options.bAllowDelayedDelivery = allow_delayed_delivery;
-    options.Reliability = packet.reliability;
+    options.Reliability = packet.get_reliability();
     options.bDisableAutoAcceptConnection = EOS_FALSE;
 
     EOS_EResult result = IEOS::get_singleton()->p2p_send_packet(&options);
@@ -763,41 +775,75 @@ MultiplayerPeer::TransferMode EOSGMultiplayerPeer::_convert_eos_reliability_to_t
     }
 }
 
+const EOS_P2P_SocketId* EOSGMultiplayerPeer::_get_socket(const String &socket_name) const {
+    for (EOS_P2P_SocketId socket : sockets) {
+        if (socket.SocketName == socket_name){
+            return &socket;
+        }
+    }
+    return nullptr;
+}
+
+void EOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOS_P2P_SocketId &socket) {
+    EOS_P2P_CloseConnectionOptions options;
+    options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
+    options.LocalUserId = s_local_user_id;
+    options.RemoteUserId = remote_user;
+    options.SocketId = &socket;
+    EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
+    
+    ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
+}
+
 void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
+    if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
+        EOSGPeerInfo new_peer;
+        new_peer.user_id = data->RemoteUserId;
+        const EOS_P2P_SocketId *found_socket = singleton->_get_socket(data->SocketId->SocketName);
+
+        ERR_FAIL_NULL_MSG(found_socket, "Failed to add connected peer. Socket was not found.");
+
+        new_peer.sockets.push_back(found_socket);
+
+        if (singleton->active_mode == MODE_CLIENT) {
+            singleton->peers.insert(1, new_peer); //Add the server as a peer.
+
+            //send peer id to the server
+            EOS_P2P_SendPacketOptions send_packet_options;
+            send_packet_options.ApiVersion = EOS_P2P_SENDPACKET_API_LATEST;
+            send_packet_options.LocalUserId = s_local_user_id;
+            send_packet_options.RemoteUserId = data->RemoteUserId;
+            send_packet_options.bAllowDelayedDelivery = EOS_TRUE;
+            send_packet_options.bDisableAutoAcceptConnection = EOS_FALSE;
+            send_packet_options.Channel = CH_RELIABLE;
+            send_packet_options.Data = &singleton->unique_id;
+            send_packet_options.DataLengthBytes = sizeof(uint32_t);
+            send_packet_options.Reliability = EOS_EPacketReliability::EOS_PR_ReliableUnordered;
+            send_packet_options.SocketId = data->SocketId;
+
+            EOS_EResult result = IEOS::get_singleton()->p2p_send_packet(&send_packet_options);
+
+            if(result != EOS_EResult::EOS_Success) {
+                singleton->_close();
+            }
+
+            ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to send peer id to server. Invalid parameters");
+            ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_LimitExceeded, "Failed to send peer id to server. Packet is either too large or the packet queue is full.");
+            ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_NoConnection, "Failed to send peer id to server. No connection");
+        }
+        get_singleton()->connection_status = CONNECTION_CONNECTED;
+    }
+
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
     String remote_user_id_str = eosg_product_user_id_to_string(data->RemoteUserId);
     String socket_name = data->SocketId->SocketName;
     int connection_type = static_cast<int>(data->ConnectionType);
     int network_type = static_cast<int>(data->NetworkType);
 
-    if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
-        EOSGPeerInfo new_peer;
-        new_peer.user_id = data->RemoteUserId;
-        new_peer.sockets.push_back(data->SocketId);
-
-        if (singleton->active_mode == MODE_CLIENT) {
-            singleton->peers.insert(1, new_peer); //Add the server as a peer.
-        } else {
-            uint8_t *data = nullptr;
-            int32_t *data_size = nullptr;
-            EOS_P2P_ReceivePacketOptions options;
-            options.ApiVersion = EOS_P2P_RECEIVEPACKET_API_LATEST;
-            options.LocalUserId = s_local_user_id;
-            options.MaxDataSizeBytes = sizeof(uint32_t);
-
-            //get the peer id that was sent from the connecting user
-            IEOS::get_singleton()->p2p_receive_packet(&options, data, data_size, nullptr, nullptr, nullptr);
-            uint32_t *peer_id = reinterpret_cast<uint32_t*>(data);
-            singleton->peers.insert(*peer_id, new_peer);
-        }
-
-        get_singleton()->connection_status = CONNECTION_CONNECTED;
-    }
-
     Dictionary ret;
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
-    ret["socket_name"] = socket_name;
+    ret["socket"] = socket_name;
     ret["connection_type"] = connection_type;
     ret["network_type"] = network_type;
     singleton->emit_signal("p2p_peer_connection_established", ret);
@@ -810,7 +856,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_interrupted(const EOS_P2P
     Dictionary ret;
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
-    ret["socket_name"] = socket_name;
+    ret["socket"] = socket_name;
     singleton->emit_signal("p2p_peer_connection_interrupted", ret);
 }
 
@@ -833,7 +879,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P
     Dictionary ret;
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
-    ret["socket_name"] = socket_name;
+    ret["socket"] = socket_name;
     singleton->emit_signal("p2p_incoming_connection_request", ret);
 
     if(!singleton->is_auto_accepting_connection_requests()) return;
@@ -862,7 +908,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_On
     Dictionary ret;
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
-    ret["socket_name"] = socket_name;
+    ret["socket"] = socket_name;
     ret["reason"] = reason;
     singleton->emit_signal("p2p_peer_connection_closed", ret);
 }
@@ -874,4 +920,12 @@ EOSGMultiplayerPeer::EOSGMultiplayerPeer() {
 EOSGMultiplayerPeer::~EOSGMultiplayerPeer() {
     ERR_FAIL_COND(singleton != this);
     singleton = nullptr;
+}
+
+void EOSGMultiplayerPeer::EOSGPacket::prepare_packet() {
+    packet = std::make_shared<uint8_t>(new uint8_t[payload_size_bytes + singleton->PACKET_HEADER_SIZE]);
+    packet.get()[INDEX_EVENT_TYPE] = static_cast<uint8_t>(event);
+    packet.get()[INDEX_TRANSFER_MODE] = static_cast<uint8_t>(reliability);
+    memcpy(packet.get() + INDEX_PEER_ID, &from, sizeof(int));
+    memcpy(packet.get() + INDEX_PAYLOAD_DATA, payload.get(), payload_size_bytes);
 }

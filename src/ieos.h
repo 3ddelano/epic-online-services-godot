@@ -355,7 +355,7 @@ class IEOS : public RefCounted {
 
     //Not binded. Called by EOSGMultiplayerPeer
     EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
-    EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, uint8_t *out_packet_data, int32_t *out_packet_size,
+    EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size,
         uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
     EOS_EResult p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
     EOS_EResult p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);

@@ -70,14 +70,10 @@ void IEOS::p2p_set_packet_queue_size(Ref<RefCounted> options) {
         return result;
     }
 
-    EOS_EResult IEOS::p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, uint8_t *out_packet_data, int32_t *out_packet_size,
+    EOS_EResult IEOS::p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size,
         uint8_t *out_channel, EOS_ProductUserId *out_remote_user, EOS_P2P_SocketId *out_socket) {
-        uint32_t packet_size;
-        void *packet_data;
         EOS_EResult result = EOS_P2P_ReceivePacket(s_p2pInterface, options, out_remote_user, out_socket,
-            out_channel, packet_data, &packet_size);
-        *out_packet_size = static_cast<int32_t>(packet_size);
-        out_packet_data = reinterpret_cast<uint8_t*>(packet_data);
+            out_channel, out_packet_data, out_packet_size);
         return result;
     }
 
