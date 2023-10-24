@@ -9,10 +9,8 @@
 
 namespace godot
 {
-class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
-    GDCLASS(EOSGMultiplayerPeer, MultiplayerPeerExtension)
-	
-	const int PACKET_HEADER_SIZE = 6;
+class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
+    GDCLASS(IEOSGMultiplayerPeer, MultiplayerPeerExtension)
 
 	private:
 	enum {
@@ -49,25 +47,31 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	struct EOSGPacket {
 		private:
 		std::shared_ptr<std::vector<uint8_t>> packet;
-		uint8_t channel;
-		int32_t payload_size_bytes = 0;
+		uint8_t channel = 0;
+		int32_t size_bytes;
 		EOS_EPacketReliability reliability;
 		Event event;
 		int from = 0;
 
 		public:
+
+		static const int PACKET_HEADER_SIZE = 6;
+
 		void prepare();
-		void store_payload(const uint8_t *packet_data, const uint32_t size_bytes);
+		void store_payload(const uint8_t *payload_date, const uint32_t payload_size_bytes);
 
 		int payload_size() const {
-			return payload_size_bytes;
+			return size_bytes - PACKET_HEADER_SIZE;
 		}
 
 		int packet_size() const {
-			return payload_size_bytes + singleton->PACKET_HEADER_SIZE;
+			return size_bytes;
 		}
 
 		uint8_t* get_payload() const {
+			if (size_bytes == PACKET_HEADER_SIZE) { //There's no payload, just the packet header
+				return nullptr;
+			}
 			return packet.get()->data() + INDEX_PAYLOAD_DATA;
 		}
 
@@ -109,6 +113,8 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 		EOSGPacket() {
 			packet = std::make_shared<std::vector<uint8_t>>();
+			packet.get()->resize(PACKET_HEADER_SIZE);
+			size_bytes = PACKET_HEADER_SIZE;
 		}
 	};
 
@@ -142,7 +148,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
 	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
 
-	static EOSGMultiplayerPeer *singleton;
+	static IEOSGMultiplayerPeer *singleton;
 	static EOS_ProductUserId s_local_user_id;
 	bool is_singleton = false;
 
@@ -172,7 +178,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
     static void _bind_methods();
 
     public:
-	static EOSGMultiplayerPeer* get_singleton();
+	static IEOSGMultiplayerPeer* get_singleton();
 	static void set_local_user_id(const String& p_local_user_id);
 	static String get_local_user_id();
 
@@ -226,7 +232,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	virtual bool _is_server_relay_supported() const override;
 	virtual MultiplayerPeer::ConnectionStatus _get_connection_status() const override;
 
-	EOSGMultiplayerPeer();
-	~EOSGMultiplayerPeer();
+	IEOSGMultiplayerPeer();
+	~IEOSGMultiplayerPeer();
 };
 } //namespace godot
