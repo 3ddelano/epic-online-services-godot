@@ -5,6 +5,7 @@
 #include "eos_p2p.h"
 #include "utils.h"
 #include <memory>
+#include <vector>
 
 namespace godot
 {
@@ -47,22 +48,16 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	struct EOSGPacket {
 		private:
-		std::shared_ptr<uint8_t> payload;
-		std::shared_ptr<uint8_t> packet;
+		std::shared_ptr<std::vector<uint8_t>> packet;
 		uint8_t channel;
-		int32_t payload_size_bytes;
+		int32_t payload_size_bytes = 0;
 		EOS_EPacketReliability reliability;
 		Event event;
 		int from = 0;
 
 		public:
-		void prepare_packet();
-
-		void store_payload(const uint8_t *packet_data, const uint32_t size_bytes) {
-			this->payload_size_bytes = size_bytes;
-			payload = std::make_shared<uint8_t>(new uint8_t[payload_size_bytes]);
-    		memcpy(payload.get(), packet_data, payload_size_bytes);
-		}
+		void prepare();
+		void store_payload(const uint8_t *packet_data, const uint32_t size_bytes);
 
 		int payload_size() const {
 			return payload_size_bytes;
@@ -72,12 +67,12 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 			return payload_size_bytes + singleton->PACKET_HEADER_SIZE;
 		}
 
-		uint8_t *get_payload() const {
-			return payload.get();
+		uint8_t* get_payload() const {
+			return packet.get()->data() + INDEX_PAYLOAD_DATA;
 		}
 
-		uint8_t *get_packet() const {
-			return packet.get();
+		uint8_t* get_packet() const {
+			return packet.get()->data();
 		}
 
 		EOS_EPacketReliability get_reliability() const {
@@ -110,6 +105,10 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 		void set_sender(int p_id) {
 			from = p_id;
+		}
+
+		EOSGPacket() {
+			packet = std::make_shared<std::vector<uint8_t>>();
 		}
 	};
 
@@ -145,8 +144,10 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	static EOSGMultiplayerPeer *singleton;
 	static EOS_ProductUserId s_local_user_id;
+	bool is_singleton = false;
 
 	List<EOSGPacket> incoming_packets;
+	EOSGPacket current_packet;
 
 	EOS_ProductUserId target_user_id;
 	uint32_t unique_id;
