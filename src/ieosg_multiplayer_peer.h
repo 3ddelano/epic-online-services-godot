@@ -11,7 +11,7 @@ namespace godot
 {
 class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
     GDCLASS(IEOSGMultiplayerPeer, MultiplayerPeerExtension)
-
+	
 	private:
 	enum {
 		INDEX_EVENT_TYPE = 0,
@@ -23,8 +23,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	enum {
 		CH_RELIABLE = 0,
 		CH_UNRELIABLE = 1,
-		CH_ORDERED = 2,
-		CH_MAX = 3,
+		CH_MAX = 2,
 	};
 
 	enum Mode {

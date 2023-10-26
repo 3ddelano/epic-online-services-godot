@@ -268,6 +268,17 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         IEOS::get_singleton()->emit_signal("lobby_interface_rtc_room_connection_changed_callback", ret);
     });
     s_p2pInterface = EOS_Platform_GetP2PInterface(s_platformInterface);
+    EOS_P2P_AddNotifyIncomingPacketQueueFullOptions notifyIncomingPacketQueueFullOptions;
+    notifyIncomingPacketQueueFullOptions.ApiVersion = EOS_P2P_ADDNOTIFYINCOMINGPACKETQUEUEFULL_API_LATEST;
+    EOS_P2P_AddNotifyIncomingPacketQueueFull(s_p2pInterface, &notifyIncomingPacketQueueFullOptions, nullptr, [](const EOS_P2P_OnIncomingPacketQueueFullInfo *data) {
+        Dictionary ret;
+        ret["OverflowPacketChannel"] = data->OverflowPacketChannel;
+        ret["OverflowPacketLocalUserId"] = eosg_product_user_id_to_string(data->OverflowPacketLocalUserId);
+        ret["OverflowPacketSizeBytes"] = data->OverflowPacketSizeBytes;
+        ret["PacketQueueCurrentSizeBytes"] = data->PacketQueueCurrentSizeBytes;
+        ret["PacketQueueMaxSizeBytes"] = data->PacketQueueMaxSizeBytes;
+        IEOS::get_singleton()->emit_signal("p2p_incoming_packet_queue_full", ret);
+    });
 
     return true;
 }
