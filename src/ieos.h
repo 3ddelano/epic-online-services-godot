@@ -352,6 +352,7 @@ class IEOS : public RefCounted {
     void p2p_set_port_range(Ref<RefCounted> options);
     Dictionary p2p_get_port_range();
     void p2p_set_packet_queue_size(Ref<RefCounted> options);
+    Dictionary p2p_get_packet_queue_info();
 
     //Not binded. Called by EOSGMultiplayerPeer
     EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
@@ -361,7 +362,6 @@ class IEOS : public RefCounted {
     EOS_EResult p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);
     EOS_EResult p2p_close_all_connections(const EOS_P2P_CloseConnectionsOptions *options);
     EOS_EResult p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size);
-    EOS_EResult p2p_get_packet_queue_info(const EOS_P2P_GetPacketQueueInfoOptions *options, EOS_P2P_PacketQueueInfo *out_info);
     EOS_EResult p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *options);
     EOS_NotificationId p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options,
         EOS_P2P_OnPeerConnectionEstablishedCallback callback);

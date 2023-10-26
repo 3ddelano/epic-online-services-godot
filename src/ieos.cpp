@@ -205,6 +205,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(p2p_set_port_range);
     IEOS_BIND_METHOD(p2p_get_port_range);
     IEOS_BIND_METHOD(p2p_set_packet_queue_size);
+    IEOS_BIND_METHOD(p2p_get_packet_queue_info);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
     ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

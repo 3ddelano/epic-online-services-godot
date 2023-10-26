@@ -65,6 +65,22 @@ void IEOS::p2p_set_packet_queue_size(Ref<RefCounted> options) {
     EOS_P2P_SetPacketQueueSize(s_p2pInterface, &set_packet_queue_options);
 }
 
+Dictionary IEOS::p2p_get_packet_queue_info() {
+    EOS_P2P_GetPacketQueueInfoOptions options;
+    options.ApiVersion = EOS_P2P_GETPACKETQUEUEINFO_API_LATEST;
+    EOS_P2P_PacketQueueInfo info;
+    EOS_P2P_GetPacketQueueInfo(s_p2pInterface, &options, &info);
+
+    Dictionary ret;
+    ret["IncomingPacketQueueCurrentPacketCount"] = info.IncomingPacketQueueCurrentPacketCount;
+    ret["IncomingPacketQueueCurrentSizeBytes"] = info.IncomingPacketQueueCurrentSizeBytes;
+    ret["IncomingPacketQueueMaxSizeBytes"] = info.IncomingPacketQueueMaxSizeBytes;
+    ret["OutgoingPacketQueueCurrentPacketCount"] = info.OutgoingPacketQueueCurrentPacketCount;
+    ret["OutgoingPacketQueueCurrentSizeBytes"] = info.OutgoingPacketQueueCurrentSizeBytes;
+    ret["OutgoingPacketQueueMaxSizeBytes"] = info.OutgoingPacketQueueMaxSizeBytes;
+    return ret;
+}
+
 EOS_EResult IEOS::p2p_send_packet(const EOS_P2P_SendPacketOptions *options) {
     EOS_EResult result = EOS_P2P_SendPacket(s_p2pInterface, options);
     return result;
@@ -94,11 +110,6 @@ EOS_EResult IEOS::p2p_close_all_connections(const EOS_P2P_CloseConnectionsOption
 
 EOS_EResult IEOS::p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size) {
     EOS_EResult result = EOS_P2P_GetNextReceivedPacketSize(s_p2pInterface, options, out_size);
-    return result;
-}
-
-EOS_EResult IEOS::p2p_get_packet_queue_info(const EOS_P2P_GetPacketQueueInfoOptions *options, EOS_P2P_PacketQueueInfo *out_info) {
-    EOS_EResult result = EOS_P2P_GetPacketQueueInfo(s_p2pInterface, options, out_info);
     return result;
 }
 

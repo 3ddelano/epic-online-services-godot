@@ -264,6 +264,8 @@ void IEOSGMultiplayerPeer::accept_connection_request(const String &remote_user, 
     EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection request! Invalid parameters.");
+
+    pending_connection_requests.erase(connection_request);
 }
 
 void IEOSGMultiplayerPeer::deny_connection_request(const String &remote_user, const String &socket_id) {
@@ -515,7 +517,7 @@ void IEOSGMultiplayerPeer::_poll() {
             break;
         }
         case Event::EVENT_RECIEVE_PEER_ID: {
-            ERR_FAIL_COND_MSG(!_is_server() && active_mode != MODE_MESH, "A client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened!");
+            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "A client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened!");
             const EOS_P2P_SocketId *found_socket = _get_socket(socket.SocketName);
             ERR_FAIL_NULL_MSG(found_socket, "Failed to recieve peer id. Socket that client was attempting to connect to was not found.");
             uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.data() + INDEX_PEER_ID);
@@ -523,7 +525,10 @@ void IEOSGMultiplayerPeer::_poll() {
             if (active_mode == MODE_MESH && peers.has(peer_id)) {
                 peers[peer_id].sockets.push_back(found_socket);
             } else {
-                ERR_FAIL_COND_MSG(peers.has(peer_id), "failed to add newly connected peer. Peer was already connected.");
+                if (peer_id < 2 || peers.has(peer_id)) {
+                    _disconnect_remote_user(remote_user, *found_socket); //Invalid peer id. reject the peer.
+                    return;
+                }
                 EOSGPeerInfo peer_info;
                 peer_info.user_id = remote_user;
                 peer_info.sockets.push_back(found_socket);
@@ -808,6 +813,10 @@ void IEOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remo
     EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
     
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
+}
+
+String IEOSGMultiplayerPeer::_socket_name_to_string(const char *socket_name, int len) {
+    
 }
 
 void EOS_CALL IEOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {

@@ -142,6 +142,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOS_P2P_SocketId &socket);
+	String _socket_name_to_string(const char *socket_name, int len);
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
 	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
