@@ -123,8 +123,8 @@ Array IEOSGMultiplayerPeer::get_all_connection_requests() {
     Array ret = Array();
     for (EOSGConnectionRequest &connection_request: pending_connection_requests) {
         Dictionary connection_request_data;
-        connection_request_data["remote_user"] = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_name = connection_request.socket->SocketName;
+        connection_request_data["remote_user_id"] = eosg_product_user_id_to_string(connection_request.remote_user);
+        String socket_name = connection_request.socket.SocketName;
         connection_request_data["socket"] = socket_name;
         ret.push_back(connection_request_data);
     }
@@ -137,8 +137,8 @@ Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String 
         String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
         if (remote_user_id_str == user_id) {
             Dictionary connection_request_data;
-            connection_request_data["remote_user"] = remote_user_id_str;
-            String socket_name = connection_request.socket->SocketName;
+            connection_request_data["remote_user_id"] = remote_user_id_str;
+            String socket_name = connection_request.socket.SocketName;
             connection_request_data["socket"] = socket_name;
             ret.push_back(connection_request_data);
         }
@@ -149,10 +149,10 @@ Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String 
 Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_socket(const String &socket_id) {
     Array ret = Array();
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        String socket_name = connection_request.socket->SocketName;
+        String socket_name = connection_request.socket.SocketName;
         if (socket_id == socket_name) {
             Dictionary connection_request_data;
-            connection_request_data["remote_user"] = eosg_product_user_id_to_string(connection_request.remote_user);
+            connection_request_data["remote_user_id"] = eosg_product_user_id_to_string(connection_request.remote_user);
             connection_request_data["socket"] = socket_name;
             ret.push_back(connection_request_data);
         }
@@ -189,11 +189,8 @@ int IEOSGMultiplayerPeer::find_peer_id(const String &user_id) {
     return 0;
 }
 
-bool IEOSGMultiplayerPeer::has_peer(const String &user_id) {
-    if (find_peer_id(user_id) != 0) {
-        return true;
-    }
-    return false;
+bool IEOSGMultiplayerPeer::has_peer(int peer_id) {
+    return peers.has(peer_id);
 }
 
 Array IEOSGMultiplayerPeer::get_all_sockets() {
@@ -260,7 +257,7 @@ void IEOSGMultiplayerPeer::accept_connection_request(const String &remote_user, 
     options.ApiVersion = EOS_P2P_ACCEPTCONNECTION_API_LATEST;
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = connection_request.remote_user;
-    options.SocketId = connection_request.socket;
+    options.SocketId = &connection_request.socket;
     EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection request! Invalid parameters.");
@@ -278,7 +275,7 @@ void IEOSGMultiplayerPeer::deny_connection_request(const String &remote_user, co
     options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = connection_request.remote_user;
-    options.SocketId = connection_request.socket;
+    options.SocketId = &connection_request.socket;
     EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to deny connection. Invalid parameters.");
@@ -298,7 +295,7 @@ void IEOSGMultiplayerPeer::accept_all_connection_requests() {
         options.ApiVersion = EOS_P2P_ACCEPTCONNECTION_API_LATEST;
         options.LocalUserId = s_local_user_id;
         options.RemoteUserId = connection_request.remote_user;
-        options.SocketId = connection_request.socket;
+        options.SocketId = &connection_request.socket;
         EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
 
         ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection! Invalid parameters.");
@@ -314,7 +311,7 @@ void IEOSGMultiplayerPeer::deny_all_connection_requests() {
         options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
         options.LocalUserId = s_local_user_id;
         options.RemoteUserId = connection_request.remote_user;
-        options.SocketId = connection_request.socket;
+        options.SocketId = &connection_request.socket;
         EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
 
         ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to deny connection. Invalid parameters.");
@@ -671,7 +668,7 @@ Error IEOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const
 bool IEOSGMultiplayerPeer::_find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request) {
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
         String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_name = connection_request.socket->SocketName;
+        String socket_name = connection_request.socket.SocketName;
         if (remote_user == remote_user_id_str && socket_id == socket_name) {
             out_request = connection_request;
             return true;
@@ -815,10 +812,6 @@ void IEOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remo
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
 }
 
-String IEOSGMultiplayerPeer::_socket_name_to_string(const char *socket_name, int len) {
-    
-}
-
 void EOS_CALL IEOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
     if (singleton->active_mode == MODE_CLIENT && data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
         EOSGPeerInfo server_peer;
@@ -877,7 +870,7 @@ void EOS_CALL IEOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2
 
     EOSGConnectionRequest connection_request;
     connection_request.remote_user = data->RemoteUserId;
-    connection_request.socket = data->SocketId;
+    connection_request.socket = *data->SocketId;
     singleton->pending_connection_requests.push_back(connection_request);
 
     Dictionary ret;

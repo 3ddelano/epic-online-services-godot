@@ -119,13 +119,13 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	struct EOSGConnectionRequest {
 		EOS_ProductUserId remote_user;
-		const EOS_P2P_SocketId *socket;
+		EOS_P2P_SocketId socket;
 
 		bool operator == (const EOSGConnectionRequest &lhs) {
 			String lhs_remote_id = eosg_product_user_id_to_string(lhs.remote_user);
-			String lhs_socket_name = lhs.socket->SocketName;
+			String lhs_socket_name = lhs.socket.SocketName;
 			String rhs_remote_id = eosg_product_user_id_to_string(this->remote_user);
-			String rhs_socket_name = this->socket->SocketName;
+			String rhs_socket_name = this->socket.SocketName;
 			return rhs_remote_id == lhs_remote_id && rhs_socket_name == lhs_socket_name;
 		}
 	};
@@ -142,7 +142,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOS_P2P_SocketId &socket);
-	String _socket_name_to_string(const char *socket_name, int len);
+
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
 	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
@@ -194,7 +194,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Array get_all_connection_requests();
 	Dictionary get_peer_info(int p_id);
 	int find_peer_id(const String &user_id);
-	bool has_peer(const String &user_id);
+	bool has_peer(int peer_id);
 	Array get_all_sockets();
 	Dictionary get_all_peers();
 	void set_allow_delayed_delivery(bool allow);
