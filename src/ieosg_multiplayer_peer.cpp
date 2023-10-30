@@ -18,6 +18,10 @@ void IEOSGMultiplayerPeer::_bind_methods() {
 
     ClassDB::bind_method(D_METHOD("create_server"), &IEOSGMultiplayerPeer::create_server);
     ClassDB::bind_method(D_METHOD("create_client"), &IEOSGMultiplayerPeer::create_client);
+    ClassDB::bind_method(D_METHOD("create_mesh"), &IEOSGMultiplayerPeer::create_mesh);
+    ClassDB::bind_method(D_METHOD("add_mesh_peer"), &IEOSGMultiplayerPeer::add_mesh_peer);
+    ClassDB::bind_method(D_METHOD("add_mesh_socket"), &IEOSGMultiplayerPeer::add_mesh_socket);
+    ClassDB::bind_method(D_METHOD("close_mesh_socket"), &IEOSGMultiplayerPeer::close_mesh_socket);
     ClassDB::bind_method(D_METHOD("get_peer_info"), &IEOSGMultiplayerPeer::get_peer_info);
     ClassDB::bind_method(D_METHOD("find_peer_id"), &IEOSGMultiplayerPeer::find_peer_id);
     ClassDB::bind_method(D_METHOD("get_all_sockets"), &IEOSGMultiplayerPeer::get_all_sockets);
@@ -58,7 +62,7 @@ Error IEOSGMultiplayerPeer::create_server(const String &socket_id) {
     active_mode = MODE_SERVER;
     connection_status = CONNECTION_CONNECTED;
 
-    if(!_add_server_callbacks()) {
+    if(!_add_server_mesh_callbacks()) {
         _close();
         ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create server.");
     }
@@ -104,19 +108,78 @@ Error IEOSGMultiplayerPeer::create_client(const String &socket_id, const String 
     return OK;
 }
 
-Error IEOSGMultiplayerPeer::create_mesh() {
+Error IEOSGMultiplayerPeer::create_mesh(const PackedStringArray &sockets = PackedStringArray()) {
     CHECK_IS_SINGLETON_INSTANCE;
+    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create mesh. Local user id has not been set.");
+    ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create mesh. Multiplayer instance is already active.");
+
+    unique_id = generate_unique_id();
+    active_mode = MODE_MESH;
+    connection_status = CONNECTION_CONNECTED;
+
+    for (PackedStringArray::ConstIterator it = sockets.begin(); it != sockets.end(); ++it) {
+        add_mesh_socket(*it);
+    }
+
+    if (!_add_server_mesh_callbacks()) {
+        _close();
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create mesh.");
+    }
     return OK;
 }
 
-Error IEOSGMultiplayerPeer::create_mesh_socket(const String &socket_id) {
+Error IEOSGMultiplayerPeer::add_mesh_socket(const String &socket_id) {
     CHECK_IS_SINGLETON_INSTANCE;
+    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to add mesh socket. Local user id has not been set.");
+    ERR_FAIL_COND_V_MSG(active_mode != MODE_MESH, ERR_UNCONFIGURED, "Failed to add mesh socket. Multiplayer instance is not in mesh mode.");
+    ERR_FAIL_COND_V_MSG(has_socket(socket_id), ERR_ALREADY_EXISTS, vformat("Failed to add mesh socket. A socket with the name \"%s\" already exists.", socket_id));
+
+    EOS_P2P_SocketId new_socket;
+    new_socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
+    strncpy_s(new_socket.SocketName, socket_id.utf8(), socket_id.length());
+    sockets.push_back(new_socket);
+
     return OK;
 }
 
-Error IEOSGMultiplayerPeer::add_mesh_peer(int p_id, const String &socket_id) {
+Error IEOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id, const String &socket_id) {
     CHECK_IS_SINGLETON_INSTANCE;
+    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to add mesh socket. Local user id has not been set.");
+    ERR_FAIL_COND_V_MSG(active_mode != MODE_MESH, ERR_UNCONFIGURED, "Failed to add mesh socket. Multiplayer instance is not in mesh mode.");
+    ERR_FAIL_COND_V_MSG(find_peer_id(remote_user_id) != -1, ERR_ALREADY_EXISTS, "Failed to add mesh peer. Already connected to peer");
+
+    //send connection request to peer
+    EOSGPacket packet;
+    packet.set_event(EVENT_RECIEVE_PEER_ID);
+    packet.set_channel(CH_RELIABLE);
+    packet.set_reliability(EOS_EPacketReliability::EOS_PR_ReliableUnordered);
+    packet.set_sender(unique_id);
+    packet.prepare();
+
+    const EOS_P2P_SocketId *socket = _get_socket(socket_id);
+    if (socket == nullptr) { 
+        EOS_P2P_SocketId new_socket;
+        new_socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
+        strncpy_s(new_socket.SocketName, socket_id.utf8(), socket_id.length());
+        socket = &new_socket;
+    }
+    _send_to(eosg_string_to_product_user_id(remote_user_id.utf8()), packet, socket);
+
     return OK;
+}
+
+void IEOSGMultiplayerPeer::close_mesh_socket(const String &socket_id) {
+    ERR_FAIL_NULL_MSG(s_local_user_id, "Failed to close mesh socket. Local user id has not been set.");
+    ERR_FAIL_COND_MSG(active_mode != MODE_MESH, "Failed to close mesh socket. Multiplayer instance is not in mesh mode.");
+    ERR_FAIL_COND_MSG(!has_socket(socket_id), "Failed to close mesh socket. Socket was not found.");
+
+    //Disconnect all peers connected to the socket
+    const EOS_P2P_SocketId *found_socket = _get_socket(socket_id);
+    EOS_P2P_CloseConnectionsOptions options;
+    options.ApiVersion = EOS_P2P_CLOSECONNECTIONS_API_LATEST;
+    options.LocalUserId = s_local_user_id;
+    options.SocketId = found_socket;
+    IEOS::get_singleton()->p2p_close_all_connections(&options);
 }
 
 Array IEOSGMultiplayerPeer::get_all_connection_requests() {
@@ -514,7 +577,7 @@ void IEOSGMultiplayerPeer::_poll() {
             break;
         }
         case Event::EVENT_RECIEVE_PEER_ID: {
-            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "A client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened!");
+            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "A client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened.");
             const EOS_P2P_SocketId *found_socket = _get_socket(socket.SocketName);
             ERR_FAIL_NULL_MSG(found_socket, "Failed to recieve peer id. Socket that client was attempting to connect to was not found.");
             uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.data() + INDEX_PEER_ID);
@@ -535,9 +598,6 @@ void IEOSGMultiplayerPeer::_poll() {
             }
             break;
         }
-        default:
-            ERR_FAIL_MSG("Invalid packet event.");
-            break;
     }
 }
 
@@ -699,8 +759,8 @@ void IEOSGMultiplayerPeer::_remove_all_callbacks() {
     }
 }
 
-bool IEOSGMultiplayerPeer::_add_server_callbacks() {
-    ERR_FAIL_COND_V_MSG(sockets.size() != 1, false, "Failed to add server callbacks. There must be exactly one socket.");
+bool IEOSGMultiplayerPeer::_add_server_mesh_callbacks() {
+    ERR_FAIL_COND_V_MSG(active_mode == MODE_SERVER && sockets.size() != 1, false, "Failed to add server callbacks. There must be exactly one socket.");
 
     EOS_P2P_AddNotifyPeerConnectionEstablishedOptions connection_established_options;
     connection_established_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONESTABLISHED_API_LATEST;
@@ -812,23 +872,34 @@ void IEOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remo
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
 }
 
-void EOS_CALL IEOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
-    if (singleton->active_mode == MODE_CLIENT && data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
-        EOSGPeerInfo server_peer;
-        server_peer.user_id = data->RemoteUserId;
-        const EOS_P2P_SocketId *found_socket = singleton->_get_socket(data->SocketId->SocketName);
-
-        if (found_socket == nullptr) {
-            singleton->_close();
-            ERR_FAIL_MSG("Failed to add server as peer. Socket was not found. This shouldn't have happened.");
+void IEOSGMultiplayerPeer::_remove_socket(const String &socket_id) {
+    for (List<EOS_P2P_SocketId>::Iterator it = sockets.begin(); it != sockets.end(); ++it) {
+        if (socket_id == it->SocketName) {
+            sockets.erase(*it);
         }
+    }
+}
 
-        server_peer.sockets.push_back(found_socket);
-        singleton->peers.insert(1, server_peer);
+void EOS_CALL IEOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
+    if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
+        if (singleton->active_mode == MODE_CLIENT) {
+            EOSGPeerInfo server_peer;
+            server_peer.user_id = data->RemoteUserId;
+            const EOS_P2P_SocketId *found_socket = singleton->_get_socket(data->SocketId->SocketName);
 
-        get_singleton()->connection_status = CONNECTION_CONNECTED;
+            if (found_socket == nullptr) {
+                singleton->_close();
+                ERR_FAIL_MSG("Failed to add server as peer. Socket was not found. This shouldn't have happened.");
+            }
 
-        singleton->emit_signal("peer_connected", 1);
+            server_peer.sockets.push_back(found_socket);
+            singleton->peers.insert(1, server_peer);
+            get_singleton()->connection_status = CONNECTION_CONNECTED;
+            singleton->emit_signal("peer_connected", 1);
+        }
+        if (singleton->active_mode == MODE_MESH && !singleton->has_socket(data->SocketId->SocketName)) {
+            singleton->sockets.push_back(*data->SocketId);
+        }
     }
 
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
@@ -918,6 +989,7 @@ IEOSGMultiplayerPeer::IEOSGMultiplayerPeer() {
     singleton = this;
     is_singleton = true;
 }
+
 IEOSGMultiplayerPeer::~IEOSGMultiplayerPeer() {
     if (singleton != this) {
         return;
@@ -937,4 +1009,10 @@ void IEOSGMultiplayerPeer::EOSGPacket::store_payload(const uint8_t *payload_data
         packet.get()->clear();
         packet.get()->resize(size_bytes);
         memcpy(packet.get()->data() + INDEX_PAYLOAD_DATA, payload_data, payload_size_bytes);
+}
+
+bool operator == (const EOS_P2P_SocketId &lhs, const EOS_P2P_SocketId &rhs) {
+    String lhs_socket_name = lhs.SocketName;
+    String rhs_socket_name = rhs.SocketName;
+    return lhs_socket_name == rhs_socket_name;
 }

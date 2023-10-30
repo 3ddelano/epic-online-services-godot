@@ -136,12 +136,13 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOS_P2P_SocketId *socket);
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
 	void _remove_all_callbacks();
-	bool _add_server_callbacks();
+	bool _add_server_mesh_callbacks();
 	bool _add_client_callbacks();
 	const EOS_P2P_SocketId* _get_socket(const String &socket_name) const;
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOS_P2P_SocketId &socket);
+	void _remove_socket(const String &socket_id);
 
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
@@ -184,10 +185,10 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	Error create_server(const String &socket_id);
 	Error create_client(const String &socket_id, const String &remote_user_id);
-	Error create_mesh();
-	Error create_mesh_socket(const String &socket_id);
+	Error create_mesh(const PackedStringArray &sockets);
+	Error add_mesh_socket(const String &socket_id);
 	void close_mesh_socket(const String &socket_id);
-	Error add_mesh_peer(int p_id, const String &socket_id);
+	Error add_mesh_peer(const String &remote_user, const String &socket_id);
 
 	Array find_all_connecetion_requests_for_user(const String &user_id);
 	Array find_all_connecetion_requests_for_socket(const String &socket_id);
