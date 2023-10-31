@@ -162,10 +162,8 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
 	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOSGSocket *socket);
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
-	void _remove_all_callbacks();
 	bool _add_server_callbacks();
 	bool _add_client_callbacks();
-	bool _add_callback(const String &socket_id, CallbackType callback_type);
 	const EOSGSocket* _get_socket(const String &socket_name) const;
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
@@ -199,8 +197,6 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	List<EOSGSocket> sockets;
 	List<EOSGConnectionRequest> pending_connection_requests;
 
-	List<EOS_NotificationId> callback_ids;
-
     static void _bind_methods();
 
     public:
@@ -223,6 +219,8 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool has_peer(int peer_id);
 	Array get_all_sockets();
 	Dictionary get_all_peers();
+	Dictionary get_peers_connected_to_socket(const String &socket_id);
+	bool is_peer_connected_to_socket(int p_id, const String &socket_id);
 	void set_allow_delayed_delivery(bool allow);
 	bool is_allowing_delayed_delivery();
 	void set_auto_accept_connection_requests(bool enable);
