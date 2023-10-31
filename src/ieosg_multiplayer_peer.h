@@ -38,12 +38,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		EVENT_RECIEVE_PEER_ID,
 	};
 
-	struct EOSGPeerInfo {
-		EOS_ProductUserId user_id;
-		List<const EOS_P2P_SocketId*> sockets;
-	};
-
-	struct EOSGPacket {
+	class EOSGPacket {
 		private:
 		std::shared_ptr<std::vector<uint8_t>> packet;
 		uint8_t channel = 0;
@@ -53,7 +48,6 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		int from = 0;
 
 		public:
-
 		static const int PACKET_HEADER_SIZE = 6;
 
 		void prepare();
@@ -68,8 +62,8 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 
 		uint8_t* get_payload() const {
-			if (size_bytes == PACKET_HEADER_SIZE) { //There's no payload, just the packet header
-				return nullptr;
+			if (size_bytes == PACKET_HEADER_SIZE) {
+				return nullptr; //Return nullptr if there's no payload.
 			}
 			return packet.get()->data() + INDEX_PAYLOAD_DATA;
 		}
@@ -121,27 +115,61 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		EOS_ProductUserId remote_user;
 		EOS_P2P_SocketId socket;
 
-		bool operator == (const EOSGConnectionRequest &lhs) {
-			String lhs_remote_id = eosg_product_user_id_to_string(lhs.remote_user);
-			String lhs_socket_name = lhs.socket.SocketName;
-			String rhs_remote_id = eosg_product_user_id_to_string(this->remote_user);
-			String rhs_socket_name = this->socket.SocketName;
-			return rhs_remote_id == lhs_remote_id && rhs_socket_name == lhs_socket_name;
+		bool operator == (const EOSGConnectionRequest &rhs);
+	};
+
+	class EOSGSocket {
+		private:
+		EOS_P2P_SocketId socket;
+		EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
+		EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
+		EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
+		EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
+
+		public:
+		const EOS_P2P_SocketId *get_socket_id() const {
+			return &socket;
+		}
+
+		void close();
+		bool add_connection_established_callback();
+		bool add_connection_interrupted_callback();
+		bool add_connection_closed_callback();
+		bool add_incoming_connection_request_callback();
+
+		bool operator ==(const EOSGSocket &rhs);
+
+		EOSGSocket() {}
+
+		EOSGSocket(const EOS_P2P_SocketId &socket) {
+			this->socket = socket;
+		}
+
+		EOSGSocket(const String &socket_name) {
+			socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
+			strncpy_s(socket.SocketName, socket_name.utf8(), socket_name.length());
 		}
 	};
+
+	struct EOSGPeerInfo {
+		EOS_ProductUserId user_id;
+		List<const EOSGSocket*> sockets;
+	};
+
 
 	_FORCE_INLINE_ bool _is_active() const { return active_mode != MODE_NONE; }
 	
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
-	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOS_P2P_SocketId *socket);
+	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOSGSocket *socket);
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
 	void _remove_all_callbacks();
-	bool _add_server_mesh_callbacks();
+	bool _add_server_callbacks();
 	bool _add_client_callbacks();
-	const EOS_P2P_SocketId* _get_socket(const String &socket_name) const;
+	bool _add_callback(const String &socket_id, CallbackType callback_type);
+	const EOSGSocket* _get_socket(const String &socket_name) const;
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
-	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOS_P2P_SocketId &socket);
+	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOSGSocket &socket);
 	void _remove_socket(const String &socket_id);
 
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
@@ -168,13 +196,10 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool refusing_connections = false;
 
 	HashMap<uint32_t, EOSGPeerInfo> peers;
-	List<EOS_P2P_SocketId> sockets;
+	List<EOSGSocket> sockets;
 	List<EOSGConnectionRequest> pending_connection_requests;
 
-	EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
-	EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
-	EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
-	EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
+	List<EOS_NotificationId> callback_ids;
 
     static void _bind_methods();
 
