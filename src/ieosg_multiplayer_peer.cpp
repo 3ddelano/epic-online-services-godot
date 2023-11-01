@@ -16,14 +16,14 @@ void IEOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_static_method("IEOSGMultiplayerPeer", D_METHOD("set_local_user_id"), &IEOSGMultiplayerPeer::set_local_user_id);
     ClassDB::bind_static_method("IEOSGMultiplayerPeer", D_METHOD("get_local_user_id"), &IEOSGMultiplayerPeer::get_local_user_id);
 
-    ClassDB::bind_method(D_METHOD("create_server"), &IEOSGMultiplayerPeer::create_server);
-    ClassDB::bind_method(D_METHOD("create_client"), &IEOSGMultiplayerPeer::create_client);
+    ClassDB::bind_method(D_METHOD("create_server", "socket_id"), &IEOSGMultiplayerPeer::create_server);
+    ClassDB::bind_method(D_METHOD("create_client", "socket_id", "remote_user_id"), &IEOSGMultiplayerPeer::create_client);
     ClassDB::bind_method(D_METHOD("create_mesh", "socket_ids"), &IEOSGMultiplayerPeer::create_mesh, PackedStringArray());
     ClassDB::bind_method(D_METHOD("add_mesh_peer", "remote_user_id", "socket_id"), &IEOSGMultiplayerPeer::add_mesh_peer);
     ClassDB::bind_method(D_METHOD("add_mesh_socket", "socket_id"), &IEOSGMultiplayerPeer::add_mesh_socket);
     ClassDB::bind_method(D_METHOD("close_mesh_socket", "socket_id"), &IEOSGMultiplayerPeer::close_mesh_socket);
     ClassDB::bind_method(D_METHOD("get_peer_info", "peer_id"), &IEOSGMultiplayerPeer::get_peer_info);
-    ClassDB::bind_method(D_METHOD("find_peer_id", "remote_user_id"), &IEOSGMultiplayerPeer::find_peer_id);
+    ClassDB::bind_method(D_METHOD("get_peer_id", "remote_user_id"), &IEOSGMultiplayerPeer::get_peer_id);
     ClassDB::bind_method(D_METHOD("get_all_sockets"), &IEOSGMultiplayerPeer::get_all_sockets);
     ClassDB::bind_method(D_METHOD("get_peers_connected_to_socket", "socket_id"), &IEOSGMultiplayerPeer::get_peers_connected_to_socket);
     ClassDB::bind_method(D_METHOD("is_peer_connected_to_socket", "peer_id", "socket_id"), &IEOSGMultiplayerPeer::is_peer_connected_to_socket);
@@ -32,8 +32,8 @@ void IEOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_auto_accepting_connection_requests"), &IEOSGMultiplayerPeer::is_auto_accepting_connection_requests);
     ClassDB::bind_method(D_METHOD("set_auto_accept_connection_requests", "enable"), &IEOSGMultiplayerPeer::set_auto_accept_connection_requests);
     ClassDB::bind_method(D_METHOD("has_socket"), &IEOSGMultiplayerPeer::has_socket);
-    ClassDB::bind_method(D_METHOD("find_all_connecetion_requests_for_user", "remote_user_id"), &IEOSGMultiplayerPeer::find_all_connecetion_requests_for_user);
-    ClassDB::bind_method(D_METHOD("find_all_connecetion_requests_for_socket", "socket_id"), &IEOSGMultiplayerPeer::find_all_connecetion_requests_for_socket);
+    ClassDB::bind_method(D_METHOD("get_all_connecetion_requests_for_user", "remote_user_id"), &IEOSGMultiplayerPeer::get_all_connecetion_requests_for_user);
+    ClassDB::bind_method(D_METHOD("get_all_connecetion_requests_for_socket", "socket_id"), &IEOSGMultiplayerPeer::get_all_connecetion_requests_for_socket);
     ClassDB::bind_method(D_METHOD("get_all_connection_requests"), &IEOSGMultiplayerPeer::get_all_connection_requests);
     ClassDB::bind_method(D_METHOD("has_peer"), &IEOSGMultiplayerPeer::has_peer);
     ClassDB::bind_method(D_METHOD("accept_connection_request", "remote_user_id", "socket_id"), &IEOSGMultiplayerPeer::accept_connection_request);
@@ -42,6 +42,7 @@ void IEOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("deny_all_connection_requests"), &IEOSGMultiplayerPeer::deny_all_connection_requests);
     ClassDB::bind_method(D_METHOD("get_active_mode"), &IEOSGMultiplayerPeer::get_active_mode);
     ClassDB::bind_method(D_METHOD("get_all_peers"), &IEOSGMultiplayerPeer::get_all_peers);
+    ClassDB::bind_method(D_METHOD("clear_peer_packet_queue", "peer_id", "socket_id"), &IEOSGMultiplayerPeer::clear_peer_packet_queue);
 
     ADD_SIGNAL(MethodInfo("p2p_peer_connection_established", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("p2p_peer_connection_interrupted", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -141,7 +142,7 @@ Error IEOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id, const St
     CHECK_IS_SINGLETON_INSTANCE;
     ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to add mesh socket. Local user id has not been set.");
     ERR_FAIL_COND_V_MSG(active_mode != MODE_MESH, ERR_UNCONFIGURED, "Failed to add mesh socket. Multiplayer instance is not in mesh mode.");
-    ERR_FAIL_COND_V_MSG(find_peer_id(remote_user_id) != -1, ERR_ALREADY_EXISTS, "Failed to add mesh peer. Already connected to peer");
+    ERR_FAIL_COND_V_MSG(get_peer_id(remote_user_id) != -1, ERR_ALREADY_EXISTS, "Failed to add mesh peer. Already connected to peer");
 
     //send connection request to peer
     EOSGPacket packet;
@@ -187,7 +188,7 @@ Array IEOSGMultiplayerPeer::get_all_connection_requests() {
     return ret;
 }
 
-Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String &user_id) {
+Array IEOSGMultiplayerPeer::get_all_connecetion_requests_for_user(const String &user_id) {
     Array ret = Array();
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
         String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
@@ -202,7 +203,7 @@ Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_user(const String 
     return ret;
 }
 
-Array IEOSGMultiplayerPeer::find_all_connecetion_requests_for_socket(const String &socket_id) {
+Array IEOSGMultiplayerPeer::get_all_connecetion_requests_for_socket(const String &socket_id) {
     Array ret = Array();
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
         String socket_name = connection_request.socket.SocketName;
@@ -227,14 +228,14 @@ Dictionary IEOSGMultiplayerPeer::get_peer_info(int p_id) {
 
     Array socket_names;
     for (const EOSGSocket *sockets : peer_info.sockets) {
-        socket_names.push_back(sockets->get_socket_id()->SocketName);
+        socket_names.push_back(sockets->get_socket_name());
     }
     ret["sockets"] = socket_names;
 
     return ret;
 }
 
-int IEOSGMultiplayerPeer::find_peer_id(const String &user_id) {
+int IEOSGMultiplayerPeer::get_peer_id(const String &user_id) {
     for (KeyValue<uint32_t, EOSGPeerInfo> &E : peers) {
         EOSGPeerInfo peer_info = E.value;
         String user_id_str = eosg_product_user_id_to_string(peer_info.user_id);
@@ -249,11 +250,37 @@ bool IEOSGMultiplayerPeer::has_peer(int peer_id) {
     return peers.has(peer_id);
 }
 
+void IEOSGMultiplayerPeer::clear_peer_packet_queue(int p_id, const String &socket_id = "") {
+    ERR_FAIL_COND_MSG(!peers.has(p_id), "Failed to clear packet queue for peer. Peer was not found.");
+    ERR_FAIL_COND_MSG(!socket_id.is_empty() && !has_socket(socket_id), "Failed to clear packet queue for peer. Socket was not found.");
+
+    EOSGPeerInfo peer_info = peers[p_id];
+    for (EOSGSocket *socket : peer_info.sockets) {
+        if (socket_id != socket->get_socket_name()) continue;
+        socket->clear_packets_from_peer(p_id);
+        break;
+    }
+
+    EOS_P2P_ClearPacketQueueOptions options;
+    options.ApiVersion = EOS_P2P_CLEARPACKETQUEUE_API_LATEST;
+    options.LocalUserId = s_local_user_id;
+    options.RemoteUserId = peer_info.user_id;
+    if (socket_id.is_empty()) {
+        EOSGSocket *found_socket = _get_socket(socket_id);
+        options.SocketId = found_socket->get_socket_id();
+        IEOS::get_singleton()->p2p_clear_packet_queue(&options);
+    } else {
+        for (EOSGSocket &socket : sockets) {
+            options.SocketId = socket.get_socket_id();
+            IEOS::get_singleton()->p2p_clear_packet_queue(&options);
+        }
+    }
+}
+
 Array IEOSGMultiplayerPeer::get_all_sockets() {
     Array ret;
     for (const EOSGSocket &socket : sockets) {
-        String socket_name = socket.get_socket_id()->SocketName;
-        ret.push_back(socket_name);
+        ret.push_back(socket.get_socket_name());
     }
     return ret;
 }
@@ -266,8 +293,7 @@ Dictionary IEOSGMultiplayerPeer::get_all_peers() {
         Array sockets;
         data["remote_user_id"] = eosg_product_user_id_to_string(peer_info.user_id);
         for (const EOSGSocket *socket_id : peer_info.sockets) {
-            String socket_name = socket_id->get_socket_id()->SocketName;
-            sockets.push_back(socket_name);
+            sockets.push_back(socket_id->get_socket_name());
         }
         data["sockets"] = sockets;
         ret[E.key] = data;
@@ -285,8 +311,7 @@ Dictionary IEOSGMultiplayerPeer::get_peers_connected_to_socket(const String &soc
         Array sockets;
         data["remote_user_id"] = eosg_product_user_id_to_string(peer.user_id);
         for (const EOSGSocket *socket : peer.sockets) {
-            String socket_name = socket->get_socket_id()->SocketName;
-            sockets.push_back(socket_name);
+            sockets.push_back(socket->get_socket_name());
         }
         data["sockets"] = sockets;
         ret[E.key] = data;
@@ -300,7 +325,7 @@ bool IEOSGMultiplayerPeer::is_peer_connected_to_socket(int p_id, const String &s
     }
 
     for (const EOSGSocket *socket : peers[p_id].sockets) {
-        if (socket_id == socket->get_socket_id()->SocketName) {
+        if (socket_id == socket->get_socket_name()) {
             return true;
         }
     }
@@ -325,8 +350,7 @@ bool IEOSGMultiplayerPeer::is_auto_accepting_connection_requests() {
 
 bool IEOSGMultiplayerPeer::has_socket(const String &find_socket) {
     for (const EOSGSocket &socket : sockets) {
-        String socket_name = socket.get_socket_id()->SocketName;
-        if (socket_name == find_socket) {
+        if (find_socket == socket.get_socket_name()) {
             return true;
         }
     }
@@ -414,10 +438,16 @@ int IEOSGMultiplayerPeer::get_active_mode() {
 
 Error IEOSGMultiplayerPeer::_get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) {
     CHECK_IS_SINGLETON_INSTANCE;
-    ERR_FAIL_COND_V_MSG(incoming_packets.size() == 0, ERR_UNAVAILABLE, "No incoming packets available.");
+    ERR_FAIL_COND_V_MSG(sockets.size() == 0, ERR_UNCONFIGURED, "Failed to get packet. No sockets are available.");
 
-    current_packet = incoming_packets.front()->get();
-    incoming_packets.pop_front();
+    int switch_count = 0;
+    while (!sockets[socket_index].has_packet()) {
+        _next_socket();
+        switch_count++;
+        ERR_FAIL_COND_V_MSG(switch_count >= sockets.size(), ERR_UNAVAILABLE, "Failed to get packet. No packets were found.");
+    }
+    current_packet = sockets[socket_index].pop_packet();
+    _next_socket();
 
     *r_buffer = current_packet.get_payload();
     *r_buffer_size = current_packet.payload_size();
@@ -443,7 +473,7 @@ Error IEOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffe
     This is why there is no TRANSFER_MODE_UNRELIABLE_ORDERED listed here.
     EOSGMultiplayerPeer prints a warning and automatically sets the transfer
     mode to TRANSFER_MODE_RELIABLE if the user tries to set to unreliable ordred.
-    See _set_transer_mode at line 437*/
+    See _set_transer_mode()*/
     switch (_get_transfer_mode())
     {
         case TRANSFER_MODE_UNRELIABLE: {
@@ -488,7 +518,11 @@ Error IEOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffe
 }
 
 int32_t IEOSGMultiplayerPeer::_get_available_packet_count() const {
-    return incoming_packets.size();
+    int packet_count = 0;
+    for (const EOSGSocket &socket : sockets) {
+        packet_count += socket.get_packet_count();
+    }
+    return packet_count;
 }
 
 int32_t IEOSGMultiplayerPeer::_get_max_packet_size() const {
@@ -504,13 +538,11 @@ Error IEOSGMultiplayerPeer::_put_packet_script(const PackedByteArray &p_buffer) 
 }
 
 int32_t IEOSGMultiplayerPeer::_get_packet_channel() const {
-    EOSGPacket packet = incoming_packets.front()->get();
-    return packet.get_channel();
+    return sockets[socket_index].get_packet_channel();
 }
 
 MultiplayerPeer::TransferMode IEOSGMultiplayerPeer::_get_packet_mode() const {
-    EOSGPacket packet = incoming_packets.front()->get();
-    return _convert_eos_reliability_to_transfer_mode(packet.get_reliability());
+    return _convert_eos_reliability_to_transfer_mode(sockets[socket_index].get_packet_reliability());
 }
 
 void IEOSGMultiplayerPeer::_set_transfer_channel(int32_t p_channel) {
@@ -539,8 +571,7 @@ void IEOSGMultiplayerPeer::_set_target_peer(int32_t p_peer) {
 }
 
 int32_t IEOSGMultiplayerPeer::_get_packet_peer() const {
-    EOSGPacket packet = incoming_packets.front()->get();
-    return packet.get_sender();
+    return sockets[socket_index].get_packet_peer();
 }
 
 bool IEOSGMultiplayerPeer::_is_server() const {
@@ -597,13 +628,15 @@ void IEOSGMultiplayerPeer::_poll() {
             packet.set_sender(peer_id);
             packet.set_reliability(reliability);
             packet.set_channel(channel);
-
-            incoming_packets.push_back(packet);
+            
+            EOSGSocket *found_socket = _get_socket(socket.SocketName);
+            ERR_FAIL_NULL_MSG(found_socket, "Failed to push packet to socket queue. Socket was not found. This should not have happened");
+            found_socket->push_packet(packet);
             break;
         }
         case Event::EVENT_RECIEVE_PEER_ID: {
-            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, vformat("Client %s has recieved an EVENT_RECIEVE_PEER_ID packet from %s. This should not have happened.", get_local_user_id(), eosg_product_user_id_to_string(remote_user)));
-            const EOSGSocket *found_socket = _get_socket(socket.SocketName);
+            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "Client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened.");
+            EOSGSocket *found_socket = _get_socket(socket.SocketName);
             ERR_FAIL_NULL_MSG(found_socket, "Failed to recieve peer id. Socket that client was attempting to connect to was not found.");
             uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.data() + INDEX_PEER_ID);
 
@@ -639,7 +672,7 @@ void IEOSGMultiplayerPeer::_close() {
     connection_status = CONNECTION_DISCONNECTED;
     sockets.clear();
     peers.clear();
-    incoming_packets.clear();
+    _clear_all_packet_queues();
     pending_connection_requests.clear();
     unique_id = 0;
     set_refuse_new_connections(false);
@@ -692,6 +725,8 @@ String IEOSGMultiplayerPeer::get_local_user_id() {
 
 Error IEOSGMultiplayerPeer::_broadcast(const EOSGPacket &packet, int exclude) {
     CHECK_IS_SINGLETON_INSTANCE;
+    ERR_FAIL_COND_V_MSG(packet.packet_size() > _get_max_packet_size(), ERR_OUT_OF_MEMORY, "Failed to send packet. Packet exceeds max size limits.");
+
     EOS_P2P_SendPacketOptions options;
     options.ApiVersion = EOS_P2P_SENDPACKET_API_LATEST;
     options.LocalUserId = s_local_user_id;
@@ -725,6 +760,8 @@ Error IEOSGMultiplayerPeer::_broadcast(const EOSGPacket &packet, int exclude) {
 
 Error IEOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOSGSocket *socket) {
     CHECK_IS_SINGLETON_INSTANCE;
+    ERR_FAIL_COND_V_MSG(packet.packet_size() > _get_max_packet_size(), ERR_OUT_OF_MEMORY, "Failed to send packet. Packet exceeds max size limits.");
+
     EOS_P2P_SendPacketOptions options;
     options.ApiVersion = EOS_P2P_SENDPACKET_API_LATEST;
     options.LocalUserId = s_local_user_id;
@@ -803,8 +840,8 @@ MultiplayerPeer::TransferMode IEOSGMultiplayerPeer::_convert_eos_reliability_to_
     }
 }
 
-const IEOSGMultiplayerPeer::EOSGSocket *IEOSGMultiplayerPeer::_get_socket(const String &socket_name) const {
-    for (List<EOSGSocket>::ConstIterator it = sockets.begin(); it != sockets.end(); ++it) {
+IEOSGMultiplayerPeer::EOSGSocket *IEOSGMultiplayerPeer::_get_socket(const String &socket_name) {
+    for (List<EOSGSocket>::Iterator it = sockets.begin(); it != sockets.end(); ++it) {
         if (it->get_socket_id()->SocketName == socket_name) {
             return &(*it);
         }
@@ -831,12 +868,18 @@ void IEOSGMultiplayerPeer::_remove_socket(const String &socket_id) {
     }
 }
 
+void IEOSGMultiplayerPeer::_clear_all_packet_queues() {
+    for (EOSGSocket &socket : sockets) {
+        socket.clear_packet_queue();
+    }
+}
+
 void EOS_CALL IEOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
     if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
         if (singleton->active_mode == MODE_CLIENT) {
             EOSGPeerInfo server_peer;
             server_peer.user_id = data->RemoteUserId;
-            const EOSGSocket *found_socket = singleton->_get_socket(data->SocketId->SocketName);
+            EOSGSocket *found_socket = singleton->_get_socket(data->SocketId->SocketName);
 
             if (found_socket == nullptr) {
                 singleton->_close();
@@ -921,9 +964,10 @@ void EOS_CALL IEOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_O
     }
 
     //Attempt to remove peer;
-    int peer_id = singleton->find_peer_id(remote_user_id_str);
+    int peer_id = singleton->get_peer_id(remote_user_id_str);
     if (peer_id != 0) {
         singleton->peers.erase(peer_id);
+        singleton->clear_peer_packet_queue(peer_id);
         singleton->emit_signal("peer_disconnected", peer_id);
     }
 
@@ -1029,6 +1073,13 @@ void IEOSGMultiplayerPeer::EOSGSocket::close() {
     options.LocalUserId = s_local_user_id;
     options.SocketId = &socket;
     IEOS::get_singleton()->p2p_close_all_connections(&options);
+}
+
+void IEOSGMultiplayerPeer::EOSGSocket::clear_packets_from_peer(int p_peer) {
+    for (List<EOSGPacket>::Element *e = incoming_packets.front(); e != nullptr; e = e->next()) {
+        if (e->get().get_sender() != p_peer) continue;
+        e->erase();
+    }
 }
 
 bool IEOSGMultiplayerPeer::EOSGSocket::operator ==(const EOSGSocket &rhs) {

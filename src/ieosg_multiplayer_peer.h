@@ -121,6 +121,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	class EOSGSocket {
 		private:
 		EOS_P2P_SocketId socket;
+		List<EOSGPacket> incoming_packets;
 		EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
 		EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
 		EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
@@ -131,11 +132,53 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 			return &socket;
 		}
 
+		String get_socket_name() const {
+			return socket.SocketName;
+		}
+
+		void push_packet(EOSGPacket packet) {
+			incoming_packets.push_back(packet);
+		}
+
+		EOSGPacket pop_packet() {
+			EOSGPacket ret = incoming_packets.front()->get();
+			incoming_packets.pop_front();
+			return ret;
+		}
+
+		void clear_packet_queue() {
+			incoming_packets.clear();
+		}
+
+		bool has_packet() const {
+			return incoming_packets.size() != 0;
+		}
+
+		int get_packet_count() const {
+			return incoming_packets.size();
+		}
+
+		EOS_EPacketReliability get_packet_reliability() const {
+			EOSGPacket packet = incoming_packets.front()->get();
+			return packet.get_reliability();
+		}
+
+		int32_t get_packet_channel() const {
+			EOSGPacket packet = incoming_packets.front()->get();
+			return packet.get_channel();
+		}
+
+		int32_t get_packet_peer() const {
+			EOSGPacket packet = incoming_packets.front()->get();
+			return packet.get_sender();
+		}
+
 		void close();
 		bool add_connection_established_callback();
 		bool add_connection_interrupted_callback();
 		bool add_connection_closed_callback();
 		bool add_incoming_connection_request_callback();
+		void clear_packets_from_peer(int p_peer);
 
 		bool operator ==(const EOSGSocket &rhs);
 
@@ -153,7 +196,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	struct EOSGPeerInfo {
 		EOS_ProductUserId user_id;
-		List<const EOSGSocket*> sockets;
+		List<EOSGSocket*> sockets;
 	};
 
 
@@ -164,11 +207,16 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
 	bool _add_server_callbacks();
 	bool _add_client_callbacks();
-	const EOSGSocket* _get_socket(const String &socket_name) const;
+	EOSGSocket* _get_socket(const String &socket_name);
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOSGSocket &socket);
 	void _remove_socket(const String &socket_id);
+	void _clear_all_packet_queues();
+
+	void _next_socket() {
+		socket_index = (socket_index + 1) % sockets.size();
+	}
 
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
@@ -179,9 +227,8 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	static EOS_ProductUserId s_local_user_id;
 	bool is_singleton = false;
 
-	List<EOSGPacket> incoming_packets;
+	int socket_index = 0;
 	EOSGPacket current_packet;
-
 	EOS_ProductUserId target_user_id;
 	uint32_t unique_id;
 	int target_peer = 0;
@@ -211,12 +258,13 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	void close_mesh_socket(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user, const String &socket_id);
 
-	Array find_all_connecetion_requests_for_user(const String &user_id);
-	Array find_all_connecetion_requests_for_socket(const String &socket_id);
+	Array get_all_connecetion_requests_for_user(const String &user_id);
+	Array get_all_connecetion_requests_for_socket(const String &socket_id);
 	Array get_all_connection_requests();
 	Dictionary get_peer_info(int p_id);
-	int find_peer_id(const String &user_id);
+	int get_peer_id(const String &user_id);
 	bool has_peer(int peer_id);
+	void clear_peer_packet_queue(int p_id, const String &socket_id = "");
 	Array get_all_sockets();
 	Dictionary get_all_peers();
 	Dictionary get_peers_connected_to_socket(const String &socket_id);
