@@ -8,8 +8,8 @@
 
 namespace godot
 {
-class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
-    GDCLASS(IEOSGMultiplayerPeer, MultiplayerPeerExtension)
+class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
+    GDCLASS(EOSGMultiplayerPeer, MultiplayerPeerExtension)
 	
 	private:
 	enum {
@@ -193,40 +193,38 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 	};
 
-	struct EOSGPeerInfo {
-		EOS_ProductUserId user_id;
-		List<EOSGSocket*> sockets;
-	};
+	// struct EOSGPeerInfo {
+	// 	EOS_ProductUserId user_id;
+	// 	List<EOSGSocket*> sockets;
+	// };
 
 
 	_FORCE_INLINE_ bool _is_active() const { return active_mode != MODE_NONE; }
 	
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
-	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet, const EOSGSocket *socket);
+	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet);
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
 	bool _add_server_callbacks();
 	bool _add_client_callbacks();
-	EOSGSocket* _get_socket(const String &socket_name);
+	// EOSGSocket* _get_socket(const String &socket_name);
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
-	void _disconnect_remote_user(const EOS_ProductUserId &remote_user, const EOSGSocket &socket);
-	void _remove_socket(const String &socket_id);
-	void _clear_all_packet_queues();
-
-	void _next_socket() {
-		socket_index = (socket_index + 1) % sockets.size();
-	}
+	void _disconnect_remote_user(const EOS_ProductUserId &remote_user);
+	// void _next_socket() {
+	// 	socket_index = (socket_index + 1) % sockets.size();
+	// }
 
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
 	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
 	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
 
-	static IEOSGMultiplayerPeer *singleton;
+	// static IEOSGMultiplayerPeer *singleton;
 	static EOS_ProductUserId s_local_user_id;
-	bool is_singleton = false;
+	static HashMap<String, EOSGMultiplayerPeer*> active_peers;
+	// bool is_singleton = false;
 
-	int socket_index = 0;
+	// int socket_index = 0;
 	EOSGPacket current_packet;
 	EOS_ProductUserId target_user_id;
 	uint32_t unique_id;
@@ -239,40 +237,42 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	uint32_t transfer_channel = CH_RELIABLE;
 	bool refusing_connections = false;
 
-	HashMap<uint32_t, EOSGPeerInfo> peers;
-	List<EOSGSocket> sockets;
+	HashMap<uint32_t, EOS_ProductUserId> peers;
+	// List<EOSGSocket> sockets;
+	EOSGSocket socket;
 	List<EOSGConnectionRequest> pending_connection_requests;
 
     static void _bind_methods();
 
     public:
-	static IEOSGMultiplayerPeer* get_singleton();
+	// static IEOSGMultiplayerPeer* get_singleton();
 	static void set_local_user_id(const String& p_local_user_id);
 	static String get_local_user_id();
 
 	Error create_server(const String &socket_id);
 	Error create_client(const String &socket_id, const String &remote_user_id);
-	Error create_mesh(const PackedStringArray &sockets);
-	Error add_mesh_socket(const String &socket_id);
-	void close_mesh_socket(const String &socket_id);
+	Error create_mesh(const String &socket_id);
+	// Error add_mesh_socket(const String &socket_id);
+	// void close_mesh_socket(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user, const String &socket_id);
 
 	Array get_all_connecetion_requests_for_user(const String &user_id);
-	Array get_all_connecetion_requests_for_socket(const String &socket_id);
+	// Array get_all_connecetion_requests_for_socket(const String &socket_id);
 	Array get_all_connection_requests();
-	Dictionary get_peer_info(int p_id);
+	String get_peer_user_id(int p_id);
 	int get_peer_id(const String &user_id);
 	bool has_peer(int peer_id);
+	bool has_peer(const String &remote_user_id);
 	void clear_peer_packet_queue(int p_id, const String &socket_id = "");
-	Array get_all_sockets();
+	// Array get_all_sockets();
 	Dictionary get_all_peers();
-	Dictionary get_peers_connected_to_socket(const String &socket_id);
-	bool is_peer_connected_to_socket(int p_id, const String &socket_id);
+	// Dictionary get_peers_connected_to_socket(const String &socket_id);
+	// bool is_peer_connected_to_socket(int p_id, const String &socket_id);
 	void set_allow_delayed_delivery(bool allow);
 	bool is_allowing_delayed_delivery();
 	void set_auto_accept_connection_requests(bool enable);
 	bool is_auto_accepting_connection_requests();
-	bool has_socket(const String &socket);
+	// bool has_socket(const String &socket);
 	void accept_connection_request(const String &remote_user, const String &socket_id);
 	void deny_connection_request(const String &remote_user, const String &socket_id);
 	void accept_all_connection_requests();
@@ -303,7 +303,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	virtual bool _is_server_relay_supported() const override;
 	virtual MultiplayerPeer::ConnectionStatus _get_connection_status() const override;
 
-	IEOSGMultiplayerPeer();
-	~IEOSGMultiplayerPeer();
+	EOSGMultiplayerPeer();
+	~EOSGMultiplayerPeer();
 };
 } //namespace godot

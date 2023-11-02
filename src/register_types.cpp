@@ -23,7 +23,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<IEOS>();
     _ieos = memnew(IEOS);
     Engine::get_singleton()->register_singleton("IEOS", IEOS::get_singleton());
-    ClassDB::register_class<godot::IEOSGMultiplayerPeer>();
+    ClassDB::register_class<godot::EOSGMultiplayerPeer>();
     ClassDB::register_class<godot::ContinuanceTokenEOSG>();
     ClassDB::register_class<godot::TransactionEOSG>();
     ClassDB::register_class<godot::PresenceModificationEOSG>();
