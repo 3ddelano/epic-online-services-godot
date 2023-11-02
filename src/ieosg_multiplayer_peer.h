@@ -5,7 +5,6 @@
 #include "eos_p2p.h"
 #include "utils.h"
 #include <memory>
-#include <vector>
 
 namespace godot
 {
@@ -40,7 +39,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 	class EOSGPacket {
 		private:
-		std::shared_ptr<std::vector<uint8_t>> packet;
+		std::shared_ptr<PackedByteArray> packet;
 		uint8_t channel = 0;
 		int32_t size_bytes;
 		EOS_EPacketReliability reliability;
@@ -65,11 +64,11 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 			if (size_bytes == PACKET_HEADER_SIZE) {
 				return nullptr; //Return nullptr if there's no payload.
 			}
-			return packet.get()->data() + INDEX_PAYLOAD_DATA;
+			return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
 		}
 
 		uint8_t* get_packet() const {
-			return packet.get()->data();
+			return packet.get()->ptrw();
 		}
 
 		EOS_EPacketReliability get_reliability() const {
@@ -105,7 +104,7 @@ class IEOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 
 		EOSGPacket() {
-			packet = std::make_shared<std::vector<uint8_t>>();
+			packet = std::make_shared<PackedByteArray>();
 			packet.get()->resize(PACKET_HEADER_SIZE);
 			size_bytes = PACKET_HEADER_SIZE;
 		}

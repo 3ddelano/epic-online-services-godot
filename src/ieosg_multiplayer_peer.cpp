@@ -250,7 +250,7 @@ bool IEOSGMultiplayerPeer::has_peer(int peer_id) {
     return peers.has(peer_id);
 }
 
-void IEOSGMultiplayerPeer::clear_peer_packet_queue(int p_id, const String &socket_id = "") {
+void IEOSGMultiplayerPeer::clear_peer_packet_queue(int p_id, const String &socket_id) {
     ERR_FAIL_COND_MSG(!peers.has(p_id), "Failed to clear packet queue for peer. Peer was not found.");
     ERR_FAIL_COND_MSG(!socket_id.is_empty() && !has_socket(socket_id), "Failed to clear packet queue for peer. Socket was not found.");
 
@@ -601,29 +601,29 @@ void IEOSGMultiplayerPeer::_poll() {
     options.MaxDataSizeBytes = _get_max_packet_size();
     options.RequestedChannel = nullptr;
 
-    std::vector<uint8_t> packet_data;
+    PackedByteArray packet_data;
     packet_data.resize(max_packet_size);
     uint32_t buffer_size;
     uint8_t channel;
     EOS_P2P_SocketId socket;
     EOS_ProductUserId remote_user;
-    result = IEOS::get_singleton()->p2p_receive_packet(&options, packet_data.data(), &buffer_size, &channel, &remote_user, &socket);
+    result = IEOS::get_singleton()->p2p_receive_packet(&options, packet_data.ptrw(), &buffer_size, &channel, &remote_user, &socket);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_NotFound, "Failed to get packet! Packet is too large. This should not have happened.");
 
-    Event event = static_cast<Event>(packet_data.data()[INDEX_EVENT_TYPE]);
+    Event event = static_cast<Event>(packet_data.ptrw()[INDEX_EVENT_TYPE]);
     switch (event) {
         case Event::EVENT_STORE_PACKET: {
-            uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.data() + INDEX_PEER_ID);
+            uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.ptrw() + INDEX_PEER_ID);
             if (!peers.has(peer_id)) {
                 return; //ignore the packet
             }
 
-            EOS_EPacketReliability reliability = static_cast<EOS_EPacketReliability>(packet_data.data()[INDEX_TRANSFER_MODE]);
+            EOS_EPacketReliability reliability = static_cast<EOS_EPacketReliability>(packet_data.ptrw()[INDEX_TRANSFER_MODE]);
 
             EOSGPacket packet;
-            packet.store_payload(packet_data.data() + INDEX_PAYLOAD_DATA, buffer_size - EOSGPacket::PACKET_HEADER_SIZE);
+            packet.store_payload(packet_data.ptrw() + INDEX_PAYLOAD_DATA, buffer_size - EOSGPacket::PACKET_HEADER_SIZE);
             packet.set_event(event);
             packet.set_sender(peer_id);
             packet.set_reliability(reliability);
@@ -638,7 +638,7 @@ void IEOSGMultiplayerPeer::_poll() {
             ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "Client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened.");
             EOSGSocket *found_socket = _get_socket(socket.SocketName);
             ERR_FAIL_NULL_MSG(found_socket, "Failed to recieve peer id. Socket that client was attempting to connect to was not found.");
-            uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.data() + INDEX_PEER_ID);
+            uint32_t peer_id = *reinterpret_cast<uint32_t*>(packet_data.ptrw() + INDEX_PEER_ID);
 
             if (active_mode == MODE_MESH && peers.has(peer_id)) {
                 peers[peer_id].sockets.push_back(found_socket);
@@ -994,16 +994,16 @@ IEOSGMultiplayerPeer::~IEOSGMultiplayerPeer() {
 }
 
 void IEOSGMultiplayerPeer::EOSGPacket::prepare() {
-    packet.get()->data()[INDEX_EVENT_TYPE] = static_cast<uint8_t>(event);
-    packet.get()->data()[INDEX_TRANSFER_MODE] = static_cast<uint8_t>(reliability);
-    memcpy(packet.get()->data() + INDEX_PEER_ID, &from, sizeof(int));
+    packet.get()->ptrw()[INDEX_EVENT_TYPE] = static_cast<uint8_t>(event);
+    packet.get()->ptrw()[INDEX_TRANSFER_MODE] = static_cast<uint8_t>(reliability);
+    memcpy(packet.get()->ptrw() + INDEX_PEER_ID, &from, sizeof(int));
 }
 
 void IEOSGMultiplayerPeer::EOSGPacket::store_payload(const uint8_t *payload_data, const uint32_t payload_size_bytes) {
     size_bytes = payload_size_bytes + PACKET_HEADER_SIZE;
     packet.get()->clear();
     packet.get()->resize(size_bytes);
-    memcpy(packet.get()->data() + INDEX_PAYLOAD_DATA, payload_data, payload_size_bytes);
+    memcpy(packet.get()->ptrw() + INDEX_PAYLOAD_DATA, payload_data, payload_size_bytes);
 }
 
 bool IEOSGMultiplayerPeer::EOSGSocket::add_connection_established_callback() {
