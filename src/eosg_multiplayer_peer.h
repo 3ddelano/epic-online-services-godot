@@ -12,6 +12,11 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
     GDCLASS(EOSGMultiplayerPeer, MultiplayerPeerExtension)
 	
 	private:
+	enum Event {
+		EVENT_STORE_PACKET,
+		EVENT_RECIEVE_PEER_ID,
+	};
+
 	enum {
 		INDEX_EVENT_TYPE = 0,
 		INDEX_TRANSFER_MODE = 1,
@@ -32,90 +37,85 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		MODE_MESH,
 	};
 
-	enum Event {
-		EVENT_STORE_PACKET,
-		EVENT_RECIEVE_PEER_ID,
-	};
-
-	class EOSGPacket {
-		private:
-		std::shared_ptr<PackedByteArray> packet;
-		uint8_t channel = 0;
-		int32_t size_bytes;
-		EOS_EPacketReliability reliability;
-		Event event;
-		int from = 0;
-
-		public:
-		static const int PACKET_HEADER_SIZE = 6;
-
-		void prepare();
-		void store_payload(const uint8_t *payload_date, const uint32_t payload_size_bytes);
-
-		int payload_size() const {
-			return size_bytes - PACKET_HEADER_SIZE;
-		}
-
-		int packet_size() const {
-			return size_bytes;
-		}
-
-		uint8_t* get_payload() const {
-			if (size_bytes == PACKET_HEADER_SIZE) {
-				return nullptr; //Return nullptr if there's no payload.
-			}
-			return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
-		}
-
-		uint8_t* get_packet() const {
-			return packet.get()->ptrw();
-		}
-
-		EOS_EPacketReliability get_reliability() const {
-			return reliability;
-		}
-
-		void set_reliability(EOS_EPacketReliability reliability) {
-			this->reliability = reliability;
-		}
-
-		uint8_t get_channel() const {
-			return channel;
-		}
-
-		void set_channel(uint8_t channel) {
-			this->channel = channel;
-		}
-
-		Event get_event() const {
-			return event;
-		}
-
-		void set_event(Event event) {
-			this->event = event;
-		}
-
-		int get_sender() const {
-			return from;
-		}
-
-		void set_sender(int p_id) {
-			from = p_id;
-		}
-
-		EOSGPacket() {
-			packet = std::make_shared<PackedByteArray>();
-			packet.get()->resize(PACKET_HEADER_SIZE);
-			size_bytes = PACKET_HEADER_SIZE;
-		}
-	};
-
 	struct EOSGConnectionRequest {
 		EOS_ProductUserId remote_user;
 		EOS_P2P_SocketId socket;
 
 		bool operator == (const EOSGConnectionRequest &rhs);
 	};
+
+	class EOSGPacket {
+	private:
+	std::shared_ptr<PackedByteArray> packet;
+	uint8_t channel = 0;
+	int32_t size_bytes;
+	EOS_EPacketReliability reliability;
+	Event event;
+	int from = 0;
+
+	public:
+	static const int PACKET_HEADER_SIZE = 6;
+
+	void prepare();
+	void store_payload(const uint8_t *payload_date, const uint32_t payload_size_bytes);
+
+	int payload_size() const {
+		return size_bytes - PACKET_HEADER_SIZE;
+	}
+
+	int packet_size() const {
+		return size_bytes;
+	}
+
+	uint8_t* get_payload() const {
+		if (size_bytes == PACKET_HEADER_SIZE) {
+			return nullptr; //Return nullptr if there's no payload.
+		}
+		return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
+	}
+
+	uint8_t* get_packet() const {
+		return packet.get()->ptrw();
+	}
+
+	EOS_EPacketReliability get_reliability() const {
+		return reliability;
+	}
+
+	void set_reliability(EOS_EPacketReliability reliability) {
+		this->reliability = reliability;
+	}
+
+	uint8_t get_channel() const {
+		return channel;
+	}
+
+	void set_channel(uint8_t channel) {
+		this->channel = channel;
+	}
+
+	Event get_event() const {
+		return event;
+	}
+
+	void set_event(Event event) {
+		this->event = event;
+	}
+
+	int get_sender() const {
+		return from;
+	}
+
+	void set_sender(int p_id) {
+		from = p_id;
+	}
+
+	EOSGPacket() {
+		packet = std::make_shared<PackedByteArray>();
+		packet.get()->resize(PACKET_HEADER_SIZE);
+		size_bytes = PACKET_HEADER_SIZE;
+	}
+};
 
 	class EOSGSocket {
 		private:
@@ -179,7 +179,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		bool add_incoming_connection_request_callback();
 		void clear_packets_from_peer(int p_peer);
 
-		bool operator ==(const EOSGSocket &rhs);
+		//bool operator ==(const EOSGSocket &rhs);
 
 		EOSGSocket() {}
 
@@ -193,12 +193,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 	};
 
-	// struct EOSGPeerInfo {
-	// 	EOS_ProductUserId user_id;
-	// 	List<EOSGSocket*> sockets;
-	// };
-
-
 	_FORCE_INLINE_ bool _is_active() const { return active_mode != MODE_NONE; }
 	
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
@@ -206,25 +200,19 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
 	bool _add_server_callbacks();
 	bool _add_client_callbacks();
-	// EOSGSocket* _get_socket(const String &socket_name);
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user);
-	// void _next_socket() {
-	// 	socket_index = (socket_index + 1) % sockets.size();
-	// }
+	void _clear_peer_packet_queue(int p_id);
 
 	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
 	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
 	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
 	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
 
-	// static IEOSGMultiplayerPeer *singleton;
 	static EOS_ProductUserId s_local_user_id;
 	static HashMap<String, EOSGMultiplayerPeer*> active_peers;
-	// bool is_singleton = false;
 
-	// int socket_index = 0;
 	EOSGPacket current_packet;
 	EOS_ProductUserId target_user_id;
 	uint32_t unique_id;
@@ -238,41 +226,32 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool refusing_connections = false;
 
 	HashMap<uint32_t, EOS_ProductUserId> peers;
-	// List<EOSGSocket> sockets;
+
 	EOSGSocket socket;
 	List<EOSGConnectionRequest> pending_connection_requests;
 
     static void _bind_methods();
 
     public:
-	// static IEOSGMultiplayerPeer* get_singleton();
 	static void set_local_user_id(const String& p_local_user_id);
 	static String get_local_user_id();
 
 	Error create_server(const String &socket_id);
 	Error create_client(const String &socket_id, const String &remote_user_id);
 	Error create_mesh(const String &socket_id);
-	// Error add_mesh_socket(const String &socket_id);
-	// void close_mesh_socket(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user, const String &socket_id);
 
 	Array get_all_connecetion_requests_for_user(const String &user_id);
-	// Array get_all_connecetion_requests_for_socket(const String &socket_id);
 	Array get_all_connection_requests();
 	String get_peer_user_id(int p_id);
 	int get_peer_id(const String &user_id);
 	bool has_peer(int peer_id);
-	bool has_peer(const String &remote_user_id);
-	void clear_peer_packet_queue(int p_id, const String &socket_id = "");
-	// Array get_all_sockets();
+	bool has_user_id(const String &remote_user_id);
 	Dictionary get_all_peers();
-	// Dictionary get_peers_connected_to_socket(const String &socket_id);
-	// bool is_peer_connected_to_socket(int p_id, const String &socket_id);
 	void set_allow_delayed_delivery(bool allow);
 	bool is_allowing_delayed_delivery();
 	void set_auto_accept_connection_requests(bool enable);
 	bool is_auto_accepting_connection_requests();
-	// bool has_socket(const String &socket);
 	void accept_connection_request(const String &remote_user, const String &socket_id);
 	void deny_connection_request(const String &remote_user, const String &socket_id);
 	void accept_all_connection_requests();
@@ -303,7 +282,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	virtual bool _is_server_relay_supported() const override;
 	virtual MultiplayerPeer::ConnectionStatus _get_connection_status() const override;
 
-	EOSGMultiplayerPeer();
+	EOSGMultiplayerPeer() {};
 	~EOSGMultiplayerPeer();
 };
 } //namespace godot
