@@ -127,11 +127,11 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
 
 		public:
-		const EOS_P2P_SocketId *get_socket_id() const {
+		const EOS_P2P_SocketId *get_id() const {
 			return &socket;
 		}
 
-		String get_socket_name() const {
+		String get_name() const {
 			return socket.SocketName;
 		}
 
@@ -179,8 +179,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		bool add_incoming_connection_request_callback();
 		void clear_packets_from_peer(int p_peer);
 
-		//bool operator ==(const EOSGSocket &rhs);
-
 		EOSGSocket() {}
 
 		EOSGSocket(const EOS_P2P_SocketId &socket) {
@@ -224,6 +222,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	TransferMode transfer_mode = TransferMode::TRANSFER_MODE_RELIABLE;
 	uint32_t transfer_channel = CH_RELIABLE;
 	bool refusing_connections = false;
+	bool polling = true;
 
 	HashMap<uint32_t, EOS_ProductUserId> peers;
 
@@ -257,6 +256,14 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	void accept_all_connection_requests();
 	void deny_all_connection_requests();
 	int get_active_mode();
+
+	bool is_polling() {
+		return polling;
+	}
+
+	void set_is_polling(bool polling) {
+		this->polling = polling;
+	}
 
     virtual Error _get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) override;
 	virtual Error _put_packet(const uint8_t *p_buffer, int32_t p_buffer_size);

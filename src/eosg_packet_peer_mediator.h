@@ -39,7 +39,7 @@ struct PacketData {
 		remote_user_id = eosg_product_user_id_to_string(sender);
 	}
 
-	PackedByteArray *get_packet() {
+	PackedByteArray *get_data() {
 		return data.get();
 	}
 
@@ -54,18 +54,47 @@ class EOSGPacketPeerMediator : public RefCounted {
 	static EOSGPacketPeerMediator *singleton;
 	static void _bind_methods();
 
-	HashMap<String, List<PacketData>> registered_sockets;
-	int total_bytes_stored = 0;
-	const int MAX_QUEUE_SIZE_BYTES = 5242880;
+	HashMap<String, List<PacketData>> socket_packet_queues;
+	const int MAX_QUEUE_SIZE_PACKETS = 5000;
+	bool initialized = false;
 
 	void _on_process_frame();
+	bool _init();
 
 	public:
+
 	static EOSGPacketPeerMediator *get_singleton(){
 		return singleton;
 	}
 
+	int get_total_packet_count() {
+		int ret = 0;
+		for (KeyValue<String, List<PacketData>> &E : socket_packet_queues){
+			ret += E.value.size();
+		}
+		return ret;
+	}
+
+	int get_packet_count_for_socket(const String &socket_id) {
+		ERR_FAIL_COND_V_MSG(!socket_packet_queues.has(socket_id), 0, "Failed to get packet count for socket \"%s\". Socket does not exist.");
+		return socket_packet_queues[socket_id].size();
+	}
+
+	Array get_sockets() {
+		Array ret;
+		for (KeyValue<String, List<PacketData>> &E : socket_packet_queues) {
+			ret.push_back(E.key);
+		}
+		return ret;
+	}
+
+	bool has_socket(const String &socket_id) {
+		return socket_packet_queues.has(socket_id);
+	}
+
+	int get_packet_count_from_remote_user(const String &remote_user, const String &socket_id);
 	bool poll_next_packet(const String &socket_id, PacketData *out_packet);
+	bool next_packet_is_peer_id_packet(const String &socket_id);
 	void register_socket(const String &socket_id);
 	void unregister_socket(const String &socket_id);
 	void clear_packet_queue(const String &socket_id);
