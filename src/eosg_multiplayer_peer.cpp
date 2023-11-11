@@ -20,7 +20,6 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_allowing_delayed_delivery"), &EOSGMultiplayerPeer::is_allowing_delayed_delivery);
     ClassDB::bind_method(D_METHOD("is_auto_accepting_connection_requests"), &EOSGMultiplayerPeer::is_auto_accepting_connection_requests);
     ClassDB::bind_method(D_METHOD("set_auto_accept_connection_requests", "enable"), &EOSGMultiplayerPeer::set_auto_accept_connection_requests);
-    // ClassDB::bind_method(D_METHOD("get_all_connecetion_requests_for_user", "remote_user_id"), &EOSGMultiplayerPeer::get_all_connecetion_requests_for_user);
     ClassDB::bind_method(D_METHOD("get_all_connection_requests"), &EOSGMultiplayerPeer::get_all_connection_requests);
     ClassDB::bind_method(D_METHOD("has_peer", "peer_id"), &EOSGMultiplayerPeer::has_peer);
     ClassDB::bind_method(D_METHOD("has_user_id", "remote_user_id"), &EOSGMultiplayerPeer::has_user_id);
@@ -162,21 +161,6 @@ Array EOSGMultiplayerPeer::get_all_connection_requests() {
     }
     return ret;
 }
-
-// Array EOSGMultiplayerPeer::get_all_connecetion_requests_for_user(const String &user_id) {
-//     Array ret = Array();
-//     for (const EOS_ProductUserId &remote_user : pending_connection_requests) {
-//         String remote_user_id_str = eosg_product_user_id_to_string(remote_user);
-//         if (remote_user_id_str == user_id) {
-//             Dictionary connection_request_data;
-//             connection_request_data["remote_user_id"] = remote_user_id_str;
-//             String socket_name = connection_request.socket.SocketName;
-//             connection_request_data["socket"] = socket_name;
-//             ret.push_back(connection_request_data);
-//         }
-//     }
-//     return ret;
-// }
 
 String EOSGMultiplayerPeer::get_peer_user_id(int p_id) {
     String ret = "";
@@ -873,11 +857,3 @@ void EOSGMultiplayerPeer::EOSGSocket::clear_packets_from_peer(int p_peer) {
         e->erase();
     }
 }
-
-// bool EOSGMultiplayerPeer::EOSGConnectionRequest::operator ==(const EOSGConnectionRequest &rhs) {
-//     String rhs_remote_id = eosg_product_user_id_to_string(rhs.remote_user);
-//     String rhs_socket_name = rhs.socket.SocketName;
-//     String lhs_remote_id = eosg_product_user_id_to_string(this->remote_user);
-//     String lhs_socket_name = this->socket.SocketName;
-//     return rhs_remote_id == lhs_remote_id && rhs_socket_name == lhs_socket_name;
-// }

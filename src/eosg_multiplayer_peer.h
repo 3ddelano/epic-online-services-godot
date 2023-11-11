@@ -38,13 +38,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		MODE_MESH,
 	};
 
-	// struct EOSGConnectionRequest {
-	// 	EOS_ProductUserId remote_user;
-	// 	EOS_P2P_SocketId socket;
-
-	// 	bool operator == (const EOSGConnectionRequest &rhs);
-	// };
-
 	class EOSGPacket {
 		private:
 		std::shared_ptr<PackedByteArray> packet;
@@ -240,7 +233,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error create_mesh(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user);
 
-	// Array get_all_connecetion_requests_for_user(const String &user_id);
 	Array get_all_connection_requests();
 	String get_peer_user_id(int p_id);
 	int get_peer_id(const String &user_id);
