@@ -14,6 +14,9 @@ struct PacketData {
 
 	public:
 	void store(uint8_t *packet, int size_bytes) {
+		if (data == nullptr) {
+			data = std::make_shared<PackedByteArray>();
+		}
 		this->size_bytes = size_bytes;
 		data->resize(size_bytes);
 		memcpy(data->ptrw(), packet, size_bytes);
@@ -42,10 +45,6 @@ struct PacketData {
 	PackedByteArray *get_data() {
 		return data.get();
 	}
-
-	PacketData() {
-		data = std::make_shared<PackedByteArray>();
-	}
 };
 class EOSGPacketPeerMediator : public RefCounted {
 	GDCLASS(EOSGPacketPeerMediator, RefCounted)
@@ -55,7 +54,7 @@ class EOSGPacketPeerMediator : public RefCounted {
 	static void _bind_methods();
 
 	HashMap<String, List<PacketData>> socket_packet_queues;
-	const int MAX_QUEUE_SIZE_PACKETS = 5000;
+	int max_queue_size = 5000;
 	bool initialized = false;
 
 	void _on_process_frame();
@@ -92,10 +91,19 @@ class EOSGPacketPeerMediator : public RefCounted {
 		return socket_packet_queues.has(socket_id);
 	}
 
+	int get_queue_size_limit() {
+		return max_queue_size;
+	}
+
+	void set_queue_size_limit(int limit) {
+		ERR_FAIL_COND_MSG(limit < 1, "Cannot set queue size limit. Limit must be greater than 0");
+		max_queue_size = limit;
+	}
+
 	int get_packet_count_from_remote_user(const String &remote_user, const String &socket_id);
 	bool poll_next_packet(const String &socket_id, PacketData *out_packet);
 	bool next_packet_is_peer_id_packet(const String &socket_id);
-	void register_socket(const String &socket_id);
+	bool register_socket(const String &socket_id);
 	void unregister_socket(const String &socket_id);
 	void clear_packet_queue(const String &socket_id);
 	void clear_packets_from_remote_user(const String &socket_id, const String &remote_user_id);

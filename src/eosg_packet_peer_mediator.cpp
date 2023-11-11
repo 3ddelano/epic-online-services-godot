@@ -11,6 +11,8 @@ void EOSGPacketPeerMediator::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_packet_count_for_socket", "socket_id"), &EOSGPacketPeerMediator::get_packet_count_for_socket);
 	ClassDB::bind_method(D_METHOD("has_socket"), &EOSGPacketPeerMediator::has_socket);
 	ClassDB::bind_method(D_METHOD("get_packet_count_from_remote_user"), &EOSGPacketPeerMediator::get_packet_count_from_remote_user);
+	ClassDB::bind_method(D_METHOD("get_queue_size_limit"), &EOSGPacketPeerMediator::get_queue_size_limit);
+	ClassDB::bind_method(D_METHOD("set_queue_size_limit", "limit"), &EOSGPacketPeerMediator::set_queue_size_limit);
 
 	ADD_SIGNAL(MethodInfo("packet_queue_full"));
 }
@@ -18,7 +20,7 @@ void EOSGPacketPeerMediator::_bind_methods() {
 void EOSGPacketPeerMediator::_on_process_frame() {
 	if (EOSGMultiplayerPeer::get_local_user_id().is_empty()) return;
 	if (socket_packet_queues.size() == 0) return;
-	if (get_total_packet_count() >= MAX_QUEUE_SIZE_PACKETS) return;
+	if (get_total_packet_count() >= max_queue_size) return;
 
 	String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
 	EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
@@ -65,7 +67,7 @@ void EOSGPacketPeerMediator::_on_process_frame() {
 	}
 
 
-	if (get_total_packet_count() >= MAX_QUEUE_SIZE_PACKETS) {
+	if (get_total_packet_count() >= max_queue_size) {
 		emit_signal("packet_queue_full");
 	}
 }
@@ -80,15 +82,16 @@ bool EOSGPacketPeerMediator::poll_next_packet(const String &socket_id, PacketDat
 	return true;
 }
 
-void EOSGPacketPeerMediator::register_socket(const String &socket_id) {
-	ERR_FAIL_COND_MSG(socket_id.is_empty(), "Failed to register socket. Socket id is invalid. Provided an empty string.");
-	ERR_FAIL_COND_MSG(socket_packet_queues.has(socket_id), vformat("Failed to register socket. socket \"%s\" has already been registered.", socket_id));
+bool EOSGPacketPeerMediator::register_socket(const String &socket_id) {
+	ERR_FAIL_COND_V_MSG(socket_id.is_empty(), false, "Failed to register socket. Socket id is invalid. Provided an empty string.");
+	ERR_FAIL_COND_V_MSG(socket_packet_queues.has(socket_id), false, vformat("Failed to register socket. socket \"%s\" has already been registered.", socket_id));
 
 	if (!initialized) {
 		initialized = _init();
-		ERR_FAIL_COND_MSG(!initialized, "Failed to initialize EOSGPacketPeerMediator");
+		ERR_FAIL_COND_V(!initialized, false);
 	}
 	socket_packet_queues.insert(socket_id, List<PacketData>());
+	return true;
 }
 
 void EOSGPacketPeerMediator::unregister_socket(const String &socket_id) {

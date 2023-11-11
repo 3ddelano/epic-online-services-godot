@@ -14,7 +14,7 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("create_server", "socket_id"), &EOSGMultiplayerPeer::create_server);
     ClassDB::bind_method(D_METHOD("create_client", "socket_id", "remote_user_id"), &EOSGMultiplayerPeer::create_client);
     ClassDB::bind_method(D_METHOD("create_mesh", "socket_id"), &EOSGMultiplayerPeer::create_mesh);
-    ClassDB::bind_method(D_METHOD("add_mesh_peer", "remote_user_id", "socket_id"), &EOSGMultiplayerPeer::add_mesh_peer);
+    ClassDB::bind_method(D_METHOD("add_mesh_peer", "remote_user_id"), &EOSGMultiplayerPeer::add_mesh_peer);
     ClassDB::bind_method(D_METHOD("get_peer_id", "remote_user_id"), &EOSGMultiplayerPeer::get_peer_id);
     ClassDB::bind_method(D_METHOD("set_allow_delayed_delivery", "allow"), &EOSGMultiplayerPeer::set_allow_delayed_delivery);
     ClassDB::bind_method(D_METHOD("is_allowing_delayed_delivery"), &EOSGMultiplayerPeer::is_allowing_delayed_delivery);
@@ -30,6 +30,7 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("deny_all_connection_requests"), &EOSGMultiplayerPeer::deny_all_connection_requests);
     ClassDB::bind_method(D_METHOD("get_active_mode"), &EOSGMultiplayerPeer::get_active_mode);
     ClassDB::bind_method(D_METHOD("get_all_peers"), &EOSGMultiplayerPeer::get_all_peers);
+    ClassDB::bind_method(D_METHOD("get_peer_user_id"), &EOSGMultiplayerPeer::get_peer_user_id);
     ClassDB::bind_method(D_METHOD("is_polling"), &EOSGMultiplayerPeer::is_polling);
     ClassDB::bind_method(D_METHOD("set_is_polling", "polling"), &EOSGMultiplayerPeer::set_is_polling);
 
@@ -43,10 +44,16 @@ Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
     ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create server. Local user id has not been set.");
     ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create server. Multiplayer instance is already active.");
 
+    set_refuse_new_connections(false);
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
     active_peers.insert(socket.get_name(), this);
-    EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+    bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+
+    if(!success) {
+        _close();
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create server.");
+    }
 
     unique_id = 1;
     active_mode = MODE_SERVER;
@@ -64,10 +71,17 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create client. Local user id has not been set.");
     ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create client. Multiplayer instance is already active.");
 
+    set_refuse_new_connections(false);
     //Create the socket we are trying to connect to
     socket = EOSGSocket(socket_id);
     active_peers.insert(socket.get_name(), this);
-    EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+    bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+
+    if(!success) {
+        _close();
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create client.");
+    }
+
 
     unique_id = generate_unique_id();
     active_mode = MODE_CLIENT;
@@ -104,7 +118,12 @@ Error EOSGMultiplayerPeer::create_mesh(const String &socket_id) {
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
     active_peers.insert(socket.get_name(), this);
-    EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+    bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
+
+    if(!success) {
+        _close();
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create mesh.");
+    }
 
     unique_id = generate_unique_id();
     active_mode = MODE_MESH;
@@ -112,20 +131,20 @@ Error EOSGMultiplayerPeer::create_mesh(const String &socket_id) {
 
     if(!_add_server_callbacks()) {
         _close();
-        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create server.");
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create mesh.");
     }
 
     return OK;
 }
 
-Error EOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id, const String &socket_id) {
-    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to add mesh socket. Local user id has not been set.");
-    ERR_FAIL_COND_V_MSG(active_mode != MODE_MESH, ERR_UNCONFIGURED, "Failed to add mesh socket. Multiplayer instance is not in mesh mode.");
+Error EOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id) {
+    ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to add mesh peer. Local user id has not been set.");
+    ERR_FAIL_COND_V_MSG(active_mode != MODE_MESH, ERR_UNCONFIGURED, "Failed to add mesh peer. Multiplayer instance is not in mesh mode.");
     ERR_FAIL_COND_V_MSG(has_user_id(remote_user_id), ERR_ALREADY_EXISTS, "Failed to add mesh peer. Already connected to peer");
 
     //send connection request to peer
     EOSGPacket packet;
-    packet.set_event(EVENT_RECIEVE_PEER_ID);
+    packet.set_event(EVENT_MESH_CONNECTION_REQUEST);
     packet.set_channel(CH_RELIABLE);
     packet.set_reliability(EOS_EPacketReliability::EOS_PR_ReliableUnordered);
     packet.set_sender(unique_id);
@@ -276,14 +295,9 @@ void EOSGMultiplayerPeer::accept_all_connection_requests() {
     ERR_FAIL_NULL_MSG(s_local_user_id, "Cannot accept connection requests. Local user id has not been set.");
 
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        EOS_P2P_AcceptConnectionOptions options;
-        options.ApiVersion = EOS_P2P_ACCEPTCONNECTION_API_LATEST;
-        options.LocalUserId = s_local_user_id;
-        options.RemoteUserId = connection_request.remote_user;
-        options.SocketId = &connection_request.socket;
-        EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
-
-        ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection! Invalid parameters.");
+        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
+        String socket_id_str = connection_request.socket.SocketName;
+        accept_connection_request(remote_user_id_str, socket_id_str);
     }
 }
 
@@ -292,14 +306,9 @@ void EOSGMultiplayerPeer::deny_all_connection_requests() {
     if (active_mode == MODE_NONE || active_mode == MODE_CLIENT) return;
 
     for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        EOS_P2P_CloseConnectionOptions options;
-        options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
-        options.LocalUserId = s_local_user_id;
-        options.RemoteUserId = connection_request.remote_user;
-        options.SocketId = &connection_request.socket;
-        EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
-
-        ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to deny connection. Invalid parameters.");
+        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
+        String socket_id_str = connection_request.socket.SocketName;
+        deny_connection_request(remote_user_id_str, socket_id_str);
     }
 
     pending_connection_requests.clear();
@@ -331,7 +340,7 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
     channel = CH_RELIABLE;
     EOS_EPacketReliability reliability = EOS_EPacketReliability::EOS_PR_UnreliableUnordered;
 
-    /*IMPORTANT NOTE: EOS does not support a unreliable ordered transfer mode. 
+    /*IMPORTANT NOTE: EOS does not support an unreliable ordered transfer mode. 
     This is why there is no TRANSFER_MODE_UNRELIABLE_ORDERED listed here.
     EOSGMultiplayerPeer prints a warning and automatically sets the transfer
     mode to TRANSFER_MODE_RELIABLE if the user tries to set to unreliable ordred.
@@ -360,7 +369,7 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
     packet.prepare();
 
     Error result;
-    if (_is_server())
+    if (_is_server() || active_mode == MODE_MESH)
     {
         if (target_peer == 0) {
             result = _broadcast(packet);
@@ -370,10 +379,8 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
         } else {
             result = _send_to(peers[target_peer], packet);
         }
-    } else if (active_mode == MODE_CLIENT) {
+    } else { //We're a client
         result = _send_to(peers[1], packet); //send to the server
-    } else { //TODO:: Logic for mesh
-
     }
     return result;
 }
@@ -384,14 +391,6 @@ int32_t EOSGMultiplayerPeer::_get_available_packet_count() const {
 
 int32_t EOSGMultiplayerPeer::_get_max_packet_size() const {
     return EOS_P2P_MAX_PACKET_SIZE;
-}
-
-PackedByteArray EOSGMultiplayerPeer::_get_packet_script() {
-    return PackedByteArray();
-}
-
-Error EOSGMultiplayerPeer::_put_packet_script(const PackedByteArray &p_buffer) {
-    return Error::OK;
 }
 
 int32_t EOSGMultiplayerPeer::_get_packet_channel() const {
@@ -466,19 +465,28 @@ void EOSGMultiplayerPeer::_poll() {
             break;
         }
         case Event::EVENT_RECIEVE_PEER_ID: {
-            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "Client has recieved an EVENT_RECIEVE_PEER_ID packet. This should not have happened.");
+            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT && connection_status == CONNECTION_CONNECTED, "Client has recieved a EVENT_RECIEVE_PEER_ID packet when already connected. This shouldn't have happened!");
 
             uint32_t peer_id = *reinterpret_cast<uint32_t*>(data_ptr->ptrw() + INDEX_PEER_ID);
+            if (active_mode == MODE_CLIENT && peer_id != 1) {
+                _close();
+                ERR_FAIL_MSG("Failed to connect. Instance is not a server.");
+            }
+            
             EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
-            if (peer_id < 2 || peers.has(peer_id) || unique_id == peer_id) {
+            if (peer_id < 1 || peers.has(peer_id) || unique_id == peer_id) {
                 _disconnect_remote_user(remote_user); //Invalid peer id. reject the peer.
                 return;
             }
             peers.insert(peer_id, remote_user);
+            if (active_mode == MODE_CLIENT) {
+                connection_status = CONNECTION_CONNECTED;
+            }
 
             emit_signal("peer_connected", peer_id);
             break;
         }
+        case Event::EVENT_MESH_CONNECTION_REQUEST: break;
     }
 }
 
@@ -666,13 +674,17 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P
     ERR_FAIL_COND_MSG(!active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
     EOSGMultiplayerPeer *peer_instance = active_peers[socket_name];
     
-    if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection) {
-        if (peer_instance->active_mode == MODE_CLIENT) {
-            EOS_ProductUserId server_peer = data->RemoteUserId;
-            peer_instance->peers.insert(1, server_peer);
-            peer_instance->connection_status = CONNECTION_CONNECTED;
-            peer_instance->emit_signal("peer_connected", 1);
-        }
+    if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection &&
+    peer_instance->active_mode != MODE_CLIENT) { //We're either a server or mesh
+        //Send peer id to connected peer
+        EOSGPacket packet;
+        packet.set_event(EVENT_RECIEVE_PEER_ID);
+        packet.set_channel(CH_RELIABLE);
+        packet.set_reliability(EOS_EPacketReliability::EOS_PR_ReliableUnordered);
+        packet.set_sender(peer_instance->unique_id);
+        packet.prepare();
+
+        Error result = peer_instance->_send_to(data->RemoteUserId, packet);
     }
 
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
@@ -768,16 +780,24 @@ EOSGMultiplayerPeer::~EOSGMultiplayerPeer() {
 }
 
 void EOSGMultiplayerPeer::EOSGPacket::prepare() {
-    packet.get()->ptrw()[INDEX_EVENT_TYPE] = static_cast<uint8_t>(event);
-    packet.get()->ptrw()[INDEX_TRANSFER_MODE] = static_cast<uint8_t>(reliability);
-    memcpy(packet.get()->ptrw() + INDEX_PEER_ID, &from, sizeof(int));
+    if (packet == nullptr) {
+        _alloc_packet();
+    }
+
+    packet->ptrw()[INDEX_EVENT_TYPE] = static_cast<uint8_t>(event);
+    packet->ptrw()[INDEX_TRANSFER_MODE] = static_cast<uint8_t>(reliability);
+    memcpy(packet->ptrw() + INDEX_PEER_ID, &from, sizeof(int));
 }
 
 void EOSGMultiplayerPeer::EOSGPacket::store_payload(const uint8_t *payload_data, const uint32_t payload_size_bytes) {
-    size_bytes = payload_size_bytes + PACKET_HEADER_SIZE;
-    packet.get()->clear();
-    packet.get()->resize(size_bytes);
-    memcpy(packet.get()->ptrw() + INDEX_PAYLOAD_DATA, payload_data, payload_size_bytes);
+    if (packet == nullptr) {
+        _alloc_packet(payload_size_bytes + PACKET_HEADER_SIZE);
+    }
+    if (packet->size() != payload_size_bytes + PACKET_HEADER_SIZE) {
+        size_bytes = payload_size_bytes + PACKET_HEADER_SIZE;
+        packet->resize(size_bytes);
+    }
+    memcpy(packet->ptrw() + INDEX_PAYLOAD_DATA, payload_data, payload_size_bytes);
 }
 
 bool EOSGMultiplayerPeer::EOSGSocket::add_connection_established_callback() {

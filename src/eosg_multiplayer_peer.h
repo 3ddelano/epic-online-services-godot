@@ -15,6 +15,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	enum Event {
 		EVENT_STORE_PACKET,
 		EVENT_RECIEVE_PEER_ID,
+		EVENT_MESH_CONNECTION_REQUEST
 	};
 
 	enum {
@@ -45,77 +46,77 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	};
 
 	class EOSGPacket {
-	private:
-	std::shared_ptr<PackedByteArray> packet;
-	uint8_t channel = 0;
-	int32_t size_bytes;
-	EOS_EPacketReliability reliability;
-	Event event;
-	int from = 0;
+		private:
+		std::shared_ptr<PackedByteArray> packet;
+		uint8_t channel = 0;
+		int32_t size_bytes;
+		EOS_EPacketReliability reliability;
+		Event event;
+		int from = 0;
 
-	public:
-	static const int PACKET_HEADER_SIZE = 6;
-
-	void prepare();
-	void store_payload(const uint8_t *payload_date, const uint32_t payload_size_bytes);
-
-	int payload_size() const {
-		return size_bytes - PACKET_HEADER_SIZE;
-	}
-
-	int packet_size() const {
-		return size_bytes;
-	}
-
-	uint8_t* get_payload() const {
-		if (size_bytes == PACKET_HEADER_SIZE) {
-			return nullptr; //Return nullptr if there's no payload.
+		void _alloc_packet(int size_bytes = PACKET_HEADER_SIZE) {
+			packet = std::make_shared<PackedByteArray>();
+			packet.get()->resize(size_bytes);
+			this->size_bytes = size_bytes;
 		}
-		return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
-	}
 
-	uint8_t* get_packet() const {
-		return packet.get()->ptrw();
-	}
+		public:
+		static const int PACKET_HEADER_SIZE = 6;
 
-	EOS_EPacketReliability get_reliability() const {
-		return reliability;
-	}
+		void prepare();
+		void store_payload(const uint8_t *payload_data, const uint32_t payload_size_bytes);
 
-	void set_reliability(EOS_EPacketReliability reliability) {
-		this->reliability = reliability;
-	}
+		int payload_size() const {
+			return size_bytes - PACKET_HEADER_SIZE;
+		}
 
-	uint8_t get_channel() const {
-		return channel;
-	}
+		int packet_size() const {
+			return size_bytes;
+		}
 
-	void set_channel(uint8_t channel) {
-		this->channel = channel;
-	}
+		uint8_t* get_payload() const {
+			if (size_bytes == PACKET_HEADER_SIZE) {
+				return nullptr; //Return nullptr if there's no payload.
+			}
+			return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
+		}
 
-	Event get_event() const {
-		return event;
-	}
+		uint8_t* get_packet() const {
+			return packet.get()->ptrw();
+		}
 
-	void set_event(Event event) {
-		this->event = event;
-	}
+		EOS_EPacketReliability get_reliability() const {
+			return reliability;
+		}
 
-	int get_sender() const {
-		return from;
-	}
+		void set_reliability(EOS_EPacketReliability reliability) {
+			this->reliability = reliability;
+		}
 
-	void set_sender(int p_id) {
-		from = p_id;
-	}
+		uint8_t get_channel() const {
+			return channel;
+		}
 
-	EOSGPacket() {
-		packet = std::make_shared<PackedByteArray>();
-		packet.get()->resize(PACKET_HEADER_SIZE);
-		size_bytes = PACKET_HEADER_SIZE;
-	}
-};
+		void set_channel(uint8_t channel) {
+			this->channel = channel;
+		}
+
+		Event get_event() const {
+			return event;
+		}
+
+		void set_event(Event event) {
+			this->event = event;
+		}
+
+		int get_sender() const {
+			return from;
+		}
+
+		void set_sender(int p_id) {
+			from = p_id;
+		}
+	};
 
 	class EOSGSocket {
 		private:
@@ -212,7 +213,6 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	static HashMap<String, EOSGMultiplayerPeer*> active_peers;
 
 	EOSGPacket current_packet;
-	EOS_ProductUserId target_user_id;
 	uint32_t unique_id;
 	int target_peer = 0;
 	ConnectionStatus connection_status = CONNECTION_DISCONNECTED;
@@ -238,7 +238,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error create_server(const String &socket_id);
 	Error create_client(const String &socket_id, const String &remote_user_id);
 	Error create_mesh(const String &socket_id);
-	Error add_mesh_peer(const String &remote_user, const String &socket_id);
+	Error add_mesh_peer(const String &remote_user);
 
 	Array get_all_connecetion_requests_for_user(const String &user_id);
 	Array get_all_connection_requests();
@@ -269,8 +269,8 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	virtual Error _put_packet(const uint8_t *p_buffer, int32_t p_buffer_size);
 	virtual int32_t _get_available_packet_count() const override;
 	virtual int32_t _get_max_packet_size() const override;
-	virtual PackedByteArray _get_packet_script() override;
-	virtual Error _put_packet_script(const PackedByteArray &p_buffer) override;
+	//virtual PackedByteArray _get_packet_script() override;
+	//virtual Error _put_packet_script(const PackedByteArray &p_buffer) override;
 	virtual int32_t _get_packet_channel() const override;
 	virtual MultiplayerPeer::TransferMode _get_packet_mode() const override;
 	virtual void _set_transfer_channel(int32_t p_channel) override;
