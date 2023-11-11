@@ -38,12 +38,12 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		MODE_MESH,
 	};
 
-	struct EOSGConnectionRequest {
-		EOS_ProductUserId remote_user;
-		EOS_P2P_SocketId socket;
+	// struct EOSGConnectionRequest {
+	// 	EOS_ProductUserId remote_user;
+	// 	EOS_P2P_SocketId socket;
 
-		bool operator == (const EOSGConnectionRequest &rhs);
-	};
+	// 	bool operator == (const EOSGConnectionRequest &rhs);
+	// };
 
 	class EOSGPacket {
 		private:
@@ -196,7 +196,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
 	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet);
-	bool _find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request);
+	bool _find_connection_request(const String &remote_user, EOS_ProductUserId &out_request);
 	bool _add_server_callbacks();
 	bool _add_client_callbacks();
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
@@ -227,7 +227,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	HashMap<uint32_t, EOS_ProductUserId> peers;
 
 	EOSGSocket socket;
-	List<EOSGConnectionRequest> pending_connection_requests;
+	List<EOS_ProductUserId> pending_connection_requests;
 
     static void _bind_methods();
 
@@ -240,7 +240,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error create_mesh(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user);
 
-	Array get_all_connecetion_requests_for_user(const String &user_id);
+	// Array get_all_connecetion_requests_for_user(const String &user_id);
 	Array get_all_connection_requests();
 	String get_peer_user_id(int p_id);
 	int get_peer_id(const String &user_id);
@@ -251,8 +251,8 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	bool is_allowing_delayed_delivery();
 	void set_auto_accept_connection_requests(bool enable);
 	bool is_auto_accepting_connection_requests();
-	void accept_connection_request(const String &remote_user, const String &socket_id);
-	void deny_connection_request(const String &remote_user, const String &socket_id);
+	void accept_connection_request(const String &remote_user);
+	void deny_connection_request(const String &remote_user);
 	void accept_all_connection_requests();
 	void deny_all_connection_requests();
 	int get_active_mode();

@@ -20,12 +20,12 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_allowing_delayed_delivery"), &EOSGMultiplayerPeer::is_allowing_delayed_delivery);
     ClassDB::bind_method(D_METHOD("is_auto_accepting_connection_requests"), &EOSGMultiplayerPeer::is_auto_accepting_connection_requests);
     ClassDB::bind_method(D_METHOD("set_auto_accept_connection_requests", "enable"), &EOSGMultiplayerPeer::set_auto_accept_connection_requests);
-    ClassDB::bind_method(D_METHOD("get_all_connecetion_requests_for_user", "remote_user_id"), &EOSGMultiplayerPeer::get_all_connecetion_requests_for_user);
+    // ClassDB::bind_method(D_METHOD("get_all_connecetion_requests_for_user", "remote_user_id"), &EOSGMultiplayerPeer::get_all_connecetion_requests_for_user);
     ClassDB::bind_method(D_METHOD("get_all_connection_requests"), &EOSGMultiplayerPeer::get_all_connection_requests);
     ClassDB::bind_method(D_METHOD("has_peer", "peer_id"), &EOSGMultiplayerPeer::has_peer);
     ClassDB::bind_method(D_METHOD("has_user_id", "remote_user_id"), &EOSGMultiplayerPeer::has_user_id);
-    ClassDB::bind_method(D_METHOD("accept_connection_request", "remote_user_id", "socket_id"), &EOSGMultiplayerPeer::accept_connection_request);
-    ClassDB::bind_method(D_METHOD("deny_connection_request", "remote_user_id", "socket_id"), &EOSGMultiplayerPeer::deny_connection_request);
+    ClassDB::bind_method(D_METHOD("accept_connection_request", "remote_user_id"), &EOSGMultiplayerPeer::accept_connection_request);
+    ClassDB::bind_method(D_METHOD("deny_connection_request", "remote_user_id"), &EOSGMultiplayerPeer::deny_connection_request);
     ClassDB::bind_method(D_METHOD("accept_all_connection_requests"), &EOSGMultiplayerPeer::accept_all_connection_requests);
     ClassDB::bind_method(D_METHOD("deny_all_connection_requests"), &EOSGMultiplayerPeer::deny_all_connection_requests);
     ClassDB::bind_method(D_METHOD("get_active_mode"), &EOSGMultiplayerPeer::get_active_mode);
@@ -157,30 +157,26 @@ Error EOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id) {
 
 Array EOSGMultiplayerPeer::get_all_connection_requests() {
     Array ret = Array();
-    for (EOSGConnectionRequest &connection_request: pending_connection_requests) {
-        Dictionary connection_request_data;
-        connection_request_data["remote_user_id"] = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_name = connection_request.socket.SocketName;
-        connection_request_data["socket"] = socket_name;
-        ret.push_back(connection_request_data);
+    for (const EOS_ProductUserId &remote_user : pending_connection_requests) {
+        ret.push_back(eosg_product_user_id_to_string(remote_user));
     }
     return ret;
 }
 
-Array EOSGMultiplayerPeer::get_all_connecetion_requests_for_user(const String &user_id) {
-    Array ret = Array();
-    for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
-        if (remote_user_id_str == user_id) {
-            Dictionary connection_request_data;
-            connection_request_data["remote_user_id"] = remote_user_id_str;
-            String socket_name = connection_request.socket.SocketName;
-            connection_request_data["socket"] = socket_name;
-            ret.push_back(connection_request_data);
-        }
-    }
-    return ret;
-}
+// Array EOSGMultiplayerPeer::get_all_connecetion_requests_for_user(const String &user_id) {
+//     Array ret = Array();
+//     for (const EOS_ProductUserId &remote_user : pending_connection_requests) {
+//         String remote_user_id_str = eosg_product_user_id_to_string(remote_user);
+//         if (remote_user_id_str == user_id) {
+//             Dictionary connection_request_data;
+//             connection_request_data["remote_user_id"] = remote_user_id_str;
+//             String socket_name = connection_request.socket.SocketName;
+//             connection_request_data["socket"] = socket_name;
+//             ret.push_back(connection_request_data);
+//         }
+//     }
+//     return ret;
+// }
 
 String EOSGMultiplayerPeer::get_peer_user_id(int p_id) {
     String ret = "";
@@ -249,42 +245,42 @@ bool EOSGMultiplayerPeer::is_auto_accepting_connection_requests() {
     return auto_accept_connection_requests;
 }
 
-void EOSGMultiplayerPeer::accept_connection_request(const String &remote_user, const String &socket_id) {
+void EOSGMultiplayerPeer::accept_connection_request(const String &remote_user) {
     ERR_FAIL_COND_MSG(active_mode == MODE_NONE, "Cannot accept connection requests when multiplayer instance is not active.");
     ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "Clients are not allowed to accept connection requests.");
     ERR_FAIL_NULL_MSG(s_local_user_id, "Cannot accept connection requests. Local user id has not been set.");
 
-    EOSGConnectionRequest connection_request;
-    if (!_find_connection_request(remote_user, socket_id, connection_request)) return;
+    EOS_ProductUserId remote_user_id;
+    if (!_find_connection_request(remote_user, remote_user_id)) return;
 
     EOS_P2P_AcceptConnectionOptions options;
     options.ApiVersion = EOS_P2P_ACCEPTCONNECTION_API_LATEST;
     options.LocalUserId = s_local_user_id;
-    options.RemoteUserId = connection_request.remote_user;
-    options.SocketId = &connection_request.socket;
+    options.RemoteUserId = remote_user_id;
+    options.SocketId = socket.get_id();
     EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection request! Invalid parameters.");
 
-    pending_connection_requests.erase(connection_request);
+    pending_connection_requests.erase(remote_user_id);
 }
 
-void EOSGMultiplayerPeer::deny_connection_request(const String &remote_user, const String &socket_id) {
+void EOSGMultiplayerPeer::deny_connection_request(const String &remote_user) {
     ERR_FAIL_NULL_MSG(s_local_user_id, "Failed to deny connection request. Local user id not set");
     if (active_mode == MODE_NONE || active_mode == MODE_CLIENT) return;
-    EOSGConnectionRequest connection_request;
-    if(!_find_connection_request(remote_user, socket_id, connection_request)) return;
+    EOS_ProductUserId remote_user_id;
+    if(!_find_connection_request(remote_user, remote_user_id)) return;
 
     EOS_P2P_CloseConnectionOptions options;
     options.ApiVersion = EOS_P2P_CLOSECONNECTION_API_LATEST;
     options.LocalUserId = s_local_user_id;
-    options.RemoteUserId = connection_request.remote_user;
-    options.SocketId = &connection_request.socket;
+    options.RemoteUserId = remote_user_id;
+    options.SocketId = socket.get_id();
     EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to deny connection. Invalid parameters.");
 
-    pending_connection_requests.erase(connection_request);
+    pending_connection_requests.erase(remote_user_id);
 }
 
 void EOSGMultiplayerPeer::accept_all_connection_requests() {
@@ -294,10 +290,9 @@ void EOSGMultiplayerPeer::accept_all_connection_requests() {
     ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT, "Clients are not allowed to accept connection requests.");
     ERR_FAIL_NULL_MSG(s_local_user_id, "Cannot accept connection requests. Local user id has not been set.");
 
-    for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_id_str = connection_request.socket.SocketName;
-        accept_connection_request(remote_user_id_str, socket_id_str);
+    for (const EOS_ProductUserId &remote_user_id : pending_connection_requests) {
+        String remote_user_id_str = eosg_product_user_id_to_string(remote_user_id);
+        accept_connection_request(remote_user_id_str);
     }
 }
 
@@ -305,10 +300,9 @@ void EOSGMultiplayerPeer::deny_all_connection_requests() {
     ERR_FAIL_NULL_MSG(s_local_user_id, "Failed to deny connection requests. Local user id not set");
     if (active_mode == MODE_NONE || active_mode == MODE_CLIENT) return;
 
-    for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_id_str = connection_request.socket.SocketName;
-        deny_connection_request(remote_user_id_str, socket_id_str);
+    for (const EOS_ProductUserId &remote_user_id : pending_connection_requests) {
+        String remote_user_id_str = eosg_product_user_id_to_string(remote_user_id);
+        deny_connection_request(remote_user_id_str);
     }
 
     pending_connection_requests.clear();
@@ -411,7 +405,7 @@ int32_t EOSGMultiplayerPeer::_get_transfer_channel() const {
 
 void EOSGMultiplayerPeer::_set_transfer_mode(MultiplayerPeer::TransferMode p_mode) {
     if (p_mode == TRANSFER_MODE_UNRELIABLE_ORDERED) {
-        WARN_PRINT("EOS does not support unreliable ordered. Setting to reliable instead.");
+        WARN_PRINT("EOSGMultiplayerPeer does not support unreliable ordered. Setting to reliable instead.");
         transfer_mode = TRANSFER_MODE_RELIABLE;
         return;
     }
@@ -604,12 +598,11 @@ Error EOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const 
     return OK;
 }
 
-bool EOSGMultiplayerPeer::_find_connection_request(const String &remote_user, const String &socket_id, EOSGConnectionRequest &out_request) {
-    for (EOSGConnectionRequest &connection_request : pending_connection_requests) {
-        String remote_user_id_str = eosg_product_user_id_to_string(connection_request.remote_user);
-        String socket_name = connection_request.socket.SocketName;
-        if (remote_user == remote_user_id_str && socket_id == socket_name) {
-            out_request = connection_request;
+bool EOSGMultiplayerPeer::_find_connection_request(const String &remote_user, EOS_ProductUserId &out_request) {
+    for (const EOS_ProductUserId &remote_user_id : pending_connection_requests) {
+        String remote_user_id_str = eosg_product_user_id_to_string(remote_user_id);
+        if (remote_user == remote_user_id_str) {
+            out_request = remote_user_id;
             return true;
         }
     }
@@ -725,10 +718,9 @@ void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
     String remote_user_id_str = eosg_product_user_id_to_string(data->RemoteUserId);
 
-    EOSGConnectionRequest connection_request;
-    connection_request.remote_user = data->RemoteUserId;
-    connection_request.socket = *data->SocketId;
-    peer_instance->pending_connection_requests.push_back(connection_request);
+    EOS_ProductUserId remote_user_id;
+    remote_user_id = data->RemoteUserId;
+    peer_instance->pending_connection_requests.push_back(remote_user_id);
 
     Dictionary ret;
     ret["local_user_id"] = local_user_id_str;
@@ -738,7 +730,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P
 
     if(!peer_instance->is_auto_accepting_connection_requests()) return;
 
-    peer_instance->accept_connection_request(remote_user_id_str, socket_name);
+    peer_instance->accept_connection_request(remote_user_id_str);
 }
 
 void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data) {
@@ -751,9 +743,9 @@ void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_On
     int reason = static_cast<int>(data->Reason);
 
     //attempt to remove connection request if there was one.
-    EOSGConnectionRequest connection_request;
-    if (peer_instance->_find_connection_request(remote_user_id_str, socket_name, connection_request)) {
-            peer_instance->pending_connection_requests.erase(connection_request);
+    EOS_ProductUserId remote_user_id;
+    if (peer_instance->_find_connection_request(remote_user_id_str, remote_user_id)) {
+        peer_instance->pending_connection_requests.erase(remote_user_id);
     }
 
     //Attempt to remove peer;
@@ -882,10 +874,10 @@ void EOSGMultiplayerPeer::EOSGSocket::clear_packets_from_peer(int p_peer) {
     }
 }
 
-bool EOSGMultiplayerPeer::EOSGConnectionRequest::operator ==(const EOSGConnectionRequest &rhs) {
-    String rhs_remote_id = eosg_product_user_id_to_string(rhs.remote_user);
-    String rhs_socket_name = rhs.socket.SocketName;
-    String lhs_remote_id = eosg_product_user_id_to_string(this->remote_user);
-    String lhs_socket_name = this->socket.SocketName;
-    return rhs_remote_id == lhs_remote_id && rhs_socket_name == lhs_socket_name;
-}
+// bool EOSGMultiplayerPeer::EOSGConnectionRequest::operator ==(const EOSGConnectionRequest &rhs) {
+//     String rhs_remote_id = eosg_product_user_id_to_string(rhs.remote_user);
+//     String rhs_socket_name = rhs.socket.SocketName;
+//     String lhs_remote_id = eosg_product_user_id_to_string(this->remote_user);
+//     String lhs_socket_name = this->socket.SocketName;
+//     return rhs_remote_id == lhs_remote_id && rhs_socket_name == lhs_socket_name;
+// }
