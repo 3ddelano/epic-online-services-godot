@@ -454,8 +454,16 @@ void EOSGMultiplayerPeer::_poll() {
             EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
             if (peer_id < 1 || peers.has(peer_id) || unique_id == peer_id) {
                 _disconnect_remote_user(remote_user); //Invalid peer id. reject the peer.
-                return;
+                break;
             }
+
+            if (has_user_id(packet_data.get_sender())) {
+                //Peer may have reconnected with a new multiplayer instance. Remove their old peer id.
+                int old_id = get_peer_id(packet_data.get_sender());
+                peers.erase(old_id);
+                emit_signal("peer_disconnected", old_id);
+            }
+
             peers.insert(peer_id, remote_user);
             if (active_mode == MODE_CLIENT) {
                 connection_status = CONNECTION_CONNECTED;
