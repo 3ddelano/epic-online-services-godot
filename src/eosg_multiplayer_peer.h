@@ -42,14 +42,14 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		private:
 		std::shared_ptr<PackedByteArray> packet;
 		uint8_t channel = 0;
-		int32_t size_bytes;
+		int32_t size_bytes = 0;
 		EOS_EPacketReliability reliability;
 		Event event;
 		int from = 0;
 
 		void _alloc_packet(int size_bytes = PACKET_HEADER_SIZE) {
 			packet = std::make_shared<PackedByteArray>();
-			packet.get()->resize(size_bytes);
+			packet->resize(size_bytes);
 			this->size_bytes = size_bytes;
 		}
 
@@ -68,14 +68,17 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 
 		uint8_t* get_payload() const {
-			if (size_bytes == PACKET_HEADER_SIZE) {
+			if (size_bytes == 0 || size_bytes == PACKET_HEADER_SIZE) {
 				return nullptr; //Return nullptr if there's no payload.
 			}
-			return packet.get()->ptrw() + INDEX_PAYLOAD_DATA;
+			return packet->ptrw() + INDEX_PAYLOAD_DATA;
 		}
 
 		uint8_t* get_packet() const {
-			return packet.get()->ptrw();
+			if (packet.get() == nullptr) {
+				return nullptr; //Return nullptr if the packed has not been allocated
+			}
+			return packet->ptrw();
 		}
 
 		EOS_EPacketReliability get_reliability() const {
