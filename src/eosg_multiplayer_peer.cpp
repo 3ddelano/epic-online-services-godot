@@ -5,7 +5,7 @@
 using namespace godot;
 
 EOS_ProductUserId EOSGMultiplayerPeer::s_local_user_id = nullptr;
-HashMap<String, EOSGMultiplayerPeer*> EOSGMultiplayerPeer::active_peers = HashMap<String, EOSGMultiplayerPeer*>();
+HashMap<String, EOSGMultiplayerPeer*> EOSGMultiplayerPeer::s_active_peers = HashMap<String, EOSGMultiplayerPeer*>();
 
 void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_static_method("EOSGMultiplayerPeer", D_METHOD("set_local_user_id"), &EOSGMultiplayerPeer::set_local_user_id);
@@ -46,7 +46,7 @@ Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
     set_refuse_new_connections(false);
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
-    active_peers.insert(socket.get_name(), this);
+    s_active_peers.insert(socket.get_name(), this);
     bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
 
     if(!success) {
@@ -73,7 +73,7 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     set_refuse_new_connections(false);
     //Create the socket we are trying to connect to
     socket = EOSGSocket(socket_id);
-    active_peers.insert(socket.get_name(), this);
+    s_active_peers.insert(socket.get_name(), this);
     bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
 
     if(!success) {
@@ -116,7 +116,7 @@ Error EOSGMultiplayerPeer::create_mesh(const String &socket_id) {
 
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
-    active_peers.insert(socket.get_name(), this);
+    s_active_peers.insert(socket.get_name(), this);
     bool success = EOSGPacketPeerMediator::get_singleton()->register_socket(socket.get_name());
 
     if(!success) {
@@ -482,7 +482,7 @@ void EOSGMultiplayerPeer::_close() {
 	}
 
     EOSGPacketPeerMediator::get_singleton()->unregister_socket(socket.get_name());
-    active_peers.erase(socket.get_name());
+    s_active_peers.erase(socket.get_name());
     socket.close();
     active_mode = MODE_NONE;
     connection_status = CONNECTION_DISCONNECTED;
@@ -656,8 +656,8 @@ void EOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remot
 
 void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
     String socket_name = data->SocketId->SocketName;
-    ERR_FAIL_COND_MSG(!active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
-    EOSGMultiplayerPeer *peer_instance = active_peers[socket_name];
+    ERR_FAIL_COND_MSG(!s_active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
+    EOSGMultiplayerPeer *peer_instance = s_active_peers[socket_name];
     
     if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection &&
     peer_instance->active_mode != MODE_CLIENT) { //We're either a server or mesh
@@ -688,8 +688,8 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P
 
 void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data) {
     String socket_name = data->SocketId->SocketName;
-    ERR_FAIL_COND_MSG(!active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
-    EOSGMultiplayerPeer *peer_instance = active_peers[socket_name];
+    ERR_FAIL_COND_MSG(!s_active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
+    EOSGMultiplayerPeer *peer_instance = s_active_peers[socket_name];
 
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
     String remote_user_id_str = eosg_product_user_id_to_string(data->RemoteUserId);
@@ -702,8 +702,8 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_interrupted(const EOS_P2P
 
 void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data) {
     String socket_name = data->SocketId->SocketName;
-    ERR_FAIL_COND_MSG(!active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
-    EOSGMultiplayerPeer *peer_instance = active_peers[socket_name];
+    ERR_FAIL_COND_MSG(!s_active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
+    EOSGMultiplayerPeer *peer_instance = s_active_peers[socket_name];
 
     if (peer_instance->active_mode == MODE_CLIENT || peer_instance->is_refusing_new_connections()) return;
 
@@ -727,8 +727,8 @@ void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P
 
 void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data) {
     String socket_name = data->SocketId->SocketName;
-    ERR_FAIL_COND_MSG(!active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
-    EOSGMultiplayerPeer *peer_instance = active_peers[socket_name];
+    ERR_FAIL_COND_MSG(!s_active_peers.has(socket_name), vformat("Callback _on_peer_connection_established has failed. Active peer could not be found for socket \"%s\"", socket_name));
+    EOSGMultiplayerPeer *peer_instance = s_active_peers[socket_name];
 
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
     String remote_user_id_str = eosg_product_user_id_to_string(data->RemoteUserId);
@@ -746,6 +746,11 @@ void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_On
         peer_instance->_clear_peer_packet_queue(peer_id);
         peer_instance->peers.erase(peer_id);
         peer_instance->emit_signal("peer_disconnected", peer_id);
+    }
+
+    //If this callback is called when we're a client, it probably means connection to the server has failed. Close the peer in this case.
+    if (peer_instance->active_mode == MODE_CLIENT) {
+        peer_instance->_close(); 
     }
 
     Dictionary ret;

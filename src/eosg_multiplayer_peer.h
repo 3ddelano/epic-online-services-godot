@@ -206,7 +206,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
 
 	static EOS_ProductUserId s_local_user_id;
-	static HashMap<String, EOSGMultiplayerPeer*> active_peers;
+	static HashMap<String, EOSGMultiplayerPeer*> s_active_peers;
 
 	EOSGPacket current_packet;
 	uint32_t unique_id;
