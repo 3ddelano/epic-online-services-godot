@@ -33,10 +33,10 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_polling"), &EOSGMultiplayerPeer::is_polling);
     ClassDB::bind_method(D_METHOD("set_is_polling", "polling"), &EOSGMultiplayerPeer::set_is_polling);
 
-    ADD_SIGNAL(MethodInfo("p2p_peer_connection_established", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("p2p_peer_connection_interrupted", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("p2p_peer_connection_closed", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("p2p_incoming_connection_request", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("peer_connection_established", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("peer_connection_interrupted", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("peer_connection_closed", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("incoming_connection_request", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
@@ -695,7 +695,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_established(const EOS_P2P
     ret["socket"] = socket_name;
     ret["connection_type"] = connection_type;
     ret["network_type"] = network_type;
-    peer_instance->emit_signal("p2p_peer_connection_established", ret);
+    peer_instance->emit_signal("peer_connection_established", ret);
 }
 
 void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data) {
@@ -709,7 +709,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_peer_connection_interrupted(const EOS_P2P
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
     ret["socket"] = socket_name;
-    peer_instance->emit_signal("p2p_peer_connection_interrupted", ret);
+    peer_instance->emit_signal("peer_connection_interrupted", ret);
 }
 
 void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data) {
@@ -730,7 +730,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_incoming_connection_request(const EOS_P2P
     ret["local_user_id"] = local_user_id_str;
     ret["remote_user_id"] = remote_user_id_str;
     ret["socket"] = socket_name;
-    peer_instance->emit_signal("p2p_incoming_connection_request", ret);
+    peer_instance->emit_signal("incoming_connection_request", ret);
 
     if(!peer_instance->is_auto_accepting_connection_requests()) return;
 
@@ -770,7 +770,7 @@ void EOS_CALL EOSGMultiplayerPeer::_on_remote_connection_closed(const EOS_P2P_On
     ret["remote_user_id"] = remote_user_id_str;
     ret["socket"] = socket_name;
     ret["reason"] = reason;
-    peer_instance->emit_signal("p2p_peer_connection_closed", ret);
+    peer_instance->emit_signal("peer_connection_closed", ret);
 }
 
 EOSGMultiplayerPeer::~EOSGMultiplayerPeer() {
