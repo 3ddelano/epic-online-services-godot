@@ -415,64 +415,76 @@ bool EOSGMultiplayerPeer::_is_server() const {
 void EOSGMultiplayerPeer::_poll() {
     ERR_FAIL_COND_MSG(!_is_active(), "The multiplayer instance isn't currently active.");
     if (!polling && !EOSGPacketPeerMediator::get_singleton()->next_packet_is_peer_id_packet(socket.get_name())) return;
+    if (EOSGPacketPeerMediator::get_singleton()->get_packet_count_for_socket(socket.get_name()) == 0) return; //No packets available
 
-    PacketData packet_data;
-    bool success = EOSGPacketPeerMediator::get_singleton()->poll_next_packet(socket.get_name(), &packet_data);
-
-    if (!success) return; //theres no avaialable packets to poll
-
-    PackedByteArray *data_ptr = packet_data.get_data();
-    Event event = static_cast<Event>(data_ptr->ptrw()[INDEX_EVENT_TYPE]);
-    switch (event) {
-        case Event::EVENT_STORE_PACKET: {
-            uint32_t peer_id = *reinterpret_cast<uint32_t*>(data_ptr->ptrw() + INDEX_PEER_ID);
-            if (!peers.has(peer_id)) {
-                return; //ignore the packet if we don't have the peer
-            }
-
-            EOS_EPacketReliability reliability = static_cast<EOS_EPacketReliability>(data_ptr->ptrw()[INDEX_TRANSFER_MODE]);
-
-            EOSGPacket packet;
-            packet.store_payload(data_ptr->ptrw() + INDEX_PAYLOAD_DATA, packet_data.size() - EOSGPacket::PACKET_HEADER_SIZE);
-            packet.set_event(event);
-            packet.set_sender(peer_id);
-            packet.set_reliability(reliability);
-            packet.set_channel(packet_data.get_channel());
-            
-            socket.push_packet(packet);
-            break;
+    List<PacketData> packets;
+    PacketData next_packet;
+    if (!polling) { //The next packet should be a peer id packet if we're at this point
+        while (EOSGPacketPeerMediator::get_singleton()->next_packet_is_peer_id_packet(socket.get_name())) {
+            EOSGPacketPeerMediator::get_singleton()->poll_next_packet(socket.get_name(), &next_packet);
+            packets.push_back(next_packet);
         }
-        case Event::EVENT_RECIEVE_PEER_ID: {
-            ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT && connection_status == CONNECTION_CONNECTED, "Client has recieved a EVENT_RECIEVE_PEER_ID packet when already connected. This shouldn't have happened!");
+    } else {
+        while (EOSGPacketPeerMediator::get_singleton()->poll_next_packet(socket.get_name(), &next_packet)) {
+            packets.push_back(next_packet);
+        }
+    }
 
-            uint32_t peer_id = *reinterpret_cast<uint32_t*>(data_ptr->ptrw() + INDEX_PEER_ID);
-            if (active_mode == MODE_CLIENT && peer_id != 1) {
-                _close();
-                ERR_FAIL_MSG("Failed to connect. Instance is not a server.");
-            }
-            
-            EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
-            if (peer_id < 1 || peers.has(peer_id) || unique_id == peer_id) {
-                _disconnect_remote_user(remote_user); //Invalid peer id. reject the peer.
+    //process all the packets
+    for (PacketData &packet_data : packets) {
+        PackedByteArray *data_ptr = packet_data.get_data();
+        Event event = static_cast<Event>(data_ptr->ptrw()[INDEX_EVENT_TYPE]);
+        switch (event) {
+            case Event::EVENT_STORE_PACKET: {
+                uint32_t peer_id = *reinterpret_cast<uint32_t*>(data_ptr->ptrw() + INDEX_PEER_ID);
+                if (!peers.has(peer_id)) {
+                    return; //ignore the packet if we don't have the peer
+                }
+
+                EOS_EPacketReliability reliability = static_cast<EOS_EPacketReliability>(data_ptr->ptrw()[INDEX_TRANSFER_MODE]);
+
+                EOSGPacket packet;
+                packet.store_payload(data_ptr->ptrw() + INDEX_PAYLOAD_DATA, packet_data.size() - EOSGPacket::PACKET_HEADER_SIZE);
+                packet.set_event(event);
+                packet.set_sender(peer_id);
+                packet.set_reliability(reliability);
+                packet.set_channel(packet_data.get_channel());
+                
+                socket.push_packet(packet);
                 break;
             }
+            case Event::EVENT_RECIEVE_PEER_ID: {
+                ERR_FAIL_COND_MSG(active_mode == MODE_CLIENT && connection_status == CONNECTION_CONNECTED, "Client has recieved a EVENT_RECIEVE_PEER_ID packet when already connected. This shouldn't have happened!");
 
-            if (has_user_id(packet_data.get_sender())) {
-                //Peer may have reconnected with a new multiplayer instance. Remove their old peer id.
-                int old_id = get_peer_id(packet_data.get_sender());
-                peers.erase(old_id);
-                emit_signal("peer_disconnected", old_id);
+                uint32_t peer_id = *reinterpret_cast<uint32_t*>(data_ptr->ptrw() + INDEX_PEER_ID);
+                if (active_mode == MODE_CLIENT && peer_id != 1) {
+                    _close();
+                    ERR_FAIL_MSG("Failed to connect. Instance is not a server.");
+                }
+                
+                EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
+                if (peer_id < 1 || peers.has(peer_id) || unique_id == peer_id) {
+                    _disconnect_remote_user(remote_user); //Invalid peer id. reject the peer.
+                    break;
+                }
+
+                if (has_user_id(packet_data.get_sender())) {
+                    //Peer may have reconnected with a new multiplayer instance. Remove their old peer id.
+                    int old_id = get_peer_id(packet_data.get_sender());
+                    peers.erase(old_id);
+                    emit_signal("peer_disconnected", old_id);
+                }
+
+                peers.insert(peer_id, remote_user);
+                if (active_mode == MODE_CLIENT) {
+                    connection_status = CONNECTION_CONNECTED;
+                }
+
+                emit_signal("peer_connected", peer_id);
+                break;
             }
-
-            peers.insert(peer_id, remote_user);
-            if (active_mode == MODE_CLIENT) {
-                connection_status = CONNECTION_CONNECTED;
-            }
-
-            emit_signal("peer_connected", peer_id);
-            break;
+            case Event::EVENT_MESH_CONNECTION_REQUEST: break;
         }
-        case Event::EVENT_MESH_CONNECTION_REQUEST: break;
     }
 }
 
