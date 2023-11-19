@@ -29,47 +29,59 @@ void EOSGPacketPeerMediator::_on_process_frame() {
     packet_size_options.LocalUserId = local_user_id;
     packet_size_options.RequestedChannel = nullptr;
     uint32_t max_packet_size;
-    EOS_EResult result = IEOS::get_singleton()->p2p_get_next_packet_size(&packet_size_options, &max_packet_size);
 
-    ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet size! Invalid parameters.");
+	EOS_P2P_ReceivePacketOptions recieve_packet_options;
+	recieve_packet_options.ApiVersion = EOS_P2P_RECEIVEPACKET_API_LATEST;
+	recieve_packet_options.LocalUserId = local_user_id;
+	recieve_packet_options.MaxDataSizeBytes = EOS_P2P_MAX_PACKET_SIZE;
+	recieve_packet_options.RequestedChannel = nullptr;
 
-    if (result == EOS_EResult::EOS_NotFound) return; //No packets found
+	bool next_packet_available = true;
+	EOS_EResult result = EOS_EResult::EOS_Success;
 
-	EOS_P2P_ReceivePacketOptions options;
-    options.ApiVersion = EOS_P2P_RECEIVEPACKET_API_LATEST;
-    options.LocalUserId = local_user_id;
-    options.MaxDataSizeBytes = EOS_P2P_MAX_PACKET_SIZE;
-    options.RequestedChannel = nullptr;
+	do {
+		result = IEOS::get_singleton()->p2p_get_next_packet_size(&packet_size_options, &max_packet_size);
 
-	PackedByteArray packet_data;
-    packet_data.resize(max_packet_size);
-    uint32_t buffer_size;
-    uint8_t channel;
-    EOS_P2P_SocketId socket;
-    EOS_ProductUserId remote_user;
-    result = IEOS::get_singleton()->p2p_receive_packet(&options, packet_data.ptrw(), &buffer_size, &channel, &remote_user, &socket);
-	String socket_id_str = socket.SocketName;
+		ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet size! Invalid parameters.");
 
-	ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
-    ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_NotFound, "Failed to get packet! Packet is too large. This should not have happened.");
+		if (result == EOS_EResult::EOS_Success) {
+			next_packet_available = true;
+		}
+		else {
+			next_packet_available = false;
+		}
 
-	if (!socket_packet_queues.has(socket_id_str)) return; //invalid socket. Drop the packet.
+		if (next_packet_available) {
+			PackedByteArray packet_data;
+			packet_data.resize(max_packet_size);
+			uint32_t buffer_size;
+			uint8_t channel;
+			EOS_P2P_SocketId socket;
+			EOS_ProductUserId remote_user;
+			result = IEOS::get_singleton()->p2p_receive_packet(&recieve_packet_options, packet_data.ptrw(), &buffer_size, &channel, &remote_user, &socket);
+			String socket_id_str = socket.SocketName;
 
-	PacketData packet;
-	packet.store(packet_data.ptrw(), max_packet_size);
-	packet.set_channel(channel);
-	packet.set_sender(remote_user);
-	uint8_t event = packet.get_data()->ptrw()[0];
-	if (event == 1) {
-			socket_packet_queues[socket_id_str].push_front(packet);
-	} else {
-			socket_packet_queues[socket_id_str].push_back(packet);
-	}
+			ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
+			ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_NotFound, "Failed to get packet! Packet is too large. This should not have happened.");
 
+			if (!socket_packet_queues.has(socket_id_str)) return; //invalid socket. Drop the packet.
 
-	if (get_total_packet_count() >= max_queue_size) {
-		emit_signal("packet_queue_full");
-	}
+			PacketData packet;
+			packet.store(packet_data.ptrw(), max_packet_size);
+			packet.set_channel(channel);
+			packet.set_sender(remote_user);
+			uint8_t event = packet.get_data()->ptrw()[0];
+			if (event == 1) {
+					socket_packet_queues[socket_id_str].push_front(packet);
+			} else {
+					socket_packet_queues[socket_id_str].push_back(packet);
+			}
+
+			if (get_total_packet_count() >= max_queue_size) {
+				emit_signal("packet_queue_full");
+			}
+		}
+	} while (next_packet_available);
 }
 
 bool EOSGPacketPeerMediator::poll_next_packet(const String &socket_id, PacketData *out_packet) {
