@@ -46,19 +46,41 @@ struct PacketData {
 		return data.get();
 	}
 };
+
 class EOSGPacketPeerMediator : public RefCounted {
 	GDCLASS(EOSGPacketPeerMediator, RefCounted)
 
 	private:
 	static EOSGPacketPeerMediator *singleton;
+	Callable process_frame_callback;
+	Callable connect_interface_login_callback;
 	static void _bind_methods();
 
+	HashMap<String, EOSGMultiplayerPeer*> active_peers;
 	HashMap<String, List<PacketData>> socket_packet_queues;
+	List<ConnectionRequestData> pending_connection_requests;
 	int max_queue_size = 5000;
 	bool initialized = false;
 
 	void _on_process_frame();
-	bool _init();
+	void _init();
+	void _terminate();
+
+	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
+	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
+	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
+	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
+	void _on_connect_interface_login(Dictionary data);
+	bool _add_connection_established_callback();
+	bool _add_connection_closed_callback();
+	bool _add_connection_interrupted_callback();
+	bool _add_connection_request_callback();
+	void _pass_on_pending_connection_requests(EOSGMultiplayerPeer *peer);
+
+	EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
+	EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
+	EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
+	EOS_NotificationId connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
 
 	public:
 
@@ -100,11 +122,15 @@ class EOSGPacketPeerMediator : public RefCounted {
 		max_queue_size = limit;
 	}
 
+	int get_connection_request_count() {
+		return pending_connection_requests.size();
+	}
+
 	int get_packet_count_from_remote_user(const String &remote_user, const String &socket_id);
 	bool poll_next_packet(const String &socket_id, PacketData *out_packet);
 	bool next_packet_is_peer_id_packet(const String &socket_id);
-	bool register_socket(const String &socket_id);
-	void unregister_socket(const String &socket_id);
+	bool register_peer(EOSGMultiplayerPeer *peer);
+	void unregister_peer(EOSGMultiplayerPeer *peer);
 	void clear_packet_queue(const String &socket_id);
 	void clear_packets_from_remote_user(const String &socket_id, const String &remote_user_id);
 

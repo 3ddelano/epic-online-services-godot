@@ -8,6 +8,13 @@
 
 namespace godot
 {
+
+struct ConnectionRequestData {
+	String socket_name;
+	String remote_user_id;
+	String local_user_id;
+};
+
 class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
     GDCLASS(EOSGMultiplayerPeer, MultiplayerPeerExtension)
 	
@@ -118,10 +125,10 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		private:
 		EOS_P2P_SocketId socket;
 		List<EOSGPacket> incoming_packets;
-		EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
-		EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
-		EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
-		EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
+		// EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
+		// EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
+		// EOS_NotificationId incoming_connection_request_callback_id = EOS_INVALID_NOTIFICATIONID;
+		// EOS_NotificationId connection_closed_callback_id = EOS_INVALID_NOTIFICATIONID;
 
 		public:
 		const EOS_P2P_SocketId *get_id() const {
@@ -170,10 +177,10 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 		}
 
 		void close();
-		bool add_connection_established_callback();
-		bool add_connection_interrupted_callback();
-		bool add_connection_closed_callback();
-		bool add_incoming_connection_request_callback();
+		// bool add_connection_established_callback();
+		// bool add_connection_interrupted_callback();
+		// bool add_connection_closed_callback();
+		// bool add_incoming_connection_request_callback();
 		void clear_packets_from_peer(int p_peer);
 
 		EOSGSocket() {}
@@ -193,20 +200,20 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	Error _broadcast(const EOSGPacket &packet, int exclude = 0);
 	Error _send_to(const EOS_ProductUserId &remote_peer, const EOSGPacket &packet);
 	bool _find_connection_request(const String &remote_user, EOS_ProductUserId &out_request);
-	bool _add_server_callbacks();
-	bool _add_client_callbacks();
+	// bool _add_server_callbacks();
+	// bool _add_client_callbacks();
 	EOS_EPacketReliability _convert_transfer_mode_to_eos_reliability(TransferMode mode) const;
 	TransferMode _convert_eos_reliability_to_transfer_mode(EOS_EPacketReliability reliability) const;
 	void _disconnect_remote_user(const EOS_ProductUserId &remote_user);
 	void _clear_peer_packet_queue(int p_id);
 
-	static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
-	static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
-	static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
-	static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
+	// static void EOS_CALL _on_peer_connection_established(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
+	// static void EOS_CALL _on_peer_connection_interrupted(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
+	// static void EOS_CALL _on_incoming_connection_request(const EOS_P2P_OnIncomingConnectionRequestInfo *data);
+	// static void EOS_CALL _on_remote_connection_closed(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
 
 	static EOS_ProductUserId s_local_user_id;
-	static HashMap<String, EOSGMultiplayerPeer*> s_active_peers;
+	//static HashMap<String, EOSGMultiplayerPeer*> s_active_peers;
 
 	EOSGPacket current_packet;
 	uint32_t unique_id;
@@ -231,11 +238,17 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	static void set_local_user_id(const String& p_local_user_id);
 	static String get_local_user_id();
 
+	void peer_connection_established_callback(const EOS_P2P_OnPeerConnectionEstablishedInfo *data);
+	void remote_connection_closed_callback(const EOS_P2P_OnRemoteConnectionClosedInfo *data);
+	void peer_connection_interrupted_callback(const EOS_P2P_OnPeerConnectionInterruptedInfo *data);
+	void connection_request_callback(const ConnectionRequestData &data);
+
 	Error create_server(const String &socket_id);
 	Error create_client(const String &socket_id, const String &remote_user_id);
 	Error create_mesh(const String &socket_id);
 	Error add_mesh_peer(const String &remote_user);
 
+	String get_socket() const;
 	Array get_all_connection_requests();
 	String get_peer_user_id(int p_id);
 	int get_peer_id(const String &user_id);
