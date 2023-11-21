@@ -237,7 +237,7 @@ void EOS_CALL EOSGPacketPeerMediator::_on_incoming_connection_request(const EOS_
 		ret["local_user_id"] = request_data.local_user_id;
 		ret["remote_user_id"] = request_data.remote_user_id;
 		ret["socket_id"] = request_data.socket_name;
-		singleton->emit_signal("connection_reqeust_received", ret);
+		singleton->emit_signal("connection_request_recieved", ret);
 		return;
 	}
 	singleton->active_peers[request_data.socket_name]->connection_request_callback(request_data);
