@@ -221,7 +221,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 	ConnectionStatus connection_status = CONNECTION_DISCONNECTED;
 	Mode active_mode = MODE_NONE;
 	EOS_Bool allow_delayed_delivery = EOS_TRUE;
-	bool auto_accept_connection_requests = false;
+	bool auto_accept_connection_requests = true;
 	TransferMode transfer_mode = TransferMode::TRANSFER_MODE_RELIABLE;
 	uint32_t transfer_channel = CH_RELIABLE;
 	bool refusing_connections = false;
