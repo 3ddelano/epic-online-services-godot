@@ -1,3 +1,4 @@
+
 #include "godot_cpp/classes/ref_counted.hpp"
 #include "eosg_multiplayer_peer.h"
 #include "godot_cpp/classes/engine.hpp"
@@ -75,7 +76,7 @@ class EOSGPacketPeerMediator : public RefCounted {
 	bool _add_connection_closed_callback();
 	bool _add_connection_interrupted_callback();
 	bool _add_connection_request_callback();
-	void _pass_on_pending_connection_requests(EOSGMultiplayerPeer *peer);
+	void _forward_pending_connection_requests(EOSGMultiplayerPeer *peer);
 
 	EOS_NotificationId connection_established_callback_id = EOS_INVALID_NOTIFICATIONID;
 	EOS_NotificationId connection_interrupted_callback_id = EOS_INVALID_NOTIFICATIONID;
