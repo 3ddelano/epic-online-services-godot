@@ -33,11 +33,10 @@ void EOSGPacketPeerMediator::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_packet_count_from_remote_user"), &EOSGPacketPeerMediator::get_packet_count_from_remote_user);
 	ClassDB::bind_method(D_METHOD("get_queue_size_limit"), &EOSGPacketPeerMediator::get_queue_size_limit);
 	ClassDB::bind_method(D_METHOD("set_queue_size_limit", "limit"), &EOSGPacketPeerMediator::set_queue_size_limit);
-	ClassDB::bind_method(D_METHOD("init"), &EOSGPacketPeerMediator::_init);
 	ClassDB::bind_method(D_METHOD("get_connection_request_count"), &EOSGPacketPeerMediator::get_connection_request_count);
 
 	ADD_SIGNAL(MethodInfo("packet_queue_full"));
-	ADD_SIGNAL(MethodInfo("connection_request_recieved", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+	ADD_SIGNAL(MethodInfo("connection_request_received", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 	ADD_SIGNAL(MethodInfo("connection_request_removed", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
@@ -359,7 +358,7 @@ void EOS_CALL EOSGPacketPeerMediator::_on_incoming_connection_request(const EOS_
 		ret["local_user_id"] = request_data.local_user_id;
 		ret["remote_user_id"] = request_data.remote_user_id;
 		ret["socket_id"] = request_data.socket_name;
-		singleton->emit_signal("connection_request_recieved", ret);
+		singleton->emit_signal("connection_request_received", ret);
 		return;
 	}
 	singleton->active_peers[request_data.socket_name]->connection_request_callback(request_data);
