@@ -15,7 +15,11 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     memset(&credentials, 0, sizeof(EOS_Connect_Credentials));
     credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
     credentials.Type = static_cast<EOS_EExternalCredentialType>((int)p_credentials->get("type"));
-    credentials.Token = token.get_data();
+    if (credentials.Type == EOS_EExternalCredentialType::EOS_ECT_DEVICEID_ACCESS_TOKEN) {
+        credentials.Token = nullptr; //It needs to be nullptr for deviceid, otherwise login will fail
+    } else {
+        credentials.Token = token.get_data();
+    }
 
     EOS_Connect_UserLoginInfo userLoginInfo;
     memset(&userLoginInfo, 0, sizeof(EOS_Connect_LoginOptions));

@@ -39,7 +39,7 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["pin_grant_info"] = eosg_auth_pin_grant_info_to_dict(data->PinGrantInfo);
         ret["continuance_token"] = eosg_continuance_token_to_wrapper(data->ContinuanceToken);
-        ret["account_feature_restricted_info"] = eosg_auth_account_feature_restricted_info_to_dict(data->AccountFeatureRestrictedInfo);
+        ret["account_feature_restricted_info"] = eosg_auth_account_feature_restricted_info_to_dict(data->AccountFeatureRestrictedInfo_DEPRECATED); //This should change at some point
         ret["selected_account_id"] = eosg_epic_account_id_to_string(data->SelectedAccountId);
 
         if (data->ResultCode == EOS_EResult::EOS_Success) {
