@@ -200,7 +200,7 @@ void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
 
     EOS_Connect_CreateUser(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_CreateUserCallbackInfo* data) {
         Dictionary ret;
-        ret["reuslt_code"] = static_cast<int>(data->ResultCode);
+        ret["result_code"] = static_cast<int>(data->ResultCode);
         Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
