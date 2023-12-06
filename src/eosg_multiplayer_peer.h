@@ -183,7 +183,7 @@ class EOSGMultiplayerPeer : public MultiplayerPeerExtension {
 
 		EOSGSocket(const String &socket_name) {
 			socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
-			strncpy_s(socket.SocketName, socket_name.utf8(), socket_name.length());
+			STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
 		}
 	};
 

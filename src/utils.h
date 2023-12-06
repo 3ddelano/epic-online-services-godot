@@ -18,6 +18,12 @@ using namespace godot;
 #define EOSG_GET_STRING(str) ((str == nullptr) ? String("") : String(str))
 #define EOSG_GET_BOOL(eosBool) ((eosBool == EOS_TRUE) ? true : false)
 
+#ifdef _MSC_VER  // Check if using Microsoft Visual Studio
+#define STRNCPY_S(dest, destsz, src, count) strncpy_s(dest, destsz, src, count)
+#else
+#define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
+#endif
+
 static char const* eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
     if (accountId == nullptr) {
         return "";

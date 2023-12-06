@@ -320,7 +320,7 @@ void EOS_CALL EOSGPacketPeerMediator::_on_remote_connection_closed(const EOS_P2P
 	//Check if there are any connection requests that need to be removed.
 	List<ConnectionRequestData>::Element *e = singleton->pending_connection_requests.front();
 	for (; e != nullptr; e = e->next()) {
-		String request_remote_user_id = e->get().remote_user_id.utf8();
+		String request_remote_user_id = e->get().remote_user_id;
 		String closed_remote_user_id = eosg_product_user_id_to_string(data->RemoteUserId);
 		String request_socket_name = e->get().socket_name;
 		if (request_remote_user_id == closed_remote_user_id && socket_name == request_socket_name) {
