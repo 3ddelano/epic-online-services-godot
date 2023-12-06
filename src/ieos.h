@@ -258,11 +258,11 @@ class IEOS : public RefCounted {
     int ui_interface_set_display_preference(Ref<RefCounted> options);
     int ui_interface_set_toggle_friends_key(Ref<RefCounted> options);
     void ui_interface_show_friends(Ref<RefCounted> options);
-    bool IEOS::ui_interface_get_friends_exclusive_input(Ref<RefCounted> options);
-    void IEOS::ui_interface_show_block_player(Ref<RefCounted> options);
-    void IEOS::ui_interface_show_report_player(Ref<RefCounted> options);
-    int IEOS::ui_interface_pause_social_overlay(Ref<RefCounted> options);
-    bool IEOS::ui_interface_is_social_overlay_paused(Ref<RefCounted> options);
+    bool ui_interface_get_friends_exclusive_input(Ref<RefCounted> options);
+    void ui_interface_show_block_player(Ref<RefCounted> options);
+    void ui_interface_show_report_player(Ref<RefCounted> options);
+    int ui_interface_pause_social_overlay(Ref<RefCounted> options);
+    bool ui_interface_is_social_overlay_paused(Ref<RefCounted> options);
 
     // -----
     // KWS Interface
@@ -344,7 +344,7 @@ class IEOS : public RefCounted {
     // P2P Interface
     // -----
 
-    //Binded functions
+    // Available in Godot functions
     void p2p_query_nat_type();
     int p2p_get_nat_type();
     void p2p_set_relay_control(int control);
@@ -354,7 +354,7 @@ class IEOS : public RefCounted {
     void p2p_set_packet_queue_size(Ref<RefCounted> options);
     Dictionary p2p_get_packet_queue_info();
 
-    //Not binded. Called by EOSGMultiplayerPeer
+    // Not available in Godot. Called by EOSGMultiplayerPeer
     EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
     EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size,
         uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
