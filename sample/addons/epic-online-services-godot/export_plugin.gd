@@ -3,7 +3,7 @@ extends EditorExportPlugin
 
 
 func _get_name() -> String:
-	return "Epic Online Services Godot 4.x"
+	return "Epic Online Services Godot 4.2"
 
 
 func _export_begin(features: PackedStringArray, is_debug: bool, path: String, flags: int):

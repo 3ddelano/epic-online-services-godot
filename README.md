@@ -43,11 +43,11 @@ This project uses GDExtension to wrap the Epic Online Services C SDK so that it 
 Installation
 --------------
 
-This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps below:
+This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps below:
 
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `addons/` folder in of your project.
-3. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.x` plugin.
+3. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2` plugin.
 4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below simple script.
     ```GDScript
     # In main script
@@ -77,8 +77,8 @@ This is a regular plugin for `Godot 4.x`. To install the plugin follow the steps
         if OS.get_name() == "Windows":
             create_options.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 
-        var create_result := EOS.Platform.PlatformInterface.create(create_options)
-        if not create_result:
+        var create_success := EOS.Platform.PlatformInterface.create(create_options)
+        if not create_success:
             print("Failed to create EOS Platform")
             return
 
@@ -129,7 +129,7 @@ Development Setup
 --------------
 
 #### Pre-requisites
-- Godot Engine 4.x (Get it here [Godot Engine Download](https://godotengine.org/download/))
+- Godot Engine 4.2 (Get it here [Godot Engine Download](https://godotengine.org/download/))
 - Epic Online Services C SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal/sdk))
 - Make sure you have accepted the Terms and Conditions for [Epic Online Services](https://www.epicgames.com/site/en-US/tos?lang=en-US)
 - A product registered with Epic Games Services (Make one for free [Epic Developer Portal](https://dev.epicgames.com/portal))
@@ -146,14 +146,14 @@ To develop this plugin, follow the below steps:
 4. Build the GDExtension plugin in debug mode (With debug symbols)
    ```shell
    # In root folder
-   scons platform=<platform> -j4 target=template_debug dev_build=yes
+   scons platform=<platform> target=template_debug dev_build=yes
    ```
-   Eg. `scons platform=windows -j4 target=template_debug dev_build=yes`
+   Eg. `scons platform=windows target=template_debug dev_build=yes`
 
 5. Build the GDExtension plugin for release (Optimized)
    ```shell
    # In root folder
-   scons platform=windows -j4 target=template_release
+   scons platform=windows target=template_release
    ```
 
 6. The built GDExtension library will be in the `addons/epic-online-services-godot/bin/` folder.
