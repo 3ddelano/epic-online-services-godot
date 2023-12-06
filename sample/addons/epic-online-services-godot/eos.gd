@@ -1806,14 +1806,14 @@ class P2P:
 	class SetPortRangeOptions extends BaseClass:
 		func _init():
 			super._init("SetPortRangeOptions")
-		
+
 		var port : int
 		var max_additional_ports_to_try : int
-	
+
 	class SetPacketQueueSizeOptions extends BaseClass:
 		func _init():
 			super._init("SetPacketQueueSizeOptions")
-		
+
 		var incoming_packet_queue_max_size_bytes : int
 		var outgoing_packet_queue_max_size_bytes : int
 

@@ -30,7 +30,7 @@ func _ready() -> void:
 	if init_result != EOS.Result.Success:
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_result))
 		return
-	print("Intialized EOS platform")
+	print("Initialized EOS platform")
 
 	# Create platform
 	var create_options = EOS.Platform.CreateOptions.new()

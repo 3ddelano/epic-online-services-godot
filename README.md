@@ -2,16 +2,16 @@ Epic Online Services Godot (WIP)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
-### Unofficial Epic Online Services wrapper for Godot Engine 4.x (includes demo project)
+### Unofficial Epic Online Services wrapper for Godot Engine 4.2 (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.x-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.15" src="https://img.shields.io/badge/-Epic Online Services 1.15-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.2-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.1" src="https://img.shields.io/badge/-Epic Online Services 1.16.1-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Tested on: Windows 10 x64 and Linux x64
 
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
 
-#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4
+#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4.2
 #### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3 Mono (C#) (un maintained)
 
 ## [View Current Project Status](#current-project-status)
@@ -230,7 +230,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [x] Sample
 - P2P Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - PlayerDataStorage Interface
   - [ ] Implementation
@@ -261,7 +261,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Sample
 - Ecom Interface
   - [x] Implementation
-  - [] Sample (Needs Epic Games Store access)
+  - [ ] Sample (Needs Epic Games Store access)
 - AntiCheatServer Interface
   - [ ] Implementation
   - [ ] Sample
