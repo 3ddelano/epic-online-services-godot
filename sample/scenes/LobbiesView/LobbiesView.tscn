@@ -132,6 +132,7 @@ text = "Talking?"
 layout_mode = 2
 
 [node name="SearchLobbyResults" type="VBoxContainer" parent="VB"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Label2" type="Label" parent="VB/SearchLobbyResults"]
