@@ -10,7 +10,7 @@ windows.x86_64.debug = "bin/libeosg.windows.template_debug.dev.x86_64.dll"
 windows.x86_64.release = "bin/libeosg.windows.template_release.x86_64.dll"
 
 [dependencies]
-windows.debug.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "/bin/x64/xaudio2_9redist.dll"]
-windows.release.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "/bin/x64/xaudio2_9redist.dll"]
+windows.debug.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "bin/x64/xaudio2_9redist.dll"]
+windows.release.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "bin/x64/xaudio2_9redist.dll"]
 linux.debug.x86_64 = "bin/linux/libEOSSDK-Linux-Shipping.so"
 linux.release.x86_64 = "bin/linux/libEOSSDK-Linux-Shipping.so"
