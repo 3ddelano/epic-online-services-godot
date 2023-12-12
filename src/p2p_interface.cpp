@@ -5,7 +5,7 @@ void IEOS::p2p_query_nat_type() {
     options.ApiVersion = EOS_P2P_QUERYNATTYPE_API_LATEST;
     EOS_P2P_QueryNATType(s_p2pInterface, &options, nullptr, [](const EOS_P2P_OnQueryNATTypeCompleteInfo *data){
         int nat_type = static_cast<int>(data->NATType);
-        get_singleton()->emit_signal("p2p_query_nat_type_completed", nat_type);
+        get_singleton()->emit_signal("p2p_query_nat_type_callback", nat_type);
     });
 }
 

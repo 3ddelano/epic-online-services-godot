@@ -328,7 +328,7 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("lobby_interface_query_invites_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_search_find_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 
-    ADD_SIGNAL(MethodInfo("p2p_query_nat_type_completed", PropertyInfo(Variant::INT, "nat_type")));
+    ADD_SIGNAL(MethodInfo("p2p_query_nat_type_callback", PropertyInfo(Variant::INT, "nat_type")));
     ADD_SIGNAL(MethodInfo("p2p_incoming_packet_queue_full", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
