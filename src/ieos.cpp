@@ -316,13 +316,11 @@ IEOS *IEOS::singleton = nullptr;
 IEOS *IEOS::get_singleton() { return singleton; }
 
 IEOS::IEOS() {
-    // Initialize any variables here
     ERR_FAIL_COND(singleton != nullptr);
     singleton = this;
 }
 
 IEOS::~IEOS() {
-    // Add your cleanup here
     ERR_FAIL_COND(singleton != this);
     if (s_platformInterface != nullptr) {
         EOS_Platform_Release(s_platformInterface);

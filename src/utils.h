@@ -101,7 +101,7 @@ static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continua
     return continuance_token;
 }
 
-static Variant eosg_auth_id_token_to_dict(EOS_Auth_IdToken* authIdToken) {
+static Variant eosg_auth_id_token_to_dict_and_release(EOS_Auth_IdToken* authIdToken) {
     if (authIdToken == nullptr) {
         return Variant();
     }
@@ -112,7 +112,7 @@ static Variant eosg_auth_id_token_to_dict(EOS_Auth_IdToken* authIdToken) {
     return ret;
 }
 
-static Variant eosg_connect_id_token_to_dict(EOS_Connect_IdToken* connectIdToken) {
+static Variant eosg_connect_id_token_to_dict_and_release(EOS_Connect_IdToken* connectIdToken) {
     if (connectIdToken == nullptr) {
         return Variant();
     }
@@ -123,7 +123,7 @@ static Variant eosg_connect_id_token_to_dict(EOS_Connect_IdToken* connectIdToken
     return ret;
 }
 
-static Variant eosg_auth_token_to_dict(EOS_Auth_Token* authToken) {
+static Variant eosg_auth_token_to_dict_and_release(EOS_Auth_Token* authToken) {
     if (authToken == nullptr) {
         return Variant();
     }
@@ -142,7 +142,7 @@ static Variant eosg_auth_token_to_dict(EOS_Auth_Token* authToken) {
     return ret;
 }
 
-static Variant eosg_connect_external_account_info_to_dict(EOS_Connect_ExternalAccountInfo* externalAccountInfo) {
+static Variant eosg_connect_external_account_info_to_dict_and_release(EOS_Connect_ExternalAccountInfo* externalAccountInfo) {
     if (externalAccountInfo == nullptr) {
         return Variant();
     }
@@ -264,7 +264,7 @@ static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transact
     return transaction;
 }
 
-static Variant eosg_user_info_external_user_info_to_dict(EOS_UserInfo_ExternalUserInfo* externalUserInfo) {
+static Variant eosg_user_info_external_user_info_to_dict_and_release(EOS_UserInfo_ExternalUserInfo* externalUserInfo) {
     if (externalUserInfo == nullptr) {
         return Variant();
     }
@@ -278,7 +278,7 @@ static Variant eosg_user_info_external_user_info_to_dict(EOS_UserInfo_ExternalUs
     return ret;
 }
 
-static Variant eosg_user_info_user_info_to_dict(EOS_UserInfo* userInfo) {
+static Variant eosg_user_info_user_info_to_dict_and_release(EOS_UserInfo* userInfo) {
     if (userInfo == nullptr) {
         return Variant();
     }
@@ -294,7 +294,7 @@ static Variant eosg_user_info_user_info_to_dict(EOS_UserInfo* userInfo) {
     return ret;
 }
 
-static Variant eosg_mods_mod_info_to_dict(EOS_Mods_ModInfo* modsInfo) {
+static Variant eosg_mods_mod_info_to_dict_and_release(EOS_Mods_ModInfo* modsInfo) {
     if (modsInfo == nullptr) {
         return Variant();
     }
@@ -353,7 +353,7 @@ static Variant eosg_mods_mod_identifier_to_dict(const EOS_Mod_Identifier* mod) {
     return ret;
 }
 
-static Variant eosg_presence_presence_info_to_dict(EOS_Presence_Info* presence) {
+static Variant eosg_presence_presence_info_to_dict_and_release(EOS_Presence_Info* presence) {
     if (presence == nullptr) {
         return Variant();
     }
@@ -391,7 +391,7 @@ static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModif
     return presence_modification;
 }
 
-static Variant eosg_achievements_definition_to_dict(EOS_Achievements_DefinitionV2* definition) {
+static Variant eosg_achievements_definition_to_dict_and_release(EOS_Achievements_DefinitionV2* definition) {
     if (definition == nullptr) {
         return Variant();
     }
@@ -418,7 +418,7 @@ static Variant eosg_achievements_definition_to_dict(EOS_Achievements_DefinitionV
     return ret;
 }
 
-static Variant eosg_achievements_player_achievement_to_dict(EOS_Achievements_PlayerAchievement* achievement) {
+static Variant eosg_achievements_player_achievement_to_dict_and_release(EOS_Achievements_PlayerAchievement* achievement) {
     if (achievement == nullptr) {
         return Variant();
     }

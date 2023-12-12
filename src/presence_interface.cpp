@@ -16,7 +16,7 @@ Dictionary IEOS::presence_interface_copy_presence(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["presence_info"] = eosg_presence_presence_info_to_dict(outPresenceInfo);
+    ret["presence_info"] = eosg_presence_presence_info_to_dict_and_release(outPresenceInfo);
     return ret;
 }
 

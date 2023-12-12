@@ -75,7 +75,7 @@ Dictionary IEOS::connect_interface_copy_id_token(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["id_token"] = eosg_connect_id_token_to_dict(outToken);
+    ret["id_token"] = eosg_connect_id_token_to_dict_and_release(outToken);
     return ret;
 }
 
@@ -95,7 +95,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_account_info"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
+    ret["external_account_info"] = eosg_connect_external_account_info_to_dict_and_release(outExternalAccountInfo);
     return ret;
 }
 
@@ -113,7 +113,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_account_info"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
+    ret["external_account_info"] = eosg_connect_external_account_info_to_dict_and_release(outExternalAccountInfo);
     return ret;
 }
 
@@ -131,7 +131,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_index(R
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_account_info"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
+    ret["external_account_info"] = eosg_connect_external_account_info_to_dict_and_release(outExternalAccountInfo);
     return ret;
 }
 
@@ -148,7 +148,7 @@ Dictionary IEOS::connect_interface_copy_product_user_info(Ref<RefCounted> p_opti
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_account_info"] = eosg_connect_external_account_info_to_dict(outExternalAccountInfo);
+    ret["external_account_info"] = eosg_connect_external_account_info_to_dict_and_release(outExternalAccountInfo);
     return ret;
 }
 

@@ -18,7 +18,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_id(Ref<R
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict(outExternalUserInfo);
+    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict_and_release(outExternalUserInfo);
     return ret;
 }
 
@@ -38,7 +38,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_type(Ref
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict(outExternalUserInfo);
+    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict_and_release(outExternalUserInfo);
     return ret;
 }
 
@@ -58,7 +58,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_index(Ref<RefCou
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict(outExternalUserInfo);
+    ret["external_user_info"] = eosg_user_info_external_user_info_to_dict_and_release(outExternalUserInfo);
     return ret;
 }
 
@@ -77,7 +77,7 @@ Dictionary IEOS::user_info_interface_copy_user_info(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["user_info"] = eosg_user_info_user_info_to_dict(outUserInfo);
+    ret["user_info"] = eosg_user_info_user_info_to_dict_and_release(outUserInfo);
     return ret;
 }
 

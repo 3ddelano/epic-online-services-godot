@@ -15,7 +15,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_achiev
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["definition_v2"] = eosg_achievements_definition_to_dict(outDefinition);
+    ret["definition_v2"] = eosg_achievements_definition_to_dict_and_release(outDefinition);
     return ret;
 }
 
@@ -30,7 +30,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_index(
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["definition_v2"] = eosg_achievements_definition_to_dict(outDefinition);
+    ret["definition_v2"] = eosg_achievements_definition_to_dict_and_release(outDefinition);
     return ret;
 }
 
@@ -51,7 +51,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_achievement_i
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["player_achievement"] = eosg_achievements_player_achievement_to_dict(outAchievement);
+    ret["player_achievement"] = eosg_achievements_player_achievement_to_dict_and_release(outAchievement);
     return ret;
 }
 
@@ -71,7 +71,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_index(Ref<Ref
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["player_achievement"] = eosg_achievements_player_achievement_to_dict(outAchievement);
+    ret["player_achievement"] = eosg_achievements_player_achievement_to_dict_and_release(outAchievement);
     return ret;
 }
 

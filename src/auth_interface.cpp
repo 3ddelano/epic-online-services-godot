@@ -91,7 +91,7 @@ Dictionary IEOS::auth_interface_copy_id_token(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["id_token"] = eosg_auth_id_token_to_dict(outToken);
+    ret["id_token"] = eosg_auth_id_token_to_dict_and_release(outToken);
     return ret;
 }
 
@@ -108,7 +108,7 @@ Dictionary IEOS::auth_interface_copy_user_auth_token(Ref<RefCounted> p_options, 
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["token"] = eosg_auth_token_to_dict(outToken);
+    ret["token"] = eosg_auth_token_to_dict_and_release(outToken);
     return ret;
 }
 
