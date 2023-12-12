@@ -83,15 +83,6 @@ static Variant eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo* pin
     return ret;
 }
 
-static Variant eosg_auth_account_feature_restricted_info_to_dict(const EOS_Auth_AccountFeatureRestrictedInfo* accountFeaturesRestrictedInfo) {
-    if (accountFeaturesRestrictedInfo == nullptr) {
-        return Variant();
-    }
-    Dictionary ret;
-    ret["verification_uri"] = EOSG_GET_STRING(accountFeaturesRestrictedInfo->VerificationURI);
-    return ret;
-}
-
 static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continuance_token) {
     if (p_continuance_token == nullptr) {
         return Variant();

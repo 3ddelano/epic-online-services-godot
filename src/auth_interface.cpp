@@ -28,6 +28,7 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
     loginOptions.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
     loginOptions.Credentials = &credentials;
     loginOptions.ScopeFlags = static_cast<EOS_EAuthScopeFlags>(static_cast<int>(p_options->get("scope_flags")));
+	loginOptions.LoginFlags = static_cast<uint64_t>(p_options->get("login_flags"));
     p_options->reference();
 
     EOS_Auth_Login(s_authInterface, &loginOptions, (void*)*p_options, [](const EOS_Auth_LoginCallbackInfo* data) {
@@ -39,7 +40,6 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["pin_grant_info"] = eosg_auth_pin_grant_info_to_dict(data->PinGrantInfo);
         ret["continuance_token"] = eosg_continuance_token_to_wrapper(data->ContinuanceToken);
-        ret["account_feature_restricted_info"] = eosg_auth_account_feature_restricted_info_to_dict(data->AccountFeatureRestrictedInfo_DEPRECATED); //This should change at some point
         ret["selected_account_id"] = eosg_epic_account_id_to_string(data->SelectedAccountId);
 
         if (data->ResultCode == EOS_EResult::EOS_Success) {

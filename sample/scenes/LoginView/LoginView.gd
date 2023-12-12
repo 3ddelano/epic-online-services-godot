@@ -113,11 +113,6 @@ func _on_auth_interface_login_callback(data: Dictionary):
 		print("--- Auth: Got continuance_token, use it to link an account")
 		print(data.continuance_token)
 
-	if data.account_feature_restricted_info != null:
-		var account_feature_restricted_info = data.account_feature_restricted_info
-		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link [url]%s[/url]" % account_feature_restricted_info.verification_uri)
-		OS.shell_open(account_feature_restricted_info.verification_uri)
-
 	if not (data.pending or data.success):
 		print("--- Auth: Login Failed: ", data)
 		set_login_state(States.Error)
@@ -277,6 +272,7 @@ func perform_auth_login(type: int, id = "", token = "", external_type = -1):
 	var login_options = EOS.Auth.LoginOptions.new()
 	login_options.credentials = credentials
 	login_options.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
+	# login_options.login_flags = EOS.Auth.LoginFlags.NO_USER_INTERFACE
 	login_options.client_data = {"data": "hello", "name": [1, 2, "world"]}
 	EOS.Auth.AuthInterface.login(login_options)
 

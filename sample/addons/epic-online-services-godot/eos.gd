@@ -377,7 +377,8 @@ class Auth:
 		FriendsList = 0x2,
 		Presence = 0x4,
 		FriendsManagement = 0x8,
-		Email = 0x10
+		Email = 0x10,
+		Country = 0x20,
 	}
 
 	enum AuthTokenType { Client = 0, User = 1 }
@@ -396,12 +397,17 @@ class Auth:
 		ExternalAuth = 7
 	}
 
+	enum LoginFlags {
+		NO_USER_INTERFACE = 1
+	}
+
 	class LoginOptions extends BaseClass:
 		func _init():
 			super._init("LoginOptions")
 
 		var credentials: Credentials
 		var scope_flags: ScopeFlags = -1
+		var login_flags = 0 ## See [enum EOS.Auth.LoginFlags]
 
 		var client_data = null
 
@@ -2752,6 +2758,12 @@ enum ExternalCredentialType {
 	ItchioKey = 15,
 	EpicIdToken = 16,
 	AmazonAccessToken = 17
+}
+
+enum OnlinePlatformType {
+	Unknown = 0,
+	Epic = 100,
+	Steam = 4000
 }
 
 enum LoginStatus {
