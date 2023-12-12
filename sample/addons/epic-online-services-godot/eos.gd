@@ -1446,7 +1446,7 @@ class Lobby:
 			super._init("JoinLobbyOptions")
 
 		var local_user_id: String
-		var lobby_detals: LobbyDetailsEOSG
+		var lobby_details: LobbyDetailsEOSG
 		var presence_enabled: bool
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
 		## A [Dictionary] with keys: [br]
