@@ -19,7 +19,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(platform_interface_set_override_locale_code);
     IEOS_BIND_METHOD(platform_interface_check_for_launcher_and_restart);
     IEOS_BIND_METHOD(platform_interface_initialize);
-    IEOS_BIND_METHOD(platform_interface_get_desktop_crossplay_status);
+    IEOS_BIND_METHOD(platform_interface_get_desktop_crossplay_status_info);
     IEOS_BIND_METHOD(platform_interface_set_application_status);
     IEOS_BIND_METHOD(platform_interface_get_application_status);
     IEOS_BIND_METHOD(platform_interface_set_network_status);

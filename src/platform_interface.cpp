@@ -57,6 +57,13 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
 #else
     rtcOptions.PlatformSpecificOptions = nullptr;
 #endif
+    // Handle background mode
+    Ref<RefCounted> p_rtc_options = p_options->get("rtc_options");
+    if (p_rtc_options->get("background_mode").get_type() != Variant::NIL) {
+        int backgroundMode = p_rtc_options->get("background_mode");
+        rtcOptions.BackgroundMode = static_cast<EOS_ERTCBackgroundMode>(backgroundMode);
+    }
+
     platformOptions.RTCOptions = &rtcOptions;
 
     if (!platformOptions.IntegratedPlatformOptionsContainerHandle) {
@@ -452,18 +459,19 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
     return static_cast<int>(res);
 }
 
-Dictionary IEOS::platform_interface_get_desktop_crossplay_status() {
-    EOS_Platform_GetDesktopCrossplayStatusOptions options = { 0 };
+Dictionary IEOS::platform_interface_get_desktop_crossplay_status_info() {
+    EOS_Platform_GetDesktopCrossplayStatusOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PLATFORM_GETDESKTOPCROSSPLAYSTATUS_API_LATEST;
-    EOS_Platform_GetDesktopCrossplayStatusInfo outDesktopCrossplayStatusInfo;
+    EOS_Platform_DesktopCrossplayStatusInfo outDesktopCrossplayStatusInfo;
     EOS_EResult result = EOS_Platform_GetDesktopCrossplayStatus(s_platformInterface, &options, &outDesktopCrossplayStatusInfo);
 
     Dictionary dict;
     dict["result_code"] = static_cast<int>(result);
     Dictionary desktopCrossplayStatus = Dictionary();
     if (result == EOS_EResult::EOS_Success) {
-        desktopCrossplayStatus["status"] = (int)outDesktopCrossplayStatusInfo.Status;
-        desktopCrossplayStatus["service_init_result"] = (int)outDesktopCrossplayStatusInfo.ServiceInitResult;
+        desktopCrossplayStatus["status"] = static_cast<int>(outDesktopCrossplayStatusInfo.Status);
+        desktopCrossplayStatus["service_init_result"] = static_cast<int>(outDesktopCrossplayStatusInfo.ServiceInitResult);
     }
     dict["desktop_crossplay_status"] = desktopCrossplayStatus;
     return dict;

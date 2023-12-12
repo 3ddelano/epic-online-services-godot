@@ -725,7 +725,8 @@ class Platform:
 		Reserved1 = 0x00008,
 		WindowsEnableOverlayD3D9 = 0x00010,
 		WindowsEnableOverlayD3D10 = 0x00020,
-		WindowsEnableOverlayOpengl = 0x00040
+		WindowsEnableOverlayOpengl = 0x00040,
+		ConsoleEnableOverlayAutomaticUnloading = 0x00080,
 	}
 
 	enum ApplicationStatus {
@@ -753,12 +754,23 @@ class Platform:
 		EOS_DCS_OverlayLoadFailed = 8
 	}
 
+	enum RTCBackgroundMode {
+		LeaveRooms = 0,
+		KeepRoomsAlive = 1,
+	}
+
 	class InitializeOptions extends BaseClass:
 		func _init():
 			super._init("InitializeOptions")
 
 		var product_name: String
 		var product_version: String
+	
+	class RTCOptions extends BaseClass:
+		func _init():
+			super._init("RTCOptions")
+		
+		var background_mode = null ## See [enum EOS.Platform.RTCBackgroundMode]
 
 	class CreateOptions extends BaseClass:
 		func _init():
@@ -776,8 +788,9 @@ class Platform:
 		var override_country_code: String
 		var flags: int = -1
 		var tick_budget_in_milliseconds: int
-		# TODO: implement rtc_options in GDScript
-		# var rtc_options: RTCOptions
+
+		var rtc_options := RTCOptions.new()
+
 
 
 	class PlatformInterface:
@@ -808,8 +821,8 @@ class Platform:
 		static func initialize(options: InitializeOptions) -> Result:
 			return IEOS.platform_interface_initialize(options)
 
-		static func get_desktop_crossplay_status() -> Dictionary:
-			return IEOS.platform_interface_get_desktop_crossplay_status()
+		static func get_desktop_crossplay_status_info() -> Dictionary:
+			return IEOS.platform_interface_get_desktop_crossplay_status_info()
 
 		static func set_application_status(status: ApplicationStatus) -> Result:
 			return IEOS.platform_interface_set_application_status(status)
@@ -2813,3 +2826,4 @@ enum ComparisonOp {
 	NotOneOf = 10,
 	Contains = 11
 }
+

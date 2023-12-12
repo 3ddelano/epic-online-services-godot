@@ -86,7 +86,7 @@ public:
     int platform_interface_set_override_locale_code(const String &locale_code);
     int platform_interface_check_for_launcher_and_restart();
     int platform_interface_initialize(Ref<RefCounted> options);
-    Dictionary platform_interface_get_desktop_crossplay_status();
+    Dictionary platform_interface_get_desktop_crossplay_status_info();
     int platform_interface_set_application_status(int status);
     int platform_interface_get_application_status();
     int platform_interface_set_network_status(int status);
