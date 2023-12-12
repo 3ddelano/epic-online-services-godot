@@ -7,11 +7,11 @@ namespace godot {
 class ContinuanceTokenEOSG : public RefCounted {
     GDCLASS(ContinuanceTokenEOSG, RefCounted)
 
-   private:
+private:
     EOS_ContinuanceToken m_internal = nullptr;
     static void _bind_methods(){};
 
-   public:
+public:
     ContinuanceTokenEOSG(){};
     ~ContinuanceTokenEOSG(){};
 
@@ -23,4 +23,4 @@ class ContinuanceTokenEOSG : public RefCounted {
         return m_internal;
     }
 };
-}  // namespace godot
+} // namespace godot

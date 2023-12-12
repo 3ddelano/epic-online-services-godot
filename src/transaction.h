@@ -7,11 +7,11 @@ namespace godot {
 class TransactionEOSG : public RefCounted {
     GDCLASS(TransactionEOSG, RefCounted)
 
-   protected:
+protected:
     EOS_Ecom_HTransaction m_internal = nullptr;
     static void _bind_methods();
 
-   public:
+public:
     String get_id();
     int get_entitlement_count();
     Dictionary copy_entitlement_by_index(int p_entitlement_index);
@@ -31,4 +31,4 @@ class TransactionEOSG : public RefCounted {
         return m_internal;
     }
 };
-}  // namespace godot
+} // namespace godot

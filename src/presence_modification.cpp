@@ -21,7 +21,7 @@ int PresenceModificationEOSG::set_status(int new_status) {
     return static_cast<int>(EOS_PresenceModification_SetStatus(m_internal, &options));
 }
 
-int PresenceModificationEOSG::set_raw_rich_text(const String& p_raw_rich_text) {
+int PresenceModificationEOSG::set_raw_rich_text(const String &p_raw_rich_text) {
     CharString new_raw_rich_text = VARIANT_TO_CHARSTRING(p_raw_rich_text);
 
     EOS_PresenceModification_SetRawRichTextOptions options;
@@ -34,7 +34,7 @@ int PresenceModificationEOSG::set_raw_rich_text(const String& p_raw_rich_text) {
 
 int PresenceModificationEOSG::set_data(Dictionary p_data) {
     int records_count = p_data.keys().size();
-    EOS_Presence_DataRecord* records = (EOS_Presence_DataRecord*)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
+    EOS_Presence_DataRecord *records = (EOS_Presence_DataRecord *)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
 
     for (int i = 0; i < records_count; i++) {
         String key = p_data.keys()[i];
@@ -59,7 +59,7 @@ int PresenceModificationEOSG::set_data(Dictionary p_data) {
 
 int PresenceModificationEOSG::delete_data(Array p_keys) {
     int records_count = p_keys.size();
-    EOS_PresenceModification_DataRecordId* records = (EOS_PresenceModification_DataRecordId*)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
+    EOS_PresenceModification_DataRecordId *records = (EOS_PresenceModification_DataRecordId *)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
 
     for (int i = 0; i < records_count; i++) {
         String key = p_keys[i];
@@ -78,7 +78,7 @@ int PresenceModificationEOSG::delete_data(Array p_keys) {
     return static_cast<int>(EOS_PresenceModification_DeleteData(m_internal, &options));
 }
 
-int PresenceModificationEOSG::set_join_info(const String& p_join_info) {
+int PresenceModificationEOSG::set_join_info(const String &p_join_info) {
     CharString new_join_info = VARIANT_TO_CHARSTRING(p_join_info);
 
     EOS_PresenceModification_SetJoinInfoOptions options;

@@ -11,6 +11,7 @@
 #include "eos_logging.h"
 #include "eos_metrics.h"
 #include "eos_mods.h"
+#include "eos_p2p.h"
 #include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
@@ -19,7 +20,6 @@
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
-#include "eos_p2p.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
@@ -37,9 +37,9 @@ namespace godot {
 class IEOS : public RefCounted {
     GDCLASS(IEOS, RefCounted)
 
-    static IEOS* singleton;
+    static IEOS *singleton;
 
-   protected:
+protected:
     static void _bind_methods();
     EOS_HAchievements s_achievementsInterface = nullptr;
     EOS_HAuth s_authInterface = nullptr;
@@ -62,8 +62,8 @@ class IEOS : public RefCounted {
     EOS_HPlatform s_platformInterface = nullptr;
     EOS_HP2P s_p2pInterface = nullptr;
 
-   public:
-    static IEOS* get_singleton();
+public:
+    static IEOS *get_singleton();
 
     IEOS();
     ~IEOS();
@@ -76,12 +76,12 @@ class IEOS : public RefCounted {
     // Platform Interface
     // -----
     bool platform_interface_create(Ref<RefCounted> options);
-    Dictionary platform_interface_get_active_country_code(const String& local_user_id);
-    Dictionary platform_interface_get_active_locale_code(const String& local_user_id);
+    Dictionary platform_interface_get_active_country_code(const String &local_user_id);
+    Dictionary platform_interface_get_active_locale_code(const String &local_user_id);
     Dictionary platform_interface_get_override_country_code();
     Dictionary platform_interface_get_override_locale_code();
-    int platform_interface_set_override_country_code(const String& country_code);
-    int platform_interface_set_override_locale_code(const String& locale_code);
+    int platform_interface_set_override_country_code(const String &country_code);
+    int platform_interface_set_override_locale_code(const String &locale_code);
     int platform_interface_check_for_launcher_and_restart();
     int platform_interface_initialize(Ref<RefCounted> options);
     Dictionary platform_interface_get_desktop_crossplay_status();
@@ -109,14 +109,14 @@ class IEOS : public RefCounted {
     void auth_interface_login(Ref<RefCounted> options);
     void auth_interface_logout(Ref<RefCounted> options);
     Dictionary auth_interface_copy_id_token(Ref<RefCounted> options);
-    Dictionary auth_interface_copy_user_auth_token(Ref<RefCounted> options, const String& local_user_id);
+    Dictionary auth_interface_copy_user_auth_token(Ref<RefCounted> options, const String &local_user_id);
     void auth_interface_delete_persistent_auth(Ref<RefCounted> options);
     String auth_interface_get_logged_in_account_by_index(int index);
     int auth_interface_get_logged_in_accounts_count();
-    int auth_interface_get_login_status(const String& local_user_id);
-    String auth_interface_get_merged_account_by_index(const String& local_user_id, int index);
-    int auth_interface_get_merged_accounts_count(const String& local_user_id);
-    Dictionary auth_interface_get_selected_account_id(const String& local_user_id);
+    int auth_interface_get_login_status(const String &local_user_id);
+    String auth_interface_get_merged_account_by_index(const String &local_user_id, int index);
+    int auth_interface_get_merged_accounts_count(const String &local_user_id);
+    Dictionary auth_interface_get_selected_account_id(const String &local_user_id);
     void auth_interface_query_id_token(Ref<RefCounted> options);
     void auth_interface_verify_id_token(Ref<RefCounted> options);
     void auth_interface_link_account(Ref<RefCounted> options);
@@ -137,7 +137,7 @@ class IEOS : public RefCounted {
     String connect_interface_get_external_account_mapping(Ref<RefCounted> options);
     String connect_interface_get_logged_in_user_by_index(int index);
     int connect_interface_get_logged_in_users_count();
-    int connect_interface_get_login_status(const String& local_user_id);
+    int connect_interface_get_login_status(const String &local_user_id);
     int connect_interface_get_product_user_external_account_count(Ref<RefCounted> options);
     void connect_interface_query_product_user_id_mapping(Ref<RefCounted> options);
     Dictionary connect_interface_get_product_user_id_mapping(Ref<RefCounted> options);
@@ -206,7 +206,6 @@ class IEOS : public RefCounted {
     void friends_interface_send_invite(Ref<RefCounted> options);
     int friends_interface_get_blocked_users_count(Ref<RefCounted> options);
     String friends_interface_get_blocked_user_at_index(Ref<RefCounted> options);
-	
 
     // -----
     // Userinfo Interface
@@ -365,24 +364,24 @@ class IEOS : public RefCounted {
     // Not available in Godot. Called by EOSGMultiplayerPeer
     EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
     EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size,
-        uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
+            uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
     EOS_EResult p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
     EOS_EResult p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);
     EOS_EResult p2p_close_all_connections(const EOS_P2P_CloseConnectionsOptions *options);
     EOS_EResult p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size);
     EOS_EResult p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *options);
     EOS_NotificationId p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options,
-        EOS_P2P_OnPeerConnectionEstablishedCallback callback);
+            EOS_P2P_OnPeerConnectionEstablishedCallback callback);
     EOS_NotificationId p2p_add_notify_peer_connection_closed(const EOS_P2P_AddNotifyPeerConnectionClosedOptions *options,
-        EOS_P2P_OnRemoteConnectionClosedCallback callback);
+            EOS_P2P_OnRemoteConnectionClosedCallback callback);
     EOS_NotificationId p2p_add_notify_peer_connection_request(const EOS_P2P_AddNotifyPeerConnectionRequestOptions *options,
-        EOS_P2P_OnIncomingConnectionRequestCallback callback);
+            EOS_P2P_OnIncomingConnectionRequestCallback callback);
     EOS_NotificationId p2p_add_notify_peer_connection_interrupted(const EOS_P2P_AddNotifyPeerConnectionInterruptedOptions *options,
-        EOS_P2P_OnPeerConnectionInterruptedCallback callback);
+            EOS_P2P_OnPeerConnectionInterruptedCallback callback);
     void p2p_remove_notify_peer_connection_established(EOS_NotificationId callback_id);
     void p2p_remove_notify_peer_connection_interrupted(EOS_NotificationId callback_id);
     void p2p_remove_notify_peer_connection_closed(EOS_NotificationId callback_id);
     void p2p_remove_notify_peer_connection_request(EOS_NotificationId callback_id);
 };
 
-}  // namespace godot
+} // namespace godot

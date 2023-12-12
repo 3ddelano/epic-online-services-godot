@@ -28,13 +28,13 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
     loginOptions.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
     loginOptions.Credentials = &credentials;
     loginOptions.ScopeFlags = static_cast<EOS_EAuthScopeFlags>(static_cast<int>(p_options->get("scope_flags")));
-	loginOptions.LoginFlags = static_cast<uint64_t>(p_options->get("login_flags"));
+    loginOptions.LoginFlags = static_cast<uint64_t>(p_options->get("login_flags"));
     p_options->reference();
 
-    EOS_Auth_Login(s_authInterface, &loginOptions, (void*)*p_options, [](const EOS_Auth_LoginCallbackInfo* data) {
+    EOS_Auth_Login(s_authInterface, &loginOptions, (void *)*p_options, [](const EOS_Auth_LoginCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
@@ -54,7 +54,6 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
         }
         IEOS::get_singleton()->emit_signal("auth_interface_login_callback", ret);
     });
-    return;
 }
 
 void IEOS::auth_interface_logout(Ref<RefCounted> p_options) {
@@ -66,16 +65,15 @@ void IEOS::auth_interface_logout(Ref<RefCounted> p_options) {
     logoutOptions.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     p_options->reference();
 
-    EOS_Auth_Logout(s_authInterface, &logoutOptions, (void*)*p_options, [](const EOS_Auth_LogoutCallbackInfo* data) {
+    EOS_Auth_Logout(s_authInterface, &logoutOptions, (void *)*p_options, [](const EOS_Auth_LogoutCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("auth_interface_logout_callback", ret);
     });
-    return;
 }
 
 Dictionary IEOS::auth_interface_copy_id_token(Ref<RefCounted> p_options) {
@@ -86,7 +84,7 @@ Dictionary IEOS::auth_interface_copy_id_token(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
     options.AccountId = eosg_string_to_epic_account_id(account_id.get_data());
 
-    EOS_Auth_IdToken* outToken = nullptr;
+    EOS_Auth_IdToken *outToken = nullptr;
     EOS_EResult res = EOS_Auth_CopyIdToken(s_authInterface, &options, &outToken);
 
     Dictionary ret;
@@ -95,14 +93,14 @@ Dictionary IEOS::auth_interface_copy_id_token(Ref<RefCounted> p_options) {
     return ret;
 }
 
-Dictionary IEOS::auth_interface_copy_user_auth_token(Ref<RefCounted> p_options, const String& p_local_user_id) {
+Dictionary IEOS::auth_interface_copy_user_auth_token(Ref<RefCounted> p_options, const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
 
     EOS_Auth_CopyUserAuthTokenOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
 
-    EOS_Auth_Token* outToken = nullptr;
+    EOS_Auth_Token *outToken = nullptr;
     EOS_EpicAccountId localUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     EOS_EResult res = EOS_Auth_CopyUserAuthToken(s_authInterface, &options, localUserId, &outToken);
 
@@ -121,15 +119,14 @@ void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
     options.RefreshToken = refresh_token.get_data();
     p_options->reference();
 
-    EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_DeletePersistentAuthCallbackInfo* data) {
+    EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_DeletePersistentAuthCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("auth_interface_delete_persistent_auth_callback", ret);
     });
-    return;
 }
 
 String IEOS::auth_interface_get_logged_in_account_by_index(int index) {
@@ -141,26 +138,26 @@ int IEOS::auth_interface_get_logged_in_accounts_count() {
     return static_cast<int>(EOS_Auth_GetLoggedInAccountsCount(s_authInterface));
 }
 
-int IEOS::auth_interface_get_login_status(const String& p_local_user_id) {
+int IEOS::auth_interface_get_login_status(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_EpicAccountId accountId = eosg_string_to_epic_account_id(local_user_id.get_data());
     return static_cast<int>(EOS_Auth_GetLoginStatus(s_authInterface, accountId));
 }
 
-String IEOS::auth_interface_get_merged_account_by_index(const String& p_local_user_id, int index) {
+String IEOS::auth_interface_get_merged_account_by_index(const String &p_local_user_id, int index) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_EpicAccountId localUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     EOS_EpicAccountId accountId = EOS_Auth_GetMergedAccountByIndex(s_authInterface, localUserId, index);
     return eosg_epic_account_id_to_string(accountId);
 }
 
-int IEOS::auth_interface_get_merged_accounts_count(const String& p_local_user_id) {
+int IEOS::auth_interface_get_merged_accounts_count(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_EpicAccountId localUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     return static_cast<int>(EOS_Auth_GetMergedAccountsCount(s_authInterface, localUserId));
 }
 
-Dictionary IEOS::auth_interface_get_selected_account_id(const String& p_local_user_id) {
+Dictionary IEOS::auth_interface_get_selected_account_id(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_EpicAccountId localUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     EOS_EpicAccountId outSelectedAccountId = nullptr;
@@ -183,17 +180,16 @@ void IEOS::auth_interface_query_id_token(Ref<RefCounted> p_options) {
     options.TargetAccountId = eosg_string_to_epic_account_id(p_target_account_id.get_data());
     p_options->reference();
 
-    EOS_Auth_QueryIdToken(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_QueryIdTokenCallbackInfo* data) {
+    EOS_Auth_QueryIdToken(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_QueryIdTokenCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["target_account_id"] = eosg_epic_account_id_to_string(data->TargetAccountId);
         IEOS::get_singleton()->emit_signal("auth_interface_query_id_token_callback", ret);
     });
-    return;
 }
 
 void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
@@ -213,10 +209,10 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
     options.IdToken = &idToken;
     p_options->reference();
 
-    EOS_Auth_VerifyIdToken(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_VerifyIdTokenCallbackInfo* data) {
+    EOS_Auth_VerifyIdToken(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_VerifyIdTokenCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["application_id"] = EOSG_GET_STRING(data->ApplicationId);
@@ -232,7 +228,6 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
         ret["platform"] = EOSG_GET_STRING(data->Platform);
         IEOS::get_singleton()->emit_signal("auth_interface_verify_id_token_callback", ret);
     });
-    return;
 }
 
 void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
@@ -247,10 +242,10 @@ void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_epic_account_id(p_local_user_id.get_data());
     p_options->reference();
 
-    EOS_Auth_LinkAccount(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_LinkAccountCallbackInfo* data) {
+    EOS_Auth_LinkAccount(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_LinkAccountCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
@@ -258,7 +253,6 @@ void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
         ret["selected_account_id"] = eosg_epic_account_id_to_string(data->SelectedAccountId);
         IEOS::get_singleton()->emit_signal("auth_interface_link_account_callback", ret);
     });
-    return;
 }
 
 void IEOS::auth_interface_verify_user_auth(Ref<RefCounted> p_options) {
@@ -293,13 +287,12 @@ void IEOS::auth_interface_verify_user_auth(Ref<RefCounted> p_options) {
     options.AuthToken = &authToken;
     p_options->reference();
 
-    EOS_Auth_VerifyUserAuth(s_authInterface, &options, (void*)*p_options, [](const EOS_Auth_VerifyUserAuthCallbackInfo* data) {
+    EOS_Auth_VerifyUserAuth(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_VerifyUserAuthCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("auth_interface_verify_user_auth_callback", ret);
     });
-    return;
 }

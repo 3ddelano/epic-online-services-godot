@@ -10,7 +10,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_achiev
     options.ApiVersion = EOS_ACHIEVEMENTS_COPYACHIEVEMENTDEFINITIONV2BYACHIEVEMENTID_API_LATEST;
     options.AchievementId = achievement_id.get_data();
 
-    EOS_Achievements_DefinitionV2* outDefinition = nullptr;
+    EOS_Achievements_DefinitionV2 *outDefinition = nullptr;
     EOS_EResult res = EOS_Achievements_CopyAchievementDefinitionV2ByAchievementId(s_achievementsInterface, &options, &outDefinition);
 
     Dictionary ret;
@@ -25,7 +25,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_index(
     options.ApiVersion = EOS_ACHIEVEMENTS_COPYACHIEVEMENTDEFINITIONV2BYINDEX_API_LATEST;
     options.AchievementIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("achievement_index")));
 
-    EOS_Achievements_DefinitionV2* outDefinition = nullptr;
+    EOS_Achievements_DefinitionV2 *outDefinition = nullptr;
     EOS_EResult res = EOS_Achievements_CopyAchievementDefinitionV2ByIndex(s_achievementsInterface, &options, &outDefinition);
 
     Dictionary ret;
@@ -46,7 +46,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_achievement_i
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.AchievementId = achievement_id.get_data();
 
-    EOS_Achievements_PlayerAchievement* outAchievement = nullptr;
+    EOS_Achievements_PlayerAchievement *outAchievement = nullptr;
     EOS_EResult res = EOS_Achievements_CopyPlayerAchievementByAchievementId(s_achievementsInterface, &options, &outAchievement);
 
     Dictionary ret;
@@ -66,7 +66,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_index(Ref<Ref
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.AchievementIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("achievement_index")));
 
-    EOS_Achievements_PlayerAchievement* outAchievement = nullptr;
+    EOS_Achievements_PlayerAchievement *outAchievement = nullptr;
     EOS_EResult res = EOS_Achievements_CopyPlayerAchievementByIndex(s_achievementsInterface, &options, &outAchievement);
 
     Dictionary ret;
@@ -92,15 +92,14 @@ void IEOS::achievements_interface_query_definitions(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     p_options->reference();
 
-    EOS_Achievements_QueryDefinitions(s_achievementsInterface, &options, (void*)*p_options, [](const EOS_Achievements_OnQueryDefinitionsCompleteCallbackInfo* data) {
+    EOS_Achievements_QueryDefinitions(s_achievementsInterface, &options, (void *)*p_options, [](const EOS_Achievements_OnQueryDefinitionsCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("achievements_interface_query_definitions_callback", ret);
     });
-    return;
 }
 
 int IEOS::achievements_interface_get_player_achievement_count(Ref<RefCounted> p_options) {
@@ -125,16 +124,15 @@ void IEOS::achievements_interface_query_player_achievements(Ref<RefCounted> p_op
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     p_options->reference();
 
-    EOS_Achievements_QueryPlayerAchievements(s_achievementsInterface, &options, (void*)*p_options, [](const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo* data) {
+    EOS_Achievements_QueryPlayerAchievements(s_achievementsInterface, &options, (void *)*p_options, [](const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["user_id"] = eosg_product_user_id_to_string(data->UserId);
         IEOS::get_singleton()->emit_signal("achievements_interface_query_player_achievements_callback", ret);
     });
-    return;
 }
 
 void IEOS::achievements_interface_unlock_achievements(Ref<RefCounted> p_options) {
@@ -142,7 +140,7 @@ void IEOS::achievements_interface_unlock_achievements(Ref<RefCounted> p_options)
     Array p_achievement_ids = p_options->get("achievement_ids");
     int achievement_ids_count = p_achievement_ids.size();
 
-    const char** achievement_ids = (const char**)memalloc(sizeof(char*) * achievement_ids_count);
+    const char **achievement_ids = (const char **)memalloc(sizeof(char *) * achievement_ids_count);
     for (int i = 0; i < achievement_ids_count; i++) {
         CharString achievement_id = VARIANT_TO_CHARSTRING(p_achievement_ids[i]);
         achievement_ids[i] = achievement_id.get_data();
@@ -156,15 +154,14 @@ void IEOS::achievements_interface_unlock_achievements(Ref<RefCounted> p_options)
     options.AchievementsCount = achievement_ids_count;
     p_options->reference();
 
-    EOS_Achievements_UnlockAchievements(s_achievementsInterface, &options, (void*)*p_options, [](const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo* data) {
+    EOS_Achievements_UnlockAchievements(s_achievementsInterface, &options, (void *)*p_options, [](const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["user_id"] = eosg_product_user_id_to_string(data->UserId);
         ret["achievements_count"] = static_cast<int>(data->AchievementsCount);
         IEOS::get_singleton()->emit_signal("achievements_interface_unlock_achievements_callback", ret);
     });
-    return;
 }

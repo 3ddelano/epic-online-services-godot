@@ -7,16 +7,16 @@ namespace godot {
 class LobbySearchEOSG : public RefCounted {
     GDCLASS(LobbySearchEOSG, RefCounted)
 
-   private:
+private:
     EOS_HLobbySearch m_internal = nullptr;
     static void _bind_methods();
 
-   public:
-    void find(const String& local_user_id);
-    int set_lobby_id(const String& lobby_id);
-    int set_target_user_id(const String& target_user_id);
-    int set_parameter(const String& key, Variant value, int comparison_op);
-    int remove_parameter(const String& key, int comparison_op);
+public:
+    void find(const String &local_user_id);
+    int set_lobby_id(const String &lobby_id);
+    int set_target_user_id(const String &target_user_id);
+    int set_parameter(const String &key, Variant value, int comparison_op);
+    int remove_parameter(const String &key, int comparison_op);
     int set_max_results(int max_results);
     int get_search_result_count();
     Dictionary copy_search_result_by_index(int index);
@@ -36,4 +36,4 @@ class LobbySearchEOSG : public RefCounted {
         return m_internal;
     }
 };
-}  // namespace godot
+} // namespace godot

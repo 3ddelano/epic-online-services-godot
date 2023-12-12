@@ -11,7 +11,7 @@ Dictionary IEOS::presence_interface_copy_presence(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
 
-    EOS_Presence_Info* outPresenceInfo = nullptr;
+    EOS_Presence_Info *outPresenceInfo = nullptr;
     EOS_EResult res = EOS_Presence_CopyPresence(s_presenceInterface, &options, &outPresenceInfo);
 
     Dictionary ret;
@@ -47,7 +47,7 @@ Dictionary IEOS::presence_interface_get_join_info(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
 
-    char* outBuffer = (char*)memalloc(EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1);
+    char *outBuffer = (char *)memalloc(EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1);
     int outBufferLength = EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1;
 
     EOS_EResult res = EOS_Presence_GetJoinInfo(s_presenceInterface, &options, outBuffer, &outBufferLength);
@@ -69,7 +69,7 @@ bool IEOS::presence_interface_has_presence(Ref<RefCounted> p_options) {
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
 
     return EOSG_GET_BOOL(
-        EOS_Presence_HasPresence(s_presenceInterface, &options));
+            EOS_Presence_HasPresence(s_presenceInterface, &options));
 }
 
 void IEOS::presence_interface_query_presence(Ref<RefCounted> p_options) {
@@ -83,17 +83,16 @@ void IEOS::presence_interface_query_presence(Ref<RefCounted> p_options) {
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
     p_options->reference();
 
-    EOS_Presence_QueryPresence(s_presenceInterface, &options, (void*)*p_options, [](const EOS_Presence_QueryPresenceCallbackInfo* data) {
+    EOS_Presence_QueryPresence(s_presenceInterface, &options, (void *)*p_options, [](const EOS_Presence_QueryPresenceCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["target_user_id"] = eosg_epic_account_id_to_string(data->TargetUserId);
         IEOS::get_singleton()->emit_signal("presence_interface_query_presence_callback", ret);
     });
-    return;
 }
 
 void IEOS::presence_interface_set_presence(Ref<RefCounted> p_options) {
@@ -107,14 +106,13 @@ void IEOS::presence_interface_set_presence(Ref<RefCounted> p_options) {
     options.PresenceModificationHandle = presence_modification->get_internal();
     p_options->reference();
 
-    EOS_Presence_SetPresence(s_presenceInterface, &options, (void*)*p_options, [](const EOS_Presence_SetPresenceCallbackInfo* data) {
+    EOS_Presence_SetPresence(s_presenceInterface, &options, (void *)*p_options, [](const EOS_Presence_SetPresenceCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("presence_interface_set_presence_callback", ret);
     });
-    return;
 }

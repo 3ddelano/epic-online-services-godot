@@ -21,13 +21,12 @@ void IEOS::reports_interface_send_player_behavior_report(Ref<RefCounted> p_optio
     }
     p_options->reference();
 
-    EOS_Reports_SendPlayerBehaviorReport(s_reportsInterface, &options, (void*)*p_options, [](const EOS_Reports_SendPlayerBehaviorReportCompleteCallbackInfo* data) {
+    EOS_Reports_SendPlayerBehaviorReport(s_reportsInterface, &options, (void *)*p_options, [](const EOS_Reports_SendPlayerBehaviorReportCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("reports_interface_send_player_behavior_report_callback", ret);
     });
-    return;
 }

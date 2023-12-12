@@ -10,7 +10,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_index(Ref<RefCounted> p_options) {
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.StatIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("stat_index")));
 
-    EOS_Stats_Stat* outStat = nullptr;
+    EOS_Stats_Stat *outStat = nullptr;
     EOS_EResult res = EOS_Stats_CopyStatByIndex(s_statsInterface, &options, &outStat);
 
     Dictionary ret;
@@ -29,7 +29,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_name(Ref<RefCounted> p_options) {
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.Name = name.get_data();
 
-    EOS_Stats_Stat* outStat = nullptr;
+    EOS_Stats_Stat *outStat = nullptr;
     EOS_EResult res = EOS_Stats_CopyStatByName(s_statsInterface, &options, &outStat);
 
     Dictionary ret;
@@ -55,7 +55,7 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
     Array p_stats = p_options->get("stats");
     int stats_count = p_stats.size();
 
-    EOS_Stats_IngestData* stats = (EOS_Stats_IngestData*)memalloc(sizeof(EOS_Stats_IngestData) * stats_count);
+    EOS_Stats_IngestData *stats = (EOS_Stats_IngestData *)memalloc(sizeof(EOS_Stats_IngestData) * stats_count);
     for (int i = 0; i < stats_count; i++) {
         Dictionary p_stat = p_stats[i];
         CharString stat_name = VARIANT_TO_CHARSTRING(p_stat["stat_name"]);
@@ -73,17 +73,16 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
     options.Stats = stats;
     p_options->reference();
 
-    EOS_Stats_IngestStat(s_statsInterface, &options, (void*)*p_options, [](const EOS_Stats_IngestStatCompleteCallbackInfo* data) {
+    EOS_Stats_IngestStat(s_statsInterface, &options, (void *)*p_options, [](const EOS_Stats_IngestStatCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
         IEOS::get_singleton()->emit_signal("stats_interface_ingest_stat_callback", ret);
     });
-    return;
 }
 
 void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
@@ -92,7 +91,7 @@ void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
     Array p_stat_names = p_options->get("stat_names");
     int stat_names_count = p_stat_names.size();
 
-    const char** stat_names = (const char**)memalloc(sizeof(const char*) * stat_names_count);
+    const char **stat_names = (const char **)memalloc(sizeof(const char *) * stat_names_count);
     for (int i = 0; i < stat_names_count; i++) {
         CharString stat_name = VARIANT_TO_CHARSTRING(p_stat_names[i]);
         stat_names[i] = stat_name.get_data();
@@ -113,15 +112,14 @@ void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
     options.EndTime = static_cast<int64_t>(p_options->get("end_time"));
     p_options->reference();
 
-    EOS_Stats_QueryStats(s_statsInterface, &options, (void*)*p_options, [](const EOS_Stats_OnQueryStatsCompleteCallbackInfo* data) {
+    EOS_Stats_QueryStats(s_statsInterface, &options, (void *)*p_options, [](const EOS_Stats_OnQueryStatsCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
         IEOS::get_singleton()->emit_signal("stats_interface_query_stats_callback", ret);
     });
-    return;
 }

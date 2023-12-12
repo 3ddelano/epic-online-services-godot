@@ -6,16 +6,16 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     Ref<RefCounted> p_user_login_info = p_options->get("user_login_info");
     CharString token = VARIANT_TO_CHARSTRING(p_credentials->get("token"));
     String p_display_name;
-	String p_nsa_id_token;
+    String p_nsa_id_token;
     if (p_user_login_info != nullptr) {
         p_display_name = p_user_login_info->get("display_name");
-		p_nsa_id_token = p_user_login_info->get("nsa_id_token");
+        p_nsa_id_token = p_user_login_info->get("nsa_id_token");
     }
     CharString display_name = p_display_name.utf8();
-	CharString nsa_id_token = p_nsa_id_token.utf8();
+    CharString nsa_id_token = p_nsa_id_token.utf8();
 
     EOS_Connect_Credentials credentials;
-    memset(&credentials, 0, sizeof(EOS_Connect_Credentials));
+    memset(&credentials, 0, sizeof(credentials));
     credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
     credentials.Type = static_cast<EOS_EExternalCredentialType>((int)p_credentials->get("type"));
     if (credentials.Type == EOS_EExternalCredentialType::EOS_ECT_DEVICEID_ACCESS_TOKEN) {
@@ -25,18 +25,18 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     }
 
     EOS_Connect_UserLoginInfo userLoginInfo;
-    memset(&userLoginInfo, 0, sizeof(EOS_Connect_LoginOptions));
+    memset(&userLoginInfo, 0, sizeof(userLoginInfo));
     if (!p_display_name.is_empty()) {
         userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
         userLoginInfo.DisplayName = display_name.get_data();
     }
-	if (!p_nsa_id_token.is_empty()){
+    if (!p_nsa_id_token.is_empty()) {
         userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
-		userLoginInfo.NsaIdToken = nsa_id_token.get_data();
-	}
+        userLoginInfo.NsaIdToken = nsa_id_token.get_data();
+    }
 
     EOS_Connect_LoginOptions options;
-    memset(&options, 0, sizeof(EOS_Connect_LoginOptions));
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_LOGIN_API_LATEST;
     options.Credentials = &credentials;
     if (!p_display_name.is_empty()) {
@@ -44,10 +44,10 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     }
     p_options->reference();
 
-    EOS_Connect_Login(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_LoginCallbackInfo* data) {
+    EOS_Connect_Login(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_LoginCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["continuance_token"] = eosg_continuance_token_to_wrapper(data->ContinuanceToken);
@@ -66,7 +66,6 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
 
         IEOS::get_singleton()->emit_signal("connect_interface_login_callback", ret);
     });
-    return;
 }
 
 Dictionary IEOS::connect_interface_copy_id_token(Ref<RefCounted> p_options) {
@@ -77,7 +76,7 @@ Dictionary IEOS::connect_interface_copy_id_token(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
 
-    EOS_Connect_IdToken* outToken = nullptr;
+    EOS_Connect_IdToken *outToken = nullptr;
     EOS_EResult res = EOS_Connect_CopyIdToken(s_connectInterface, &options, &outToken);
 
     Dictionary ret;
@@ -96,7 +95,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.AccountId = account_id.get_data();
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
+    EOS_Connect_ExternalAccountInfo *outExternalAccountInfo = nullptr;
 
     EOS_EResult res = EOS_Connect_CopyProductUserExternalAccountByAccountId(s_connectInterface, &options, &outExternalAccountInfo);
 
@@ -115,7 +114,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.AccountIdType = static_cast<EOS_EExternalAccountType>(static_cast<int>(p_options->get("account_id_type")));
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
+    EOS_Connect_ExternalAccountInfo *outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserExternalAccountByAccountType(s_connectInterface, &options, &outExternalAccountInfo);
 
     Dictionary ret;
@@ -133,7 +132,7 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_index(R
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.ExternalAccountInfoIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("external_account_info_index")));
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
+    EOS_Connect_ExternalAccountInfo *outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserExternalAccountByIndex(s_connectInterface, &options, &outExternalAccountInfo);
 
     Dictionary ret;
@@ -150,7 +149,7 @@ Dictionary IEOS::connect_interface_copy_product_user_info(Ref<RefCounted> p_opti
     options.ApiVersion = EOS_CONNECT_COPYPRODUCTUSERINFO_API_LATEST;
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
 
-    EOS_Connect_ExternalAccountInfo* outExternalAccountInfo = nullptr;
+    EOS_Connect_ExternalAccountInfo *outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserInfo(s_connectInterface, &options, &outExternalAccountInfo);
 
     Dictionary ret;
@@ -163,20 +162,19 @@ void IEOS::connect_interface_create_device_id(Ref<RefCounted> p_options) {
     CharString p_device_model = VARIANT_TO_CHARSTRING(p_options->get("device_model"));
 
     EOS_Connect_CreateDeviceIdOptions options;
-    memset(&options, 0, sizeof(EOS_Connect_CreateDeviceIdOptions));
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_CREATEDEVICEID_API_LATEST;
     options.DeviceModel = p_device_model.get_data();
     p_options->reference();
 
-    EOS_Connect_CreateDeviceId(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_CreateDeviceIdCallbackInfo* data) {
+    EOS_Connect_CreateDeviceId(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_CreateDeviceIdCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("connect_interface_create_device_id_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_delete_device_id(Ref<RefCounted> p_options) {
@@ -185,37 +183,35 @@ void IEOS::connect_interface_delete_device_id(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_CONNECT_DELETEDEVICEID_API_LATEST;
 
     p_options->reference();
-    EOS_Connect_DeleteDeviceId(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_DeleteDeviceIdCallbackInfo* data) {
+    EOS_Connect_DeleteDeviceId(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_DeleteDeviceIdCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("connect_interface_delete_device_id_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
     Ref<ContinuanceTokenEOSG> p_continuance_token = Object::cast_to<ContinuanceTokenEOSG>(p_options->get("continuance_token"));
 
     EOS_Connect_CreateUserOptions options;
-    memset(&options, 0, sizeof(EOS_Connect_CreateUserOptions));
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_CREATEUSER_API_LATEST;
     options.ContinuanceToken = p_continuance_token->get_internal();
     p_options->reference();
 
-    EOS_Connect_CreateUser(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_CreateUserCallbackInfo* data) {
+    EOS_Connect_CreateUser(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_CreateUserCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
 
         IEOS::get_singleton()->emit_signal("connect_interface_create_user_callback", ret);
     });
-    return;
 }
 
 String IEOS::connect_interface_get_external_account_mapping(Ref<RefCounted> p_options) {
@@ -240,7 +236,7 @@ int IEOS::connect_interface_get_logged_in_users_count() {
     return static_cast<int>(EOS_Connect_GetLoggedInUsersCount(s_connectInterface));
 }
 
-int IEOS::connect_interface_get_login_status(const String& p_local_user_id) {
+int IEOS::connect_interface_get_login_status(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_ProductUserId localUserId = eosg_string_to_product_user_id(local_user_id.get_data());
 
@@ -269,7 +265,7 @@ Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p
     options.AccountIdType = static_cast<EOS_EExternalAccountType>(static_cast<int>(p_options->get("account_id_type")));
     options.TargetProductUserId = eosg_string_to_product_user_id(target_product_user_id.get_data());
 
-    char* outAccountId = (char*)memalloc(EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1);
+    char *outAccountId = (char *)memalloc(EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1);
     int outAccountIdLength = 0;
     EOS_EResult res = EOS_Connect_GetProductUserIdMapping(s_connectInterface, &options, outAccountId, &outAccountIdLength);
 
@@ -283,10 +279,9 @@ void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_opt
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     TypedArray<String> p_product_user_ids = p_options->get("product_user_ids");
 
-    // Convert the p_product_user_ids to array of EOS_ProductUserId*
-    EOS_ProductUserId* product_user_ids = nullptr;
+    EOS_ProductUserId *product_user_ids = nullptr;
     if (p_product_user_ids.size() > 0) {
-        product_user_ids = (EOS_ProductUserId*)memalloc(sizeof(EOS_ProductUserId) * p_product_user_ids.size());
+        product_user_ids = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * p_product_user_ids.size());
         for (int i = 0; i < p_product_user_ids.size(); i++) {
             String product_user_id = p_product_user_ids[i];
             CharString product_user_id_cstr = product_user_id.utf8();
@@ -302,16 +297,15 @@ void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_opt
     options.ProductUserIdCount = p_product_user_ids.size();
     p_options->reference();
 
-    EOS_Connect_QueryProductUserIdMappings(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_QueryProductUserIdMappingsCallbackInfo* data) {
+    EOS_Connect_QueryProductUserIdMappings(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_QueryProductUserIdMappingsCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("connect_interface_query_product_user_id_mappings_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
@@ -325,16 +319,15 @@ void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
     options.ContinuanceToken = p_continuance_token->get_internal();
     p_options->reference();
 
-    EOS_Connect_LinkAccount(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_LinkAccountCallbackInfo* data) {
+    EOS_Connect_LinkAccount(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_LinkAccountCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("connect_interface_link_account_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
@@ -353,10 +346,10 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_CONNECT_VERIFYIDTOKEN_API_LATEST;
     options.IdToken = &idToken;
 
-    EOS_Connect_VerifyIdToken(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_VerifyIdTokenCallbackInfo* data) {
+    EOS_Connect_VerifyIdToken(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_VerifyIdTokenCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["product_user_id"] = eosg_product_user_id_to_string(data->ProductUserId);
@@ -365,7 +358,6 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
         ret["account_id"] = String(data->AccountId);
         IEOS::get_singleton()->emit_signal("connect_interface_verify_id_token_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_transfer_device_id_account(Ref<RefCounted> p_options) {
@@ -390,16 +382,15 @@ void IEOS::connect_interface_transfer_device_id_account(Ref<RefCounted> p_option
     }
     p_options->reference();
 
-    EOS_Connect_TransferDeviceIdAccount(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_TransferDeviceIdAccountCallbackInfo* data) {
+    EOS_Connect_TransferDeviceIdAccount(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_TransferDeviceIdAccountCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("connect_interface_transfer_device_id_account_callback", ret);
     });
-    return;
 }
 
 void IEOS::connect_interface_unlink_account(Ref<RefCounted> p_options) {
@@ -411,14 +402,13 @@ void IEOS::connect_interface_unlink_account(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     p_options->reference();
 
-    EOS_Connect_UnlinkAccount(s_connectInterface, &options, (void*)*p_options, [](const EOS_Connect_UnlinkAccountCallbackInfo* data) {
+    EOS_Connect_UnlinkAccount(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_UnlinkAccountCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("connect_interface_unlink_account_callback", ret);
     });
-    return;
 }

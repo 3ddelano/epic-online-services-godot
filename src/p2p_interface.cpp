@@ -3,7 +3,7 @@
 void IEOS::p2p_query_nat_type() {
     EOS_P2P_QueryNATTypeOptions options;
     options.ApiVersion = EOS_P2P_QUERYNATTYPE_API_LATEST;
-    EOS_P2P_QueryNATType(s_p2pInterface, &options, nullptr, [](const EOS_P2P_OnQueryNATTypeCompleteInfo *data){
+    EOS_P2P_QueryNATType(s_p2pInterface, &options, nullptr, [](const EOS_P2P_OnQueryNATTypeCompleteInfo *data) {
         int nat_type = static_cast<int>(data->NATType);
         get_singleton()->emit_signal("p2p_query_nat_type_callback", nat_type);
     });
@@ -87,9 +87,9 @@ EOS_EResult IEOS::p2p_send_packet(const EOS_P2P_SendPacketOptions *options) {
 }
 
 EOS_EResult IEOS::p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size,
-    uint8_t *out_channel, EOS_ProductUserId *out_remote_user, EOS_P2P_SocketId *out_socket) {
+        uint8_t *out_channel, EOS_ProductUserId *out_remote_user, EOS_P2P_SocketId *out_socket) {
     EOS_EResult result = EOS_P2P_ReceivePacket(s_p2pInterface, options, out_remote_user, out_socket,
-        out_channel, out_packet_data, out_packet_size);
+            out_channel, out_packet_data, out_packet_size);
     return result;
 }
 
@@ -119,25 +119,25 @@ EOS_EResult IEOS::p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *
 }
 
 EOS_NotificationId IEOS::p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options,
-    EOS_P2P_OnPeerConnectionEstablishedCallback callback) {
+        EOS_P2P_OnPeerConnectionEstablishedCallback callback) {
     EOS_NotificationId callback_id = EOS_P2P_AddNotifyPeerConnectionEstablished(s_p2pInterface, options, nullptr, callback);
     return callback_id;
 }
 
 EOS_NotificationId IEOS::p2p_add_notify_peer_connection_closed(const EOS_P2P_AddNotifyPeerConnectionClosedOptions *options,
-    EOS_P2P_OnRemoteConnectionClosedCallback callback) {
+        EOS_P2P_OnRemoteConnectionClosedCallback callback) {
     EOS_NotificationId callback_id = EOS_P2P_AddNotifyPeerConnectionClosed(s_p2pInterface, options, nullptr, callback);
     return callback_id;
 }
 
 EOS_NotificationId IEOS::p2p_add_notify_peer_connection_request(const EOS_P2P_AddNotifyPeerConnectionRequestOptions *options,
-    EOS_P2P_OnIncomingConnectionRequestCallback callback) {
+        EOS_P2P_OnIncomingConnectionRequestCallback callback) {
     EOS_NotificationId callback_id = EOS_P2P_AddNotifyPeerConnectionRequest(s_p2pInterface, options, nullptr, callback);
     return callback_id;
 }
 
 EOS_NotificationId IEOS::p2p_add_notify_peer_connection_interrupted(const EOS_P2P_AddNotifyPeerConnectionInterruptedOptions *options,
-    EOS_P2P_OnPeerConnectionInterruptedCallback callback) {
+        EOS_P2P_OnPeerConnectionInterruptedCallback callback) {
     EOS_NotificationId callback_id = EOS_P2P_AddNotifyPeerConnectionInterrupted(s_p2pInterface, options, nullptr, callback);
     return callback_id;
 }

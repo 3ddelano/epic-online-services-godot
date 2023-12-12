@@ -22,7 +22,7 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
     Array p_target_user_ids = p_options->get("target_user_ids");
     int target_user_ids_count = p_target_user_ids.size();
 
-    EOS_ProductUserId* targetUserIds = (EOS_ProductUserId*)memalloc(sizeof(EOS_ProductUserId) * target_user_ids_count);
+    EOS_ProductUserId *targetUserIds = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * target_user_ids_count);
     for (int i = 0; i < target_user_ids_count; i++) {
         CharString target_user_id = VARIANT_TO_CHARSTRING(p_target_user_ids[i]);
         targetUserIds[i] = eosg_string_to_product_user_id(target_user_id.get_data());
@@ -35,10 +35,10 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
     options.TargetUserIdsCount = target_user_ids_count;
     p_options->reference();
 
-    EOS_CustomInvites_SendCustomInvite(s_customInvitesInterface, &options, (void*)*p_options, [](const EOS_CustomInvites_SendCustomInviteCallbackInfo* data) {
+    EOS_CustomInvites_SendCustomInvite(s_customInvitesInterface, &options, (void *)*p_options, [](const EOS_CustomInvites_SendCustomInviteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
@@ -50,7 +50,6 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
         ret["target_user_ids"] = target_user_ids;
         IEOS::get_singleton()->emit_signal("custom_invites_interface_send_custom_invite_callback", ret);
     });
-    return;
 }
 
 int IEOS::custom_invites_interface_set_custom_invite(Ref<RefCounted> p_options) {
@@ -74,13 +73,13 @@ void IEOS::custom_invites_interface_send_request_to_join(Ref<RefCounted> p_optio
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_SENDREQUESTTOJOIN_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-	options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
+    options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     p_options->reference();
 
-    EOS_CustomInvites_SendRequestToJoin(s_customInvitesInterface, &options, (void*)*p_options, [](const EOS_CustomInvites_SendRequestToJoinCallbackInfo* data) {
+    EOS_CustomInvites_SendRequestToJoin(s_customInvitesInterface, &options, (void *)*p_options, [](const EOS_CustomInvites_SendRequestToJoinCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
 
@@ -89,27 +88,26 @@ void IEOS::custom_invites_interface_send_request_to_join(Ref<RefCounted> p_optio
 
         IEOS::get_singleton()->emit_signal("custom_invites_interface_send_request_to_join_callback", ret);
     });
-    return;
 }
 
 // TODO: impl EOS_CustomInvites_AddNotifySendCustomNativeInviteRequested
 // TODO: impl EOS_CustomInvites_RemoveNotifySendCustomNativeInviteRequested
 
-void IEOS::custom_invites_interface_accept_request_to_join(Ref<RefCounted> p_options){
-	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+void IEOS::custom_invites_interface_accept_request_to_join(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_CustomInvites_AcceptRequestToJoinOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_ACCEPTREQUESTTOJOIN_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-	options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
+    options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     p_options->reference();
 
-    EOS_CustomInvites_AcceptRequestToJoin(s_customInvitesInterface, &options, (void*)*p_options, [](const EOS_CustomInvites_AcceptRequestToJoinCallbackInfo* data) {
+    EOS_CustomInvites_AcceptRequestToJoin(s_customInvitesInterface, &options, (void *)*p_options, [](const EOS_CustomInvites_AcceptRequestToJoinCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
 
@@ -118,25 +116,23 @@ void IEOS::custom_invites_interface_accept_request_to_join(Ref<RefCounted> p_opt
 
         IEOS::get_singleton()->emit_signal("custom_invites_interface_accept_request_to_join_callback", ret);
     });
-    return;
 }
 
-
-void IEOS::custom_invites_interface_reject_request_to_join(Ref<RefCounted> p_options){
-	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+void IEOS::custom_invites_interface_reject_request_to_join(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_CustomInvites_RejectRequestToJoinOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_REJECTREQUESTTOJOIN_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-	options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
+    options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     p_options->reference();
 
-    EOS_CustomInvites_RejectRequestToJoin(s_customInvitesInterface, &options, (void*)*p_options, [](const EOS_CustomInvites_RejectRequestToJoinCallbackInfo* data) {
+    EOS_CustomInvites_RejectRequestToJoin(s_customInvitesInterface, &options, (void *)*p_options, [](const EOS_CustomInvites_RejectRequestToJoinCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
 
@@ -145,5 +141,4 @@ void IEOS::custom_invites_interface_reject_request_to_join(Ref<RefCounted> p_opt
 
         IEOS::get_singleton()->emit_signal("custom_invites_interface_reject_request_to_join_callback", ret);
     });
-    return;
 }

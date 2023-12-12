@@ -7,7 +7,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_index(Ref
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDDEFINITIONBYINDEX_API_LATEST;
     options.LeaderboardIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("leaderboard_index")));
 
-    EOS_Leaderboards_Definition* outLeaderboardDefinition = nullptr;
+    EOS_Leaderboards_Definition *outLeaderboardDefinition = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardDefinitionByIndex(s_leaderboardsInterface, &options, &outLeaderboardDefinition);
 
     Dictionary ret;
@@ -23,7 +23,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_leaderboa
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDDEFINITIONBYLEADERBOARDID_API_LATEST;
     options.LeaderboardId = leaderboard_id.get_data();
 
-    EOS_Leaderboards_Definition* outLeaderboardDefinition = nullptr;
+    EOS_Leaderboards_Definition *outLeaderboardDefinition = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardDefinitionByLeaderboardId(s_leaderboardsInterface, &options, &outLeaderboardDefinition);
 
     Dictionary ret;
@@ -38,7 +38,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_index(Ref<Ref
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDRECORDBYINDEX_API_LATEST;
     options.LeaderboardRecordIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("leaderboard_record_index")));
 
-    EOS_Leaderboards_LeaderboardRecord* outLeaderboardRecord = nullptr;
+    EOS_Leaderboards_LeaderboardRecord *outLeaderboardRecord = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardRecordByIndex(s_leaderboardsInterface, &options, &outLeaderboardRecord);
 
     Dictionary ret;
@@ -55,7 +55,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_user_id(Ref<R
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDRECORDBYUSERID_API_LATEST;
     options.UserId = eosg_string_to_product_user_id(user_id.get_data());
 
-    EOS_Leaderboards_LeaderboardRecord* outLeaderboardRecord = nullptr;
+    EOS_Leaderboards_LeaderboardRecord *outLeaderboardRecord = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardRecordByUserId(s_leaderboardsInterface, &options, &outLeaderboardRecord);
 
     Dictionary ret;
@@ -73,7 +73,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_index(Ref
     options.LeaderboardUserScoreIndex = static_cast<uint32_t>(static_cast<int>(p_options->get("leaderboard_user_score_index")));
     options.StatName = stat_name.get_data();
 
-    EOS_Leaderboards_LeaderboardUserScore* outLeaderboardUserScore = nullptr;
+    EOS_Leaderboards_LeaderboardUserScore *outLeaderboardUserScore = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardUserScoreByIndex(s_leaderboardsInterface, &options, &outLeaderboardUserScore);
 
     Dictionary ret;
@@ -92,7 +92,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_user_id(R
     options.UserId = eosg_string_to_product_user_id(user_id.get_data());
     options.StatName = stat_name.get_data();
 
-    EOS_Leaderboards_LeaderboardUserScore* outLeaderboardUserScore = nullptr;
+    EOS_Leaderboards_LeaderboardUserScore *outLeaderboardUserScore = nullptr;
     EOS_EResult res = EOS_Leaderboards_CopyLeaderboardUserScoreByUserId(s_leaderboardsInterface, &options, &outLeaderboardUserScore);
 
     Dictionary ret;
@@ -139,15 +139,14 @@ void IEOS::leaderboards_interface_query_leaderboard_definitions(Ref<RefCounted> 
     options.EndTime = static_cast<int64_t>(p_options->get("end_time"));
     p_options->reference();
 
-    EOS_Leaderboards_QueryLeaderboardDefinitions(s_leaderboardsInterface, &options, (void*)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardDefinitionsCompleteCallbackInfo* data) {
+    EOS_Leaderboards_QueryLeaderboardDefinitions(s_leaderboardsInterface, &options, (void *)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardDefinitionsCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("leaderboards_interface_query_leaderboard_definitions_callback", ret);
     });
-    return;
 }
 
 void IEOS::leaderboards_interface_query_leaderboard_ranks(Ref<RefCounted> p_options) {
@@ -161,15 +160,14 @@ void IEOS::leaderboards_interface_query_leaderboard_ranks(Ref<RefCounted> p_opti
     options.LeaderboardId = leaderboard_id.get_data();
     p_options->reference();
 
-    EOS_Leaderboards_QueryLeaderboardRanks(s_leaderboardsInterface, &options, (void*)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardRanksCompleteCallbackInfo* data) {
+    EOS_Leaderboards_QueryLeaderboardRanks(s_leaderboardsInterface, &options, (void *)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardRanksCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("leaderboards_interface_query_leaderboard_ranks_callback", ret);
     });
-    return;
 }
 
 void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> p_options) {
@@ -178,7 +176,7 @@ void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> 
     Array p_user_ids = p_options->get("user_ids");
     int p_user_ids_size = p_user_ids.size();
 
-    EOS_ProductUserId* user_ids = (EOS_ProductUserId*)memalloc(sizeof(EOS_ProductUserId) * p_user_ids_size);
+    EOS_ProductUserId *user_ids = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * p_user_ids_size);
     for (int i = 0; i < p_user_ids_size; i++) {
         CharString user_id = VARIANT_TO_CHARSTRING(p_user_ids[i]);
         user_ids[i] = eosg_string_to_product_user_id(user_id.get_data());
@@ -187,7 +185,7 @@ void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> 
     Array p_stat_info = p_options->get("stat_info");
     int p_stat_info_size = p_stat_info.size();
 
-    EOS_Leaderboards_UserScoresQueryStatInfo* statInfo = (EOS_Leaderboards_UserScoresQueryStatInfo*)memalloc(sizeof(EOS_Leaderboards_UserScoresQueryStatInfo) * p_stat_info_size);
+    EOS_Leaderboards_UserScoresQueryStatInfo *statInfo = (EOS_Leaderboards_UserScoresQueryStatInfo *)memalloc(sizeof(EOS_Leaderboards_UserScoresQueryStatInfo) * p_stat_info_size);
     for (int i = 0; i < p_stat_info_size; i++) {
         CharString stat_name = VARIANT_TO_CHARSTRING(p_stat_info[i].get("stat_name"));
         int aggregation = static_cast<int>(p_stat_info[i].get("aggregation"));
@@ -208,13 +206,12 @@ void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> 
     options.EndTime = static_cast<int64_t>(p_options->get("end_time"));
     p_options->reference();
 
-    EOS_Leaderboards_QueryLeaderboardUserScores(s_leaderboardsInterface, &options, (void*)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardUserScoresCompleteCallbackInfo* data) {
+    EOS_Leaderboards_QueryLeaderboardUserScores(s_leaderboardsInterface, &options, (void *)*p_options, [](const EOS_Leaderboards_OnQueryLeaderboardUserScoresCompleteCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
-        Ref<RefCounted> client_data = reinterpret_cast<RefCounted*>(data->ClientData);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         IEOS::get_singleton()->emit_signal("leaderboards_interface_query_leaderboard_user_scores_callback", ret);
     });
-    return;
 }

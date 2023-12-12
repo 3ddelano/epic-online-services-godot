@@ -1,6 +1,8 @@
 #include "register_types.h"
 
 #include "continuance_token.h"
+#include "eosg_multiplayer_peer.h"
+#include "eosg_packet_peer_mediator.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
@@ -9,8 +11,6 @@
 #include "lobby_search.h"
 #include "presence_modification.h"
 #include "transaction.h"
-#include "eosg_multiplayer_peer.h"
-#include "eosg_packet_peer_mediator.h"
 
 using namespace godot;
 
@@ -23,11 +23,13 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     }
 
     ClassDB::register_class<IEOS>();
-    ClassDB::register_class<godot::EOSGPacketPeerMediator>();
     _ieos = memnew(IEOS);
-    _mediator = memnew(EOSGPacketPeerMediator);
     Engine::get_singleton()->register_singleton("IEOS", IEOS::get_singleton());
+
+    ClassDB::register_class<godot::EOSGPacketPeerMediator>();
+    _mediator = memnew(EOSGPacketPeerMediator);
     Engine::get_singleton()->register_singleton("EOSGPacketPeerMediator", EOSGPacketPeerMediator::get_singleton());
+
     ClassDB::register_class<godot::EOSGMultiplayerPeer>();
     ClassDB::register_class<godot::ContinuanceTokenEOSG>();
     ClassDB::register_class<godot::TransactionEOSG>();
@@ -43,8 +45,9 @@ void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
     }
 
     Engine::get_singleton()->unregister_singleton("IEOS");
-    Engine::get_singleton()->unregister_singleton("EOSGPacketPeerMediator");
     memdelete(_ieos);
+
+    Engine::get_singleton()->unregister_singleton("EOSGPacketPeerMediator");
     memdelete(_mediator);
 }
 

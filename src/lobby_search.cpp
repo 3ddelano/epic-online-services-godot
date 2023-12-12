@@ -15,24 +15,23 @@ void LobbySearchEOSG::_bind_methods() {
     ClassDB::bind_method(D_METHOD("copy_search_result_by_index", "index"), &LobbySearchEOSG::copy_search_result_by_index);
 }
 
-void LobbySearchEOSG::find(const String& p_local_user_id) {
+void LobbySearchEOSG::find(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
     EOS_LobbySearch_FindOptions options;
-    memset(&options, 0, sizeof(EOS_LobbySearch_FindOptions));
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYSEARCH_FIND_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
 
-    // TODO: Handle passing clientData
-    EOS_LobbySearch_Find(m_internal, &options, nullptr, [](const EOS_LobbySearch_FindCallbackInfo* data) {
+    // TODO: Handle passing ClientData if needed
+    EOS_LobbySearch_Find(m_internal, &options, nullptr, [](const EOS_LobbySearch_FindCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
         ret["client_data"] = Variant();
         IEOS::get_singleton()->emit_signal("lobby_search_find_callback", ret);
     });
-    return;
 }
 
-int LobbySearchEOSG::set_lobby_id(const String& p_lobby_id) {
+int LobbySearchEOSG::set_lobby_id(const String &p_lobby_id) {
     CharString lobby_id = p_lobby_id.utf8();
     EOS_LobbySearch_SetLobbyIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -42,7 +41,7 @@ int LobbySearchEOSG::set_lobby_id(const String& p_lobby_id) {
     return static_cast<int>(EOS_LobbySearch_SetLobbyId(m_internal, &options));
 }
 
-int LobbySearchEOSG::set_target_user_id(const String& p_target_user_id) {
+int LobbySearchEOSG::set_target_user_id(const String &p_target_user_id) {
     CharString target_user_id = p_target_user_id.utf8();
 
     EOS_LobbySearch_SetTargetUserIdOptions options;
@@ -53,7 +52,7 @@ int LobbySearchEOSG::set_target_user_id(const String& p_target_user_id) {
     return static_cast<int>(EOS_LobbySearch_SetTargetUserId(m_internal, &options));
 }
 
-int LobbySearchEOSG::set_parameter(const String& p_key, Variant p_value, int p_comparison_op) {
+int LobbySearchEOSG::set_parameter(const String &p_key, Variant p_value, int p_comparison_op) {
     CharString key = p_key.utf8();
 
     EOS_Lobby_AttributeData attributeData;
@@ -85,7 +84,7 @@ int LobbySearchEOSG::set_parameter(const String& p_key, Variant p_value, int p_c
     return static_cast<int>(EOS_LobbySearch_SetParameter(m_internal, &options));
 }
 
-int LobbySearchEOSG::remove_parameter(const String& p_key, int p_comparison_op) {
+int LobbySearchEOSG::remove_parameter(const String &p_key, int p_comparison_op) {
     CharString key = p_key.utf8();
 
     EOS_LobbySearch_RemoveParameterOptions options;

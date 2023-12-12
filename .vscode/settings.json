@@ -4,6 +4,7 @@
     "**/*.ilk": true,
     "**/*.exp": true,
     "**/*.pdb": true,
-    "**/__pycache__": true
+    "**/__pycache__": true,
+    "**/*.os": true,
   }
 }
