@@ -161,6 +161,7 @@ class Connect:
 			super._init("UserLoginInfo")
 
 		var display_name: String
+		var nsa_id_token: String
 
 	class LoginOptions extends BaseClass:
 		func _init():

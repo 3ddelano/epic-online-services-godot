@@ -6,10 +6,13 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     Ref<RefCounted> p_user_login_info = p_options->get("user_login_info");
     CharString token = VARIANT_TO_CHARSTRING(p_credentials->get("token"));
     String p_display_name;
+	String p_nsa_id_token;
     if (p_user_login_info != nullptr) {
         p_display_name = p_user_login_info->get("display_name");
+		p_nsa_id_token = p_user_login_info->get("nsa_id_token");
     }
     CharString display_name = p_display_name.utf8();
+	CharString nsa_id_token = p_nsa_id_token.utf8();
 
     EOS_Connect_Credentials credentials;
     memset(&credentials, 0, sizeof(EOS_Connect_Credentials));
@@ -27,6 +30,10 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
         userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
         userLoginInfo.DisplayName = display_name.get_data();
     }
+	if (!p_nsa_id_token.is_empty()){
+        userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
+		userLoginInfo.NsaIdToken = nsa_id_token.get_data();
+	}
 
     EOS_Connect_LoginOptions options;
     memset(&options, 0, sizeof(EOS_Connect_LoginOptions));
