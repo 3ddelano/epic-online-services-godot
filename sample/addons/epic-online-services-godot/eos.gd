@@ -649,6 +649,8 @@ class CustomInvites:
 
 
 
+
+
 class Stats:
 	const STATS_TIME_UNDEFINED = -1
 
@@ -714,7 +716,7 @@ class Stats:
 
 
 
-class Platform extends RefCounted:
+class Platform:
 	enum PlatformFlags {
 		None = 0x0,
 		LoadingInEditor = 0x00001,
@@ -778,7 +780,7 @@ class Platform extends RefCounted:
 		# var rtc_options: RTCOptions
 
 
-	class PlatformInterface extends RefCounted:
+	class PlatformInterface:
 		static func create(options: CreateOptions) -> bool:
 			return IEOS.platform_interface_create(options)
 
@@ -1853,31 +1855,15 @@ class P2P:
 		func _init():
 			super._init("SetPortRangeOptions")
 
-		var port : int
-		var max_additional_ports_to_try : int
+		var port: int
+		var max_additional_ports_to_try: int
 
 	class SetPacketQueueSizeOptions extends BaseClass:
 		func _init():
 			super._init("SetPacketQueueSizeOptions")
 
-		var incoming_packet_queue_max_size_bytes : int
-		var outgoing_packet_queue_max_size_bytes : int
-
-
-
-
-
-class PlayerDataStorage:
-	const TIME_UNDEFINED = -1
-
-	enum ReadResult { ContinueReading = 1, FailRequest = 2, CancelRequest = 3 }
-
-	enum WriteResult {
-		ContinueWriting = 1,
-		CompleteRequest = 2,
-		FailRequest = 3,
-		CancelRequest = 4
-	}
+		var incoming_packet_queue_max_size_bytes: int
+		var outgoing_packet_queue_max_size_bytes: int
 
 
 
@@ -2069,41 +2055,6 @@ class ProgressionSnapshot:
 
 		static func end_snapshot(options: EndSnapshotOptions) -> void:
 			IEOS.progression_snapshot_interface_end_snapshot(options)
-
-
-
-
-
-class RTC:
-	enum ParticipantStatus { Joined = 0, Left = 1 }
-
-	enum JoinRoomFlags {
-		EnableEcho = 0x01,
-	}
-
-
-
-class Sessions:
-	enum OnlineSessionPermissionLevel { PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2 }
-
-	enum OnlineSessionState {
-		NoSession = 0,
-		Creating = 1,
-		Pending = 2,
-		Starting = 3,
-		InProgress = 4,
-		Ending = 5,
-		Ended = 6,
-		Destroying = 7
-	}
-	enum SessionAttributeAdvertisementType { DontAdvertise = 0, Advertise = 1 }
-
-
-
-
-
-class TitleStorage:
-	enum ReadResult { RrContinuereading = 1, RrFailrequest = 2, RrCancelrequest = 3 }
 
 
 

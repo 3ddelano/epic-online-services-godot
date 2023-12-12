@@ -271,3 +271,6 @@ Follow the instructions in [Running the service for local development](https://d
 - Version Interface
   - [x] Implementation
   - [x] Sample
+- Integrated Platform Interface
+  - [ ] Implementation
+  - [ ] Sample
