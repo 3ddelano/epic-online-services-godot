@@ -220,6 +220,9 @@ public:
     void user_info_interface_query_user_info(Ref<RefCounted> options);
     void user_info_interface_query_user_info_by_display_name(Ref<RefCounted> options);
     void user_info_interface_query_user_info_by_external_account(Ref<RefCounted> options);
+    Dictionary user_info_interface_copy_best_display_name(Ref<RefCounted> options);
+    Dictionary user_info_interface_copy_best_display_name_with_platform(Ref<RefCounted> options);
+    int user_info_interface_get_local_platform_type(Ref<RefCounted> options);
 
     // -----
     // Ecom Interface

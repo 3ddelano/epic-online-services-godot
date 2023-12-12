@@ -2447,6 +2447,25 @@ class UserInfo:
 		var account_type: ExternalAccountType
 
 		var client_data = null
+	
+	class CopyBestDisplayNameOptions extends BaseClass:
+		func _init():
+			super._init("CopyBestDisplayNameOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+	
+	class CopyBestDisplayNameWithPlatformOptions extends BaseClass:
+		func _init():
+			super._init("CopyBestDisplayNameWithPlatformOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var target_platform_type: OnlinePlatformType
+
+	class GetLocalPlatformTypeOptions extends BaseClass:
+		func _init():
+			super._init("GetLocalPlatformTypeOptions")
 
 	class UserInfoInterface:
 		static func copy_external_user_info_by_account_id(options: CopyExternalUserInfoByAccountIdOptions) -> Dictionary:
@@ -2473,7 +2492,14 @@ class UserInfo:
 		static func query_user_info_by_external_account(options: QueryUserInfoByExternalAccountOptions) -> void:
 			IEOS.user_info_interface_query_user_info_by_external_account(options)
 
-
+		static func copy_best_display_name(options: CopyBestDisplayNameOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_best_display_name(options)
+		
+		static func copy_best_display_name_with_platform(options: CopyBestDisplayNameWithPlatformOptions) -> Dictionary:
+			return IEOS.user_info_interface_copy_best_display_name_with_platform(options)
+		
+		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
+			return IEOS.user_info_interface_get_local_platform_type(options)
 
 
 

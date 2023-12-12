@@ -113,6 +113,10 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(user_info_interface_query_user_info);
     IEOS_BIND_METHOD(user_info_interface_query_user_info_by_display_name);
     IEOS_BIND_METHOD(user_info_interface_query_user_info_by_external_account);
+    IEOS_BIND_METHOD(user_info_interface_copy_best_display_name);
+    IEOS_BIND_METHOD(user_info_interface_copy_best_display_name_with_platform);
+    IEOS_BIND_METHOD(user_info_interface_get_local_platform_type);
+
     IEOS_BIND_METHOD(ecom_interface_checkout);
     IEOS_BIND_METHOD(ecom_interface_copy_entitlement_by_id);
     IEOS_BIND_METHOD(ecom_interface_copy_entitlement_by_index);

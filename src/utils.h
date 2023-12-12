@@ -253,6 +253,21 @@ static Variant eosg_user_info_user_info_to_dict_and_release(EOS_UserInfo *userIn
     return ret;
 }
 
+static Variant eosg_user_info_best_display_name_to_dict_and_release(EOS_UserInfo_BestDisplayName *bestDisplayName) {
+    if (bestDisplayName == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["user_id"] = eosg_epic_account_id_to_string(bestDisplayName->UserId);
+    ret["display_name"] = EOSG_GET_STRING(bestDisplayName->DisplayName);
+    ret["display_name_sanitized"] = EOSG_GET_STRING(bestDisplayName->DisplayNameSanitized);
+    ret["nickname"] = EOSG_GET_STRING(bestDisplayName->Nickname);
+    ret["platform_type"] = static_cast<int>(bestDisplayName->PlatformType);
+    EOS_UserInfo_BestDisplayName_Release(bestDisplayName);
+    return ret;
+}
+
 static Variant eosg_mods_mod_info_to_dict_and_release(EOS_Mods_ModInfo *modsInfo) {
     if (modsInfo == nullptr) {
         return Variant();

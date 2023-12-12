@@ -166,3 +166,51 @@ void IEOS::user_info_interface_query_user_info_by_external_account(Ref<RefCounte
         IEOS::get_singleton()->emit_signal("user_info_interface_query_user_info_by_external_account_callback", ret);
     });
 }
+
+Dictionary IEOS::user_info_interface_copy_best_display_name(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
+
+    EOS_UserInfo_CopyBestDisplayNameOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_USERINFO_COPYBESTDISPLAYNAME_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+    options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
+
+    EOS_UserInfo_BestDisplayName *outBestDisplayName = nullptr;
+    EOS_EResult res = EOS_UserInfo_CopyBestDisplayName(s_userInfoInterface, &options, &outBestDisplayName);
+
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(res);
+    ret["best_display_name"] = eosg_user_info_best_display_name_to_dict_and_release(outBestDisplayName);
+    return ret;
+}
+
+Dictionary IEOS::user_info_interface_copy_best_display_name_with_platform(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
+    int target_platform_type = p_options->get("target_platform_type");
+
+    EOS_UserInfo_CopyBestDisplayNameWithPlatformOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_USERINFO_COPYBESTDISPLAYNAMEWITHPLATFORM_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+    options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
+    options.TargetPlatformType = static_cast<EOS_OnlinePlatformType>(target_platform_type);
+
+    EOS_UserInfo_BestDisplayName *outBestDisplayName = nullptr;
+    EOS_EResult res = EOS_UserInfo_CopyBestDisplayNameWithPlatform(s_userInfoInterface, &options, &outBestDisplayName);
+
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(res);
+    ret["best_display_name"] = eosg_user_info_best_display_name_to_dict_and_release(outBestDisplayName);
+    return ret;
+}
+
+int IEOS::user_info_interface_get_local_platform_type(Ref<RefCounted> p_options) {
+    EOS_UserInfo_GetLocalPlatformTypeOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_USERINFO_GETLOCALPLATFORMTYPE_API_LATEST;
+
+    return static_cast<int>(EOS_UserInfo_GetLocalPlatformType(s_userInfoInterface, &options));
+}
