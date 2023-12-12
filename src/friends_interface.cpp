@@ -128,3 +128,28 @@ void IEOS::friends_interface_send_invite(Ref<RefCounted> p_options) {
     });
     return;
 }
+
+int IEOS::friends_interface_get_blocked_users_count(Ref<RefCounted> p_options){
+	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+
+	EOS_Friends_GetBlockedUsersCountOptions options;
+	memset(&options, 0, sizeof(options));
+	options.ApiVersion = EOS_FRIENDS_GETBLOCKEDUSERSCOUNT_API_LATEST;
+	options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+
+	return static_cast<int>(EOS_Friends_GetBlockedUsersCount(s_friendsInterface, &options));
+}
+
+
+String IEOS::friends_interface_get_blocked_user_at_index(Ref<RefCounted> p_options){
+	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+	int index = static_cast<int>(p_options->get("index"));
+
+	EOS_Friends_GetBlockedUserAtIndexOptions options;
+	memset(&options, 0, sizeof(options));
+	options.ApiVersion = EOS_FRIENDS_GETBLOCKEDUSERATINDEX_API_LATEST;
+	options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+	options.Index = static_cast<int32_t>(index);
+
+	return eosg_epic_account_id_to_string(EOS_Friends_GetBlockedUserAtIndex(s_friendsInterface, &options));
+}

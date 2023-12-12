@@ -169,6 +169,15 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         ret["current_status"] = static_cast<int>(data->CurrentStatus);
         IEOS::get_singleton()->emit_signal("friends_interface_friends_update_callback", ret);
     });
+	EOS_Friends_AddNotifyBlockedUsersUpdateOptions notifyBlockedUsersUpdateOptions;
+	notifyBlockedUsersUpdateOptions.ApiVersion = EOS_FRIENDS_ADDNOTIFYBLOCKEDUSERSUPDATE_API_LATEST;
+	EOS_Friends_AddNotifyBlockedUsersUpdate(s_friendsInterface, &notifyBlockedUsersUpdateOptions, nullptr, [](const EOS_Friends_OnBlockedUsersUpdateInfo *data) {
+		Dictionary ret;
+		ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+		ret["target_user_id"] = eosg_epic_account_id_to_string(data->TargetUserId);
+		ret["blocked"] = EOSG_GET_BOOL(data->bBlocked);
+		IEOS::get_singleton()->emit_signal("friends_interface_blocked_users_update_callback", ret);
+	});
 
     s_kwsInterface = EOS_Platform_GetKWSInterface(s_platformInterface);
     EOS_KWS_AddNotifyPermissionsUpdateReceivedOptions notifyPermissionsUpdateReceivedOptions;

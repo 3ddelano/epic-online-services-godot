@@ -204,6 +204,9 @@ class IEOS : public RefCounted {
     void friends_interface_query_friends(Ref<RefCounted> options);
     void friends_interface_reject_invite(Ref<RefCounted> options);
     void friends_interface_send_invite(Ref<RefCounted> options);
+    int friends_interface_get_blocked_users_count(Ref<RefCounted> options);
+    String friends_interface_get_blocked_user_at_index(Ref<RefCounted> options);
+	
 
     // -----
     // Userinfo Interface

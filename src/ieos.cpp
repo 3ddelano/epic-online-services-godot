@@ -103,6 +103,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(friends_interface_query_friends);
     IEOS_BIND_METHOD(friends_interface_reject_invite);
     IEOS_BIND_METHOD(friends_interface_send_invite);
+    IEOS_BIND_METHOD(friends_interface_get_blocked_users_count);
+    IEOS_BIND_METHOD(friends_interface_get_blocked_user_at_index);
     IEOS_BIND_METHOD(user_info_interface_copy_external_user_info_by_account_id);
     IEOS_BIND_METHOD(user_info_interface_copy_external_user_info_by_account_type);
     IEOS_BIND_METHOD(user_info_interface_copy_external_user_info_by_index);
@@ -211,7 +213,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(p2p_get_packet_queue_info);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
-    ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("auth_interface_logout_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("auth_interface_login_status_changed", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("auth_interface_delete_persistent_auth_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -219,7 +222,8 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("auth_interface_verify_id_token_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("auth_interface_verify_user_auth_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("auth_interface_link_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("connect_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("connect_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_auth_expiration", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_login_status_changed", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_create_device_id_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -230,11 +234,13 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("connect_interface_verify_id_token_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_transfer_device_id_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("connect_interface_unlink_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("achievements_interface_achievements_unlocked_v2_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("achievements_interface_achievements_unlocked_v2_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("achievements_interface_query_definitions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("achievements_interface_query_player_achievements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("achievements_interface_unlock_achievements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_rejected_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_request_to_join_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -245,49 +251,62 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("custom_invites_interface_send_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_accept_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_reject_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("stats_interface_ingest_stat_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("stats_interface_ingest_stat_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("stats_interface_query_stats_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("leaderboards_interface_query_leaderboard_definitions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("leaderboards_interface_query_leaderboard_definitions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("leaderboards_interface_query_leaderboard_ranks_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("leaderboards_interface_query_leaderboard_user_scores_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("friends_interface_accept_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("friends_interface_accept_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("friends_interface_friends_update_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("friends_interface_query_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("friends_interface_blocked_users_update_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+	ADD_SIGNAL(MethodInfo("friends_interface_query_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("friends_interface_reject_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("friends_interface_send_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("user_info_interface_query_user_info_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("user_info_interface_query_user_info_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("user_info_interface_query_user_info_by_display_name_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("user_info_interface_query_user_info_by_external_account_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("ecom_interface_checkout_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("ecom_interface_checkout_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ecom_interface_query_entitlements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ecom_interface_query_offers_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ecom_interface_query_ownership_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ecom_interface_query_ownership_token_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ecom_interface_redeem_entitlements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("ui_interface_display_settings_updated_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("ui_interface_display_settings_updated_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_hide_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_block_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_report_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("kws_interface_permissions_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("kws_interface_permissions_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_create_user_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_query_age_gate_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_query_permissions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_request_permissions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_update_parent_email_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("mods_interface_enumerate_mods_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("mods_interface_enumerate_mods_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_install_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_uninstall_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("mods_interface_update_mod_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("reports_interface_send_player_behavior_report_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("progression_snapshot_interface_submit_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("reports_interface_send_player_behavior_report_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("progression_snapshot_interface_submit_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("progression_snapshot_interface_delete_snapshot_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("presence_interface_join_game_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    
+	ADD_SIGNAL(MethodInfo("presence_interface_join_game_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_presence_changed_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_query_presence_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("presence_interface_set_presence_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+
     ADD_SIGNAL(MethodInfo("lobby_interface_lobby_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("lobby_interface_lobby_member_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+	ADD_SIGNAL(MethodInfo("lobby_interface_lobby_member_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_interface_lobby_member_status_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_interface_lobby_invite_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_interface_lobby_invite_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -308,6 +327,7 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("lobby_interface_reject_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_interface_query_invites_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("lobby_search_find_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+
     ADD_SIGNAL(MethodInfo("p2p_query_nat_type_completed", PropertyInfo(Variant::INT, "nat_type")));
     ADD_SIGNAL(MethodInfo("p2p_incoming_packet_queue_full", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
