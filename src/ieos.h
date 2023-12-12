@@ -165,6 +165,9 @@ class IEOS : public RefCounted {
     int custom_invites_interface_finalize_invite(Ref<RefCounted> options);
     void custom_invites_interface_send_custom_invite(Ref<RefCounted> options);
     int custom_invites_interface_set_custom_invite(Ref<RefCounted> options);
+    void custom_invites_interface_send_request_to_join(Ref<RefCounted> options);
+    void custom_invites_interface_accept_request_to_join(Ref<RefCounted> options);
+    void custom_invites_interface_reject_request_to_join(Ref<RefCounted> options);
 
     // -----
     // Stats Interface

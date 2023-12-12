@@ -76,6 +76,9 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(custom_invites_interface_finalize_invite);
     IEOS_BIND_METHOD(custom_invites_interface_send_custom_invite);
     IEOS_BIND_METHOD(custom_invites_interface_set_custom_invite);
+    IEOS_BIND_METHOD(custom_invites_interface_send_request_to_join);
+    IEOS_BIND_METHOD(custom_invites_interface_accept_request_to_join);
+    IEOS_BIND_METHOD(custom_invites_interface_reject_request_to_join);
     IEOS_BIND_METHOD(stats_interface_copy_stat_by_index);
     IEOS_BIND_METHOD(stats_interface_copy_stat_by_name);
     IEOS_BIND_METHOD(stats_interface_get_stats_count);
@@ -231,10 +234,17 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("achievements_interface_query_definitions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("achievements_interface_query_player_achievements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("achievements_interface_unlock_achievements_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
-    ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_custom_invite_rejected_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_request_to_join_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_request_to_join_accepted_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_request_to_join_rejected_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_request_to_join_response_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("custom_invites_interface_send_custom_invite_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_send_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_accept_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("custom_invites_interface_reject_request_to_join_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("stats_interface_ingest_stat_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("stats_interface_query_stats_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("leaderboards_interface_query_leaderboard_definitions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

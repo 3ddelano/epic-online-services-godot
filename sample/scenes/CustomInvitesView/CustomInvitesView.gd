@@ -10,6 +10,10 @@ func _ready() -> void:
 	EOS.get_instance().custom_invites_interface_custom_invite_accepted_callback.connect(_on_custom_invite_accepted_callback)
 	EOS.get_instance().custom_invites_interface_custom_invite_received_callback.connect(_on_custom_invite_received_callback)
 	EOS.get_instance().custom_invites_interface_custom_invite_rejected_callback.connect(_on_custom_invite_rejected_callback)
+	EOS.get_instance().custom_invites_interface_request_to_join_received_callback.connect(_on_request_to_join_received_callback)
+	EOS.get_instance().custom_invites_interface_request_to_join_response_received_callback.connect(_on_request_to_join_response_received_callback)
+	EOS.get_instance().custom_invites_interface_request_to_join_accepted_callback.connect(_on_request_to_join_accepted_callback)
+	EOS.get_instance().custom_invites_interface_request_to_join_rejected_callback.connect(_on_request_to_join_rejected_callback)
 
 	send_invite_btn.pressed.connect(_on_send_invite_btn_pressed)
 	payload_textedit.text_changed.connect(_on_payload_textedit_text_changed)
@@ -40,6 +44,18 @@ func _on_custom_invite_received_callback(data: Dictionary):
 func _on_custom_invite_rejected_callback(data: Dictionary):
 	print("--- Custom Invites: custom_invite_rejected_callback: ", EOS.result_str(data))
 
+func _on_request_to_join_received_callback(data: Dictionary):
+	print("--- Custom Invites: request_to_join_received_callback: ", EOS.result_str(data))
+
+func _on_request_to_join_response_received_callback(data: Dictionary):
+	print("--- Custom Invites: request_to_join_response_received_callback: ", EOS.result_str(data))
+
+func _on_request_to_join_accepted_callback(data: Dictionary):
+	print("--- Custom Invites: request_to_join_accepted_callback: ", EOS.result_str(data))
+
+func _on_request_to_join_rejected_callback(data: Dictionary):
+	print("--- Custom Invites: request_to_join_rejected_callback: ", EOS.result_str(data))
+		
 
 func _on_send_invite_btn_pressed():
 	var set_invite_opts = EOS.CustomInvites.SetCustomInviteOptions.new()

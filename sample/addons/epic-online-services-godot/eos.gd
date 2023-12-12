@@ -571,6 +571,11 @@ class Auth:
 
 
 class CustomInvites:
+	enum ResquestToJoinResponse {
+		Accepted = 0,
+		Rejected = 1,
+	}
+
 	class SetCustomInviteOptions extends BaseClass:
 		func _init():
 			super._init("SetCustomInviteOptions")
@@ -595,6 +600,33 @@ class CustomInvites:
 		var local_user_id: String
 		var custom_invite_id: String
 		var processing_result: EOS.Result
+	
+	class SendRequestToJoinOptions extends BaseClass:
+		func _init():
+			super._init("SendRequestToJoinOptions")
+		
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+	
+	class AcceptRequestToJoinOptions extends BaseClass:
+		func _init():
+			super._init("AcceptRequestToJoinOptions")
+		
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+	
+	class RejectRequestToJoinOptions extends BaseClass:
+		func _init():
+			super._init("RejectRequestToJoinOptions")
+		
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
 
 	class CustomInvitesInterface:
 		static func set_custom_invite(options: SetCustomInviteOptions) -> EOS.Result:
@@ -606,7 +638,14 @@ class CustomInvites:
 		static func finalize_invite(options: FinalizeInviteOptions) -> EOS.Result:
 			return IEOS.custom_invites_interface_finalize_invite(options)
 
-
+		static func send_request_to_join(options: SendRequestToJoinOptions) -> void:
+			IEOS.custom_invites_interface_send_request_to_join(options)
+		
+		static func accept_request_to_join(options: SendRequestToJoinOptions) -> void:
+			IEOS.custom_invites_interface_accept_request_to_join(options)
+		
+		static func reject_request_to_join(options: SendRequestToJoinOptions) -> void:
+			IEOS.custom_invites_interface_reject_request_to_join(options)
 
 
 
