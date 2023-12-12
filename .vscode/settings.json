@@ -6,5 +6,6 @@
     "**/*.pdb": true,
     "**/__pycache__": true,
     "**/*.os": true,
-  }
+  },
+  "godot_tools.editor_path": "d:\\Projects\\Godot\\Godot_v4.exe"
 }

@@ -24,46 +24,14 @@ using namespace godot;
 #define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
 #endif
 
-static char const *eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
-    if (accountId == nullptr) {
-        return "";
-    }
-
-    static char tempBuffer[EOS_EPICACCOUNTID_MAX_LENGTH + 1];
-    int32_t tempBufferSize = sizeof(tempBuffer);
-    EOS_EResult Result = EOS_EpicAccountId_ToString(accountId, tempBuffer, &tempBufferSize);
-
-    if (Result == EOS_EResult::EOS_Success) {
-        return tempBuffer;
-    }
-
-    UtilityFunctions::printerr("\nError: EOSG Utils: eosg_epic_account_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
-
-    return "";
-}
+String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId);
 
 static EOS_EpicAccountId eosg_string_to_epic_account_id(const char *p_account_id) {
     EOS_EpicAccountId accountId = EOS_EpicAccountId_FromString(p_account_id);
     return accountId;
 }
 
-static String eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
-    if (localUserId == nullptr) {
-        return String("");
-    }
-
-    static char tempBuffer[EOS_PRODUCTUSERID_MAX_LENGTH + 1];
-    int32_t tempBufferSize = sizeof(tempBuffer);
-    EOS_EResult Result = EOS_ProductUserId_ToString(localUserId, tempBuffer, &tempBufferSize);
-
-    if (Result == EOS_EResult::EOS_Success) {
-        return String(tempBuffer);
-    }
-
-    UtilityFunctions::printerr("\nError: EOSG Utils: eosg_product_user_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
-
-    return String("");
-}
+String eosg_product_user_id_to_string(EOS_ProductUserId localUserId);
 
 static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
     EOS_ProductUserId accountId = EOS_ProductUserId_FromString(p_account_id);

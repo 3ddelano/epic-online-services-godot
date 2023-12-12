@@ -63,6 +63,8 @@ protected:
     EOS_HP2P s_p2pInterface = nullptr;
 
 public:
+    bool isEOSValid = false; // is true if EOS Platform is initialized
+
     static IEOS *get_singleton();
 
     IEOS();

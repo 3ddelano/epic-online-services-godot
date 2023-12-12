@@ -76,7 +76,10 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     }
 
     if (s_platformInterface == nullptr) {
+        isEOSValid = false;
         return false;
+    } else {
+        isEOSValid = true;
     }
 
     // Get interface handles
@@ -487,6 +490,8 @@ int IEOS::platform_interface_get_network_status() {
 }
 
 void IEOS::platform_interface_release() {
+    isEOSValid = false;
+
     s_achievementsInterface = nullptr;
     s_authInterface = nullptr;
     s_connectInterface = nullptr;
@@ -512,6 +517,7 @@ void IEOS::platform_interface_release() {
 }
 
 int IEOS::platform_interface_shutdown() {
+    isEOSValid = false;
     EOS_EResult res = EOS_Shutdown();
     return static_cast<int>(res);
 }
