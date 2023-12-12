@@ -155,6 +155,12 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(ui_interface_show_report_player);
     IEOS_BIND_METHOD(ui_interface_pause_social_overlay);
     IEOS_BIND_METHOD(ui_interface_is_social_overlay_paused);
+    IEOS_BIND_METHOD(ui_interface_set_toggle_friends_button);
+    IEOS_BIND_METHOD(ui_interface_get_toggle_friends_button);
+    IEOS_BIND_METHOD(ui_interface_is_valid_button_combination);
+    IEOS_BIND_METHOD(ui_interface_report_input_state);
+    IEOS_BIND_METHOD(ui_interface_pre_present);
+    IEOS_BIND_METHOD(ui_interface_show_native_profile);
     IEOS_BIND_METHOD(kws_interface_copy_permission_by_index);
     IEOS_BIND_METHOD(kws_interface_create_user);
     IEOS_BIND_METHOD(kws_interface_get_permission_by_key);
@@ -284,6 +290,8 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("ui_interface_show_friends_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_block_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("ui_interface_show_report_player_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("ui_interface_show_native_profile_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("ui_interface_memory_monitor_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 
     ADD_SIGNAL(MethodInfo("kws_interface_permissions_update_received_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("kws_interface_create_user_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));

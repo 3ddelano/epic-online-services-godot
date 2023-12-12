@@ -270,6 +270,12 @@ public:
     void ui_interface_show_report_player(Ref<RefCounted> options);
     int ui_interface_pause_social_overlay(Ref<RefCounted> options);
     bool ui_interface_is_social_overlay_paused(Ref<RefCounted> options);
+    int ui_interface_set_toggle_friends_button(Ref<RefCounted> options);
+    int ui_interface_get_toggle_friends_button(Ref<RefCounted> options);
+    bool ui_interface_is_valid_button_combination(int button_combination);
+    int ui_interface_report_input_state(Ref<RefCounted> options);
+    int ui_interface_pre_present(Ref<RefCounted> options);
+    void ui_interface_show_native_profile(Ref<RefCounted> options);
 
     // -----
     // KWS Interface

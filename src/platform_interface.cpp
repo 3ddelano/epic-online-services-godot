@@ -89,7 +89,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         isEOSValid = true;
     }
 
-    // Get interface handles
+    // Get interface handles and register event listeners
     s_achievementsInterface = EOS_Platform_GetAchievementsInterface(s_platformInterface);
     EOS_Achievements_AddNotifyAchievementsUnlockedV2Options notifyAchievementsUnlockedV2Options;
     notifyAchievementsUnlockedV2Options.ApiVersion = EOS_ACHIEVEMENTS_ADDNOTIFYACHIEVEMENTSUNLOCKEDV2_API_LATEST;
@@ -229,6 +229,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_progressionSnapshotInterface = EOS_Platform_GetProgressionSnapshotInterface(s_platformInterface);
     s_reportsInterface = EOS_Platform_GetReportsInterface(s_platformInterface);
     s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
+
     s_uiInterface = EOS_Platform_GetUIInterface(s_platformInterface);
     EOS_UI_AddNotifyDisplaySettingsUpdatedOptions notifyDisplaySettingsUpdatedOptions;
     notifyDisplaySettingsUpdatedOptions.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
@@ -237,6 +238,12 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         ret["is_visible"] = EOSG_GET_BOOL(data->bIsVisible);
         ret["is_exclusive_input"] = EOSG_GET_BOOL(data->bIsExclusiveInput);
         IEOS::get_singleton()->emit_signal("ui_interface_display_settings_updated_callback", ret);
+    });
+    EOS_UI_AddNotifyMemoryMonitorOptions notifyMemoryMonitorOptions;
+    notifyMemoryMonitorOptions.ApiVersion = EOS_UI_ADDNOTIFYMEMORYMONITOR_API_LATEST;
+    EOS_UI_AddNotifyMemoryMonitor(s_uiInterface, &notifyMemoryMonitorOptions, nullptr, [](const EOS_UI_MemoryMonitorCallbackInfo *data) {
+        Dictionary ret;
+        IEOS::get_singleton()->emit_signal("ui_interface_memory_monitor_callback", ret);
     });
 
     s_userInfoInterface = EOS_Platform_GetUserInfoInterface(s_platformInterface);

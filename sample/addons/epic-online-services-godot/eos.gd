@@ -10,14 +10,14 @@ static func get_instance():
 	return IEOS
 
 
-## Pretty prints the [EOS.Result] code and its string representation.[br]
-## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+## Pretty prints the [enum Result] code and its string representation.[br]
+## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func print_result(p_result) -> void:
 	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
 
 
-## Returns a string representation of the [EOS.Result] code.[br]
-## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+## Returns a string representation of the [enum Result] code.[br]
+## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func result_str(p_result) -> String:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
@@ -26,7 +26,7 @@ static func result_str(p_result) -> String:
 
 
 ## Returns whether the operation was completed.[br]
-## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func is_operation_complete(p_result) -> bool:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
@@ -34,11 +34,11 @@ static func is_operation_complete(p_result) -> bool:
 
 
 ## Returns whether the operation was successful.[br]
-## [code]p_result[/code] is a [EOS.Result] or a [Dictionary] with a [code]result_code[\code] key
+## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func is_success(p_result) -> bool:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
-	return p_result == EOS.Result.Success
+	return p_result == Result.Success
 
 
 
@@ -343,7 +343,7 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id: String) -> EOS.LoginStatus:
+		static func get_login_status(local_user_id: String) -> LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
 		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions) -> int:
@@ -399,6 +399,7 @@ class Auth:
 	}
 
 	enum LoginFlags {
+		None = 0,
 		NO_USER_INTERFACE = 1
 	}
 
@@ -408,7 +409,7 @@ class Auth:
 
 		var credentials: Credentials
 		var scope_flags: ScopeFlags = -1
-		var login_flags = 0 ## See [enum EOS.Auth.LoginFlags]
+		var login_flags: LoginFlags = LoginFlags.None
 
 		var client_data = null
 
@@ -542,7 +543,7 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id: String) -> EOS.LoginStatus:
+		static func get_login_status(local_user_id: String) -> LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
@@ -599,51 +600,51 @@ class CustomInvites:
 		var target_user_id: String
 		var local_user_id: String
 		var custom_invite_id: String
-		var processing_result: EOS.Result
-	
+		var processing_result: Result
+
 	class SendRequestToJoinOptions extends BaseClass:
 		func _init():
 			super._init("SendRequestToJoinOptions")
-		
+
 		var local_user_id: String
 		var target_user_id: String
 
 		var client_data = null
-	
+
 	class AcceptRequestToJoinOptions extends BaseClass:
 		func _init():
 			super._init("AcceptRequestToJoinOptions")
-		
+
 		var local_user_id: String
 		var target_user_id: String
 
 		var client_data = null
-	
+
 	class RejectRequestToJoinOptions extends BaseClass:
 		func _init():
 			super._init("RejectRequestToJoinOptions")
-		
+
 		var local_user_id: String
 		var target_user_id: String
 
 		var client_data = null
 
 	class CustomInvitesInterface:
-		static func set_custom_invite(options: SetCustomInviteOptions) -> EOS.Result:
+		static func set_custom_invite(options: SetCustomInviteOptions) -> Result:
 			return IEOS.custom_invites_interface_set_custom_invite(options)
 
 		static func send_custom_invite(options: SendCustomInviteOptions) -> void:
 			IEOS.custom_invites_interface_send_custom_invite(options)
 
-		static func finalize_invite(options: FinalizeInviteOptions) -> EOS.Result:
+		static func finalize_invite(options: FinalizeInviteOptions) -> Result:
 			return IEOS.custom_invites_interface_finalize_invite(options)
 
 		static func send_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_send_request_to_join(options)
-		
+
 		static func accept_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_accept_request_to_join(options)
-		
+
 		static func reject_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_reject_request_to_join(options)
 
@@ -765,11 +766,11 @@ class Platform:
 
 		var product_name: String
 		var product_version: String
-	
+
 	class RTCOptions extends BaseClass:
 		func _init():
 			super._init("RTCOptions")
-		
+
 		var background_mode = null ## See [enum EOS.Platform.RTCBackgroundMode]
 
 	class CreateOptions extends BaseClass:
@@ -839,7 +840,7 @@ class Platform:
 		static func release() -> void:
 			IEOS.platform_interface_release()
 
-		static func shutdown() -> EOS.Result:
+		static func shutdown() -> Result:
 			return IEOS.platform_interface_shutdown()
 
 
@@ -1767,10 +1768,10 @@ class Metrics:
 		var account_id: String
 
 	class MetricsInterface:
-		static func begin_player_session(options: BeginPlayerSessionOptions) -> EOS.Result:
+		static func begin_player_session(options: BeginPlayerSessionOptions) -> Result:
 			return IEOS.metrics_interface_begin_player_session(options)
 
-		static func end_player_session(options: EndPlayerSessionOptions) -> EOS.Result:
+		static func end_player_session(options: EndPlayerSessionOptions) -> Result:
 			return IEOS.metrics_interface_end_player_session(options)
 
 
@@ -2057,7 +2058,7 @@ class ProgressionSnapshot:
 		static func begin_snapshot(options: BeginSnapshotOptions) -> Dictionary:
 			return IEOS.progression_snapshot_interface_begin_snapshot(options)
 
-		static func add_progression(options: AddProgressionOptions) -> EOS.Result:
+		static func add_progression(options: AddProgressionOptions) -> Result:
 			return IEOS.progression_snapshot_interface_add_progression(options)
 
 		static func submit_snapshot(options: SubmitSnapshotOptions) -> void:
@@ -2199,6 +2200,26 @@ class UI:
 		MaxKeyType
 	}
 
+	enum InputStateButtonFlags {
+		None = 0,
+		DPadLeft = (1 << 0),
+		DPadRight = (1 << 1),
+		DPadDown = (1 << 2),
+		DPadUp = (1 << 3),
+		FaceButtonLeft = (1 << 4),
+		FaceButtonRight = (1 << 5),
+		FaceButtonBottom = (1 << 6),
+		FaceButtonTop = (1 << 7),
+		LeftShoulder = (1 << 8),
+		RightShoulder = (1 << 9),
+		LeftTrigger = (1 << 10),
+		RightTrigger = (1 << 11),
+		SpecialLeft = (1 << 12),
+		SpecialRight = (1 << 13),
+		LeftThumbstick = (1 << 14),
+		RightThumbstick = (1 << 15),
+	}
+
 	class AcknowledgeEventIdOptions extends BaseClass:
 		func _init():
 			super._init("AcknowledgeEventIdOptions")
@@ -2273,10 +2294,35 @@ class UI:
 	class IsSocialOverlayPausedOptions extends BaseClass:
 		func _init():
 			super._init("IsSocialOverlayPausedOptions")
+	
+	class ReportInputStateOptions extends BaseClass:
+		func _init():
+			super._init("ReportInputStateOptions")
+		
+		var button_down_flags: InputStateButtonFlags
+		var mouse_pos_x: int
+		var mouse_pos_y: int
+		var gamepad_index: int
+		var left_stick_x: float
+		var left_stick_y: float
+		var right_stick_x: float
+		var right_stick_y: float
+		var left_trigger: float
+		var right_trigger: float
 
+	class PrePresentOptions extends BaseClass:
+		func _init():
+			super._init("PrePresentOptions")
+
+	class ShowNativeProfileOptions extends BaseClass:
+		func _init():
+			super._init("ShowNativeProfileOptions")
+
+		var local_user_id: String
+		var target_user_id: String
 
 	class UIInterface:
-		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> EOS.Result:
+		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> Result:
 			return IEOS.ui_interface_acknowledge_event_id(options)
 
 		static func get_friends_visible(options: GetFriendsVisibleOptions) -> bool:
@@ -2297,7 +2343,7 @@ class UI:
 		static func set_display_preference(options: SetDisplayPreferenceOptions) -> EOS.UI.NotificationLocation:
 			return IEOS.ui_interface_set_display_preference(options)
 
-		static func set_toggle_friends_key(options: SetToggleFriendsKeyOptions) -> EOS.Result:
+		static func set_toggle_friends_key(options: SetToggleFriendsKeyOptions) -> Result:
 			return IEOS.ui_interface_set_toggle_friends_key(options)
 
 		static func show_friends(options: ShowFriendsOptions) -> void:
@@ -2312,11 +2358,23 @@ class UI:
 		static func show_report_player(options: ShowReportPlayerOptions) -> void:
 			IEOS.ui_interface_show_report_player(options)
 
-		static func pause_social_overlay(options: PauseSocialOverlayOptions) -> EOS.Result:
+		static func pause_social_overlay(options: PauseSocialOverlayOptions) -> Result:
 			return IEOS.ui_interface_pause_social_overlay(options)
 
 		static func is_social_overlay_paused(options: IsSocialOverlayPausedOptions) -> bool:
 			return IEOS.ui_interface_is_social_overlay_paused(options)
+
+		static func set_toggle_friends_button(options: SetToggleFriendsKeyOptions) -> Result:
+			return IEOS.ui_interface_set_toggle_friends_button(options)
+		
+		static func report_input_state(options: ReportInputStateOptions) -> Result:
+			return IEOS.ui_interface_report_input_state(options)
+		
+		static func pre_present(options: PrePresentOptions) -> Result:
+			return IEOS.ui_interface_pre_present(options)
+		
+		static func show_native_profile(options: ShowNativeProfileOptions) -> void:
+			IEOS.ui_interface_show_native_profile(options)
 
 
 
@@ -2484,7 +2542,7 @@ class Logging:
 		func _to_string() -> String:
 			return "%s | %s | %s" % [category, level, message]
 
-	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> EOS.Result:
+	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> Result:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
 
