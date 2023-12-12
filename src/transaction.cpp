@@ -36,8 +36,6 @@ Dictionary TransactionEOSG::copy_entitlement_by_index(int p_entitlement_index) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["entitlement"] = eosg_ecom_entitlement_to_dict(outEntitlement);
-    EOS_Ecom_Entitlement_Release(outEntitlement);
-
+    ret["entitlement"] = eosg_ecom_entitlement_to_dict_and_release(outEntitlement);
     return ret;
 }

@@ -157,7 +157,7 @@ static Variant eosg_connect_external_account_info_to_dict(EOS_Connect_ExternalAc
     return ret;
 }
 
-static Variant eosg_ecom_entitlement_to_dict(EOS_Ecom_Entitlement* entitlement) {
+static Variant eosg_ecom_entitlement_to_dict_and_release(EOS_Ecom_Entitlement* entitlement) {
     if (entitlement == nullptr) {
         return Variant();
     }
@@ -173,7 +173,7 @@ static Variant eosg_ecom_entitlement_to_dict(EOS_Ecom_Entitlement* entitlement) 
     return ret;
 }
 
-static Variant eosg_ecom_catalog_item_to_dict(EOS_Ecom_CatalogItem* item) {
+static Variant eosg_ecom_catalog_item_to_dict_and_release(EOS_Ecom_CatalogItem* item) {
     if (item == nullptr) {
         return Variant();
     }
@@ -193,7 +193,7 @@ static Variant eosg_ecom_catalog_item_to_dict(EOS_Ecom_CatalogItem* item) {
     return ret;
 }
 
-static Variant eosg_ecom_key_image_info_to_dict(EOS_Ecom_KeyImageInfo* keyInfo) {
+static Variant eosg_ecom_key_image_info_to_dict_and_release(EOS_Ecom_KeyImageInfo* keyInfo) {
     if (keyInfo == nullptr) {
         return Variant();
     }
@@ -207,7 +207,7 @@ static Variant eosg_ecom_key_image_info_to_dict(EOS_Ecom_KeyImageInfo* keyInfo) 
     return ret;
 }
 
-static Variant eosg_ecom_catalog_release_to_dict(EOS_Ecom_CatalogRelease* release) {
+static Variant eosg_ecom_catalog_release_to_dict_and_release(EOS_Ecom_CatalogRelease* release) {
     if (release == nullptr) {
         return Variant();
     }
@@ -228,7 +228,7 @@ static Variant eosg_ecom_catalog_release_to_dict(EOS_Ecom_CatalogRelease* releas
     return ret;
 }
 
-static Variant eosg_ecom_catalog_offer_to_dict(EOS_Ecom_CatalogOffer* offer) {
+static Variant eosg_ecom_catalog_offer_to_dict_and_release(EOS_Ecom_CatalogOffer* offer) {
     if (offer == nullptr) {
         return Variant();
     }

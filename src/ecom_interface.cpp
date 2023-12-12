@@ -55,8 +55,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_id(Ref<RefCounted> p_options
     EOS_EResult res = EOS_Ecom_CopyEntitlementById(s_ecomInterface, &options, &outEntitlement);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["entitlement"] = eosg_ecom_entitlement_to_dict(outEntitlement);
-    EOS_Ecom_Entitlement_Release(outEntitlement);
+    ret["entitlement"] = eosg_ecom_entitlement_to_dict_and_release(outEntitlement);
     return ret;
 }
 
@@ -73,8 +72,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_index(Ref<RefCounted> p_opti
     EOS_EResult res = EOS_Ecom_CopyEntitlementByIndex(s_ecomInterface, &options, &outEntitlement);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["entitlement"] = eosg_ecom_entitlement_to_dict(outEntitlement);
-    EOS_Ecom_Entitlement_Release(outEntitlement);
+    ret["entitlement"] = eosg_ecom_entitlement_to_dict_and_release(outEntitlement);
     return ret;
 }
 
@@ -93,8 +91,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_name_and_index(Ref<RefCounte
     EOS_EResult res = EOS_Ecom_CopyEntitlementByNameAndIndex(s_ecomInterface, &options, &outEntitlement);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["entitlement"] = eosg_ecom_entitlement_to_dict(outEntitlement);
-    EOS_Ecom_Entitlement_Release(outEntitlement);
+    ret["entitlement"] = eosg_ecom_entitlement_to_dict_and_release(outEntitlement);
     return ret;
 }
 
@@ -112,8 +109,7 @@ Dictionary IEOS::ecom_interface_copy_item_by_id(Ref<RefCounted> p_options) {
     EOS_EResult res = EOS_Ecom_CopyItemById(s_ecomInterface, &options, &outItem);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["item"] = eosg_ecom_catalog_item_to_dict(outItem);
-    EOS_Ecom_CatalogItem_Release(outItem);
+    ret["item"] = eosg_ecom_catalog_item_to_dict_and_release(outItem);
     return ret;
 }
 
@@ -132,8 +128,7 @@ Dictionary IEOS::ecom_interface_copy_item_image_info_by_index(Ref<RefCounted> p_
     EOS_EResult res = EOS_Ecom_CopyItemImageInfoByIndex(s_ecomInterface, &options, &outImageInfo);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["image_info"] = eosg_ecom_key_image_info_to_dict(outImageInfo);
-    EOS_Ecom_KeyImageInfo_Release(outImageInfo);
+    ret["image_info"] = eosg_ecom_key_image_info_to_dict_and_release(outImageInfo);
     return ret;
 }
 
@@ -152,8 +147,7 @@ Dictionary IEOS::ecom_interface_copy_item_release_by_index(Ref<RefCounted> p_opt
     EOS_EResult res = EOS_Ecom_CopyItemReleaseByIndex(s_ecomInterface, &options, &outRelease);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["release"] = eosg_ecom_catalog_release_to_dict(outRelease);
-    EOS_Ecom_CatalogRelease_Release(outRelease);
+    ret["release"] = eosg_ecom_catalog_release_to_dict_and_release(outRelease);
     return ret;
 }
 
@@ -171,8 +165,7 @@ Dictionary IEOS::ecom_interface_copy_offer_by_id(Ref<RefCounted> p_options) {
     EOS_EResult res = EOS_Ecom_CopyOfferById(s_ecomInterface, &options, &outOffer);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["offer"] = eosg_ecom_catalog_offer_to_dict(outOffer);
-    EOS_Ecom_CatalogOffer_Release(outOffer);
+    ret["offer"] = eosg_ecom_catalog_offer_to_dict_and_release(outOffer);
     return ret;
 }
 
@@ -189,8 +182,7 @@ Dictionary IEOS::ecom_interface_copy_offer_by_index(Ref<RefCounted> p_options) {
     EOS_EResult res = EOS_Ecom_CopyOfferByIndex(s_ecomInterface, &options, &outOffer);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["offer"] = eosg_ecom_catalog_offer_to_dict(outOffer);
-    EOS_Ecom_CatalogOffer_Release(outOffer);
+    ret["offer"] = eosg_ecom_catalog_offer_to_dict_and_release(outOffer);
     return ret;
 }
 
@@ -209,8 +201,7 @@ Dictionary IEOS::ecom_interface_copy_offer_image_info_by_index(Ref<RefCounted> p
     EOS_EResult res = EOS_Ecom_CopyOfferImageInfoByIndex(s_ecomInterface, &options, &outImageInfo);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["image_info"] = eosg_ecom_key_image_info_to_dict(outImageInfo);
-    EOS_Ecom_KeyImageInfo_Release(outImageInfo);
+    ret["image_info"] = eosg_ecom_key_image_info_to_dict_and_release(outImageInfo);
     return ret;
 }
 
@@ -229,8 +220,7 @@ Dictionary IEOS::ecom_interface_copy_offer_item_by_index(Ref<RefCounted> p_optio
     EOS_EResult res = EOS_Ecom_CopyOfferItemByIndex(s_ecomInterface, &options, &outItem);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["item"] = eosg_ecom_catalog_item_to_dict(outItem);
-    EOS_Ecom_CatalogItem_Release(outItem);
+    ret["item"] = eosg_ecom_catalog_item_to_dict_and_release(outItem);
     return ret;
 }
 
