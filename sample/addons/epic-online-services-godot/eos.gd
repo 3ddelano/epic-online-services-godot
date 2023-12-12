@@ -1868,6 +1868,8 @@ class P2P:
 
 
 class PlayerDataStorage:
+	const TIME_UNDEFINED = -1
+
 	enum ReadResult { ContinueReading = 1, FailRequest = 2, CancelRequest = 3 }
 
 	enum WriteResult {
@@ -2563,7 +2565,7 @@ enum Result {
 	LimitExceeded = 22,
 	Disabled = 23,
 	DuplicateNotAllowed = 24,
-	MissingParametersDEPRECATED = 25,
+	MissingParameters_DEPRECATED = 25,
 	InvalidSandboxId = 26,
 	TimedOut = 27,
 	PartialResult = 28,
@@ -2615,6 +2617,7 @@ enum Result {
 	AuthMFARequired = 1060,
 	AuthParentalControls = 1070,
 	AuthNoRealId = 1080,
+	AuthUserInterfaceRequired = 1090,
 	FriendsInviteAwaitingAcceptance = 2000,
 	FriendsNoInvitation = 2001,
 	FriendsAlreadyFriends = 2003,
@@ -2637,6 +2640,7 @@ enum Result {
 	EcomCatalogItemStale = 4002,
 	EcomCatalogOfferPriceInvalid = 4003,
 	EcomCheckoutLoadError = 4004,
+	EcomPurchaseProcessing = 4005,
 	SessionsSessionInProgress = 5000,
 	SessionsTooManyPlayers = 5001,
 	SessionsNoPermission = 5002,
@@ -2702,6 +2706,7 @@ enum Result {
 	LobbyMemberUpdateOnly = 9017,
 	LobbyPresenceLobbyExists = 9018,
 	LobbyVoiceNotEnabled = 9019,
+	LobbyPlatformNotAllowed = 9020,
 	TitleStorageUserErrorFromDataCallback = 10000,
 	TitleStorageEncryptionKeyNotSet = 10001,
 	TitleStorageFileCorrupted = 10002,
@@ -2758,6 +2763,8 @@ enum Result {
 	DesktopCrossplayServiceNotInstalled = 19001,
 	DesktopCrossplayServiceStartFailed = 19002,
 	DesktopCrossplayServiceNotRunning = 19003,
+	CustomInvitesInviteFailed = 20000,
+	UserInfoBestDisplayNameIndeterminate = 22000,
 	UnexpectedError = 0x7FFFFFFF
 }
 
