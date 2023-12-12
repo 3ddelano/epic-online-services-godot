@@ -185,6 +185,10 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     EOS_KWS_AddNotifyPermissionsUpdateReceived(s_kwsInterface, &notifyPermissionsUpdateReceivedOptions, nullptr, [](const EOS_KWS_PermissionsUpdateReceivedCallbackInfo *data) {
         Dictionary ret;
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+		ret["kws_user_id"] = EOSG_GET_STRING(data->KWSUserId);
+		ret["date_of_birth"] = EOSG_GET_STRING(data->DateOfBirth);
+		ret["is_minor"] = EOSG_GET_BOOL(data->bIsMinor);
+		ret["parent_email"] = EOSG_GET_STRING(data->ParentEmail);
         IEOS::get_singleton()->emit_signal("kws_interface_permissions_update_received_callback", ret);
     });
 
