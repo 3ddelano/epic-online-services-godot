@@ -313,6 +313,15 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         ret["disconnect_reason"] = static_cast<int>(data->DisconnectReason);
         IEOS::get_singleton()->emit_signal("lobby_interface_rtc_room_connection_changed_callback", ret);
     });
+	EOS_Lobby_AddNotifyLeaveLobbyRequestedOptions notifyLeaveLobbyRequestedOptions;
+	notifyLeaveLobbyRequestedOptions.ApiVersion = EOS_LOBBY_ADDNOTIFYLEAVELOBBYREQUESTED_API_LATEST;
+	EOS_Lobby_AddNotifyLeaveLobbyRequested(s_lobbyInterface, &notifyLeaveLobbyRequestedOptions, nullptr, [](const EOS_Lobby_LeaveLobbyRequestedCallbackInfo *data) {
+		Dictionary ret;
+		ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+		ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+		IEOS::get_singleton()->emit_signal("lobby_interface_leave_lobby_requested_callback", ret);
+	});
+
     s_p2pInterface = EOS_Platform_GetP2PInterface(s_platformInterface);
     EOS_P2P_AddNotifyIncomingPacketQueueFullOptions notifyIncomingPacketQueueFullOptions;
     notifyIncomingPacketQueueFullOptions.ApiVersion = EOS_P2P_ADDNOTIFYINCOMINGPACKETQUEUEFULL_API_LATEST;

@@ -345,6 +345,8 @@ class IEOS : public RefCounted {
     Dictionary lobby_interface_copy_lobby_details(Ref<RefCounted> options);
     Dictionary lobby_interface_get_rtc_room_name(Ref<RefCounted> options);
     Dictionary lobby_interface_is_rtc_room_connected(Ref<RefCounted> options);
+    Dictionary lobby_interface_get_connect_string(Ref<RefCounted> options);
+    Dictionary lobby_interface_parse_connect_string(Ref<RefCounted> options);
 
     // -----
     // P2P Interface
