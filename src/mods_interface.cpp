@@ -14,7 +14,7 @@ Dictionary IEOS::mods_interface_copy_mod_info(Ref<RefCounted> p_options) {
     EOS_EResult res = EOS_Mods_CopyModInfo(s_modsInterface, &options, &outEnumeratedMods);
 
     Dictionary ret;
-    ret["result"] = static_cast<int>(res);
+    ret["result_code"] = static_cast<int>(res);
     ret["mods"] = eosg_mods_mod_info_to_dict_and_release(outEnumeratedMods);
     return ret;
 }
