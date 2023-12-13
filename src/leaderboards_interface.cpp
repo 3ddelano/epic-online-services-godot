@@ -12,7 +12,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_index(Ref
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["definition"] = eosg_leaderboards_definition_to_dict(outLeaderboardDefinition);
+    ret["definition"] = eosg_leaderboards_definition_to_dict_and_release(outLeaderboardDefinition);
     return ret;
 }
 
@@ -28,7 +28,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_leaderboa
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["definition"] = eosg_leaderboards_definition_to_dict(outLeaderboardDefinition);
+    ret["definition"] = eosg_leaderboards_definition_to_dict_and_release(outLeaderboardDefinition);
     return ret;
 }
 
@@ -43,7 +43,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_index(Ref<Ref
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["record"] = eosg_leaderboards_leaderboard_record_to_dict(outLeaderboardRecord);
+    ret["record"] = eosg_leaderboards_leaderboard_record_to_dict_and_release(outLeaderboardRecord);
     return ret;
 }
 
@@ -60,7 +60,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_user_id(Ref<R
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["record"] = eosg_leaderboards_leaderboard_record_to_dict(outLeaderboardRecord);
+    ret["record"] = eosg_leaderboards_leaderboard_record_to_dict_and_release(outLeaderboardRecord);
     return ret;
 }
 
@@ -78,7 +78,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_index(Ref
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["user_score"] = eosg_leaderboards_leaderboard_user_score_to_dict(outLeaderboardUserScore);
+    ret["user_score"] = eosg_leaderboards_leaderboard_user_score_to_dict_and_release(outLeaderboardUserScore);
     return ret;
 }
 
@@ -97,7 +97,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_user_id(R
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["user_score"] = eosg_leaderboards_leaderboard_user_score_to_dict(outLeaderboardUserScore);
+    ret["user_score"] = eosg_leaderboards_leaderboard_user_score_to_dict_and_release(outLeaderboardUserScore);
     return ret;
 }
 

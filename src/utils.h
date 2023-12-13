@@ -417,7 +417,7 @@ static Variant eosg_achievements_player_achievement_to_dict_and_release(EOS_Achi
     return ret;
 }
 
-static Variant eosg_stats_stat_to_dict(EOS_Stats_Stat *stat) {
+static Variant eosg_stats_stat_to_dict_and_release(EOS_Stats_Stat *stat) {
     if (stat == nullptr) {
         return Variant();
     }
@@ -430,7 +430,7 @@ static Variant eosg_stats_stat_to_dict(EOS_Stats_Stat *stat) {
     return ret;
 }
 
-static Variant eosg_leaderboards_definition_to_dict(EOS_Leaderboards_Definition *definition) {
+static Variant eosg_leaderboards_definition_to_dict_and_release(EOS_Leaderboards_Definition *definition) {
     if (definition == nullptr) {
         return Variant();
     }
@@ -444,7 +444,7 @@ static Variant eosg_leaderboards_definition_to_dict(EOS_Leaderboards_Definition 
     return ret;
 }
 
-static Variant eosg_leaderboards_leaderboard_record_to_dict(EOS_Leaderboards_LeaderboardRecord *record) {
+static Variant eosg_leaderboards_leaderboard_record_to_dict_and_release(EOS_Leaderboards_LeaderboardRecord *record) {
     if (record == nullptr) {
         return Variant();
     }
@@ -457,7 +457,7 @@ static Variant eosg_leaderboards_leaderboard_record_to_dict(EOS_Leaderboards_Lea
     return ret;
 }
 
-static Variant eosg_leaderboards_leaderboard_user_score_to_dict(EOS_Leaderboards_LeaderboardUserScore *userScore) {
+static Variant eosg_leaderboards_leaderboard_user_score_to_dict_and_release(EOS_Leaderboards_LeaderboardUserScore *userScore) {
     if (userScore == nullptr) {
         return Variant();
     }
@@ -468,7 +468,7 @@ static Variant eosg_leaderboards_leaderboard_user_score_to_dict(EOS_Leaderboards
     return ret;
 }
 
-static Variant eosg_kws_permission_status_to_dict(EOS_KWS_PermissionStatus *permission) {
+static Variant eosg_kws_permission_status_to_dict_and_release(EOS_KWS_PermissionStatus *permission) {
     if (permission == nullptr) {
         return Variant();
     }
@@ -479,7 +479,7 @@ static Variant eosg_kws_permission_status_to_dict(EOS_KWS_PermissionStatus *perm
     return ret;
 }
 
-static Variant eos_lobby_details_info_to_dict(EOS_LobbyDetails_Info *info) {
+static Variant eos_lobby_details_info_to_dict_and_release(EOS_LobbyDetails_Info *info) {
     if (info == nullptr) {
         return Variant();
     }
@@ -499,7 +499,7 @@ static Variant eos_lobby_details_info_to_dict(EOS_LobbyDetails_Info *info) {
     return ret;
 }
 
-static Variant eos_lobby_details_member_info_to_dict(EOS_LobbyDetails_MemberInfo *memberInfo) {
+static Variant eos_lobby_details_member_info_to_dict_and_release(EOS_LobbyDetails_MemberInfo *memberInfo) {
     if (memberInfo == nullptr) {
         return Variant();
     }
@@ -537,7 +537,7 @@ static Variant eos_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData *attribu
     return ret;
 }
 
-static Variant eos_lobby_attribute_to_dict(EOS_Lobby_Attribute *attribute) {
+static Variant eos_lobby_attribute_to_dict_and_release(EOS_Lobby_Attribute *attribute) {
     if (attribute == nullptr) {
         return Variant();
     }

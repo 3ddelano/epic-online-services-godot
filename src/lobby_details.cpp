@@ -34,7 +34,7 @@ Dictionary LobbyDetailsEOSG::copy_info() {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["lobby_details"] = eos_lobby_details_info_to_dict(outLobbyDetails);
+    ret["lobby_details"] = eos_lobby_details_info_to_dict_and_release(outLobbyDetails);
     return ret;
 }
 
@@ -56,7 +56,7 @@ Dictionary LobbyDetailsEOSG::copy_attribute_by_index(int p_index) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["attribute"] = eos_lobby_attribute_to_dict(outAttr);
+    ret["attribute"] = eos_lobby_attribute_to_dict_and_release(outAttr);
     return ret;
 }
 
@@ -73,7 +73,7 @@ Dictionary LobbyDetailsEOSG::copy_attribute_by_key(const String &p_key) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["attribute"] = eos_lobby_attribute_to_dict(outAttr);
+    ret["attribute"] = eos_lobby_attribute_to_dict_and_release(outAttr);
     return ret;
 }
 
@@ -117,7 +117,7 @@ Dictionary LobbyDetailsEOSG::copy_member_attribute_by_index(const String &p_targ
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["attribute"] = eos_lobby_attribute_to_dict(outAttr);
+    ret["attribute"] = eos_lobby_attribute_to_dict_and_release(outAttr);
     return ret;
 }
 
@@ -136,7 +136,7 @@ Dictionary LobbyDetailsEOSG::copy_member_attribute_by_key(const String &p_target
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["attribute"] = eos_lobby_attribute_to_dict(outAttr);
+    ret["attribute"] = eos_lobby_attribute_to_dict_and_release(outAttr);
     return ret;
 }
 
@@ -153,6 +153,6 @@ Dictionary LobbyDetailsEOSG::copy_member_info(const String &p_target_user_id) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["lobby_details"] = eos_lobby_details_member_info_to_dict(outMemberInfo);
+    ret["lobby_details"] = eos_lobby_details_member_info_to_dict_and_release(outMemberInfo);
     return ret;
 }

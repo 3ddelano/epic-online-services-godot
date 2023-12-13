@@ -15,7 +15,7 @@ Dictionary IEOS::kws_interface_copy_permission_by_index(Ref<RefCounted> p_option
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["permission"] = eosg_kws_permission_status_to_dict(outPermission);
+    ret["permission"] = eosg_kws_permission_status_to_dict_and_release(outPermission);
     return ret;
 }
 

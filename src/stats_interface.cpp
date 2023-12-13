@@ -15,7 +15,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_index(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["stat"] = eosg_stats_stat_to_dict(outStat);
+    ret["stat"] = eosg_stats_stat_to_dict_and_release(outStat);
     return ret;
 }
 
@@ -34,7 +34,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_name(Ref<RefCounted> p_options) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["stat"] = eosg_stats_stat_to_dict(outStat);
+    ret["stat"] = eosg_stats_stat_to_dict_and_release(outStat);
     return ret;
 }
 
