@@ -233,7 +233,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [ ] Sample
 - PlayerDataStorage Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - Presence Interface
   - [x] Implementation
