@@ -230,6 +230,9 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(playerdatastorage_interface_copy_file_metadata_at_index);
     IEOS_BIND_METHOD(playerdatastorage_interface_duplicate_file);
     IEOS_BIND_METHOD(playerdatastorage_interface_delete_file);
+    IEOS_BIND_METHOD(playerdatastorage_interface_delete_cache);
+    IEOS_BIND_METHOD(playerdatastorage_interface_read_file);
+    IEOS_BIND_METHOD(playerdatastorage_interface_write_file);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
 
@@ -357,6 +360,12 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("playerdatastorage_interface_query_file_list_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("playerdatastorage_interface_duplicate_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("playerdatastorage_interface_delete_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_delete_cache_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_read_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_read_file_data_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_file_transfer_progress_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_write_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_write_file_data_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 int IEOS::shutdown() {

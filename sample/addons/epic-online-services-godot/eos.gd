@@ -2632,6 +2632,37 @@ class PlayerDataStorage:
 
 		var client_data = null
 
+	class DeleteCacheOptions extends BaseClass:
+		func _init():
+			super._init("DeleteCacheOptions")
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class ReadFileOptions extends BaseClass:
+		func _init():
+			super._init("ReadFileOptions")
+
+		var local_user_id: String
+		var filename: String
+		var read_chunk_length_bytes = 4096
+
+		var client_data = null
+
+	class WriteFileOptions extends BaseClass:
+		func _init():
+			super._init("WriteFileOptions")
+
+		var local_user_id: String
+		var filename: String
+
+		var data: PackedByteArray
+		var chunk_length_bytes = 1
+
+		var client_data = null
+		var written_buffer_length_bytes = 0
+
 	class PlayerDataStorageInterface:
 		static func query_file(options: QueryFileOptions) -> void:
 			IEOS.playerdatastorage_interface_query_file(options)
@@ -2653,6 +2684,15 @@ class PlayerDataStorage:
 
 		static func delete_file(options: DeleteFileOptions) -> void:
 			IEOS.playerdatastorage_interface_delete_file(options)
+
+		static func delete_cache(options: DeleteCacheOptions) -> void:
+			IEOS.playerdatastorage_interface_delete_cache(options)
+
+		static func read_file(options: ReadFileOptions) -> Variant:
+			return IEOS.playerdatastorage_interface_read_file(options)
+
+		static func write_file(options: WriteFileOptions) -> Variant:
+			return IEOS.playerdatastorage_interface_write_file(options)
 
 
 

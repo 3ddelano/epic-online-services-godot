@@ -622,3 +622,13 @@ static Variant eosg_playerdatastorage_file_metadata_to_dict_and_release(EOS_Play
     EOS_PlayerDataStorage_FileMetadata_Release(metadata);
     return ret;
 }
+
+static Variant eosg_playerdatastorage_file_tranfer_request_to_wrapper(EOS_HPlayerDataStorageFileTransferRequest request) {
+    if (request == nullptr) {
+        return Variant();
+    }
+
+    Ref<EOSGFileTransferRequest> file_transfer_request = memnew(EOSGFileTransferRequest());
+    file_transfer_request->set_internal(request);
+    return file_transfer_request;
+}

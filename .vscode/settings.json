@@ -6,6 +6,11 @@
     "**/*.pdb": true,
     "**/__pycache__": true,
     "**/*.os": true,
+    "**/*.o": true,
   },
-  "godot_tools.editor_path": "d:\\Projects\\Godot\\Godot_v4.exe"
+  "godot_tools.editor_path": "d:\\Projects\\Godot\\Godot_v4.exe",
+  "files.associations": {
+    "*.rmd": "markdown",
+    "utility": "cpp"
+  }
 }

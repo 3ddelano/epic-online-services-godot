@@ -21,6 +21,7 @@
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
+#include "eosg_file_transfer_request.h"
 #include "godot_cpp/classes/object.hpp"
 #include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
@@ -406,6 +407,9 @@ public:
     Dictionary playerdatastorage_interface_copy_file_metadata_at_index(Ref<RefCounted> options);
     void playerdatastorage_interface_duplicate_file(Ref<RefCounted> options);
     void playerdatastorage_interface_delete_file(Ref<RefCounted> options);
+    void playerdatastorage_interface_delete_cache(Ref<RefCounted> options);
+    Variant playerdatastorage_interface_read_file(Ref<RefCounted> options);
+    Variant playerdatastorage_interface_write_file(Ref<RefCounted> options);
 };
 
 } // namespace godot

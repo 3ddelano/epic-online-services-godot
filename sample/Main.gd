@@ -80,7 +80,10 @@ func _on_tab_pressed():
 #	test_progression_snapshot_interface()
 #	test_presence_interface()
 #	test_kws_interface()
-#	test_playerdatastorage_interface()
+	test_playerdatastorage_interface()
+
+
+
 
 
 func test_auth_interface():
@@ -444,43 +447,80 @@ func test_kws_interface():
 
 
 func test_playerdatastorage_interface():
-	var query_file_opts = EOS.PlayerDataStorage.QueryFileOptions.new()
-	query_file_opts.local_user_id = Store.product_user_id
-	query_file_opts.filename = "testfile-001.txt"
-	EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file(query_file_opts)
-	print("--- PlayerDataStorage: query_file: ", await EOS.get_instance().playerdatastorage_interface_query_file_callback)
+	# var query_file_opts = EOS.PlayerDataStorage.QueryFileOptions.new()
+	# query_file_opts.local_user_id = Store.product_user_id
+	# query_file_opts.filename = "testfile-001.txt"
+	# EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file(query_file_opts)
+	# print("--- PlayerDataStorage: query_file: ", await EOS.get_instance().playerdatastorage_interface_query_file_callback)
 
-	var query_file_list_opts = EOS.PlayerDataStorage.QueryFileListOptions.new()
-	query_file_list_opts.local_user_id = Store.product_user_id
-	EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file_list(query_file_list_opts)
-	print("--- PlayerDataStorage: query_file_list: ", await EOS.get_instance().playerdatastorage_interface_query_file_list_callback)
+	# var query_file_list_opts = EOS.PlayerDataStorage.QueryFileListOptions.new()
+	# query_file_list_opts.local_user_id = Store.product_user_id
+	# EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file_list(query_file_list_opts)
+	# print("--- PlayerDataStorage: query_file_list: ", await EOS.get_instance().playerdatastorage_interface_query_file_list_callback)
 
-	var get_meta_count_opts = EOS.PlayerDataStorage.GetFileMetadataCountOptions.new()
-	get_meta_count_opts.local_user_id = Store.product_user_id
-	print("--- PlayerDataStorage: get_file_metadata_count: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.get_file_metadata_count(get_meta_count_opts))
+	# var get_meta_count_opts = EOS.PlayerDataStorage.GetFileMetadataCountOptions.new()
+	# get_meta_count_opts.local_user_id = Store.product_user_id
+	# print("--- PlayerDataStorage: get_file_metadata_count: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.get_file_metadata_count(get_meta_count_opts))
 
-	var copy_meta_at_index_opts = EOS.PlayerDataStorage.CopyFileMetadataAtIndexOptions.new()
-	copy_meta_at_index_opts.local_user_id = Store.product_user_id
-	copy_meta_at_index_opts.index = 0
-	print("--- PlayerDataStorage: copy_file_metadata_at_index: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_at_index(copy_meta_at_index_opts))
+	# var copy_meta_at_index_opts = EOS.PlayerDataStorage.CopyFileMetadataAtIndexOptions.new()
+	# copy_meta_at_index_opts.local_user_id = Store.product_user_id
+	# copy_meta_at_index_opts.index = 0
+	# print("--- PlayerDataStorage: copy_file_metadata_at_index: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_at_index(copy_meta_at_index_opts))
 
-	var copy_meta_by_filename_opts = EOS.PlayerDataStorage.CopyFileMetadataByFilenameOptions.new()
-	copy_meta_by_filename_opts.local_user_id = Store.product_user_id
-	copy_meta_by_filename_opts.filename = "testfile-001.txt"
-	print("--- PlayerDataStorage: copy_file_metadata_by_filename: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_by_filename(copy_meta_by_filename_opts))
+	# var copy_meta_by_filename_opts = EOS.PlayerDataStorage.CopyFileMetadataByFilenameOptions.new()
+	# copy_meta_by_filename_opts.local_user_id = Store.product_user_id
+	# copy_meta_by_filename_opts.filename = "testfile-001.txt"
+	# print("--- PlayerDataStorage: copy_file_metadata_by_filename: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_by_filename(copy_meta_by_filename_opts))
 
-	var duplicate_opts = EOS.PlayerDataStorage.DuplicateFileOptions.new()
-	duplicate_opts.local_user_id = Store.product_user_id
-	duplicate_opts.source_filename = "testfile-001.txt"
-	duplicate_opts.destination_filename = "testfile-001-copy.txt"
-	EOS.PlayerDataStorage.PlayerDataStorageInterface.duplicate_file(duplicate_opts)
-	print("--- PlayerDataStorage: duplicate_file: ", await EOS.get_instance().playerdatastorage_interface_duplicate_file_callback)
+	# var duplicate_opts = EOS.PlayerDataStorage.DuplicateFileOptions.new()
+	# duplicate_opts.local_user_id = Store.product_user_id
+	# duplicate_opts.source_filename = "testfile-001.txt"
+	# duplicate_opts.destination_filename = "testfile-001-copy.txt"
+	# EOS.PlayerDataStorage.PlayerDataStorageInterface.duplicate_file(duplicate_opts)
+	# print("--- PlayerDataStorage: duplicate_file: ", await EOS.get_instance().playerdatastorage_interface_duplicate_file_callback)
 
-	var delete_opts = EOS.PlayerDataStorage.DeleteFileOptions.new()
-	delete_opts.local_user_id = Store.product_user_id
-	delete_opts.filename = "testfile-001-copy.txt"
-	EOS.PlayerDataStorage.PlayerDataStorageInterface.delete_file(delete_opts)
-	print("--- PlayerDataStorage: delete_file: ", await EOS.get_instance().playerdatastorage_interface_delete_file_callback)
+	# var delete_file_opts = EOS.PlayerDataStorage.DeleteFileOptions.new()
+	# delete_file_opts.local_user_id = Store.product_user_id
+	# delete_file_opts.filename = "testfile-001-copy.txt"
+	# EOS.PlayerDataStorage.PlayerDataStorageInterface.delete_file(delete_file_opts)
+	# print("--- PlayerDataStorage: delete_file: ", await EOS.get_instance().playerdatastorage_interface_delete_file_callback)
+
+	# var delete_cache_opts = EOS.PlayerDataStorage.DeleteCacheOptions.new()
+	# delete_cache_opts.local_user_id = Store.product_user_id
+	# EOS.PlayerDataStorage.PlayerDataStorageInterface.delete_cache(delete_cache_opts)
+	# print("--- PlayerDataStorage: delete_cache: ", await EOS.get_instance().playerdatastorage_interface_delete_cache_callback)
+
+	EOS.get_instance().playerdatastorage_interface_file_transfer_progress_callback.connect(func (data):
+		print("--- PlayerDataStorage: file_transfer_progress_callback: ", data)
+	)
+	EOS.get_instance().playerdatastorage_interface_write_file_callback.connect(func (data):
+		print("--- PlayerDataStorage: write_file_callback: ", data)
+	)
+	EOS.get_instance().playerdatastorage_interface_write_file_data_callback.connect(func (data):
+		print("--- PlayerDataStorage: write_file_data_callback: ", data)
+	)
+	EOS.get_instance().playerdatastorage_interface_read_file_callback.connect(func (data):
+		print("--- PlayerDataStorage: read_file_callback: ", data)
+	)
+	EOS.get_instance().playerdatastorage_interface_read_file_data_callback.connect(func (data):
+		print("--- PlayerDataStorage: read_file_data_callback: ", data)
+	)
+
+	var write_file_opts = EOS.PlayerDataStorage.WriteFileOptions.new()
+	write_file_opts.local_user_id = Store.product_user_id
+	write_file_opts.filename = "testfile-002.txt"
+	write_file_opts.data = PackedByteArray([65, 66, 67])
+	var write_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.write_file(write_file_opts)
+	# write_transfer_request.cancel_request()
+	await EOS.get_instance().playerdatastorage_interface_write_file_callback
+
+	print("Reading file")
+	var read_file_opts = EOS.PlayerDataStorage.ReadFileOptions.new()
+	read_file_opts.local_user_id = Store.product_user_id
+	read_file_opts.filename = "testfile-002.txt"
+	var read_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.read_file(read_file_opts)
+	# print(file_transfer_request.get_filename())
+	# print(file_transfer_request.cancel_request())
 
 
 

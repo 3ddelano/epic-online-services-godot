@@ -1,6 +1,7 @@
 #include "register_types.h"
 
 #include "continuance_token.h"
+#include "eosg_file_transfer_request.h"
 #include "eosg_multiplayer_peer.h"
 #include "eosg_packet_peer_mediator.h"
 #include "godot_cpp/classes/engine.hpp"
@@ -37,6 +38,7 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<godot::LobbyModificationEOSG>();
     ClassDB::register_class<godot::LobbySearchEOSG>();
     ClassDB::register_class<godot::LobbyDetailsEOSG>();
+    ClassDB::register_class<godot::EOSGFileTransferRequest>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
