@@ -12,6 +12,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     CharString clientSecret = VARIANT_TO_CHARSTRING(p_options->get("client_secret"));
     CharString overrideCountryCode = VARIANT_TO_CHARSTRING(p_options->get("override_country_code"));
     CharString overrideLocaleCode = VARIANT_TO_CHARSTRING(p_options->get("override_locale_code"));
+    CharString cache_directory = VARIANT_TO_CHARSTRING(p_options->get("cache_directory"));
 
     EOS_Platform_Options platformOptions;
     memset(&platformOptions, 0, sizeof(platformOptions));
@@ -34,6 +35,9 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     }
     if (overrideLocaleCode.length() != 0) {
         platformOptions.OverrideCountryCode = overrideLocaleCode.get_data();
+    }
+    if (cache_directory.length() != 0) {
+        platformOptions.CacheDirectory = cache_directory.get_data();
     }
     platformOptions.DeploymentId = deploymentId.get_data();
     platformOptions.Flags = flags;

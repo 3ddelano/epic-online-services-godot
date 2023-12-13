@@ -223,6 +223,13 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(p2p_get_port_range);
     IEOS_BIND_METHOD(p2p_set_packet_queue_size);
     IEOS_BIND_METHOD(p2p_get_packet_queue_info);
+    IEOS_BIND_METHOD(playerdatastorage_interface_query_file);
+    IEOS_BIND_METHOD(playerdatastorage_interface_query_file_list);
+    IEOS_BIND_METHOD(playerdatastorage_interface_copy_file_metadata_by_filename);
+    IEOS_BIND_METHOD(playerdatastorage_interface_get_file_metadata_count);
+    IEOS_BIND_METHOD(playerdatastorage_interface_copy_file_metadata_at_index);
+    IEOS_BIND_METHOD(playerdatastorage_interface_duplicate_file);
+    IEOS_BIND_METHOD(playerdatastorage_interface_delete_file);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
 
@@ -345,6 +352,11 @@ void IEOS::_bind_methods() {
 
     ADD_SIGNAL(MethodInfo("p2p_query_nat_type_callback", PropertyInfo(Variant::INT, "nat_type")));
     ADD_SIGNAL(MethodInfo("p2p_incoming_packet_queue_full", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_query_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_query_file_list_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_duplicate_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+    ADD_SIGNAL(MethodInfo("playerdatastorage_interface_delete_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 int IEOS::shutdown() {

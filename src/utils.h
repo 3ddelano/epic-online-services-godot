@@ -607,3 +607,18 @@ static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant
 
     return options;
 }
+
+static Variant eosg_playerdatastorage_file_metadata_to_dict_and_release(EOS_PlayerDataStorage_FileMetadata *metadata) {
+    if (metadata == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["file_size_bytes"] = metadata->FileSizeBytes;
+    ret["md5_hash"] = EOSG_GET_STRING(metadata->MD5Hash);
+    ret["filename"] = EOSG_GET_STRING(metadata->Filename);
+    ret["last_modified_time"] = metadata->LastModifiedTime;
+    ret["unencrypted_data_size_bytes"] = metadata->UnencryptedDataSizeBytes;
+    EOS_PlayerDataStorage_FileMetadata_Release(metadata);
+    return ret;
+}

@@ -12,6 +12,7 @@
 #include "eos_metrics.h"
 #include "eos_mods.h"
 #include "eos_p2p.h"
+#include "eos_playerdatastorage.h"
 #include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
@@ -393,6 +394,18 @@ public:
     void p2p_remove_notify_peer_connection_interrupted(EOS_NotificationId callback_id);
     void p2p_remove_notify_peer_connection_closed(EOS_NotificationId callback_id);
     void p2p_remove_notify_peer_connection_request(EOS_NotificationId callback_id);
+
+    // -----
+    // PlayerDataStorage Interface
+    // -----
+
+    void playerdatastorage_interface_query_file(Ref<RefCounted> options);
+    void playerdatastorage_interface_query_file_list(Ref<RefCounted> options);
+    Dictionary playerdatastorage_interface_copy_file_metadata_by_filename(Ref<RefCounted> options);
+    Dictionary playerdatastorage_interface_get_file_metadata_count(Ref<RefCounted> options);
+    Dictionary playerdatastorage_interface_copy_file_metadata_at_index(Ref<RefCounted> options);
+    void playerdatastorage_interface_duplicate_file(Ref<RefCounted> options);
+    void playerdatastorage_interface_delete_file(Ref<RefCounted> options);
 };
 
 } // namespace godot

@@ -789,6 +789,7 @@ class Platform:
 		var override_country_code: String
 		var flags: int = -1
 		var tick_budget_in_milliseconds: int
+		var cache_directory = ProjectSettings.globalize_path("user://eos-cache")
 
 		var rtc_options := RTCOptions.new()
 
@@ -2294,11 +2295,11 @@ class UI:
 	class IsSocialOverlayPausedOptions extends BaseClass:
 		func _init():
 			super._init("IsSocialOverlayPausedOptions")
-	
+
 	class ReportInputStateOptions extends BaseClass:
 		func _init():
 			super._init("ReportInputStateOptions")
-		
+
 		var button_down_flags: InputStateButtonFlags
 		var mouse_pos_x: int
 		var mouse_pos_y: int
@@ -2366,13 +2367,13 @@ class UI:
 
 		static func set_toggle_friends_button(options: SetToggleFriendsKeyOptions) -> Result:
 			return IEOS.ui_interface_set_toggle_friends_button(options)
-		
+
 		static func report_input_state(options: ReportInputStateOptions) -> Result:
 			return IEOS.ui_interface_report_input_state(options)
-		
+
 		static func pre_present(options: PrePresentOptions) -> Result:
 			return IEOS.ui_interface_pre_present(options)
-		
+
 		static func show_native_profile(options: ShowNativeProfileOptions) -> void:
 			IEOS.ui_interface_show_native_profile(options)
 
@@ -2447,14 +2448,14 @@ class UserInfo:
 		var account_type: ExternalAccountType
 
 		var client_data = null
-	
+
 	class CopyBestDisplayNameOptions extends BaseClass:
 		func _init():
 			super._init("CopyBestDisplayNameOptions")
 
 		var local_user_id: String
 		var target_user_id: String
-	
+
 	class CopyBestDisplayNameWithPlatformOptions extends BaseClass:
 		func _init():
 			super._init("CopyBestDisplayNameWithPlatformOptions")
@@ -2494,10 +2495,10 @@ class UserInfo:
 
 		static func copy_best_display_name(options: CopyBestDisplayNameOptions) -> Dictionary:
 			return IEOS.user_info_interface_copy_best_display_name(options)
-		
+
 		static func copy_best_display_name_with_platform(options: CopyBestDisplayNameWithPlatformOptions) -> Dictionary:
 			return IEOS.user_info_interface_copy_best_display_name_with_platform(options)
-		
+
 		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
 			return IEOS.user_info_interface_get_local_platform_type(options)
 
@@ -2571,6 +2572,87 @@ class Logging:
 	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> Result:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
 
+
+
+
+class PlayerDataStorage:
+	class QueryFileOptions extends BaseClass:
+		func _init():
+			super._init("QueryFileOptions")
+
+		var local_user_id: String
+		var filename: String
+
+		var client_data = null
+
+	class QueryFileListOptions extends BaseClass:
+		func _init():
+			super._init("QueryFileListOptions")
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class CopyFileMetadataByFilenameOptions extends BaseClass:
+		func _init():
+			super._init("CopyFileMetadataByFilenameOptions")
+
+		var local_user_id: String
+		var filename: String
+
+	class GetFileMetadataCountOptions extends BaseClass:
+		func _init():
+			super._init("GetFileMetadataCountOptions")
+
+		var local_user_id: String
+
+	class CopyFileMetadataAtIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyFileMetadataAtIndexOptions")
+
+		var local_user_id: String
+		var index: int
+
+	class DuplicateFileOptions extends BaseClass:
+		func _init():
+			super._init("DuplicateFileOptions")
+
+		var local_user_id: String
+		var source_filename: String
+		var destination_filename: String
+
+		var client_data = null
+
+	class DeleteFileOptions extends BaseClass:
+		func _init():
+			super._init("DeleteFileOptions")
+
+		var local_user_id: String
+		var filename: String
+
+		var client_data = null
+
+	class PlayerDataStorageInterface:
+		static func query_file(options: QueryFileOptions) -> void:
+			IEOS.playerdatastorage_interface_query_file(options)
+
+		static func query_file_list(options: QueryFileListOptions) -> void:
+			IEOS.playerdatastorage_interface_query_file_list(options)
+
+		static func copy_file_metadata_by_filename(options: CopyFileMetadataByFilenameOptions) -> Dictionary:
+			return IEOS.playerdatastorage_interface_copy_file_metadata_by_filename(options)
+
+		static func get_file_metadata_count(options: GetFileMetadataCountOptions) -> Dictionary:
+			return IEOS.playerdatastorage_interface_get_file_metadata_count(options)
+
+		static func copy_file_metadata_at_index(options) -> Dictionary:
+			return IEOS.playerdatastorage_interface_copy_file_metadata_at_index(options)
+
+		static func duplicate_file(options: DuplicateFileOptions) -> void:
+			IEOS.playerdatastorage_interface_duplicate_file(options)
+
+		static func delete_file(options: DeleteFileOptions) -> void:
+			IEOS.playerdatastorage_interface_delete_file(options)
 
 
 
