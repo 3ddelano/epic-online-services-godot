@@ -17,27 +17,27 @@ jobs:
                       dev_build: yes
                       platform: linux
                       arch: x86_64
-                    # - identifier: linux-release
-                    #   name: 🐧Linux Release
-                    #   runner: ubuntu-20.04
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: linux
-                    #   arch: x86_64
-                    # - identifier: macos-debug
-                    #   name: 🍎 macOS (universal) Debug
-                    #   runner: macos-latest
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: macos
-                    #   arch: universal
-                    # - identifier: macos-release
-                    #   name: 🍎 macOS (universal) Release
-                    #   runner: macos-latest
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: macos
-                    #   arch: universal
+                    - identifier: linux-release
+                      name: 🐧Linux Release
+                      runner: ubuntu-20.04
+                      target: template_release
+                      dev_build: no
+                      platform: linux
+                      arch: x86_64
+                    - identifier: macos-debug
+                      name: 🍎 macOS (universal) Debug
+                      runner: macos-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: macos
+                      arch: universal
+                    - identifier: macos-release
+                      name: 🍎 macOS (universal) Release
+                      runner: macos-latest
+                      target: template_release
+                      dev_build: no
+                      platform: macos
+                      arch: universal
                     - identifier: windows-debug
                       name: 🏁 Windows Debug
                       runner: windows-latest
@@ -45,13 +45,13 @@ jobs:
                       dev_build: yes
                       platform: windows
                       arch: x86_64
-                    # - identifier: windows-release
-                    #   name: 🏁 Windows Release
-                    #   runner: windows-latest
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: windows
-                    #   arch: x86_64
+                    - identifier: windows-release
+                      name: 🏁 Windows Release
+                      runner: windows-latest
+                      target: template_release
+                      dev_build: no
+                      platform: windows
+                      arch: x86_64
 
         steps:
             - name: Set up Python
@@ -105,7 +105,7 @@ jobs:
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  Remove-Item sample/addons/epic-online-services-godot/bin/* -Include *.exp,*.lib,*.ilk -Force
+                  Remove-Item sample/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Copy extra files to addon folder
               shell: sh
@@ -115,16 +115,16 @@ jobs:
             - name: Create artifact folder
               shell: sh
               run: |
-                  mkdir -p '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/addons/'
+                  mkdir -p '${{ github.workspace }}/artifact/${{ github.event.repository.name }}/'
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
-                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/addons/'
+                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact/${{ github.event.repository.name }}/'
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
               with:
-                  name: ${{ github.event.repository.name }}
+                  name: ${{ github.event.repository.name }}-${{ github.sha }}
                   path: |
-                      ${{ github.workspace }}/${{ github.event.repository.name }}-artifact/
+                      ${{ github.workspace }}/artifact/
                   retention-days: 30
