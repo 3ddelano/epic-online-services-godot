@@ -1,0 +1,130 @@
+name: 🛠️ Builds
+on:
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ${{ matrix.runner }}
+        name: ${{ matrix.name }}
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - identifier: linux-debug
+                      name: 🐧 Linux Debug
+                      runner: ubuntu-20.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: linux
+                      arch: x86_64
+                    - identifier: linux-release
+                      name: 🐧Linux Release
+                      runner: ubuntu-20.04
+                      target: template_release
+                      dev_build: no
+                      platform: linux
+                      arch: x86_64
+                    - identifier: macos-debug
+                      name: 🍎 macOS (universal) Debug
+                      runner: macos-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: macos
+                      arch: universal
+                    - identifier: macos-release
+                      name: 🍎 macOS (universal) Release
+                      runner: macos-latest
+                      target: template_release
+                      dev_build: no
+                      platform: macos
+                      arch: universal
+                    - identifier: windows-debug
+                      name: 🏁 Windows Debug
+                      runner: windows-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: windows
+                      arch: x86_64
+                    - identifier: windows-release
+                      name: 🏁 Windows Release
+                      runner: windows-latest
+                      target: template_release
+                      dev_build: no
+                      platform: windows
+                      arch: x86_64
+
+        steps:
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.x"
+
+            - name: Set up SCons
+              shell: bash
+              run: |
+                  python -c "import sys; print(sys.version)"
+                  python -m pip install scons
+                  scons --version
+
+            - name: Checkout project
+              uses: actions/checkout@v3
+              with:
+                  submodules: false
+
+            - name: Checkout godot-cpp
+              uses: actions/checkout@v3
+              with:
+                  repository: godotengine/godot-cpp
+                  path: godot-cpp
+                  submodules: recursive
+
+            - name: Checkout private EOS SDK mirror repo
+              uses: actions/checkout@v3
+              with:
+                  token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
+                  repository: 3ddelano/eos-sdk-mirror
+                  path: thirdparty/eos-sdk
+                  ref: "877da7fd24b7b9580d7a54df49863c2eb58d28b0"
+
+            - name: (Windows) Install mingw64
+              if: ${{ matrix.platform == 'windows' }}
+              uses: egor-tensin/setup-mingw@v2
+
+            - name: (Linux) Install dependencies
+              if: ${{ matrix.platform == 'linux' }}
+              run: |
+                  sudo apt-get update -qq
+                  sudo apt-get install -qqq build-essential pkg-config
+
+            - name: Compile godot-cpp
+              shell: sh
+              working-directory: godot-cpp
+              run: |
+                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
+
+            - name: Run setup.py
+              shell: sh
+              run: |
+                  python setup.py
+
+            - name: Compile extension
+              shell: sh
+              run: |
+                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
+
+            - name: (Windows) Delete compilation files
+              if: ${{ matrix.platform == 'windows' }}
+              run: |
+                  Remove-Item sample/addons/epic-online-services/bin/* -Include *.exp,*.lib,*.pdb,*.ilk -Force
+
+            - name: Copy extra files to addon folder
+              shell: sh
+              run: |
+                  cp -n '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE.md' '${{ github.workspace }}/sample/addons/epic-online-services/'
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: ${{ github.event.repository.name }}
+                  path: |
+                      ${{ github.workspace }}/sample/addons
