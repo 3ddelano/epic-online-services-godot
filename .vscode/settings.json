@@ -12,5 +12,11 @@
   "files.associations": {
     "*.rmd": "markdown",
     "utility": "cpp"
-  }
+  },
+  "grammarly.selectors": [
+    {
+      "language": "cpp",
+      "scheme": "file"
+    }
+  ]
 }

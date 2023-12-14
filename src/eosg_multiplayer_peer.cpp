@@ -839,7 +839,7 @@ String EOSGMultiplayerPeer::get_local_user_id() {
  * _broadcast
  * Parameters:
  *   packet - The packet to be broadcasted.
- *   exclude - The peer that is excluded from recieveing the packet.
+ *   exclude - The peer that is excluded from receiving the packet.
  * Description: Broadcast the given packet to all connected peers, except for the peer given by the
  * exclude parameter.
  ****************************************/
@@ -876,7 +876,7 @@ Error EOSGMultiplayerPeer::_broadcast(const EOSGPacket &packet, int exclude) {
 /****************************************
  * _send_to
  * Parameters:
- *   remote_peer - The peer to sent the packet to.
+ *   remote_peer - The peer to send the packet to.
  *   packet - The packet being sent.
  * Description: Sends a packet to the given peer identified by the product user id.
  ****************************************/
@@ -907,9 +907,9 @@ Error EOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const 
 /****************************************
  * _find_connection_request
  * Parameters:
- *   remote_user - The user to look for a connection request for.
+ *   remote_user - The user to look for a connection request.
  *   out_request - An out parameter that returns the found connection request.
- * Description: Looks for a connection request in the pending connection reqesut list for the given remote user.
+ * Description: Looks for a connection request in the pending connection request list for the given remote user.
  * Method returns true if a connection request was found for the user. False otherwise.
  ****************************************/
 bool EOSGMultiplayerPeer::_find_connection_request(const String &remote_user, EOS_ProductUserId &out_request) {
@@ -927,7 +927,7 @@ bool EOSGMultiplayerPeer::_find_connection_request(const String &remote_user, EO
  * _convert_transfer_mode_to_eos_reliability
  * Parameters:
  *   mode - The transfer mode to convert.
- * Description: A helper function that converts the given transfer mode to a matching packet reliability.
+ * Description: A helper function that converts the given transfer mode to matching packet reliability.
  * If TRANSFER_MODE_UNRELIABLE_ORDED is passed, the function returns EOS_PR_ReliableOrdered because EOS
  * does not support unreliable ordered
  ****************************************/
@@ -964,7 +964,7 @@ MultiplayerPeer::TransferMode EOSGMultiplayerPeer::_convert_eos_reliability_to_t
 /****************************************
  * _disconnect_remote_user
  * Parameters:
- *   remote_user - The remote user id of the user to close the connection with.
+ *   remote_user - The remote user id of the user to close the connection.
  * Description: Closes the connection with the given remote user. This is done on the EOS side
  * and is called right before the peer with the remote user id is removed from the multiplayer
  * instance (see _disconnect_peer()).
@@ -984,13 +984,13 @@ void EOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remot
  * _peer_connection_established_callback
  * Parameters:
  *   data - data retrieved from the connection established callback.
- * Description: A callback that is called by EOSGPacketPeerMediator when it recieves a peer connection
+ * Description: A callback that is called by EOSGPacketPeerMediator when it receives a peer connection
  * established notification. The data contains the local user id of this instance, the remote user id of
  * peer who just connected, the socket id that the remote peer connected to, the connection type (which tells
  * you whether it was a new connection or a re-connection), and the network type (which tells you if it is a direct
- * connection or a relay server is being used.) When a connection is established for the first time and this instance
+ * connection or a relay server is being used.) When a connection is established for the first time and the instance
  * is not a client, a packet will be sent back to the newly connected peer with the EVENT_RECIEVE_PEER_ID event.
- * This is how servers and mesh instances peers exchange their peer id's with newly connected peers.
+ * This is how servers and mesh instances peers exchange their peer ids with newly connected peers.
  ****************************************/
 void EOSGMultiplayerPeer::peer_connection_established_callback(const EOS_P2P_OnPeerConnectionEstablishedInfo *data) {
     if (data->ConnectionType == EOS_EConnectionEstablishedType::EOS_CET_NewConnection &&
@@ -1024,11 +1024,11 @@ void EOSGMultiplayerPeer::peer_connection_established_callback(const EOS_P2P_OnP
  * remote_connection_closed_callback
  * Parameters:
  *   data - data retrieved from the connection closed callback.
- * Description: A callback that is called by EOSGPacketPeerMediator when it recieves a remote connection
+ * Description: A callback that is called by EOSGPacketPeerMediator when it receives a remote connection
  * closed notification. The data contains the local user id of this instance, the remote user id of
- * peer who's connection has closed, the socket id that the remote peer was previously connected to,
- * and the reason for the disconnection (Which could be a LOT of differente reasons, like timeouts, failed
- * connections, remotely disconnected, ect.). When a connection is closed, the instance checks if there
+ * peer whose connection has closed, the socket id that the remote peer was previously connected to,
+ * and the reason for the disconnection (Which could be a LOT of different reasons, like timeouts, failed
+ * connections, remotely disconnected, etc.). When a connection is closed, the instance checks if there
  * was a connection request associated with the connection. If there was, then remove the connection request
  * from the pending connection requests. If the peer was already previously connected, remove the peer
  * from the instance. If this instance is a client when
@@ -1052,7 +1052,7 @@ void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemo
         emit_signal("peer_disconnected", peer_id);
     }
 
-    //If this callback is called when we're a client, it probably means connection to the server has failed. Close the peer in this case.
+    //If this callback is called when we're a client, it probably means the connection to the server has failed. Close the peer in this case.
     if (active_mode == MODE_CLIENT) {
         _close();
     }
@@ -1069,7 +1069,7 @@ void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemo
  * peer_connection_interrupted_callback
  * Parameters:
  *   data - data retrieved from the connection interrupted callback.
- * Description: A callback that is called by EOSGPacketPeerMediator when it recieves a peer connection
+ * Description: A callback that is called by EOSGPacketPeerMediator when it receives a peer connection
  * interrupted notification. Callback only emits a signal containing the data when it is called.
  ****************************************/
 void EOSGMultiplayerPeer::peer_connection_interrupted_callback(const EOS_P2P_OnPeerConnectionInterruptedInfo *data) {
@@ -1085,11 +1085,11 @@ void EOSGMultiplayerPeer::peer_connection_interrupted_callback(const EOS_P2P_OnP
 /****************************************
  * connection_request_callback
  * Parameters:
- *   data - Contains data about the connection request recieved.
- * Description: A callback that is called by EOSGPacketPeerMediator when it recieves a connection request
+ *   data - Contains data about the connection request received.
+ * Description: A callback that is called by EOSGPacketPeerMediator when it receives a connection request
  * for this multiplayer instance. If this instance is a server or a mesh, the connection request is pushed
  * to the list of pending connection requests. If this instance is a client, the connection request is ignored.
- * If auto accepting connection requests is set to true, the connection request is accepted immediatly.
+ * If auto-accepting connection requests is set to true, the connection request is accepted immediately.
  ****************************************/
 void EOSGMultiplayerPeer::connection_request_callback(const ConnectionRequestData &data) {
     if (active_mode == MODE_CLIENT || is_refusing_new_connections())
@@ -1113,7 +1113,7 @@ void EOSGMultiplayerPeer::connection_request_callback(const ConnectionRequestDat
 
 /****************************************
  * ~EOSGMultiplayerPeer
- * Description: Destuctor. Closes the multiplayer instance if it is still active.
+ * Description: Destructor. Closes the multiplayer instance if it is still active.
  ****************************************/
 EOSGMultiplayerPeer::~EOSGMultiplayerPeer() {
     if (active_mode != MODE_NONE) {
