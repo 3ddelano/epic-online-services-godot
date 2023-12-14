@@ -26,7 +26,7 @@ func _ready() -> void:
 	var init_options = EOS.Platform.InitializeOptions.new()
 	init_options.product_name = PRODUCT_NAME
 	init_options.product_version = PRODUCT_VERSION
-	var init_result: int = EOS.Platform.PlatformInterface.initialize(init_options)
+	var init_result := EOS.Platform.PlatformInterface.initialize(init_options)
 	if init_result != EOS.Result.Success:
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_result))
 		return

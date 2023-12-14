@@ -88,7 +88,7 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
         if res != EOS.Result.Success:
             print("Failed to set log level: ", EOS.result_str(res))
 
-        _anon_login()
+        _anonymous_login()
 
 
     func _on_logging_interface_callback(msg) -> void:
@@ -96,7 +96,7 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
         print("SDK %s | %s" % [msg.category, msg.message])
 
 
-    func _anon_login() -> void:
+    func _anonymous_login() -> void:
         # Login using Device ID (no user interaction/credentials required)
         var opts = EOS.Connect.CreateDeviceIdOptions.new()
         opts.device_model = OS.get_name() + " " + OS.get_model_name()
@@ -110,7 +110,7 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
         var login_options = EOS.Connect.LoginOptions.new()
         login_options.credentials = credentials
         var user_login_info = EOS.Connect.UserLoginInfo.new()
-        user_login_info.display_name = "User"
+        user_login_info.display_name = "Anon User"
         login_options.user_login_info = user_login_info
         EOS.Connect.ConnectInterface.login(login_options)
         EOS.get_instance().connect_interface_login_callback.connect(_on_connect_interface_login_callback)
