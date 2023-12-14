@@ -82,6 +82,7 @@ func _on_tab_pressed():
 #	test_kws_interface()
 #	test_playerdatastorage_interface()
 #	test_titlestorage_interface()
+#	test_sanctions_interface()
 
 
 
@@ -574,6 +575,29 @@ func test_titlestorage_interface():
 	delete_cache_opts.local_user_id = Store.product_user_id
 	EOS.TitleStorage.TitleStorageInterface.delete_cache(delete_cache_opts)
 	print("--- TitleStorage: delete_cache: ", await EOS.get_instance().titlestorage_interface_delete_cache_callback)
+
+
+
+
+
+func test_sanctions_interface():
+	var query_active_sanctions_opts = EOS.Sanctions.QueryActivePlayerSanctionsOptions.new()
+	query_active_sanctions_opts.local_user_id = Store.product_user_id
+	query_active_sanctions_opts.target_user_id = Store.product_user_id
+	EOS.Sanctions.SanctionsInterface.query_active_player_sanctions(query_active_sanctions_opts)
+
+	print("--- Sanctions: query_active_player_sanctions: ", await EOS.get_instance().sanctions_interface_query_active_player_sanctions_callback)
+
+	var get_player_sanction_count_opts = EOS.Sanctions.GetPlayerSanctionCountOptions.new()
+	get_player_sanction_count_opts.target_user_id = Store.product_user_id
+	var sanctions_count = EOS.Sanctions.SanctionsInterface.get_player_sanction_count(get_player_sanction_count_opts)
+	print("--- Sanctions: get_active_player_sanction_count: ", sanctions_count)
+
+	for i in range(sanctions_count):
+		var copy_active_sanction_by_index_opts = EOS.Sanctions.CopyPlayerSanctionByIndexOptions.new()
+		copy_active_sanction_by_index_opts.target_user_id = Store.product_user_id
+		copy_active_sanction_by_index_opts.sanction_index = i
+		print("--- Sanctions: copy_active_player_sanction_by_index(%s): " % i, EOS.Sanctions.SanctionsInterface.copy_player_sanction_by_index(copy_active_sanction_by_index_opts))
 
 
 

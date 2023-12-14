@@ -357,6 +357,8 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         IEOS::get_singleton()->emit_signal("p2p_incoming_packet_queue_full", ret);
     });
 
+    s_sanctionsInterface = EOS_Platform_GetSanctionsInterface(s_platformInterface);
+
     return true;
 }
 
@@ -520,17 +522,20 @@ void IEOS::platform_interface_release() {
     s_friendsInterface = nullptr;
     s_kwsInterface = nullptr;
     s_leaderboardsInterface = nullptr;
+    s_lobbyInterface = nullptr;
     s_metricsInterface = nullptr;
     s_modsInterface = nullptr;
+    s_p2pInterface = nullptr;
     s_playerDataStorageInterface = nullptr;
     s_presenceInterface = nullptr;
     s_progressionSnapshotInterface = nullptr;
     s_reportsInterface = nullptr;
+    s_sanctionsInterface = nullptr;
     s_statsInterface = nullptr;
+    s_titleStorageInterface = nullptr;
     s_uiInterface = nullptr;
     s_userInfoInterface = nullptr;
-    s_lobbyInterface = nullptr;
-    s_p2pInterface = nullptr;
+
     if (s_platformInterface != nullptr) {
         EOS_Platform_Release(s_platformInterface);
     }

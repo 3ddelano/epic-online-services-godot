@@ -2781,6 +2781,46 @@ class PlayerDataStorage:
 
 
 
+class Sanctions:
+	class QueryActivePlayerSanctionsOptions extends BaseClass:
+		func _init():
+			super._init("QueryActivePlayerSanctionsOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+
+		var client_data = null
+
+	class GetPlayerSanctionCountOptions extends BaseClass:
+		func _init():
+			super._init("GetPlayerSanctionCountOptions")
+
+		var target_user_id: String
+
+		var client_data = null
+
+	class CopyPlayerSanctionByIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyPlayerSanctionByIndexOptions")
+
+		var local_user_id: String
+		var target_user_id: String
+		var sanction_index: int
+
+		var client_data = null
+
+	class SanctionsInterface:
+		static func query_active_player_sanctions(options: QueryActivePlayerSanctionsOptions) -> void:
+			IEOS.sanctions_interface_query_active_player_sanctions(options)
+
+		static func get_player_sanction_count(options: GetPlayerSanctionCountOptions) -> int:
+			return IEOS.sanctions_interface_get_player_sanction_count(options)
+
+		static func copy_player_sanction_by_index(options: CopyPlayerSanctionByIndexOptions) -> Variant:
+			return IEOS.sanctions_interface_copy_player_sanction_by_index(options)
+
+
+
 
 class Version:
 	class VersionInterface:

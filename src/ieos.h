@@ -15,6 +15,7 @@
 #include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
+#include "eos_sanctions.h"
 #include "eos_sdk.h"
 #include "eos_stats.h"
 #include "eos_titlestorage.h"
@@ -43,6 +44,7 @@ class IEOS : public RefCounted {
 
 protected:
     static void _bind_methods();
+
     EOS_HAchievements s_achievementsInterface = nullptr;
     EOS_HAuth s_authInterface = nullptr;
     EOS_HConnect s_connectInterface = nullptr;
@@ -51,19 +53,20 @@ protected:
     EOS_HFriends s_friendsInterface = nullptr;
     EOS_HKWS s_kwsInterface = nullptr;
     EOS_HLeaderboards s_leaderboardsInterface = nullptr;
+    EOS_HLobby s_lobbyInterface = nullptr;
     EOS_HMetrics s_metricsInterface = nullptr;
     EOS_HMods s_modsInterface = nullptr;
+    EOS_HP2P s_p2pInterface = nullptr;
+    EOS_HPlatform s_platformInterface = nullptr;
     EOS_HPlayerDataStorage s_playerDataStorageInterface = nullptr;
-    EOS_HTitleStorage s_titleStorageInterface = nullptr;
     EOS_HPresence s_presenceInterface = nullptr;
     EOS_HProgressionSnapshot s_progressionSnapshotInterface = nullptr;
     EOS_HReports s_reportsInterface = nullptr;
+    EOS_HSanctions s_sanctionsInterface = nullptr;
     EOS_HStats s_statsInterface = nullptr;
+    EOS_HTitleStorage s_titleStorageInterface = nullptr;
     EOS_HUI s_uiInterface = nullptr;
     EOS_HUserInfo s_userInfoInterface = nullptr;
-    EOS_HLobby s_lobbyInterface = nullptr;
-    EOS_HPlatform s_platformInterface = nullptr;
-    EOS_HP2P s_p2pInterface = nullptr;
 
 public:
     bool isEOSValid = false; // is true if EOS Platform is initialized
@@ -421,6 +424,13 @@ public:
     Dictionary titlestorage_interface_copy_file_metadata_at_index(Ref<RefCounted> options);
     Variant titlestorage_interface_read_file(Ref<RefCounted> options);
     int titlestorage_interface_delete_cache(Ref<RefCounted> options);
+
+    // -----
+    // Sanctions Interface
+    // -----
+    void sanctions_interface_query_active_player_sanctions(Ref<RefCounted> options);
+    int sanctions_interface_get_player_sanction_count(Ref<RefCounted> options);
+    Dictionary sanctions_interface_copy_player_sanction_by_index(Ref<RefCounted> options);
 };
 
 } // namespace godot

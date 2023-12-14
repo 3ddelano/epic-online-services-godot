@@ -658,3 +658,17 @@ static Variant eosg_titlestorage_file_tranfer_request_to_wrapper(EOS_HTitleStora
     file_transfer_request->set_internal(request);
     return file_transfer_request;
 }
+
+static Variant eosg_sanctions_player_sanction_to_dict_and_release(EOS_Sanctions_PlayerSanction *playerSanction) {
+    if (playerSanction == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["time_placed"] = playerSanction->TimePlaced;
+    ret["action"] = EOSG_GET_STRING(playerSanction->Action);
+    ret["time_expires"] = playerSanction->TimeExpires;
+    ret["reference_id"] = EOSG_GET_STRING(playerSanction->ReferenceId);
+    EOS_Sanctions_PlayerSanction_Release(playerSanction);
+    return ret;
+}

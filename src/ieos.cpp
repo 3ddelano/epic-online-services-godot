@@ -241,6 +241,10 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(titlestorage_interface_read_file);
     IEOS_BIND_METHOD(titlestorage_interface_delete_cache);
 
+    IEOS_BIND_METHOD(sanctions_interface_query_active_player_sanctions);
+    IEOS_BIND_METHOD(sanctions_interface_get_player_sanction_count);
+    IEOS_BIND_METHOD(sanctions_interface_copy_player_sanction_by_index);
+
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
 
     ADD_SIGNAL(MethodInfo("auth_interface_login_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
@@ -380,6 +384,8 @@ void IEOS::_bind_methods() {
     ADD_SIGNAL(MethodInfo("titlestorage_interface_read_file_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("titlestorage_interface_read_file_data_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
     ADD_SIGNAL(MethodInfo("titlestorage_interface_file_transfer_progress_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
+
+    ADD_SIGNAL(MethodInfo("sanctions_interface_query_active_player_sanctions_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }
 
 int IEOS::shutdown() {

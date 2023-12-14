@@ -102,7 +102,6 @@ class GameLobby extends BaseClass:
 					member.init_skin_from_string(attribute.data.value)
 
 				# Copy RTC status from old members
-				@warning_ignore("standalone_expression")
 				var old_member = old_members.filter(func (m): m.product_id == member.product_id)
 				if old_member.size() == 0:
 					continue
@@ -401,5 +400,5 @@ func _on_rtc_room_connection_changed_callback(data: Dictionary):
 	print("--- Lobby: rtc_room_connection_changed_callback: ", data)
 
 
-func handle_search_results(search_results: Array[EOSGLobbyDetails]):
+func handle_search_results(_search_results: Array[EOSGLobbyDetails]):
 	pass
