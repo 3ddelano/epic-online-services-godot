@@ -110,12 +110,12 @@ jobs:
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  Remove-Item sample/addons/epic-online-services/bin/* -Include *.exp,*.lib,*.pdb,*.ilk -Force
+                  Remove-Item sample/addons/epic-online-services-godot/bin/* -Include *.exp,*.lib,*.pdb,*.ilk -Force
 
             - name: Copy extra files to addon folder
               shell: sh
               run: |
-                  cp -n '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE.md' '${{ github.workspace }}/sample/addons/epic-online-services/'
+                  cp -n '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE.md' '${{ github.workspace }}/sample/addons/epic-online-services-godot/'
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
