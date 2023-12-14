@@ -11,9 +11,5 @@ func _export_begin(features: PackedStringArray, is_debug: bool, path: String, fl
 
 	match target_platform:
 		"windows":
-			add_shared_object("res://addons/epic-online-services-godot/bin/EOSSDK-Win64-Shipping.dll", [], "/")
-			add_shared_object("res://addons/epic-online-services-godot/bin/x64/xaudio2_9redist.dll", [], "/")
-		"linux":
-			add_shared_object("res://addons/epic-online-services-godot/bin/libEOSSDK-Linux-Shipping.so", [], "/")
-		"macos":
-			add_shared_object("res://addons/epic-online-services-godot/bin/libEOSSDK-Mac-Shipping.dylibb", [], "/")
+			add_shared_object("res://addons/epic-online-services-godot/bin/windows/EOSSDK-Win64-Shipping.dll", [], "/")
+			add_shared_object("res://addons/epic-online-services-godot/bin/windows/x64/xaudio2_9redist.dll", [], "/")

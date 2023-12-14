@@ -97,11 +97,6 @@ jobs:
                   sudo apt-get update -qq
                   sudo apt-get install -qqq build-essential pkg-config
 
-            - name: Run setup.py
-              shell: sh
-              run: |
-                  python setup.py
-
             - name: Compile extension
               shell: sh
               run: |
@@ -110,7 +105,7 @@ jobs:
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  Remove-Item sample/addons/epic-online-services-godot/bin/* -Include *.exp,*.lib,*.pdb,*.ilk -Force
+                  Remove-Item sample/addons/epic-online-services-godot/bin/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Copy extra files to addon folder
               shell: sh
@@ -120,7 +115,7 @@ jobs:
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
-                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/'
+                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/addons/'
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
