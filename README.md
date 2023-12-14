@@ -248,7 +248,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [ ] Implementation
   - [ ] Sample
 - Sanctions Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - Sessions Interface
   - [ ] Implementation
