@@ -210,6 +210,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_metricsInterface = EOS_Platform_GetMetricsInterface(s_platformInterface);
     s_modsInterface = EOS_Platform_GetModsInterface(s_platformInterface);
     s_playerDataStorageInterface = EOS_Platform_GetPlayerDataStorageInterface(s_platformInterface);
+    s_titleStorageInterface = EOS_Platform_GetTitleStorageInterface(s_platformInterface);
     s_presenceInterface = EOS_Platform_GetPresenceInterface(s_platformInterface);
     EOS_Presence_AddNotifyOnPresenceChangedOptions notifyOnPresenceChangedOptions;
     notifyOnPresenceChangedOptions.ApiVersion = EOS_PRESENCE_ADDNOTIFYONPRESENCECHANGED_API_LATEST;

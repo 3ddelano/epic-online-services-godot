@@ -81,6 +81,7 @@ func _on_tab_pressed():
 #	test_presence_interface()
 #	test_kws_interface()
 #	test_playerdatastorage_interface()
+#	test_titlestorage_interface()
 
 
 
@@ -519,14 +520,69 @@ func test_playerdatastorage_interface():
 	read_file_opts.local_user_id = Store.product_user_id
 	read_file_opts.filename = "testfile-002.txt"
 	var read_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.read_file(read_file_opts)
-	# print(file_transfer_request.get_filename())
-	# print(file_transfer_request.cancel_request())
+	# print(read_transfer_request.get_filename())
+	# print(read_transfer_request.cancel_request())
+
+
+
+
+func test_titlestorage_interface():
+	EOS.get_instance().titlestorage_interface_file_transfer_progress_callback.connect(func (data):
+		print("--- TitleStorage: file_transfer_progress_callback: ", data)
+	)
+	EOS.get_instance().titlestorage_interface_read_file_callback.connect(func (data):
+		print("--- TitleStorage: read_file_callback: ", data)
+	)
+	EOS.get_instance().titlestorage_interface_read_file_data_callback.connect(func (data):
+		print("--- TitleStorage: read_file_data_callback: ", data)
+	)
+
+	var read_file_opts = EOS.TitleStorage.ReadFileOptions.new()
+	read_file_opts.local_user_id = Store.product_user_id
+	read_file_opts.filename = "title-001.txt"
+	var read_transfer_request: EOSGFileTransferRequest = EOS.TitleStorage.TitleStorageInterface.read_file(read_file_opts)
+	#print(read_transfer_request.get_filename())
+	#print(read_transfer_request.cancel_request())
+
+	var query_file_opts = EOS.TitleStorage.QueryFileOptions.new()
+	query_file_opts.local_user_id = Store.product_user_id
+	query_file_opts.filename = "title-001.txt"
+	EOS.TitleStorage.TitleStorageInterface.query_file(query_file_opts)
+	print("--- TitleStorage: query_file: ", await EOS.get_instance().titlestorage_interface_query_file_callback)
+
+	var query_file_list_opts = EOS.TitleStorage.QueryFileListOptions.new()
+	query_file_list_opts.local_user_id = Store.product_user_id
+	query_file_list_opts.list_of_tags = ["hey"]
+	EOS.TitleStorage.TitleStorageInterface.query_file_list(query_file_list_opts)
+	print("--- TitleStorage: query_file_list: ", await EOS.get_instance().titlestorage_interface_query_file_list_callback)
+
+	var get_meta_count_opts = EOS.TitleStorage.GetFileMetadataCountOptions.new()
+	get_meta_count_opts.local_user_id = Store.product_user_id
+	print("--- TitleStorage: get_file_metadata_count: ", EOS.TitleStorage.TitleStorageInterface.get_file_metadata_count(get_meta_count_opts))
+
+	var copy_meta_at_index_opts = EOS.TitleStorage.CopyFileMetadataAtIndexOptions.new()
+	copy_meta_at_index_opts.local_user_id = Store.product_user_id
+	copy_meta_at_index_opts.index = 0
+	print("--- TitleStorage: copy_file_metadata_at_index: ", EOS.TitleStorage.TitleStorageInterface.copy_file_metadata_at_index(copy_meta_at_index_opts))
+
+	var copy_meta_by_filename_opts = EOS.TitleStorage.CopyFileMetadataByFilenameOptions.new()
+	copy_meta_by_filename_opts.local_user_id = Store.product_user_id
+	copy_meta_by_filename_opts.filename = "title-001.txt"
+	print("--- TitleStorage: copy_file_metadata_by_filename: ", EOS.TitleStorage.TitleStorageInterface.copy_file_metadata_by_filename(copy_meta_by_filename_opts))
+
+	var delete_cache_opts = EOS.TitleStorage.DeleteCacheOptions.new()
+	delete_cache_opts.local_user_id = Store.product_user_id
+	EOS.TitleStorage.TitleStorageInterface.delete_cache(delete_cache_opts)
+	print("--- TitleStorage: delete_cache: ", await EOS.get_instance().titlestorage_interface_delete_cache_callback)
+
 
 
 
 
 func get_view_manager():
 	return views
+
+
 
 
 func _notification(what: int) -> void:

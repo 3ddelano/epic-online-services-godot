@@ -1,7 +1,7 @@
 #include "godot_cpp/variant/packed_byte_array.hpp"
 #include "ieos.h"
 
-using namespace std;
+using namespace godot;
 
 void IEOS::playerdatastorage_interface_query_file(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
@@ -147,7 +147,7 @@ void IEOS::playerdatastorage_interface_delete_file(Ref<RefCounted> p_options) {
     });
 }
 
-void IEOS::playerdatastorage_interface_delete_cache(Ref<RefCounted> p_options) {
+int IEOS::playerdatastorage_interface_delete_cache(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_PlayerDataStorage_DeleteCacheOptions options;
@@ -156,7 +156,7 @@ void IEOS::playerdatastorage_interface_delete_cache(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     p_options->reference();
 
-    EOS_PlayerDataStorage_DeleteCache(s_playerDataStorageInterface, &options, (void *)*p_options, [](const EOS_PlayerDataStorage_DeleteCacheCallbackInfo *data) {
+    EOS_EResult res = EOS_PlayerDataStorage_DeleteCache(s_playerDataStorageInterface, &options, (void *)*p_options, [](const EOS_PlayerDataStorage_DeleteCacheCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
         Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
@@ -165,6 +165,8 @@ void IEOS::playerdatastorage_interface_delete_cache(Ref<RefCounted> p_options) {
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("playerdatastorage_interface_delete_cache_callback", ret);
     });
+
+    return static_cast<int>(res);
 }
 
 Variant IEOS::playerdatastorage_interface_read_file(Ref<RefCounted> p_options) {

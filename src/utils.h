@@ -1,5 +1,7 @@
 #pragma once
 #include "continuance_token.h"
+#include "eosg_playerdatastorage_file_transfer_request.h"
+#include "eosg_titlestorage_file_transfer_request.h"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
@@ -628,7 +630,31 @@ static Variant eosg_playerdatastorage_file_tranfer_request_to_wrapper(EOS_HPlaye
         return Variant();
     }
 
-    Ref<EOSGFileTransferRequest> file_transfer_request = memnew(EOSGFileTransferRequest());
+    Ref<EOSGPlayerDataStorageFileTransferRequest> file_transfer_request = memnew(EOSGPlayerDataStorageFileTransferRequest());
+    file_transfer_request->set_internal(request);
+    return file_transfer_request;
+}
+
+static Variant eosg_titlestorage_file_metadata_to_dict_and_release(EOS_TitleStorage_FileMetadata *metadata) {
+    if (metadata == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["file_size_bytes"] = metadata->FileSizeBytes;
+    ret["md5_hash"] = EOSG_GET_STRING(metadata->MD5Hash);
+    ret["filename"] = EOSG_GET_STRING(metadata->Filename);
+    ret["unencrypted_data_size_bytes"] = metadata->UnencryptedDataSizeBytes;
+    EOS_TitleStorage_FileMetadata_Release(metadata);
+    return ret;
+}
+
+static Variant eosg_titlestorage_file_tranfer_request_to_wrapper(EOS_HTitleStorageFileTransferRequest request) {
+    if (request == nullptr) {
+        return Variant();
+    }
+
+    Ref<EOSGTitleStorageFileTransferRequest> file_transfer_request = memnew(EOSGTitleStorageFileTransferRequest());
     file_transfer_request->set_internal(request);
     return file_transfer_request;
 }

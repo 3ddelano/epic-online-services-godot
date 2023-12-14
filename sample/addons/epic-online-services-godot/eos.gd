@@ -2575,6 +2575,90 @@ class Logging:
 
 
 
+
+class TitleStorage:
+	class QueryFileOptions extends BaseClass:
+		func _init():
+			super._init("QueryFileOptions")
+
+		var local_user_id: String
+		var filename: String
+
+		var client_data = null
+
+	class QueryFileListOptions extends BaseClass:
+		func _init():
+			super._init("QueryFileListOptions")
+
+		var local_user_id: String
+		var list_of_tags: Array # [String]
+
+		var client_data = null
+
+	class CopyFileMetadataByFilenameOptions extends BaseClass:
+		func _init():
+			super._init("CopyFileMetadataByFilenameOptions")
+
+		var local_user_id: String
+		var filename: String
+
+	class GetFileMetadataCountOptions extends BaseClass:
+		func _init():
+			super._init("GetFileMetadataCountOptions")
+
+		var local_user_id: String
+
+	class CopyFileMetadataAtIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyFileMetadataAtIndexOptions")
+
+		var local_user_id: String
+		var index: int
+
+	class DeleteCacheOptions extends BaseClass:
+		func _init():
+			super._init("DeleteCacheOptions")
+
+		var local_user_id: String
+
+		var client_data = null
+
+	class ReadFileOptions extends BaseClass:
+		func _init():
+			super._init("ReadFileOptions")
+
+		var local_user_id: String
+		var filename: String
+		var read_chunk_length_bytes = 4096
+
+		var client_data = null
+
+	class TitleStorageInterface:
+		static func query_file(options: QueryFileOptions) -> void:
+			IEOS.titlestorage_interface_query_file(options)
+
+		static func query_file_list(options: QueryFileListOptions) -> void:
+			IEOS.titlestorage_interface_query_file_list(options)
+
+		static func copy_file_metadata_by_filename(options: CopyFileMetadataByFilenameOptions) -> Dictionary:
+			return IEOS.titlestorage_interface_copy_file_metadata_by_filename(options)
+
+		static func get_file_metadata_count(options: GetFileMetadataCountOptions) -> int:
+			return IEOS.titlestorage_interface_get_file_metadata_count(options)
+
+		static func copy_file_metadata_at_index(options) -> Dictionary:
+			return IEOS.titlestorage_interface_copy_file_metadata_at_index(options)
+
+		static func delete_cache(options: DeleteCacheOptions) -> Result:
+			return IEOS.titlestorage_interface_delete_cache(options)
+
+		static func read_file(options: ReadFileOptions) -> Variant:
+			return IEOS.titlestorage_interface_read_file(options)
+
+
+
+
+
 class PlayerDataStorage:
 	class QueryFileOptions extends BaseClass:
 		func _init():
@@ -2658,7 +2742,7 @@ class PlayerDataStorage:
 		var filename: String
 
 		var data: PackedByteArray
-		var chunk_length_bytes = 1
+		var chunk_length_bytes = 4096
 
 		var client_data = null
 		var written_buffer_length_bytes = 0
@@ -2685,14 +2769,15 @@ class PlayerDataStorage:
 		static func delete_file(options: DeleteFileOptions) -> void:
 			IEOS.playerdatastorage_interface_delete_file(options)
 
-		static func delete_cache(options: DeleteCacheOptions) -> void:
-			IEOS.playerdatastorage_interface_delete_cache(options)
+		static func delete_cache(options: DeleteCacheOptions) -> Result:
+			return IEOS.playerdatastorage_interface_delete_cache(options)
 
 		static func read_file(options: ReadFileOptions) -> Variant:
 			return IEOS.playerdatastorage_interface_read_file(options)
 
 		static func write_file(options: WriteFileOptions) -> Variant:
 			return IEOS.playerdatastorage_interface_write_file(options)
+
 
 
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "eos_achievements.h"
 #include "eos_auth.h"
 #include "eos_custominvites.h"
@@ -18,6 +17,7 @@
 #include "eos_reports.h"
 #include "eos_sdk.h"
 #include "eos_stats.h"
+#include "eos_titlestorage.h"
 #include "eos_ui.h"
 #include "eos_userinfo.h"
 #include "eos_version.h"
@@ -54,6 +54,7 @@ protected:
     EOS_HMetrics s_metricsInterface = nullptr;
     EOS_HMods s_modsInterface = nullptr;
     EOS_HPlayerDataStorage s_playerDataStorageInterface = nullptr;
+    EOS_HTitleStorage s_titleStorageInterface = nullptr;
     EOS_HPresence s_presenceInterface = nullptr;
     EOS_HProgressionSnapshot s_progressionSnapshotInterface = nullptr;
     EOS_HReports s_reportsInterface = nullptr;
@@ -399,7 +400,6 @@ public:
     // -----
     // PlayerDataStorage Interface
     // -----
-
     void playerdatastorage_interface_query_file(Ref<RefCounted> options);
     void playerdatastorage_interface_query_file_list(Ref<RefCounted> options);
     Dictionary playerdatastorage_interface_copy_file_metadata_by_filename(Ref<RefCounted> options);
@@ -407,9 +407,20 @@ public:
     Dictionary playerdatastorage_interface_copy_file_metadata_at_index(Ref<RefCounted> options);
     void playerdatastorage_interface_duplicate_file(Ref<RefCounted> options);
     void playerdatastorage_interface_delete_file(Ref<RefCounted> options);
-    void playerdatastorage_interface_delete_cache(Ref<RefCounted> options);
+    int playerdatastorage_interface_delete_cache(Ref<RefCounted> options);
     Variant playerdatastorage_interface_read_file(Ref<RefCounted> options);
     Variant playerdatastorage_interface_write_file(Ref<RefCounted> options);
+
+    // -----
+    // TitleStorage Interface
+    // -----
+    void titlestorage_interface_query_file(Ref<RefCounted> options);
+    void titlestorage_interface_query_file_list(Ref<RefCounted> options);
+    Dictionary titlestorage_interface_copy_file_metadata_by_filename(Ref<RefCounted> options);
+    int titlestorage_interface_get_file_metadata_count(Ref<RefCounted> options);
+    Dictionary titlestorage_interface_copy_file_metadata_at_index(Ref<RefCounted> options);
+    Variant titlestorage_interface_read_file(Ref<RefCounted> options);
+    int titlestorage_interface_delete_cache(Ref<RefCounted> options);
 };
 
 } // namespace godot

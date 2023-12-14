@@ -1,5 +1,5 @@
 #pragma once
-#include "eos_playerdatastorage.h"
+#include "eosg_file_transfer_request.h"
 #include "godot_cpp/classes/ref_counted.hpp"
 
 namespace godot {
@@ -8,27 +8,25 @@ class EOSGFileTransferRequest : public RefCounted {
     GDCLASS(EOSGFileTransferRequest, RefCounted)
 
 private:
-    EOS_HPlayerDataStorageFileTransferRequest m_internal = nullptr;
-    static void _bind_methods();
-
-public:
-    int get_file_request_state();
-    Dictionary get_filename();
-    int cancel_request();
-
-    EOSGFileTransferRequest(){};
-    ~EOSGFileTransferRequest() {
-        if (m_internal != nullptr) {
-            EOS_PlayerDataStorageFileTransferRequest_Release(m_internal);
-        }
+    static void _bind_methods() {
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_file_request_state);
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_filename);
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, cancel_request);
     };
 
-    void set_internal(EOS_HPlayerDataStorageFileTransferRequest p_internal) {
-        m_internal = p_internal;
+public:
+    // TODO: make these methods pure virtual
+    virtual int get_file_request_state() {
+        return -1;
+    }
+    virtual Dictionary get_filename() {
+        return Dictionary();
+    }
+    virtual int cancel_request() {
+        return -1;
     }
 
-    EOS_HPlayerDataStorageFileTransferRequest get_internal() {
-        return m_internal;
-    }
+    EOSGFileTransferRequest(){};
+    ~EOSGFileTransferRequest(){};
 };
 } // namespace godot

@@ -38,7 +38,9 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<godot::LobbyModificationEOSG>();
     ClassDB::register_class<godot::LobbySearchEOSG>();
     ClassDB::register_class<godot::LobbyDetailsEOSG>();
-    ClassDB::register_class<godot::EOSGFileTransferRequest>();
+    ClassDB::register_abstract_class<godot::EOSGFileTransferRequest>();
+    ClassDB::register_class<godot::EOSGPlayerDataStorageFileTransferRequest>();
+    ClassDB::register_class<godot::EOSGTitleStorageFileTransferRequest>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {

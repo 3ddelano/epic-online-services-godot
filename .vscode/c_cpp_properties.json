@@ -7,8 +7,8 @@
                 "${workspaceFolder}/godot-cpp/gen/include/**",
                 "${workspaceFolder}/godot-cpp/include/**",
                 "${workspaceFolder}/godot-cpp/gdextension/**",
-                "${workspaceFolder}/thirdparty/eos-sdk/Include/",
-                "${workspaceFolder}/thirdparty/eos-sdk/Include/**",
+                "${workspaceFolder}/thirdparty/eos-sdk/SDK/Include/",
+                "${workspaceFolder}/thirdparty/eos-sdk/SDK/Include/**",
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/src"
             ],
