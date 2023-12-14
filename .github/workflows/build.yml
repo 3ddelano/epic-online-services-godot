@@ -112,6 +112,10 @@ jobs:
               run: |
                   cp -n '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE.md' '${{ github.workspace }}/sample/addons/epic-online-services-godot/'
 
+            - name: Create artifact folder
+              shell: sh
+              run: |
+                  mkdir -p '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/addons/'
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
