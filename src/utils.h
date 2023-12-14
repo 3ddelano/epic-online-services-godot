@@ -1,16 +1,16 @@
 #pragma once
-#include "continuance_token.h"
+#include "eosg_continuance_token.h"
+#include "eosg_lobby_details.h"
+#include "eosg_lobby_modification.h"
+#include "eosg_lobby_search.h"
 #include "eosg_playerdatastorage_file_transfer_request.h"
+#include "eosg_presence_modification.h"
 #include "eosg_titlestorage_file_transfer_request.h"
+#include "eosg_transaction.h"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "ieos.h"
-#include "lobby_details.h"
-#include "lobby_modification.h"
-#include "lobby_search.h"
-#include "presence_modification.h"
-#include "transaction.h"
 
 using namespace godot;
 
@@ -57,7 +57,7 @@ static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continua
     if (p_continuance_token == nullptr) {
         return Variant();
     }
-    Ref<ContinuanceTokenEOSG> continuance_token = memnew(ContinuanceTokenEOSG());
+    Ref<EOSGContinuanceToken> continuance_token = memnew(EOSGContinuanceToken());
     continuance_token->set_internal(p_continuance_token);
     return continuance_token;
 }
@@ -220,7 +220,7 @@ static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transact
     if (p_transaction == nullptr) {
         return Variant();
     }
-    Ref<TransactionEOSG> transaction = memnew(TransactionEOSG());
+    Ref<EOSGTransaction> transaction = memnew(EOSGTransaction());
     transaction->set_internal(p_transaction);
     return transaction;
 }
@@ -362,7 +362,7 @@ static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModif
     if (p_presence_modification == nullptr) {
         return Variant();
     }
-    Ref<PresenceModificationEOSG> presence_modification = memnew(PresenceModificationEOSG());
+    Ref<EOSGPresenceModification> presence_modification = memnew(EOSGPresenceModification());
     presence_modification->set_internal(p_presence_modification);
     return presence_modification;
 }
@@ -555,7 +555,7 @@ static Variant eosg_lobby_lobby_modification_to_wrapper(EOS_HLobbyModification l
         return Variant();
     }
 
-    Ref<LobbyModificationEOSG> lobby_modification = memnew(LobbyModificationEOSG());
+    Ref<EOSGLobbyModification> lobby_modification = memnew(EOSGLobbyModification());
     lobby_modification->set_internal(lobbyModification);
     return lobby_modification;
 }
@@ -565,7 +565,7 @@ static Variant eosg_lobby_lobby_search_to_wrapper(EOS_HLobbySearch lobbySearch) 
         return Variant();
     }
 
-    Ref<LobbySearchEOSG> lobby_search = memnew(LobbySearchEOSG());
+    Ref<EOSGLobbySearch> lobby_search = memnew(EOSGLobbySearch());
     lobby_search->set_internal(lobbySearch);
     return lobby_search;
 }
@@ -575,7 +575,7 @@ static Variant eosg_lobby_lobby_details_to_wrapper(EOS_HLobbyDetails lobbyDetail
         return Variant();
     }
 
-    Ref<LobbyDetailsEOSG> lobby_details = memnew(LobbyDetailsEOSG());
+    Ref<EOSGLobbyDetails> lobby_details = memnew(EOSGLobbyDetails());
     lobby_details->set_internal(lobbyDetails);
     return lobby_details;
 }

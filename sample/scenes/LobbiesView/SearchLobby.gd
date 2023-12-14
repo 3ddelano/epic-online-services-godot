@@ -13,7 +13,7 @@ enum SearchType {
 @onready var clear_search_lobby_btn = %ClearSearchLobbyBtn
 
 var is_searches_shown = false
-var lobby_search: LobbySearchEOSG
+var lobby_search: EOSGLobbySearch
 
 func _ready() -> void:
 	EOS.get_instance().lobby_search_find_callback.connect(_on_lobby_search_find_callback)
@@ -70,14 +70,14 @@ func _on_lobby_search_find_callback(data: Dictionary):
 		return
 
 	var count = lobby_search.get_search_result_count()
-	var search_results: Array[LobbyDetailsEOSG] = []
+	var search_results: Array[EOSGLobbyDetails] = []
 	for search_idx in count:
 		var copy_ret = lobby_search.copy_search_result_by_index(search_idx)
 		if not EOS.is_success(copy_ret):
 			print("Failed to copy lobby search result by index")
 			continue
 
-		var lobby_details: LobbyDetailsEOSG = copy_ret.lobby_details
+		var lobby_details: EOSGLobbyDetails = copy_ret.lobby_details
 		search_results.append(lobby_details)
 
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
@@ -89,7 +89,7 @@ func _on_clear_search_lobby_btn_pressed():
 
 	lobby_search = null
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
-	var search_results: Array[LobbyDetailsEOSG] = []
+	var search_results: Array[EOSGLobbyDetails] = []
 	lobbies_view.handle_search_results(search_results)
 
 

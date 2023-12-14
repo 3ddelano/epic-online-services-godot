@@ -1,17 +1,17 @@
 #include "register_types.h"
 
-#include "continuance_token.h"
+#include "eosg_continuance_token.h"
 #include "eosg_file_transfer_request.h"
+#include "eosg_lobby_details.h"
+#include "eosg_lobby_modification.h"
+#include "eosg_lobby_search.h"
 #include "eosg_multiplayer_peer.h"
 #include "eosg_packet_peer_mediator.h"
+#include "eosg_presence_modification.h"
+#include "eosg_transaction.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
 #include "ieos.h"
-#include "lobby_details.h"
-#include "lobby_modification.h"
-#include "lobby_search.h"
-#include "presence_modification.h"
-#include "transaction.h"
 
 using namespace godot;
 
@@ -32,12 +32,12 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     Engine::get_singleton()->register_singleton("EOSGPacketPeerMediator", EOSGPacketPeerMediator::get_singleton());
 
     ClassDB::register_class<godot::EOSGMultiplayerPeer>();
-    ClassDB::register_class<godot::ContinuanceTokenEOSG>();
-    ClassDB::register_class<godot::TransactionEOSG>();
-    ClassDB::register_class<godot::PresenceModificationEOSG>();
-    ClassDB::register_class<godot::LobbyModificationEOSG>();
-    ClassDB::register_class<godot::LobbySearchEOSG>();
-    ClassDB::register_class<godot::LobbyDetailsEOSG>();
+    ClassDB::register_class<godot::EOSGContinuanceToken>();
+    ClassDB::register_class<godot::EOSGTransaction>();
+    ClassDB::register_class<godot::EOSGPresenceModification>();
+    ClassDB::register_class<godot::EOSGLobbyModification>();
+    ClassDB::register_class<godot::EOSGLobbySearch>();
+    ClassDB::register_class<godot::EOSGLobbyDetails>();
     ClassDB::register_abstract_class<godot::EOSGFileTransferRequest>();
     ClassDB::register_class<godot::EOSGPlayerDataStorageFileTransferRequest>();
     ClassDB::register_class<godot::EOSGTitleStorageFileTransferRequest>();

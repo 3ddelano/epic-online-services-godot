@@ -4,8 +4,8 @@
 
 namespace godot {
 
-class PresenceModificationEOSG : public RefCounted {
-    GDCLASS(PresenceModificationEOSG, RefCounted)
+class EOSGPresenceModification : public RefCounted {
+    GDCLASS(EOSGPresenceModification, RefCounted)
 
 protected:
     EOS_HPresenceModification m_internal = nullptr;
@@ -18,8 +18,8 @@ public:
     int delete_data(Array p_keys);
     int set_join_info(const String &p_join_info);
 
-    PresenceModificationEOSG(){};
-    ~PresenceModificationEOSG() {
+    EOSGPresenceModification(){};
+    ~EOSGPresenceModification() {
         if (m_internal != nullptr) {
             EOS_PresenceModification_Release(m_internal);
         }

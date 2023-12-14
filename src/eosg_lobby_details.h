@@ -5,8 +5,8 @@
 
 namespace godot {
 
-class LobbyDetailsEOSG : public RefCounted {
-    GDCLASS(LobbyDetailsEOSG, RefCounted)
+class EOSGLobbyDetails : public RefCounted {
+    GDCLASS(EOSGLobbyDetails, RefCounted)
 
 private:
     EOS_HLobbyDetails m_internal = nullptr;
@@ -25,8 +25,8 @@ public:
     Dictionary copy_member_attribute_by_key(const String &target_user_id, const String &key);
     Dictionary copy_member_info(const String &target_user_id);
 
-    LobbyDetailsEOSG(){};
-    ~LobbyDetailsEOSG() {
+    EOSGLobbyDetails(){};
+    ~EOSGLobbyDetails() {
         if (m_internal != nullptr) {
             EOS_LobbyDetails_Release(m_internal);
         }

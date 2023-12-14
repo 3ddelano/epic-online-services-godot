@@ -1,20 +1,20 @@
-#include "lobby_modification.h"
+#include "eosg_lobby_modification.h"
 
 #include "utils.h"
 using namespace godot;
 
-void LobbyModificationEOSG::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_bucket_id", "bucket_id"), &LobbyModificationEOSG::set_bucket_id);
-    ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &LobbyModificationEOSG::set_permission_level);
-    ClassDB::bind_method(D_METHOD("set_max_members", "max_members"), &LobbyModificationEOSG::set_max_members);
-    ClassDB::bind_method(D_METHOD("set_invites_allowed", "invites_allowed"), &LobbyModificationEOSG::set_invites_allowed);
-    ClassDB::bind_method(D_METHOD("add_attribute", "key", "value", "visibility"), &LobbyModificationEOSG::add_attribute);
-    ClassDB::bind_method(D_METHOD("remove_attribute", "key"), &LobbyModificationEOSG::remove_attribute);
-    ClassDB::bind_method(D_METHOD("add_member_attribute", "key", "value", "visibility"), &LobbyModificationEOSG::add_member_attribute);
-    ClassDB::bind_method(D_METHOD("remove_member_attribute", "key"), &LobbyModificationEOSG::remove_member_attribute);
+void EOSGLobbyModification::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("set_bucket_id", "bucket_id"), &EOSGLobbyModification::set_bucket_id);
+    ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &EOSGLobbyModification::set_permission_level);
+    ClassDB::bind_method(D_METHOD("set_max_members", "max_members"), &EOSGLobbyModification::set_max_members);
+    ClassDB::bind_method(D_METHOD("set_invites_allowed", "invites_allowed"), &EOSGLobbyModification::set_invites_allowed);
+    ClassDB::bind_method(D_METHOD("add_attribute", "key", "value", "visibility"), &EOSGLobbyModification::add_attribute);
+    ClassDB::bind_method(D_METHOD("remove_attribute", "key"), &EOSGLobbyModification::remove_attribute);
+    ClassDB::bind_method(D_METHOD("add_member_attribute", "key", "value", "visibility"), &EOSGLobbyModification::add_member_attribute);
+    ClassDB::bind_method(D_METHOD("remove_member_attribute", "key"), &EOSGLobbyModification::remove_member_attribute);
 }
 
-int LobbyModificationEOSG::set_bucket_id(const String &p_bucket_id) {
+int EOSGLobbyModification::set_bucket_id(const String &p_bucket_id) {
     CharString bucket_id = p_bucket_id.utf8();
     EOS_LobbyModification_SetBucketIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -24,7 +24,7 @@ int LobbyModificationEOSG::set_bucket_id(const String &p_bucket_id) {
     return static_cast<int>(EOS_LobbyModification_SetBucketId(m_internal, &options));
 }
 
-int LobbyModificationEOSG::set_permission_level(int p_permission_level) {
+int EOSGLobbyModification::set_permission_level(int p_permission_level) {
     EOS_LobbyModification_SetPermissionLevelOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETPERMISSIONLEVEL_API_LATEST;
@@ -33,7 +33,7 @@ int LobbyModificationEOSG::set_permission_level(int p_permission_level) {
     return static_cast<int>(EOS_LobbyModification_SetPermissionLevel(m_internal, &options));
 }
 
-int LobbyModificationEOSG::set_max_members(int p_max_members) {
+int EOSGLobbyModification::set_max_members(int p_max_members) {
     EOS_LobbyModification_SetMaxMembersOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETMAXMEMBERS_API_LATEST;
@@ -42,7 +42,7 @@ int LobbyModificationEOSG::set_max_members(int p_max_members) {
     return static_cast<int>(EOS_LobbyModification_SetMaxMembers(m_internal, &options));
 }
 
-int LobbyModificationEOSG::set_invites_allowed(bool p_invites_allowed) {
+int EOSGLobbyModification::set_invites_allowed(bool p_invites_allowed) {
     EOS_LobbyModification_SetInvitesAllowedOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETINVITESALLOWED_API_LATEST;
@@ -51,7 +51,7 @@ int LobbyModificationEOSG::set_invites_allowed(bool p_invites_allowed) {
     return static_cast<int>(EOS_LobbyModification_SetInvitesAllowed(m_internal, &options));
 }
 
-int LobbyModificationEOSG::add_attribute(const String &p_key, Variant p_value, int p_visibility) {
+int EOSGLobbyModification::add_attribute(const String &p_key, Variant p_value, int p_visibility) {
     CharString key = p_key.utf8();
 
     EOS_Lobby_AttributeData attributeData;
@@ -83,7 +83,7 @@ int LobbyModificationEOSG::add_attribute(const String &p_key, Variant p_value, i
     return static_cast<int>(EOS_LobbyModification_AddAttribute(m_internal, &options));
 }
 
-int LobbyModificationEOSG::remove_attribute(const String &p_key) {
+int EOSGLobbyModification::remove_attribute(const String &p_key) {
     CharString key = p_key.utf8();
 
     EOS_LobbyModification_RemoveAttributeOptions options;
@@ -94,7 +94,7 @@ int LobbyModificationEOSG::remove_attribute(const String &p_key) {
     return static_cast<int>(EOS_LobbyModification_RemoveAttribute(m_internal, &options));
 }
 
-int LobbyModificationEOSG::add_member_attribute(const String &p_key, Variant p_value, int p_visibility) {
+int EOSGLobbyModification::add_member_attribute(const String &p_key, Variant p_value, int p_visibility) {
     CharString key = p_key.utf8();
 
     EOS_Lobby_AttributeData attributeData;
@@ -126,7 +126,7 @@ int LobbyModificationEOSG::add_member_attribute(const String &p_key, Variant p_v
     return static_cast<int>(EOS_LobbyModification_AddMemberAttribute(m_internal, &options));
 }
 
-int LobbyModificationEOSG::remove_member_attribute(const String &p_key) {
+int EOSGLobbyModification::remove_member_attribute(const String &p_key) {
     CharString key = p_key.utf8();
 
     EOS_LobbyModification_RemoveMemberAttributeOptions options;
@@ -137,7 +137,7 @@ int LobbyModificationEOSG::remove_member_attribute(const String &p_key) {
     return static_cast<int>(EOS_LobbyModification_RemoveMemberAttribute(m_internal, &options));
 }
 
-int LobbyModificationEOSG::set_allowed_platform_ids(const TypedArray<int> &p_platform_ids) {
+int EOSGLobbyModification::set_allowed_platform_ids(const TypedArray<int> &p_platform_ids) {
     uint32_t *platform_ids_array = new uint32_t[p_platform_ids.size()];
     for (int i = 0; i < p_platform_ids.size(); i++) {
         platform_ids_array[i] = static_cast<uint32_t>(p_platform_ids[i]);

@@ -4,16 +4,16 @@
 
 namespace godot {
 
-class ContinuanceTokenEOSG : public RefCounted {
-    GDCLASS(ContinuanceTokenEOSG, RefCounted)
+class EOSGContinuanceToken : public RefCounted {
+    GDCLASS(EOSGContinuanceToken, RefCounted)
 
 private:
     EOS_ContinuanceToken m_internal = nullptr;
     static void _bind_methods(){};
 
 public:
-    ContinuanceTokenEOSG(){};
-    ~ContinuanceTokenEOSG(){};
+    EOSGContinuanceToken(){};
+    ~EOSGContinuanceToken(){};
 
     void set_internal(EOS_ContinuanceToken p_internal) {
         m_internal = p_internal;

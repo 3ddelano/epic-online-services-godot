@@ -4,8 +4,8 @@
 
 namespace godot {
 
-class TransactionEOSG : public RefCounted {
-    GDCLASS(TransactionEOSG, RefCounted)
+class EOSGTransaction : public RefCounted {
+    GDCLASS(EOSGTransaction, RefCounted)
 
 protected:
     EOS_Ecom_HTransaction m_internal = nullptr;
@@ -16,8 +16,8 @@ public:
     int get_entitlement_count();
     Dictionary copy_entitlement_by_index(int p_entitlement_index);
 
-    TransactionEOSG(){};
-    ~TransactionEOSG() {
+    EOSGTransaction(){};
+    ~EOSGTransaction() {
         if (m_internal != nullptr) {
             EOS_Ecom_Transaction_Release(m_internal);
         }

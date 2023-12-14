@@ -231,7 +231,7 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
 }
 
 void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
-    Ref<ContinuanceTokenEOSG> p_continuance_token = Object::cast_to<ContinuanceTokenEOSG>(p_options->get("continuance_token"));
+    Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Auth_LinkAccountOptions options;

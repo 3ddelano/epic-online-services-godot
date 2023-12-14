@@ -4,8 +4,8 @@
 
 namespace godot {
 
-class LobbyModificationEOSG : public RefCounted {
-    GDCLASS(LobbyModificationEOSG, RefCounted)
+class EOSGLobbyModification : public RefCounted {
+    GDCLASS(EOSGLobbyModification, RefCounted)
 
 private:
     EOS_HLobbyModification m_internal = nullptr;
@@ -22,8 +22,8 @@ public:
     int remove_member_attribute(const String &key);
     int set_allowed_platform_ids(const TypedArray<int> &platform_ids);
 
-    LobbyModificationEOSG(){};
-    ~LobbyModificationEOSG() {
+    EOSGLobbyModification(){};
+    ~EOSGLobbyModification() {
         if (m_internal != nullptr) {
             EOS_LobbyModification_Release(m_internal);
         }

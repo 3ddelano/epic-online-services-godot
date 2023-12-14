@@ -1,18 +1,18 @@
-#include "presence_modification.h"
+#include "eosg_presence_modification.h"
 
 #include "utils.h"
 
 using namespace godot;
 
-void PresenceModificationEOSG::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_status", "new_status"), &PresenceModificationEOSG::set_status);
-    ClassDB::bind_method(D_METHOD("set_raw_rich_text", "new_raw_rich_text"), &PresenceModificationEOSG::set_raw_rich_text);
-    ClassDB::bind_method(D_METHOD("set_data", "new_data"), &PresenceModificationEOSG::set_data);
-    ClassDB::bind_method(D_METHOD("delete_data", "keys"), &PresenceModificationEOSG::delete_data);
-    ClassDB::bind_method(D_METHOD("set_join_info", "new_join_info"), &PresenceModificationEOSG::set_join_info);
+void EOSGPresenceModification::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("set_status", "new_status"), &EOSGPresenceModification::set_status);
+    ClassDB::bind_method(D_METHOD("set_raw_rich_text", "new_raw_rich_text"), &EOSGPresenceModification::set_raw_rich_text);
+    ClassDB::bind_method(D_METHOD("set_data", "new_data"), &EOSGPresenceModification::set_data);
+    ClassDB::bind_method(D_METHOD("delete_data", "keys"), &EOSGPresenceModification::delete_data);
+    ClassDB::bind_method(D_METHOD("set_join_info", "new_join_info"), &EOSGPresenceModification::set_join_info);
 }
 
-int PresenceModificationEOSG::set_status(int new_status) {
+int EOSGPresenceModification::set_status(int new_status) {
     EOS_PresenceModification_SetStatusOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PRESENCE_SETPRESENCE_API_LATEST;
@@ -21,7 +21,7 @@ int PresenceModificationEOSG::set_status(int new_status) {
     return static_cast<int>(EOS_PresenceModification_SetStatus(m_internal, &options));
 }
 
-int PresenceModificationEOSG::set_raw_rich_text(const String &p_raw_rich_text) {
+int EOSGPresenceModification::set_raw_rich_text(const String &p_raw_rich_text) {
     CharString new_raw_rich_text = VARIANT_TO_CHARSTRING(p_raw_rich_text);
 
     EOS_PresenceModification_SetRawRichTextOptions options;
@@ -32,7 +32,7 @@ int PresenceModificationEOSG::set_raw_rich_text(const String &p_raw_rich_text) {
     return static_cast<int>(EOS_PresenceModification_SetRawRichText(m_internal, &options));
 }
 
-int PresenceModificationEOSG::set_data(Dictionary p_data) {
+int EOSGPresenceModification::set_data(Dictionary p_data) {
     int records_count = p_data.keys().size();
     EOS_Presence_DataRecord *records = (EOS_Presence_DataRecord *)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
 
@@ -57,7 +57,7 @@ int PresenceModificationEOSG::set_data(Dictionary p_data) {
     return static_cast<int>(EOS_PresenceModification_SetData(m_internal, &options));
 }
 
-int PresenceModificationEOSG::delete_data(Array p_keys) {
+int EOSGPresenceModification::delete_data(Array p_keys) {
     int records_count = p_keys.size();
     EOS_PresenceModification_DataRecordId *records = (EOS_PresenceModification_DataRecordId *)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
 
@@ -78,7 +78,7 @@ int PresenceModificationEOSG::delete_data(Array p_keys) {
     return static_cast<int>(EOS_PresenceModification_DeleteData(m_internal, &options));
 }
 
-int PresenceModificationEOSG::set_join_info(const String &p_join_info) {
+int EOSGPresenceModification::set_join_info(const String &p_join_info) {
     CharString new_join_info = VARIANT_TO_CHARSTRING(p_join_info);
 
     EOS_PresenceModification_SetJoinInfoOptions options;

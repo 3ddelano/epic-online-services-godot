@@ -1,30 +1,30 @@
-#include "lobby_details.h"
+#include "eosg_lobby_details.h"
 
 #include "utils.h"
 
 using namespace godot;
 
-void LobbyDetailsEOSG::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_lobby_owner"), &LobbyDetailsEOSG::get_lobby_owner);
-    ClassDB::bind_method(D_METHOD("copy_info"), &LobbyDetailsEOSG::copy_info);
-    ClassDB::bind_method(D_METHOD("get_attribute_count"), &LobbyDetailsEOSG::get_attribute_count);
-    ClassDB::bind_method(D_METHOD("copy_attribute_by_index", "index"), &LobbyDetailsEOSG::copy_attribute_by_index);
-    ClassDB::bind_method(D_METHOD("copy_attribute_by_key", "key"), &LobbyDetailsEOSG::copy_attribute_by_key);
-    ClassDB::bind_method(D_METHOD("get_member_count"), &LobbyDetailsEOSG::get_member_count);
-    ClassDB::bind_method(D_METHOD("get_member_by_index", "index"), &LobbyDetailsEOSG::get_member_by_index);
-    ClassDB::bind_method(D_METHOD("get_member_attribute_count", "target_user_id"), &LobbyDetailsEOSG::get_member_attribute_count);
-    ClassDB::bind_method(D_METHOD("copy_member_attribute_by_index", "target_user_id", "index"), &LobbyDetailsEOSG::copy_member_attribute_by_index);
-    ClassDB::bind_method(D_METHOD("copy_member_attribute_by_key", "target_user_id", "key"), &LobbyDetailsEOSG::copy_member_attribute_by_key);
+void EOSGLobbyDetails::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("get_lobby_owner"), &EOSGLobbyDetails::get_lobby_owner);
+    ClassDB::bind_method(D_METHOD("copy_info"), &EOSGLobbyDetails::copy_info);
+    ClassDB::bind_method(D_METHOD("get_attribute_count"), &EOSGLobbyDetails::get_attribute_count);
+    ClassDB::bind_method(D_METHOD("copy_attribute_by_index", "index"), &EOSGLobbyDetails::copy_attribute_by_index);
+    ClassDB::bind_method(D_METHOD("copy_attribute_by_key", "key"), &EOSGLobbyDetails::copy_attribute_by_key);
+    ClassDB::bind_method(D_METHOD("get_member_count"), &EOSGLobbyDetails::get_member_count);
+    ClassDB::bind_method(D_METHOD("get_member_by_index", "index"), &EOSGLobbyDetails::get_member_by_index);
+    ClassDB::bind_method(D_METHOD("get_member_attribute_count", "target_user_id"), &EOSGLobbyDetails::get_member_attribute_count);
+    ClassDB::bind_method(D_METHOD("copy_member_attribute_by_index", "target_user_id", "index"), &EOSGLobbyDetails::copy_member_attribute_by_index);
+    ClassDB::bind_method(D_METHOD("copy_member_attribute_by_key", "target_user_id", "key"), &EOSGLobbyDetails::copy_member_attribute_by_key);
 }
 
-String LobbyDetailsEOSG::get_lobby_owner() {
+String EOSGLobbyDetails::get_lobby_owner() {
     EOS_LobbyDetails_GetLobbyOwnerOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETLOBBYOWNER_API_LATEST;
     return eosg_product_user_id_to_string(EOS_LobbyDetails_GetLobbyOwner(m_internal, &options));
 }
 
-Dictionary LobbyDetailsEOSG::copy_info() {
+Dictionary EOSGLobbyDetails::copy_info() {
     EOS_LobbyDetails_CopyInfoOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_COPYINFO_API_LATEST;
@@ -38,14 +38,14 @@ Dictionary LobbyDetailsEOSG::copy_info() {
     return ret;
 }
 
-int LobbyDetailsEOSG::get_attribute_count() {
+int EOSGLobbyDetails::get_attribute_count() {
     EOS_LobbyDetails_GetAttributeCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETATTRIBUTECOUNT_API_LATEST;
     return static_cast<int>(EOS_LobbyDetails_GetAttributeCount(m_internal, &options));
 }
 
-Dictionary LobbyDetailsEOSG::copy_attribute_by_index(int p_index) {
+Dictionary EOSGLobbyDetails::copy_attribute_by_index(int p_index) {
     EOS_LobbyDetails_CopyAttributeByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_COPYATTRIBUTEBYINDEX_API_LATEST;
@@ -60,7 +60,7 @@ Dictionary LobbyDetailsEOSG::copy_attribute_by_index(int p_index) {
     return ret;
 }
 
-Dictionary LobbyDetailsEOSG::copy_attribute_by_key(const String &p_key) {
+Dictionary EOSGLobbyDetails::copy_attribute_by_key(const String &p_key) {
     CharString key = p_key.utf8();
 
     EOS_LobbyDetails_CopyAttributeByKeyOptions options;
@@ -77,14 +77,14 @@ Dictionary LobbyDetailsEOSG::copy_attribute_by_key(const String &p_key) {
     return ret;
 }
 
-int LobbyDetailsEOSG::get_member_count() {
+int EOSGLobbyDetails::get_member_count() {
     EOS_LobbyDetails_GetMemberCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETMEMBERCOUNT_API_LATEST;
     return static_cast<int>(EOS_LobbyDetails_GetMemberCount(m_internal, &options));
 }
 
-String LobbyDetailsEOSG::get_member_by_index(int p_index) {
+String EOSGLobbyDetails::get_member_by_index(int p_index) {
     EOS_LobbyDetails_GetMemberByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETMEMBERBYINDEX_API_LATEST;
@@ -92,7 +92,7 @@ String LobbyDetailsEOSG::get_member_by_index(int p_index) {
     return eosg_product_user_id_to_string(EOS_LobbyDetails_GetMemberByIndex(m_internal, &options));
 }
 
-int LobbyDetailsEOSG::get_member_attribute_count(const String &p_target_user_id) {
+int EOSGLobbyDetails::get_member_attribute_count(const String &p_target_user_id) {
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_GetMemberAttributeCountOptions options;
@@ -103,7 +103,7 @@ int LobbyDetailsEOSG::get_member_attribute_count(const String &p_target_user_id)
     return static_cast<int>(EOS_LobbyDetails_GetMemberAttributeCount(m_internal, &options));
 }
 
-Dictionary LobbyDetailsEOSG::copy_member_attribute_by_index(const String &p_target_user_id, int p_index) {
+Dictionary EOSGLobbyDetails::copy_member_attribute_by_index(const String &p_target_user_id, int p_index) {
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_CopyMemberAttributeByIndexOptions options;
@@ -121,7 +121,7 @@ Dictionary LobbyDetailsEOSG::copy_member_attribute_by_index(const String &p_targ
     return ret;
 }
 
-Dictionary LobbyDetailsEOSG::copy_member_attribute_by_key(const String &p_target_user_id, const String &p_key) {
+Dictionary EOSGLobbyDetails::copy_member_attribute_by_key(const String &p_target_user_id, const String &p_key) {
     CharString targetUserId = p_target_user_id.utf8();
     CharString key = p_key.utf8();
 
@@ -140,7 +140,7 @@ Dictionary LobbyDetailsEOSG::copy_member_attribute_by_key(const String &p_target
     return ret;
 }
 
-Dictionary LobbyDetailsEOSG::copy_member_info(const String &p_target_user_id) {
+Dictionary EOSGLobbyDetails::copy_member_info(const String &p_target_user_id) {
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_CopyMemberInfoOptions options;

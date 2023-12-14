@@ -97,7 +97,7 @@ void IEOS::presence_interface_query_presence(Ref<RefCounted> p_options) {
 
 void IEOS::presence_interface_set_presence(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
-    Ref<PresenceModificationEOSG> presence_modification = Object::cast_to<PresenceModificationEOSG>(p_options->get("presence_modification"));
+    Ref<EOSGPresenceModification> presence_modification = Object::cast_to<EOSGPresenceModification>(p_options->get("presence_modification"));
 
     EOS_Presence_SetPresenceOptions options;
     memset(&options, 0, sizeof(options));

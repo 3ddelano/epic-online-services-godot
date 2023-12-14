@@ -1,5 +1,5 @@
+#include "eosg_lobby_details.h"
 #include "ieos.h"
-#include "lobby_details.h"
 using namespace godot;
 
 void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
@@ -66,7 +66,7 @@ void IEOS::lobby_interface_destroy_lobby(Ref<RefCounted> p_options) {
 
 void IEOS::lobby_interface_join_lobby(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
-    Ref<LobbyDetailsEOSG> p_lobby_details = Object::cast_to<LobbyDetailsEOSG>(p_options->get("lobby_details"));
+    Ref<EOSGLobbyDetails> p_lobby_details = Object::cast_to<EOSGLobbyDetails>(p_options->get("lobby_details"));
 
     EOS_Lobby_JoinLobbyOptions options;
     memset(&options, 0, sizeof(options));
@@ -162,7 +162,7 @@ Dictionary IEOS::lobby_interface_update_lobby_modification(Ref<RefCounted> p_opt
 }
 
 void IEOS::lobby_interface_update_lobby(Ref<RefCounted> p_options) {
-    Ref<LobbyModificationEOSG> lobby_modification = Object::cast_to<LobbyModificationEOSG>(p_options->get("lobby_modification"));
+    Ref<EOSGLobbyModification> lobby_modification = Object::cast_to<EOSGLobbyModification>(p_options->get("lobby_modification"));
 
     EOS_Lobby_UpdateLobbyOptions options;
     memset(&options, 0, sizeof(options));

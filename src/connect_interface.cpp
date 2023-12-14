@@ -194,7 +194,7 @@ void IEOS::connect_interface_delete_device_id(Ref<RefCounted> p_options) {
 }
 
 void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
-    Ref<ContinuanceTokenEOSG> p_continuance_token = Object::cast_to<ContinuanceTokenEOSG>(p_options->get("continuance_token"));
+    Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
 
     EOS_Connect_CreateUserOptions options;
     memset(&options, 0, sizeof(options));
@@ -309,7 +309,7 @@ void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_opt
 }
 
 void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
-    Ref<ContinuanceTokenEOSG> p_continuance_token = Object::cast_to<ContinuanceTokenEOSG>(p_options->get("continuance_token"));
+    Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Connect_LinkAccountOptions options;

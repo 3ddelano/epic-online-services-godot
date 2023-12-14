@@ -357,28 +357,28 @@ func test_presence_interface():
 	print("--- Presence: create_presence_modification: ", EOS.result_str(create_pmod_ret))
 
 
-	var presence_modification: PresenceModificationEOSG = create_pmod_ret.presence_modification
+	var presence_modification: EOSGPresenceModification = create_pmod_ret.presence_modification
 	var set_data_ret = presence_modification.set_data({
 		test_key = "test_val",
 		hello = "world"
 	})
-	print("--- PresenceModificationEOSG: set_data: ", EOS.result_str(set_data_ret))
+	print("--- EOSGPresenceModification: set_data: ", EOS.result_str(set_data_ret))
 
 
 	var delete_data_ret = presence_modification.delete_data(["hello"])
-	print("--- PresenceModificationEOSG: delete_data: ", EOS.result_str(delete_data_ret))
+	print("--- EOSGPresenceModification: delete_data: ", EOS.result_str(delete_data_ret))
 
 
 	var set_join_info_ret = presence_modification.set_join_info("this is sample join info")
-	print("--- PresenceModificationEOSG: set_join_info: ", EOS.result_str(set_join_info_ret))
+	print("--- EOSGPresenceModification: set_join_info: ", EOS.result_str(set_join_info_ret))
 
 
 	var set_raw_rich_text_ret = presence_modification.set_raw_rich_text("this is sample join info")
-	print("--- PresenceModificationEOSG: set_raw_rich_text: ", EOS.result_str(set_raw_rich_text_ret))
+	print("--- EOSGPresenceModification: set_raw_rich_text: ", EOS.result_str(set_raw_rich_text_ret))
 
 
 	var set_status_ret = presence_modification.set_status(EOS.Presence.Status.Online)
-	print("--- PresenceModificationEOSG: set_status: ", EOS.result_str(set_status_ret))
+	print("--- EOSGPresenceModification: set_status: ", EOS.result_str(set_status_ret))
 
 
 	var opts6 = EOS.Presence.SetPresenceOptions.new()

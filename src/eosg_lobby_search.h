@@ -4,8 +4,8 @@
 
 namespace godot {
 
-class LobbySearchEOSG : public RefCounted {
-    GDCLASS(LobbySearchEOSG, RefCounted)
+class EOSGLobbySearch : public RefCounted {
+    GDCLASS(EOSGLobbySearch, RefCounted)
 
 private:
     EOS_HLobbySearch m_internal = nullptr;
@@ -21,8 +21,8 @@ public:
     int get_search_result_count();
     Dictionary copy_search_result_by_index(int index);
 
-    LobbySearchEOSG(){};
-    ~LobbySearchEOSG() {
+    EOSGLobbySearch(){};
+    ~EOSGLobbySearch() {
         if (m_internal != nullptr) {
             EOS_LobbySearch_Release(m_internal);
         }

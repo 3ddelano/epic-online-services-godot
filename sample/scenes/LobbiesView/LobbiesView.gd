@@ -43,7 +43,7 @@ class GameLobby extends BaseClass:
 		available_slots = 0
 		attributes = []
 
-	func init_from_details(lobby_details: LobbyDetailsEOSG):
+	func init_from_details(lobby_details: EOSGLobbyDetails):
 		var new_lobby_owner_id = lobby_details.get_lobby_owner()
 
 		if new_lobby_owner_id != owner_id:
@@ -287,7 +287,7 @@ func modify_lobby(lobby: GameLobby) -> bool:
 		print("Failed to update lobby modification: ", EOS.result_str(update_ret))
 		return false
 
-	var lobby_modification: LobbyModificationEOSG = update_ret.lobby_modification
+	var lobby_modification: EOSGLobbyModification = update_ret.lobby_modification
 
 	var set_perm_ret = lobby_modification.set_permission_level(lobby.permission_level)
 	if not EOS.is_success(set_perm_ret):
@@ -354,7 +354,7 @@ func _on_lobby_update_lobby_callback(data: Dictionary):
 		print("Failed to copy lobby details: ", EOS.result_str(copy_details_ret))
 		return
 
-	var lobby_details: LobbyDetailsEOSG = copy_details_ret.lobby_details
+	var lobby_details: EOSGLobbyDetails = copy_details_ret.lobby_details
 	current_lobby.init_from_details(lobby_details)
 	set_initial_member_attributes()
 
@@ -385,7 +385,7 @@ func set_member_attribute(attr: Dictionary):
 		print("Failed to update lobby modification: ", EOS.result_str(update_modification_ret))
 		return
 
-	var lobby_modification: LobbyModificationEOSG = update_modification_ret.lobby_modification
+	var lobby_modification: EOSGLobbyModification = update_modification_ret.lobby_modification
 	var add_mem_attr_ret = lobby_modification.add_member_attribute(attr.key, attr.value, EOS.Lobby.LobbyAttributeVisibility.Public)
 	if not EOS.is_success(add_mem_attr_ret):
 		print("Failed to add member attribute: ", EOS.result_str(add_mem_attr_ret))
@@ -401,5 +401,5 @@ func _on_rtc_room_connection_changed_callback(data: Dictionary):
 	print("--- Lobby: rtc_room_connection_changed_callback: ", data)
 
 
-func handle_search_results(search_results: Array[LobbyDetailsEOSG]):
+func handle_search_results(search_results: Array[EOSGLobbyDetails]):
 	pass
