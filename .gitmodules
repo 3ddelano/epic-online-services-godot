@@ -2,3 +2,6 @@
 	path = godot-cpp
 	url = https://github.com/godotengine/godot-cpp
 	branch = 4.1
+[submodule "thirdparty/eos-sdk"]
+	path = thirdparty/eos-sdk
+	url = https://github.com/3ddelano/eos-sdk-mirror.git

@@ -6,7 +6,7 @@ env = SConscript("godot-cpp/SConstruct")
 lib_name = "libeosg"
 bin_folder = "sample/addons/epic-online-services-godot/bin"
 
-eos_sdk_folder = "thirdparty/eos-sdk/"
+eos_sdk_folder = "thirdparty/eos-sdk/SDK/"
 
 # For reference:
 # - CCFLAGS are compilation flags shared between C and C++
