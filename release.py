@@ -22,6 +22,9 @@ new_addon_folder = temp_folder + "/addons/epic-online-services-godot"
 # Copy the readme to the temp folder
 shutil.copy(readme_path, new_addon_folder + "/README.md")
 
+# Copy the license to the temp folder
+shutil.copy(readme_path, new_addon_folder + "/LICENSE.md")
+
 # Delete the .gitignore file in the temp folder
 os.remove(new_addon_folder + "/bin/.gitignore")
 

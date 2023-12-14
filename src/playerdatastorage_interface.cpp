@@ -257,7 +257,7 @@ Variant IEOS::playerdatastorage_interface_write_file(Ref<RefCounted> p_options) 
 
         IEOS::get_singleton()->emit_signal("playerdatastorage_interface_write_file_data_callback", ret);
 
-        long long bytes_to_write = std::min((long long)chunk_length_bytes, data_buffer.size() - written_buffer_length_bytes);
+        uint32_t bytes_to_write = std::min((uint32_t)chunk_length_bytes, (uint32_t)(data_buffer.size() - written_buffer_length_bytes));
         if (bytes_to_write > 0) {
             memcpy(outDataBuffer, data_buffer.ptr() + written_buffer_length_bytes, bytes_to_write);
             *bytesWritten = static_cast<uint32_t>(bytes_to_write);

@@ -88,19 +88,14 @@ jobs:
 
             - name: (Windows) Install mingw64
               if: ${{ matrix.platform == 'windows' }}
-              uses: egor-tensin/setup-mingw@v2
+              # change to egor-tensin/setup-mingw@v2 once pr #16 is merged
+              uses: e-t-l/setup-mingw@patch-1
 
             - name: (Linux) Install dependencies
               if: ${{ matrix.platform == 'linux' }}
               run: |
                   sudo apt-get update -qq
                   sudo apt-get install -qqq build-essential pkg-config
-
-            - name: Compile godot-cpp
-              shell: sh
-              working-directory: godot-cpp
-              run: |
-                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}'
 
             - name: Run setup.py
               shell: sh
