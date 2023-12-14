@@ -120,7 +120,7 @@ jobs:
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
-                  cp -n '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/'
+                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/${{ github.event.repository.name }}-artifact/'
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
