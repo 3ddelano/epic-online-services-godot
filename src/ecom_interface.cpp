@@ -563,3 +563,83 @@ Dictionary IEOS::ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefC
     ret["entitlement_id"] = EOSG_GET_STRING(outEntitlementId);
     return ret;
 }
+
+void IEOS::ecom_interface_query_entitlement_token(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+
+    EOS_Ecom_QueryEntitlementTokenOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ECOM_QUERYENTITLEMENTTOKEN_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+
+    TypedArray<String> p_entitlement_names = p_options->get("entitlement_names");
+    options.EntitlementNameCount = static_cast<uint32_t>(p_entitlement_names.size());
+    EOS_Ecom_EntitlementName *entitlementNames = nullptr;
+    if (options.EntitlementNameCount > 0) {
+        entitlementNames = (EOS_Ecom_EntitlementName *)memalloc(sizeof(EOS_Ecom_EntitlementName) * p_entitlement_names.size());
+
+        for (int i = 0; i < options.EntitlementNameCount; i++) {
+            entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
+        }
+    }
+    options.EntitlementNames = entitlementNames;
+    p_options->reference();
+
+    EOS_Ecom_QueryEntitlementToken(s_ecomInterface, &options, (void *)*p_options, [](const EOS_Ecom_QueryEntitlementTokenCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+        ret["entitlement_token"] = EOSG_GET_STRING(data->EntitlementToken);
+        IEOS::get_singleton()->emit_signal("ecom_interface_query_entitlement_token_callback", ret);
+    });
+}
+
+void IEOS::ecom_interface_query_ownership_by_sandbox_ids(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+
+    EOS_Ecom_QueryOwnershipBySandboxIdsOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ECOM_QUERYOWNERSHIPBYSANDBOXIDSOPTIONS_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+
+    TypedArray<String> p_sandbox_ids = p_options->get("sandbox_ids");
+    options.SandboxIdsCount = static_cast<uint32_t>(p_sandbox_ids.size());
+    EOS_Ecom_SandboxId *sandbox_ids = nullptr;
+    if (options.SandboxIdsCount > 0) {
+        sandbox_ids = (EOS_Ecom_SandboxId *)memalloc(sizeof(EOS_Ecom_SandboxId) * p_sandbox_ids.size());
+        for (int i = 0; i < options.SandboxIdsCount; i++) {
+            sandbox_ids[i] = VARIANT_TO_CHARSTRING(p_sandbox_ids[i]).get_data();
+        }
+    }
+    options.SandboxIds = sandbox_ids;
+    p_options->reference();
+
+    EOS_Ecom_QueryOwnershipBySandboxIds(s_ecomInterface, &options, (void *)*p_options, [](const EOS_Ecom_QueryOwnershipBySandboxIdsCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+
+        Array sandbox_id_item_ownership_array = Array();
+        for (int i = 0; i < data->SandboxIdItemOwnershipsCount; i++) {
+            Dictionary sandbox_id_item_ownership;
+            sandbox_id_item_ownership["sandbox_id"] = EOSG_GET_STRING(data->SandboxIdItemOwnerships[i].SandboxId);
+
+            Array owned_catalog_item_ids_array = Array();
+            for (int j = 0; j < data->SandboxIdItemOwnerships[i].OwnedCatalogItemIdsCount; j++) {
+                owned_catalog_item_ids_array.append(EOSG_GET_STRING(data->SandboxIdItemOwnerships[i].OwnedCatalogItemIds[j]));
+            }
+            sandbox_id_item_ownership["owned_catalog_item_ids"] = owned_catalog_item_ids_array;
+
+            sandbox_id_item_ownership_array.append(sandbox_id_item_ownership);
+        }
+        ret["sandbox_id_item_ownership"] = sandbox_id_item_ownership_array;
+
+        IEOS::get_singleton()->emit_signal("ecom_interface_query_ownership_by_sandbox_ids_callback", ret);
+    });
+}

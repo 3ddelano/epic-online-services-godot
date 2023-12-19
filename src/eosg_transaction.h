@@ -12,9 +12,9 @@ protected:
     static void _bind_methods();
 
 public:
-    String get_id();
-    int get_entitlement_count();
     Dictionary copy_entitlement_by_index(int p_entitlement_index);
+    int get_entitlement_count();
+    String get_id();
 
     EOSGTransaction(){};
     ~EOSGTransaction() {
