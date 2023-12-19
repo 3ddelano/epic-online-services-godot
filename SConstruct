@@ -52,6 +52,9 @@ def on_complete(target, source, env):
     shutil.copytree(eos_sdk_folder + "Bin/x64", plugin_bin_folder + "/windows/x64")
     copy_file(eos_sdk_folder + "Bin/EOSSDK-Win64-Shipping.dll", plugin_bin_folder + "/windows/EOSSDK-Win64-Shipping.dll")
 
+# Disable scons cache for source files
+NoCache(sources)
+
 complete_command = Command('complete', library, on_complete)
 Depends(complete_command, library)
 Default(complete_command)
