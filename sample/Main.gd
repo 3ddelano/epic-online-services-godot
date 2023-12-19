@@ -199,7 +199,7 @@ func test_ecom_interface():
 	var offers_options = EOS.Ecom.QueryOffersOptions.new()
 	offers_options.local_user_id = Store.epic_account_id
 	EOS.Ecom.EcomInterface.query_offers(offers_options)
-	print("--- Ecom: query_offers: ", EOS.result_str(await EOS.get_instance().ecom_interface_query_offers_callback))
+	print("--- Ecom: query_offers: ", await EOS.get_instance().ecom_interface_query_offers_callback)
 
 
 	var checkout_options = EOS.Ecom.CheckoutOptions.new()
