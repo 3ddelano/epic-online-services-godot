@@ -118,11 +118,6 @@ jobs:
               run: |
                   scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
 
-            - name: (Windows) Delete compilation files
-              if: ${{ matrix.platform == 'windows' }}
-              run: |
-                  Remove-Item sample/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
-
             - name: Copy extra files to addon folder
               shell: sh
               run: |
@@ -137,6 +132,11 @@ jobs:
               shell: sh
               run: |
                   cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact/${{ github.event.repository.name }}/'
+
+            - name: (Windows) Delete compilation files
+              if: ${{ matrix.platform == 'windows' }}
+              run: |
+                  ${{ github.workspace }}/artifact/${{ github.event.repository.name }}/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
