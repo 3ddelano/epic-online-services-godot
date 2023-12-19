@@ -451,6 +451,16 @@ void IEOS::ecom_interface_query_ownership(Ref<RefCounted> p_options) {
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+
+        Array item_ownership_array = Array();
+        for (int i = 0; i < data->ItemOwnershipCount; i++) {
+            Dictionary item_ownership;
+            item_ownership["id"] = EOSG_GET_STRING(data->ItemOwnership[i].Id);
+            item_ownership["ownership_status"] = static_cast<int>(data->ItemOwnership[i].OwnershipStatus);
+            item_ownership_array.append(item_ownership);
+        }
+        ret["item_ownership"] = item_ownership_array;
+
         IEOS::get_singleton()->emit_signal("ecom_interface_query_ownership_callback", ret);
     });
 }
