@@ -136,7 +136,7 @@ jobs:
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  ${{ github.workspace }}/artifact/${{ github.event.repository.name }}/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
+                  Remove-Item ${{ github.workspace }}/artifact/${{ github.event.repository.name }}/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
