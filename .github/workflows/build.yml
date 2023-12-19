@@ -1,5 +1,6 @@
 name: 🛠️ Builds
 on:
+    workflow_dispatch:
     push:
         branches:
             - main
@@ -131,6 +132,7 @@ jobs:
               shell: sh
               run: |
                   mkdir -p '${{ github.workspace }}/artifact/${{ github.event.repository.name }}/'
+
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
@@ -142,4 +144,4 @@ jobs:
                   name: ${{ github.event.repository.name }}-${{ github.sha }}
                   path: |
                       ${{ github.workspace }}/artifact/
-                  retention-days: 30
+                  retention-days: 14
