@@ -25,6 +25,11 @@ sources = Glob("src/*.cpp")
 env.Append(LIBPATH=[eos_sdk_folder + "Lib/"])
 env.Append(LIBPATH=[eos_sdk_folder + "Bin/"])
 if env["platform"] == "windows":
+    # TODO: dont ignore this warning
+    # this disables LINK : error LNK1218: warning treated as error;
+    # so that it can build in github action with scons cache
+    env.Append(LINKFLAGS=["/ignore:4099"])
+    
     env.Append(LIBS=["EOSSDK-Win64-Shipping"])
 elif env["platform"] == "linux":
     env.Append(LIBS=["EOSSDK-Linux-Shipping.so"])
