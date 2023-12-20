@@ -6,14 +6,14 @@
  * NAT punchthrough is handled automatically by the P2P interface and a relay server
  * is used if direct connection is not possible. EOSGMultiplayerPeer allows users to
  * create either a client, server, or mesh instance. A server opens a socket and actively listens
- * for incoming connection requests. When a connection request is recieved, a server can either
+ * for incoming connection requests. When a connection request is received, a server can either
  * accept or reject the connection request. Servers auto accept connection requests by default.
  * Clients can only connect to a server instance and cannot accept connection requests
  * from anyone. Clients are only allowed to be connected to a single peer and that peer
  * must be a server. Mesh instances can arbitrarily connect to each other using a common
- * socket id. The socket id must be the same on all mesh instances if they are to connect
- * to each other. Once connected, mesh instances can send packets to each other just like a
- * server and clients, but those packets will not be relayed. A mesh instance can only send
+ * socket id. They can also connect to a server instance. The socket id must be the same on 
+ * all mesh instances if they are to connect to each other. Once connected, mesh instances can 
+ * send packets to each other just like a server and clients, but those packets will not be relayed. A mesh instance can only send
  * packets to peers they are directly connected to.
  ****************************************/
 
@@ -70,10 +70,19 @@ Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
     unique_id = 1;
     active_mode = MODE_SERVER;
     connection_status = CONNECTION_CONNECTED;
-
+    polling = true;
     set_refuse_new_connections(false);
+
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
+    if (socket.get_name().is_empty()) {
+        unique_id = 0;
+        active_mode = MODE_NONE;
+        connection_status = CONNECTION_DISCONNECTED;
+        polling = false;
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create server.");
+    }
+
     bool success = EOSGPacketPeerMediator::get_singleton()->register_peer(this);
 
     if (!success) {
@@ -97,9 +106,16 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     ERR_FAIL_NULL_V_MSG(s_local_user_id, ERR_UNCONFIGURED, "Failed to create client. Local user id has not been set.");
     ERR_FAIL_COND_V_MSG(_is_active(), ERR_ALREADY_IN_USE, "Failed to create client. Multiplayer instance is already active.");
 
+    polling = true;
     set_refuse_new_connections(false);
+
     //Create the socket we are trying to connect to
     socket = EOSGSocket(socket_id);
+        if (socket.get_name().is_empty()) {
+        polling = false;
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create client.");
+    }
+
     bool success = EOSGPacketPeerMediator::get_singleton()->register_peer(this);
 
     if (!success) {
@@ -143,9 +159,18 @@ Error EOSGMultiplayerPeer::create_mesh(const String &socket_id) {
     unique_id = generate_unique_id();
     active_mode = MODE_MESH;
     connection_status = CONNECTION_CONNECTED;
+    polling = true;
 
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
+    if (socket.get_name().is_empty()) {
+        unique_id = 0;
+        active_mode = MODE_NONE;
+        connection_status = CONNECTION_DISCONNECTED;
+        polling = false;
+        ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create mesh.");
+    }
+
     bool success = EOSGPacketPeerMediator::get_singleton()->register_peer(this);
 
     if (!success) {
@@ -340,7 +365,7 @@ bool EOSGMultiplayerPeer::is_auto_accepting_connection_requests() {
  *   remote_user - The remote user id of the peer to accept a connection request from.
  * Description: Accepts a connection request from the given peer. If the connection request is accepted,
  * the peer will establish a connection with this multiplayer instance and peer id's will be exchanged.
- * The method does nothing if no connection request could be found using the given remote use id.
+ * The method does nothing if no connection request could be found using the given remote user id.
  ****************************************/
 void EOSGMultiplayerPeer::accept_connection_request(const String &remote_user) {
     ERR_FAIL_COND_MSG(active_mode == MODE_NONE, "Cannot accept connection requests when multiplayer instance is not active.");
@@ -441,7 +466,7 @@ int EOSGMultiplayerPeer::get_active_mode() {
  *   r_buffer - out parameter that returns packet's raw byte data.
  *   r_buffer_size - out parameter that returns the packet's total size in bytes.
  * Description: This method is called by the MultiplayerAPI when it tries to poll the next available packet
- * from this multiplayer instance. The packet data and the packet size is returned to the MultiplayerAPI using,
+ * from this multiplayer instance. The packet data and the packet size is returned to the MultiplayerAPI using
  * the r_buffer and r_buffer_size out parameters.
  ****************************************/
 Error EOSGMultiplayerPeer::_get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) {
@@ -521,7 +546,7 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
 
 /****************************************
  * _get_available_packet_count
- * Description: Called by MultiplayerAPI to query this multiplayer instance how
+ * Description: Called by MultiplayerAPI to query how
  * many packets are currently queued. The MultiplayerAPI calls this method
  * every time it polls to determine if there are packets to recieve.
  ****************************************/
@@ -531,7 +556,7 @@ int32_t EOSGMultiplayerPeer::_get_available_packet_count() const {
 
 /****************************************
  * _get_max_packet_size
- * Description: Called by MultiplayerAPI to query this multiplayer instance how
+ * Description: Called by MultiplayerAPI to query how
  * large packets are allowed to be.
  ****************************************/
 int32_t EOSGMultiplayerPeer::_get_max_packet_size() const {
@@ -617,10 +642,8 @@ void EOSGMultiplayerPeer::_set_target_peer(int32_t p_peer) {
 
 /****************************************
  * _get_packet_peer
- * Description: Called by MultiplayerAPI to set the target peer to
- * send packets to. If this is set to 0, packets are broadcasted to all connected to peers.
- * If the value is negative, packets are broadcasted to all peers except for the peer identified
- * by the absolute value of the negative id.
+ * Description: Called by MultiplayerAPI to get the peer id of the peer
+ * who sent the next queued packet.
  ****************************************/
 int32_t EOSGMultiplayerPeer::_get_packet_peer() const {
     return socket.get_packet_peer();
@@ -637,10 +660,10 @@ bool EOSGMultiplayerPeer::_is_server() const {
 /****************************************
  * _poll
  * Description: Called by MultiplayerAPI every network frame to poll queued packets inside EOSGPacketPeerMediator.
- * Packets are recieved first from EOSGPacketPeerMediator. Then, the event type of each packet
+ * Packets are recieved first from EOSGPacketPeerMediator. Once polled, the event type of each packet
  * are retrieved from the first byte of the packet. If the event type is EVENT_RECIEVED_PEER_ID,
  * the sender peer id contained inside the packet header is added to the list of connected peers
- * for this mutliplayer instance. This usually happens once when peers first establish a connection.
+ * for this mutliplayer instance. This usually happens only once when peers first establish a connection.
  * If the event is EVENT_STORE_PACKET, the packet is queued into the socket's packet queue to be
  * retrieved by the MultiplayerAPI later (See _get_packet()). If the event is EVENT_MESH_CONNECTION_REQUEST,
  * then do nothing. This event is just to notify the multiplayer instance that the packet has been used to
@@ -735,7 +758,7 @@ void EOSGMultiplayerPeer::_close() {
         return;
     }
 
-    EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);
+    polling = false; //To prevent any further packets from coming in when we close the socket.
     socket.close();
     active_mode = MODE_NONE;
     connection_status = CONNECTION_DISCONNECTED;
@@ -748,10 +771,10 @@ void EOSGMultiplayerPeer::_close() {
 /****************************************
  * _disconnect_peer
  * Parameters:
- *   p_peer - The peer to disconnet
+ *   p_peer - The peer to disconnect
  *   p_force - Whether or not we should force disconnection with the peer.
  * Description: Disconnects the given peer. The peer is removed from the list of connected peers
- * when the connection closed. If p_force is set to true, the peer is removed from the list immediatly
+ * when the connection closed. If p_force is set to true, the peer is removed from the list immediately
  * instead of waiting for a confirmed disconnection.
  ****************************************/
 void EOSGMultiplayerPeer::_disconnect_peer(int32_t p_peer, bool p_force) {
@@ -778,7 +801,7 @@ int32_t EOSGMultiplayerPeer::_get_unique_id() const {
 /****************************************
  * _set_refuse_new_connections
  * Parameters:
- *   p_enable - bool that sets refuseing new connections.
+ *   p_enable - bool that sets refusing new connections.
  * Description: Sets whether or not new connections are refused. Setting this to true means
  * that all connection requests are automatically denied. This overrides auto accepting connection requests.
  ****************************************/
@@ -1031,7 +1054,8 @@ void EOSGMultiplayerPeer::peer_connection_established_callback(const EOS_P2P_OnP
  * connections, remotely disconnected, etc.). When a connection is closed, the instance checks if there
  * was a connection request associated with the connection. If there was, then remove the connection request
  * from the pending connection requests. If the peer was already previously connected, remove the peer
- * from the instance. If this instance is a client when
+ * from the instance. If this instance is a client when the callback is called it either means the client
+ * has disconnected locally or connection with the server has failed.
  ****************************************/
 void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemoteConnectionClosedInfo *data) {
     String local_user_id_str = eosg_product_user_id_to_string(data->LocalUserId);
@@ -1052,9 +1076,15 @@ void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemo
         emit_signal("peer_disconnected", peer_id);
     }
 
-    //If this callback is called when we're a client, it probably means the connection to the server has failed. Close the peer in this case.
-    if (active_mode == MODE_CLIENT) {
+    //If this callback is called when we're a client and the reason isn't due to the local user closing the connection, 
+    //it probably means the connection to the server has failed. Close the peer in this case.
+    if (active_mode == MODE_CLIENT && data->Reason != EOS_EConnectionClosedReason::EOS_CCR_ClosedByLocalUser) {
+        EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);
         _close();
+    }
+
+    if (data->Reason == EOS_EConnectionClosedReason::EOS_CCR_ClosedByLocalUser) {
+        EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);
     }
 
     Dictionary ret;
@@ -1185,4 +1215,45 @@ void EOSGMultiplayerPeer::EOSGSocket::clear_packets_from_peer(int p_peer) {
     for (List<EOSGPacket>::Element *e : del) {
         e->erase();
     }
+}
+
+/****************************************
+ * EOSGSocket::_socket_id_is_valid
+ * Parameters:
+ *  socket_id: The socket id to validate.
+ * Description: Validates a socket id. Checks if there are any invalid characters.
+ * Also checks if the socket id is empty and if it meets the length requirements.
+ * Socket id's can only contain alpha-numeric characters. If there
+ * are any invalid characters in the socket id or if it's empty or exceeds the
+ * character length limit, the method returns false.
+ ****************************************/
+bool EOSGMultiplayerPeer::EOSGSocket::_socket_id_is_valid(const String &socket_id) {
+    if (socket_id.is_empty())
+        return false; //socket id should not be empty
+
+    if (socket_id.length() >= EOS_P2P_SOCKETID_SOCKETNAME_SIZE) {
+        return false; //socket id should not be longer than EOS_P2P_SOCKETID_SOCKETNAME_SIZE - 1 characters
+    }
+
+    //The ranges of certain characters in the ascii table.
+    int numeric_range_min = 48;
+    int numeric_range_max = 57;
+    int alpha_capitalized_range_min = 65;
+    int alpha_capitalized_range_max = 90;
+    int alpha_lowercase_range_min = 97;
+    int alpha_lowercase_range_max = 122;
+
+    CharString str = socket_id.ascii();
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] >= numeric_range_min && str[i] <= numeric_range_max) {
+            continue;
+        } else if (str[i] >= alpha_capitalized_range_min && str[i] <= alpha_capitalized_range_max) {
+            continue;
+        } else if (str[i] >= alpha_lowercase_range_min && str[i] <= alpha_lowercase_range_max) {
+            continue;
+        } else {
+            return false; //Invalid character found
+        }
+    }
+    return true;
 }
