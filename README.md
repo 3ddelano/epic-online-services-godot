@@ -251,7 +251,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [ ] Sample
 - Sessions Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - TitleStorage Interface
   - [x] Implementation

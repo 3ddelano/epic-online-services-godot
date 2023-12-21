@@ -19,7 +19,7 @@ config/icon="res://logo.png"
 
 Env="*res://scripts/Env.gd"
 Store="*res://scripts/Store.gd"
-EOS_tick="*res://addons/epic-online-services-godot/tick.gd"
+EOSGRuntime="*res://addons/epic-online-services-godot/runtime.gd"
 
 [dotnet]
 

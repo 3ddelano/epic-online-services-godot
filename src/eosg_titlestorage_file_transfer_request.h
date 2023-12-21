@@ -13,9 +13,9 @@ private:
     static void _bind_methods();
 
 public:
-    int get_file_request_state() override;
     Dictionary get_filename() override;
     int cancel_request() override;
+    int get_file_request_state() override;
 
     EOSGTitleStorageFileTransferRequest(){};
     ~EOSGTitleStorageFileTransferRequest() {

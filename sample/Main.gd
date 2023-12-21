@@ -71,18 +71,19 @@ func _on_tab_pressed():
 	print("Tab pressed")
 
 #	test_auth_interface()
-#	test_platform_interface()
 #	test_connect_interface()
 #	test_ecom_interface()
-#	test_user_info_interface()
-#	test_mods_interface()
-#	test_reports_interface()
-#	test_progression_snapshot_interface()
-#	test_presence_interface()
 #	test_kws_interface()
+#	test_mods_interface()
+#	test_platform_interface()
 #	test_playerdatastorage_interface()
-#	test_titlestorage_interface()
+#	test_presence_interface()
+#	test_progression_snapshot_interface()
+#	test_reports_interface()
 #	test_sanctions_interface()
+#	test_sessions_interface()
+#	test_titlestorage_interface()
+#	test_user_info_interface()
 
 
 
@@ -125,30 +126,25 @@ func test_platform_interface():
 
 func test_connect_interface():
 	var opts1 = EOS.Connect.CopyProductUserExternalAccountByAccountIdOptions.new()
-	opts1.target_user_id = Store.product_user_id
 	opts1.account_id = Store.epic_account_id
 	print("--- Connect: copy_product_user_external_account: By account Id: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_id(opts1))
 
 
 	var opts2 = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
-	opts2.target_user_id = Store.product_user_id
 	opts2.account_id_type = EOS.ExternalAccountType.Epic
 	print("--- Connect: copy_product_user_external_account: By account type: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(opts2))
 
 
 	var opts3 = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
-	opts3.target_user_id = Store.product_user_id
 	opts3.external_account_info_index = 0
 	print("--- Connect: copy_product_user_external_account: By account index: ", EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(opts3))
 
 
 	var opts4 = EOS.Connect.CopyProductUserInfoOptions.new()
-	opts4.target_user_id = Store.product_user_id
 	print("--- Connect: copy_product_user_info: ", EOS.Connect.ConnectInterface.copy_product_user_info(opts4))
 
 
 	var opts5 = EOS.Connect.CopyIdTokenOptions.new()
-	opts5.local_user_id = Store.product_user_id
 	var ret5 = EOS.Connect.ConnectInterface.copy_id_token(opts5)
 	var id_token = EOS.Connect.IdToken.new()
 	id_token.json_web_token = ret5.id_token.json_web_token
@@ -157,7 +153,6 @@ func test_connect_interface():
 
 
 	var opts6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
-	opts6.local_user_id = Store.product_user_id
 	opts6.account_id_type = EOS.ExternalAccountType.Discord
 	opts6.target_external_user_id  = "External Account Id Here"
 	print("--- Connect: get_external_account_mapping: ", EOS.Connect.ConnectInterface.get_external_account_mapping(opts6))
@@ -168,19 +163,16 @@ func test_connect_interface():
 
 
 	var opts7 = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
-	opts7.target_user_id = Store.product_user_id
 	print("--- Connect: get_product_user_external_account_count: ", EOS.Connect.ConnectInterface.get_product_user_external_account_count(opts7))
 
 
 	var opts8 = EOS.Connect.GetProductUserIdMappingOptions.new()
-	opts8.local_user_id = Store.product_user_id
 	opts8.account_id_type = EOS.ExternalAccountType.Discord
 	opts8.target_product_user_id  = "External Account Id Here"
 	print("--- Connect: get_product_user_id_mapping: ", EOS.Connect.ConnectInterface.get_product_user_id_mapping(opts8))
 
 
 	var opts9 = EOS.Connect.LinkAccountOptions.new()
-	opts9.local_user_id = Store.product_user_id
 #	opts9.continuance_token = ContinunanceTokenEOSG object here
 	EOS.Connect.ConnectInterface.link_account(opts9)
 	print(await EOS.get_instance().connect_interface_link_account_callback)
@@ -197,13 +189,11 @@ func test_connect_interface():
 
 func test_ecom_interface():
 	var offers_options = EOS.Ecom.QueryOffersOptions.new()
-	offers_options.local_user_id = Store.epic_account_id
 	EOS.Ecom.EcomInterface.query_offers(offers_options)
 	print("--- Ecom: query_offers: ", await EOS.get_instance().ecom_interface_query_offers_callback)
 
 
 	var checkout_options = EOS.Ecom.CheckoutOptions.new()
-	checkout_options.local_user_id = Store.epic_account_id
 	checkout_options.entries = [{
 		offer_id = "OFFER ID HERE"
 	}]
@@ -217,27 +207,21 @@ func test_ecom_interface():
 
 func test_user_info_interface():
 	var opts1 = EOS.UserInfo.QueryUserInfoOptions.new()
-	opts1.local_user_id = Store.epic_account_id
-	opts1.target_user_id = Store.epic_account_id
 	EOS.UserInfo.UserInfoInterface.query_user_info(opts1)
 	print("--- UserInfo: query_user_info: ", EOS.result_str(await EOS.get_instance().user_info_interface_query_user_info_callback))
 
 
 	var opts2 = EOS.UserInfo.CopyUserInfoOptions.new()
-	opts1.local_user_id = Store.epic_account_id
-	opts1.target_user_id = Store.epic_account_id
 	print("--- UserInfo: copy_user_info: ", EOS.UserInfo.UserInfoInterface.copy_user_info(opts2))
 
 
 	var opts3 = EOS.UserInfo.QueryUserInfoByDisplayNameOptions.new()
-	opts3.local_user_id = Store.epic_account_id
 	opts3.display_name = "3ddelano"
 	EOS.UserInfo.UserInfoInterface.query_user_info_by_display_name(opts3)
 	print("--- UserInfo: query_user_info_by_display_name: ", EOS.result_str(await EOS.get_instance().user_info_interface_query_user_info_by_display_name_callback))
 
 
 	var opts4 = EOS.UserInfo.QueryUserInfoByExternalAccountOptions.new()
-	opts4.local_user_id = Store.epic_account_id
 	opts4.account_type = EOS.ExternalAccountType.Epic
 	opts4.external_account_id = Store.epic_account_id
 	EOS.UserInfo.UserInfoInterface.query_user_info_by_external_account(opts4)
@@ -245,29 +229,21 @@ func test_user_info_interface():
 
 
 	var opts5 = EOS.UserInfo.CopyExternalUserInfoByAccountIdOptions.new()
-	opts5.local_user_id = Store.epic_account_id
-	opts5.target_user_id = Store.epic_account_id
 	opts5.account_id = Store.epic_account_id
 	print("--- UserInfo: copy_external_user_info_by_account_id: ", EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_id(opts5))
 
 
 	var opts6 = EOS.UserInfo.CopyExternalUserInfoByAccountTypeOptions.new()
-	opts6.local_user_id = Store.epic_account_id
-	opts6.target_user_id = Store.epic_account_id
 	opts6.account_type = EOS.ExternalAccountType.Epic
 	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_account_type(opts6)
 
 
 	var opts7 = EOS.UserInfo.CopyExternalUserInfoByIndexOptions.new()
-	opts7.local_user_id = Store.epic_account_id
-	opts7.target_user_id = Store.epic_account_id
 	opts7.index = 0
 	EOS.UserInfo.UserInfoInterface.copy_external_user_info_by_index(opts7)
 
 
 	var opts8 = EOS.UserInfo.GetExternalUserInfoCountOptions.new()
-	opts8.local_user_id = Store.epic_account_id
-	opts8.target_user_id = Store.epic_account_id
 	EOS.UserInfo.UserInfoInterface.get_external_user_info_count(opts8)
 
 
@@ -276,14 +252,12 @@ func test_user_info_interface():
 
 func test_mods_interface():
 	var opts1 = EOS.Mods.EnumerateModsOptions.new()
-	opts1.local_user_id = Store.epic_account_id
 	opts1.type = EOS.Mods.ModEnumerationType.AllAvailable
 	EOS.Mods.ModsInterface.enumerate_mods(opts1)
 	print("--- Mods: enumerate_mods: ", EOS.result_str(await EOS.get_instance().mods_interface_enumerate_mods_callback))
 
 
 	var opts2 = EOS.Mods.CopyModInfoOptions.new()
-	opts2.local_user_id = Store.epic_account_id
 	opts2.type = EOS.Mods.ModEnumerationType.AllAvailable
 	var copy_mods_info_data = EOS.Mods.ModsInterface.copy_mod_info(opts2)
 	print("--- Mods: copy_mod_info: ", copy_mods_info_data)
@@ -294,7 +268,6 @@ func test_mods_interface():
 
 
 	var opts3 = EOS.Mods.InstallModOptions.new()
-	opts3.local_user_id = Store.epic_account_id
 	opts3.mod = mod
 	EOS.Mods.ModsInterface.install_mod(opts3)
 	print("--- Mods: install_mod: ", EOS.result_str(await EOS.get_instance().mods_interface_install_mod_callback))
@@ -305,7 +278,6 @@ func test_mods_interface():
 
 func test_reports_interface():
 	var report_options = EOS.Reports.SendPlayerBehaviorReportOptions.new()
-	report_options.reporter_user_id = Store.product_user_id
 	report_options.reported_user_id = Store.second_product_user_id
 	report_options.category = EOS.Reports.PlayerReportsCategory.Cheating
 	report_options.message = "this is a test report from godot"
@@ -319,7 +291,6 @@ func test_reports_interface():
 
 func test_progression_snapshot_interface():
 	var opts1 = EOS.ProgressionSnapshot.BeginSnapshotOptions.new()
-	opts1.local_user_id = Store.product_user_id
 	var begin_snapshot_ret = EOS.ProgressionSnapshot.ProgressionSnapshotInterface.begin_snapshot(opts1)
 	print("--- ProgressionSnapshot: begin_snapshot: ", EOS.result_str(begin_snapshot_ret))
 
@@ -344,7 +315,6 @@ func test_progression_snapshot_interface():
 
 
 	var opts4 = EOS.ProgressionSnapshot.DeleteSnapshotOptions.new()
-	opts4.local_user_id = Store.product_user_id
 	EOS.ProgressionSnapshot.ProgressionSnapshotInterface.delete_snapshot(opts4)
 	print("--- ProgressionSnapshot: delete_snapshot_callback: ", EOS.result_str(await EOS.get_instance().progression_snapshot_interface_delete_snapshot_callback))
 
@@ -353,7 +323,6 @@ func test_progression_snapshot_interface():
 
 func test_presence_interface():
 	var opts1 = EOS.Presence.CreatePresenceModificationOptions.new()
-	opts1.local_user_id = Store.epic_account_id
 	var create_pmod_ret = EOS.Presence.PresenceInterface.create_presence_modification(opts1)
 	print("--- Presence: create_presence_modification: ", EOS.result_str(create_pmod_ret))
 
@@ -383,36 +352,27 @@ func test_presence_interface():
 
 
 	var opts6 = EOS.Presence.SetPresenceOptions.new()
-	opts6.local_user_id = Store.epic_account_id
 	opts6.presence_modification = presence_modification
 	EOS.Presence.PresenceInterface.set_presence(opts6)
 	print("--- Presence: set_presence: ", EOS.result_str(await EOS.get_instance().presence_interface_set_presence_callback))
 
 
 	var opts2 = EOS.Presence.GetJoinInfoOptions.new()
-	opts2.local_user_id = Store.epic_account_id
-	opts2.target_user_id = Store.epic_account_id
 	var get_join_info_ret = EOS.Presence.PresenceInterface.get_join_info(opts2)
 	print("--- Presence: get_join_info: ", EOS.result_str(get_join_info_ret))
 
 
 	var opts3 = EOS.Presence.HasPresenceOptions.new()
-	opts3.local_user_id = Store.epic_account_id
-	opts3.target_user_id = Store.epic_account_id
 	var has_presence_ret: bool = EOS.Presence.PresenceInterface.has_presence(opts3)
 	print("--- Presence: has_presence: ", has_presence_ret)
 
 
 	var opst4 = EOS.Presence.QueryPresenceOptions.new()
-	opst4.local_user_id = Store.epic_account_id
-	opst4.target_user_id = Store.epic_account_id
 	EOS.Presence.PresenceInterface.query_presence(opst4)
 	print("--- Presence: query_presence: ", EOS.result_str(await EOS.get_instance().presence_interface_query_presence_callback))
 
 
 	var opts5 = EOS.Presence.CopyPresenceOptions.new()
-	opts5.local_user_id = Store.epic_account_id
-	opts5.target_user_id = Store.epic_account_id
 	var copy_presence_ret = EOS.Presence.PresenceInterface.copy_presence(opts5)
 	print("--- Presence: copy_presence: ", EOS.result_str(copy_presence_ret))
 	print(JSON.stringify(copy_presence_ret, "\t", true, true))
@@ -423,7 +383,6 @@ func test_presence_interface():
 
 func test_kws_interface():
 	var opts1 = EOS.KWS.CreateUserOptions.new()
-	opts1.local_user_id = Store.product_user_id
 	opts1.parent_email = "3ddelano1@gmail.com"
 	opts1.date_of_birth = "2002-01-01"
 	EOS.KWS.KWSInterface.create_user(opts1)
@@ -432,7 +391,6 @@ func test_kws_interface():
 
 
 	var opts2 = EOS.KWS.QueryPermissionsOptions.new()
-	opts2.local_user_id = Store.product_user_id
 	EOS.KWS.KWSInterface.query_permissions(opts2)
 	print("--- KWS: query_permissions_callback: ", await EOS.get_instance().kws_interface_query_permissions_callback)
 
@@ -450,45 +408,37 @@ func test_kws_interface():
 
 func test_playerdatastorage_interface():
 	# var query_file_opts = EOS.PlayerDataStorage.QueryFileOptions.new()
-	# query_file_opts.local_user_id = Store.product_user_id
 	# query_file_opts.filename = "testfile-001.txt"
 	# EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file(query_file_opts)
 	# print("--- PlayerDataStorage: query_file: ", await EOS.get_instance().playerdatastorage_interface_query_file_callback)
 
 	# var query_file_list_opts = EOS.PlayerDataStorage.QueryFileListOptions.new()
-	# query_file_list_opts.local_user_id = Store.product_user_id
 	# EOS.PlayerDataStorage.PlayerDataStorageInterface.query_file_list(query_file_list_opts)
 	# print("--- PlayerDataStorage: query_file_list: ", await EOS.get_instance().playerdatastorage_interface_query_file_list_callback)
 
 	# var get_meta_count_opts = EOS.PlayerDataStorage.GetFileMetadataCountOptions.new()
-	# get_meta_count_opts.local_user_id = Store.product_user_id
 	# print("--- PlayerDataStorage: get_file_metadata_count: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.get_file_metadata_count(get_meta_count_opts))
 
 	# var copy_meta_at_index_opts = EOS.PlayerDataStorage.CopyFileMetadataAtIndexOptions.new()
-	# copy_meta_at_index_opts.local_user_id = Store.product_user_id
 	# copy_meta_at_index_opts.index = 0
 	# print("--- PlayerDataStorage: copy_file_metadata_at_index: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_at_index(copy_meta_at_index_opts))
 
 	# var copy_meta_by_filename_opts = EOS.PlayerDataStorage.CopyFileMetadataByFilenameOptions.new()
-	# copy_meta_by_filename_opts.local_user_id = Store.product_user_id
 	# copy_meta_by_filename_opts.filename = "testfile-001.txt"
 	# print("--- PlayerDataStorage: copy_file_metadata_by_filename: ", EOS.PlayerDataStorage.PlayerDataStorageInterface.copy_file_metadata_by_filename(copy_meta_by_filename_opts))
 
 	# var duplicate_opts = EOS.PlayerDataStorage.DuplicateFileOptions.new()
-	# duplicate_opts.local_user_id = Store.product_user_id
 	# duplicate_opts.source_filename = "testfile-001.txt"
 	# duplicate_opts.destination_filename = "testfile-001-copy.txt"
 	# EOS.PlayerDataStorage.PlayerDataStorageInterface.duplicate_file(duplicate_opts)
 	# print("--- PlayerDataStorage: duplicate_file: ", await EOS.get_instance().playerdatastorage_interface_duplicate_file_callback)
 
 	# var delete_file_opts = EOS.PlayerDataStorage.DeleteFileOptions.new()
-	# delete_file_opts.local_user_id = Store.product_user_id
 	# delete_file_opts.filename = "testfile-001-copy.txt"
 	# EOS.PlayerDataStorage.PlayerDataStorageInterface.delete_file(delete_file_opts)
 	# print("--- PlayerDataStorage: delete_file: ", await EOS.get_instance().playerdatastorage_interface_delete_file_callback)
 
 	# var delete_cache_opts = EOS.PlayerDataStorage.DeleteCacheOptions.new()
-	# delete_cache_opts.local_user_id = Store.product_user_id
 	# EOS.PlayerDataStorage.PlayerDataStorageInterface.delete_cache(delete_cache_opts)
 	# print("--- PlayerDataStorage: delete_cache: ", await EOS.get_instance().playerdatastorage_interface_delete_cache_callback)
 
@@ -509,7 +459,6 @@ func test_playerdatastorage_interface():
 	)
 
 	var write_file_opts = EOS.PlayerDataStorage.WriteFileOptions.new()
-	write_file_opts.local_user_id = Store.product_user_id
 	write_file_opts.filename = "testfile-002.txt"
 	write_file_opts.data = PackedByteArray([65, 66, 67])
 	var write_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.write_file(write_file_opts)
@@ -518,7 +467,6 @@ func test_playerdatastorage_interface():
 
 	print("Reading file")
 	var read_file_opts = EOS.PlayerDataStorage.ReadFileOptions.new()
-	read_file_opts.local_user_id = Store.product_user_id
 	read_file_opts.filename = "testfile-002.txt"
 	var read_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.read_file(read_file_opts)
 	# print(read_transfer_request.get_filename())
@@ -539,40 +487,33 @@ func test_titlestorage_interface():
 	)
 
 	var read_file_opts = EOS.TitleStorage.ReadFileOptions.new()
-	read_file_opts.local_user_id = Store.product_user_id
 	read_file_opts.filename = "title-001.txt"
 	var read_transfer_request: EOSGFileTransferRequest = EOS.TitleStorage.TitleStorageInterface.read_file(read_file_opts)
 	#print(read_transfer_request.get_filename())
 	#print(read_transfer_request.cancel_request())
 
 	var query_file_opts = EOS.TitleStorage.QueryFileOptions.new()
-	query_file_opts.local_user_id = Store.product_user_id
 	query_file_opts.filename = "title-001.txt"
 	EOS.TitleStorage.TitleStorageInterface.query_file(query_file_opts)
 	print("--- TitleStorage: query_file: ", await EOS.get_instance().titlestorage_interface_query_file_callback)
 
 	var query_file_list_opts = EOS.TitleStorage.QueryFileListOptions.new()
-	query_file_list_opts.local_user_id = Store.product_user_id
 	query_file_list_opts.list_of_tags = ["hey"]
 	EOS.TitleStorage.TitleStorageInterface.query_file_list(query_file_list_opts)
 	print("--- TitleStorage: query_file_list: ", await EOS.get_instance().titlestorage_interface_query_file_list_callback)
 
 	var get_meta_count_opts = EOS.TitleStorage.GetFileMetadataCountOptions.new()
-	get_meta_count_opts.local_user_id = Store.product_user_id
 	print("--- TitleStorage: get_file_metadata_count: ", EOS.TitleStorage.TitleStorageInterface.get_file_metadata_count(get_meta_count_opts))
 
 	var copy_meta_at_index_opts = EOS.TitleStorage.CopyFileMetadataAtIndexOptions.new()
-	copy_meta_at_index_opts.local_user_id = Store.product_user_id
 	copy_meta_at_index_opts.index = 0
 	print("--- TitleStorage: copy_file_metadata_at_index: ", EOS.TitleStorage.TitleStorageInterface.copy_file_metadata_at_index(copy_meta_at_index_opts))
 
 	var copy_meta_by_filename_opts = EOS.TitleStorage.CopyFileMetadataByFilenameOptions.new()
-	copy_meta_by_filename_opts.local_user_id = Store.product_user_id
 	copy_meta_by_filename_opts.filename = "title-001.txt"
 	print("--- TitleStorage: copy_file_metadata_by_filename: ", EOS.TitleStorage.TitleStorageInterface.copy_file_metadata_by_filename(copy_meta_by_filename_opts))
 
 	var delete_cache_opts = EOS.TitleStorage.DeleteCacheOptions.new()
-	delete_cache_opts.local_user_id = Store.product_user_id
 	EOS.TitleStorage.TitleStorageInterface.delete_cache(delete_cache_opts)
 	print("--- TitleStorage: delete_cache: ", await EOS.get_instance().titlestorage_interface_delete_cache_callback)
 
@@ -582,20 +523,16 @@ func test_titlestorage_interface():
 
 func test_sanctions_interface():
 	var query_active_sanctions_opts = EOS.Sanctions.QueryActivePlayerSanctionsOptions.new()
-	query_active_sanctions_opts.local_user_id = Store.product_user_id
-	query_active_sanctions_opts.target_user_id = Store.product_user_id
 	EOS.Sanctions.SanctionsInterface.query_active_player_sanctions(query_active_sanctions_opts)
 
 	print("--- Sanctions: query_active_player_sanctions: ", await EOS.get_instance().sanctions_interface_query_active_player_sanctions_callback)
 
 	var get_player_sanction_count_opts = EOS.Sanctions.GetPlayerSanctionCountOptions.new()
-	get_player_sanction_count_opts.target_user_id = Store.product_user_id
 	var sanctions_count = EOS.Sanctions.SanctionsInterface.get_player_sanction_count(get_player_sanction_count_opts)
 	print("--- Sanctions: get_active_player_sanction_count: ", sanctions_count)
 
 	for i in range(sanctions_count):
 		var copy_active_sanction_by_index_opts = EOS.Sanctions.CopyPlayerSanctionByIndexOptions.new()
-		copy_active_sanction_by_index_opts.target_user_id = Store.product_user_id
 		copy_active_sanction_by_index_opts.sanction_index = i
 		print("--- Sanctions: copy_active_player_sanction_by_index(%s): " % i, EOS.Sanctions.SanctionsInterface.copy_player_sanction_by_index(copy_active_sanction_by_index_opts))
 
@@ -603,8 +540,44 @@ func test_sanctions_interface():
 
 
 
+func test_sessions_interface():
+	var bucket_id = "mode:region01:map01"
+	
+	var create_sess_mod_opts = EOS.Sessions.CreateSessionModificationOptions.new()
+	create_sess_mod_opts.session_name = "TestSession001"
+	create_sess_mod_opts.bucket_id = bucket_id
+	create_sess_mod_opts.max_players = 16
+	create_sess_mod_opts.presence_enabled = true
+	create_sess_mod_opts.sanctions_enabled = false
+	var create_sess_mod = EOS.Sessions.SessionsInterface.create_session_modification(create_sess_mod_opts)
+	print("--- Sessions: create_session_modification: ", create_sess_mod)
+
+	var session_mod: EOSGSessionModification = create_sess_mod.session_modification
+
+	print("--- Sessions: SessionModification: set_permission_level: ", session_mod.set_permission_level(EOS.Sessions.OnlineSessionPermissionLevel.PublicAdvertised))
+	print("--- Sessions: SessionModification: set_join_in_progess_allowed: ", session_mod.set_join_in_progress_allowed(true))
+	print("--- Sessions: SessionModification: set_invites_allowed: ", session_mod.set_invites_allowed(true))
+	print("--- Sessions: SessionModification: add_attribute: ", session_mod.add_attribute(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.Sessions.SessionAttributeAdvertisementType.Advertise))
+
+	var update_sess_opts = EOS.Sessions.UpdateSessionOptions.new()
+	update_sess_opts.session_modification = session_mod
+	EOS.Sessions.SessionsInterface.update_session(update_sess_opts)
+	session_mod = null
+
+	var update_sess = await EOS.get_instance().sessions_interface_update_session_callback
+	print("--- Sessions: update_session: ", update_sess)
+
+	var copy_active_session_opts = EOS.Sessions.CopyActiveSessionDetailsOptions.new()
+	copy_active_session_opts.session_name = "TestSession001"
+	print("--- Sessions: copy_active_session_details: ", EOS.Sessions.SessionsInterface.copy_active_session_details(copy_active_session_opts))
+
+
+
+
+
 func get_view_manager():
 	return views
+
 
 
 

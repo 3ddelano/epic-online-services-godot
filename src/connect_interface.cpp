@@ -107,12 +107,13 @@ Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account
 
 Dictionary IEOS::connect_interface_copy_product_user_external_account_by_account_type(Ref<RefCounted> p_options) {
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
+    int account_id_type = p_options->get("account_id_type");
 
     EOS_Connect_CopyProductUserExternalAccountByAccountTypeOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_COPYPRODUCTUSEREXTERNALACCOUNTBYACCOUNTTYPE_API_LATEST;
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
-    options.AccountIdType = static_cast<EOS_EExternalAccountType>(static_cast<int>(p_options->get("account_id_type")));
+    options.AccountIdType = static_cast<EOS_EExternalAccountType>(account_id_type);
 
     EOS_Connect_ExternalAccountInfo *outExternalAccountInfo = nullptr;
     EOS_EResult res = EOS_Connect_CopyProductUserExternalAccountByAccountType(s_connectInterface, &options, &outExternalAccountInfo);
@@ -217,12 +218,13 @@ void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
 String IEOS::connect_interface_get_external_account_mapping(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_external_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_external_user_id"));
+    int account_id_type = p_options->get("account_id_type");
 
     EOS_Connect_GetExternalAccountMappingsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_GETEXTERNALACCOUNTMAPPINGS_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.AccountIdType = static_cast<EOS_EExternalAccountType>(static_cast<int>(p_options->get("account_id_type")));
+    options.AccountIdType = static_cast<EOS_EExternalAccountType>(account_id_type);
     options.TargetExternalUserId = target_external_user_id.get_data();
 
     return eosg_product_user_id_to_string(EOS_Connect_GetExternalAccountMapping(s_connectInterface, &options));
@@ -257,12 +259,13 @@ int IEOS::connect_interface_get_product_user_external_account_count(Ref<RefCount
 Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_product_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_product_user_id"));
+    int account_id_type = p_options->get("account_id_type");
 
     EOS_Connect_GetProductUserIdMappingOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_GETPRODUCTUSERIDMAPPING_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.AccountIdType = static_cast<EOS_EExternalAccountType>(static_cast<int>(p_options->get("account_id_type")));
+    options.AccountIdType = static_cast<EOS_EExternalAccountType>(account_id_type);
     options.TargetProductUserId = eosg_string_to_product_user_id(target_product_user_id.get_data());
 
     char *outAccountId = (char *)memalloc(EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1);

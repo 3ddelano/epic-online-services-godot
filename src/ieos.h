@@ -17,6 +17,7 @@
 #include "eos_reports.h"
 #include "eos_sanctions.h"
 #include "eos_sdk.h"
+#include "eos_sessions.h"
 #include "eos_stats.h"
 #include "eos_titlestorage.h"
 #include "eos_ui.h"
@@ -63,6 +64,7 @@ protected:
     EOS_HProgressionSnapshot s_progressionSnapshotInterface = nullptr;
     EOS_HReports s_reportsInterface = nullptr;
     EOS_HSanctions s_sanctionsInterface = nullptr;
+    EOS_HSessions s_sessionsInterface = nullptr;
     EOS_HStats s_statsInterface = nullptr;
     EOS_HTitleStorage s_titleStorageInterface = nullptr;
     EOS_HUI s_uiInterface = nullptr;
@@ -155,7 +157,7 @@ public:
     void connect_interface_verify_id_token(Ref<RefCounted> options);
 
     // -----
-    // Achievement Interface
+    // Achievements Interface
     // -----
     Dictionary achievements_interface_copy_achievement_definition_v2_by_achievement_id(Ref<RefCounted> options);
     Dictionary achievements_interface_copy_achievement_definition_v2_by_index(Ref<RefCounted> options);
@@ -371,14 +373,14 @@ public:
     // -----
 
     // Available in Godot functions
-    Dictionary p2p_get_packet_queue_info();
-    Dictionary p2p_get_port_range();
-    int p2p_get_nat_type();
-    int p2p_get_relay_control();
-    void p2p_query_nat_type();
-    void p2p_set_packet_queue_size(Ref<RefCounted> options);
-    void p2p_set_port_range(Ref<RefCounted> options);
-    void p2p_set_relay_control(int control);
+    Dictionary p2p_interface_get_packet_queue_info();
+    Dictionary p2p_interface_get_port_range();
+    int p2p_interface_get_nat_type();
+    int p2p_interface_get_relay_control();
+    void p2p_interface_query_nat_type();
+    void p2p_interface_set_packet_queue_size(Ref<RefCounted> options);
+    void p2p_interface_set_port_range(Ref<RefCounted> options);
+    void p2p_interface_set_relay_control(int control);
 
     // Not available in Godot. Called by EOSGMultiplayerPeer
     EOS_EResult p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
@@ -428,6 +430,31 @@ public:
     Dictionary sanctions_interface_copy_player_sanction_by_index(Ref<RefCounted> options);
     int sanctions_interface_get_player_sanction_count(Ref<RefCounted> options);
     void sanctions_interface_query_active_player_sanctions(Ref<RefCounted> options);
+
+    // -----
+    // Sessions Interface
+    // -----
+    Dictionary sessions_interface_copy_active_session_details(Ref<RefCounted> options);
+    Dictionary sessions_interface_copy_session_details_by_invite_id(Ref<RefCounted> options);
+    Dictionary sessions_interface_copy_session_details_by_ui_event_id(Ref<RefCounted> options);
+    Dictionary sessions_interface_copy_session_details_for_presence(Ref<RefCounted> options);
+    Dictionary sessions_interface_create_session_modification(Ref<RefCounted> options);
+    Dictionary sessions_interface_create_session_search(Ref<RefCounted> options);
+    Dictionary sessions_interface_get_invite_id_by_index(Ref<RefCounted> options);
+    Dictionary sessions_interface_update_session_modification(Ref<RefCounted> options);
+    int sessions_interface_dump_session_state(Ref<RefCounted> options);
+    int sessions_interface_get_invite_count(Ref<RefCounted> options);
+    int sessions_interface_is_user_in_session(Ref<RefCounted> options);
+    void sessions_interface_destroy_session(Ref<RefCounted> options);
+    void sessions_interface_end_session(Ref<RefCounted> options);
+    void sessions_interface_join_session(Ref<RefCounted> options);
+    void sessions_interface_query_invites(Ref<RefCounted> options);
+    void sessions_interface_register_players(Ref<RefCounted> options);
+    void sessions_interface_reject_invite(Ref<RefCounted> options);
+    void sessions_interface_send_invite(Ref<RefCounted> options);
+    void sessions_interface_start_session(Ref<RefCounted> options);
+    void sessions_interface_unregister_players(Ref<RefCounted> options);
+    void sessions_interface_update_session(Ref<RefCounted> options);
 };
 
 } // namespace godot

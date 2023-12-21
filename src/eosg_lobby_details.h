@@ -13,17 +13,17 @@ private:
     static void _bind_methods();
 
 public:
-    String get_lobby_owner();
-    Dictionary copy_info();
-    int get_attribute_count();
     Dictionary copy_attribute_by_index(int index);
     Dictionary copy_attribute_by_key(const String &key);
-    int get_member_count();
-    String get_member_by_index(int index);
-    int get_member_attribute_count(const String &target_user_id);
+    Dictionary copy_info();
     Dictionary copy_member_attribute_by_index(const String &target_user_id, int index);
     Dictionary copy_member_attribute_by_key(const String &target_user_id, const String &key);
     Dictionary copy_member_info(const String &target_user_id);
+    int get_attribute_count();
+    int get_member_attribute_count(const String &target_user_id);
+    int get_member_count();
+    String get_lobby_owner();
+    String get_member_by_index(int index);
 
     EOSGLobbyDetails(){};
     ~EOSGLobbyDetails() {

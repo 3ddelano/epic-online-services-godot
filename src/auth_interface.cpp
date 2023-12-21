@@ -8,14 +8,12 @@ void IEOS::auth_interface_login(Ref<RefCounted> p_options) {
     memset(&credentials, 0, sizeof(credentials));
     credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
     credentials.Type = static_cast<EOS_ELoginCredentialType>((int)p_credentials->get("type"));
-    String p_id = p_credentials->get("id");
-    CharString id = p_id.utf8();
-    if (!p_id.is_empty()) {
+    CharString id = VARIANT_TO_CHARSTRING(p_credentials->get("id"));
+    if (id.length() > 0) {
         credentials.Id = id.get_data();
     }
-    String p_token = p_credentials->get("token");
-    CharString token = p_token.utf8();
-    if (!p_token.is_empty()) {
+    CharString token = VARIANT_TO_CHARSTRING(p_credentials->get("token"));
+    if (token.length() > 0) {
         credentials.Token = token.get_data();
     }
     int p_external_type = p_credentials->get("external_type");
