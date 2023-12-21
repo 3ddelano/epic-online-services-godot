@@ -173,6 +173,7 @@ private:
 
         void close();
         void clear_packets_from_peer(int p_peer);
+        bool _socket_id_is_valid(const String &socket_id);
 
         EOSGSocket() {}
 
@@ -181,6 +182,8 @@ private:
         }
 
         EOSGSocket(const String &socket_name) {
+            memset(socket.SocketName, 0, sizeof(socket.SocketName));
+            ERR_FAIL_COND_MSG(!_socket_id_is_valid(socket_name), "Failed to create socket. Socket id is not valid.\nNOTE: Socket id cannot be empty, must only have alpha-numeric characters, and must not be longer than 32 characters");
             socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
             STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
         }
@@ -208,7 +211,7 @@ private:
     TransferMode transfer_mode = TransferMode::TRANSFER_MODE_RELIABLE;
     uint32_t transfer_channel = CH_RELIABLE;
     bool refusing_connections = false;
-    bool polling = true;
+    bool polling = false;
 
     HashMap<uint32_t, EOS_ProductUserId> peers;
 
