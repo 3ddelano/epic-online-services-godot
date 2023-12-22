@@ -65,8 +65,11 @@ void IEOS::lobby_interface_destroy_lobby(Ref<RefCounted> p_options) {
 }
 
 void IEOS::lobby_interface_join_lobby(Ref<RefCounted> p_options) {
-    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     Ref<EOSGLobbyDetails> p_lobby_details = Object::cast_to<EOSGLobbyDetails>(p_options->get("lobby_details"));
+    ERR_FAIL_NULL_MSG(p_lobby_details, "Error joining lobby. JoinLobbyOptions.lobby_details is null.");
+    ERR_FAIL_NULL_MSG(p_lobby_details->get_internal(), "Error joining lobby. EOSGLobbyDetails is null.");
+
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Lobby_JoinLobbyOptions options;
     memset(&options, 0, sizeof(options));
@@ -163,6 +166,8 @@ Dictionary IEOS::lobby_interface_update_lobby_modification(Ref<RefCounted> p_opt
 
 void IEOS::lobby_interface_update_lobby(Ref<RefCounted> p_options) {
     Ref<EOSGLobbyModification> lobby_modification = Object::cast_to<EOSGLobbyModification>(p_options->get("lobby_modification"));
+    ERR_FAIL_NULL_MSG(lobby_modification, "Error updating lobby. UpdateLobbyOptions.lobby_modification is null.");
+    ERR_FAIL_NULL_MSG(lobby_modification->get_internal(), "Error updating lobby. EOSGLobbyModification is null.");
 
     EOS_Lobby_UpdateLobbyOptions options;
     memset(&options, 0, sizeof(options));

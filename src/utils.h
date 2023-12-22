@@ -582,9 +582,9 @@ static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant
     EOS_Lobby_LocalRTCOptions options;
     options.ApiVersion = EOS_LOBBY_LOCALRTCOPTIONS_API_LATEST;
     options.Flags = flags;
-    options.bUseManualAudioInput = use_manual_audio_input;
-    options.bUseManualAudioOutput = use_manual_audio_output;
-    options.bLocalAudioDeviceInputStartsMuted = local_audio_device_input_starts_muted;
+    options.bUseManualAudioInput = use_manual_audio_input ? EOS_TRUE : EOS_FALSE;
+    options.bUseManualAudioOutput = use_manual_audio_output ? EOS_TRUE : EOS_FALSE;
+    options.bLocalAudioDeviceInputStartsMuted = local_audio_device_input_starts_muted ? EOS_TRUE : EOS_FALSE;
 
     return options;
 }

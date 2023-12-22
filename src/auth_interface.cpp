@@ -230,6 +230,9 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
 
 void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
     Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
+    ERR_FAIL_NULL_MSG(p_continuance_token, "Error linking account. LinkAccountOptions.continuance_token is null.");
+    ERR_FAIL_NULL_MSG(p_continuance_token->get_internal(), "Error linking account. EOSGContinuanceToken is null.");
+
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Auth_LinkAccountOptions options;

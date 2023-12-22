@@ -196,6 +196,8 @@ void IEOS::connect_interface_delete_device_id(Ref<RefCounted> p_options) {
 
 void IEOS::connect_interface_create_user(Ref<RefCounted> p_options) {
     Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
+    ERR_FAIL_NULL_MSG(p_continuance_token, "Error linking account. LinkAccountOptions.continuance_token is null.");
+    ERR_FAIL_NULL_MSG(p_continuance_token->get_internal(), "Error linking account. EOSGContinuanceToken is null.");
 
     EOS_Connect_CreateUserOptions options;
     memset(&options, 0, sizeof(options));
@@ -313,6 +315,9 @@ void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_opt
 
 void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
     Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
+    ERR_FAIL_NULL_MSG(p_continuance_token, "Error linking account. LinkAccountOptions.continuance_token is null.");
+    ERR_FAIL_NULL_MSG(p_continuance_token->get_internal(), "Error linking account. EOSGContinuanceToken is null.");
+
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Connect_LinkAccountOptions options;

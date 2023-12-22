@@ -542,7 +542,7 @@ func test_sanctions_interface():
 
 func test_sessions_interface():
 	var bucket_id = "mode:region01:map01"
-	
+
 	var create_sess_mod_opts = EOS.Sessions.CreateSessionModificationOptions.new()
 	create_sess_mod_opts.session_name = "TestSession001"
 	create_sess_mod_opts.bucket_id = bucket_id
@@ -567,9 +567,87 @@ func test_sessions_interface():
 	var update_sess = await EOS.get_instance().sessions_interface_update_session_callback
 	print("--- Sessions: update_session: ", update_sess)
 
-	var copy_active_session_opts = EOS.Sessions.CopyActiveSessionDetailsOptions.new()
-	copy_active_session_opts.session_name = "TestSession001"
-	print("--- Sessions: copy_active_session_details: ", EOS.Sessions.SessionsInterface.copy_active_session_details(copy_active_session_opts))
+	#var dump_sess_opts = EOS.Sessions.DumpSessionStateOptions.new()
+	#dump_sess_opts.session_name = "TestSession001"
+	#print("--- Sessions: dump_session_state: ", EOS.Sessions.SessionsInterface.dump_session_state(dump_sess_opts))
+
+	#var copy_active_session_opts = EOS.Sessions.CopyActiveSessionDetailsOptions.new()
+	#copy_active_session_opts.session_name = "TestSession001"
+	#var copy_active_session = EOS.Sessions.SessionsInterface.copy_active_session_details(copy_active_session_opts)
+	#print("--- Sessions: copy_active_session_details: ", copy_active_session)
+
+	#var active_session: EOSGActiveSession = copy_active_session.active_session
+	#print("--- Sessions: ActiveSession: copy_info:", active_session.copy_info())
+
+
+	# Modify session
+	# var update_sess_mod_opts = EOS.Sessions.UpdateSessionModificationOptions.new()
+	# update_sess_mod_opts.session_name = "TestSession001"
+	# var update_sess_mod = EOS.Sessions.SessionsInterface.update_session_modification(update_sess_mod_opts)
+	# print("--- Sessions: update_session_modification: ", update_sess_mod)
+	# session_mod = update_sess_mod.session_modification
+
+	# print("--- Sessions: SessionModification: set_invites_allowed: ", session_mod.set_invites_allowed(false))
+
+	# update_sess_opts = EOS.Sessions.UpdateSessionOptions.new()
+	# update_sess_opts.session_modification = session_mod
+	# EOS.Sessions.SessionsInterface.update_session(update_sess_opts)
+
+	# update_sess = await EOS.get_instance().sessions_interface_update_session_callback
+	# print("--- Sessions: update_session: ", update_sess)
+
+	
+	# Search session
+	#var create_search_opts = EOS.Sessions.CreateSessionSearchOptions.new()
+	#var create_session_search = EOS.Sessions.SessionsInterface.create_session_search(create_search_opts)
+	#print("--- Sessions: create_session_search: ", create_session_search)
+
+	#var session_search: EOSGSessionSearch = create_session_search.session_search
+	#session_search.set_parameter(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.ComparisonOp.Equal)
+	#session_search.find(EOSGRuntime.local_product_user_id)
+	#print("--- Sessions: SessionSearch: find: ", await EOS.get_instance().session_search_find_callback)
+
+	#var search_result_count = session_search.get_search_result_count()
+	#print("--- Sessions: SessionSearch: get_search_result_count: ", search_result_count)
+
+	#for i in range(search_result_count):
+		#var search_result = session_search.copy_search_result_by_index(i)
+		#print("--- Sessions: copy_search_result_by_index(%d): " % i, search_result)
+
+		#var session_details: EOSGSessionDetails = search_result.session_details
+		#print("--- Sessions: SessionDetails: copy_info: ", session_details.copy_info())
+
+
+	# Join session
+	# var join_sess_opts = EOS.Sessions.JoinSessionOptions.new()
+	# join_sess_opts.session_name = "TestSession001"
+	# join_sess_opts.presence_enabled = true
+	# join_sess_opts.session_details = EOSGSesssionDetails here
+	# EOS.Sessions.SessionsInterface.join_session(join_sess_opts)
+	# print("--- Sessions: join_session: ", await EOS.get_instance().sessions_interface_join_session_callback)
+
+	
+	# Register players
+	var reg_players_opts = EOS.Sessions.RegisterPlayersOptions.new()
+	reg_players_opts.session_name = "TestSession001"
+	reg_players_opts.players_to_register = [EOSGRuntime.local_product_user_id]
+	EOS.Sessions.SessionsInterface.register_players(reg_players_opts)
+	print("--- Sessions: register_players: ", await EOS.get_instance().sessions_interface_register_players_callback)
+
+
+	# Start session
+	var start_sess_opts = EOS.Sessions.StartSessionOptions.new()
+	start_sess_opts.session_name = "TestSession001"
+
+	EOS.Sessions.SessionsInterface.start_session(start_sess_opts)
+	print("--- Sessions: start_session: ", await EOS.get_instance().sessions_interface_start_session_callback)
+
+
+	# Destroy session
+	var destroy_sess_opts = EOS.Sessions.DestroySessionOptions.new()
+	destroy_sess_opts.session_name = "TestSession001"
+	EOS.Sessions.SessionsInterface.destroy_session(destroy_sess_opts)
+	print("--- Sessions: destroy_session: ", await EOS.get_instance().sessions_interface_destroy_session_callback)
 
 
 

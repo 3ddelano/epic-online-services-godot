@@ -1634,7 +1634,7 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbySearchOptions")
 
-		var max_results: int
+		var max_results = 10
 
 	class CopyLobbyDetailsByInviteIdOptions extends BaseClass:
 		func _init():
@@ -2874,7 +2874,7 @@ class Sessions:
 		func _init():
 			super._init("CreateSessionModificationOptions")
 
-		var allowed_platform_ids = [OnlinePlatformType.Epic] # Array[int]
+		var allowed_platform_ids = [] # Array[int]
 		var bucket_id: String
 		var local_user_id = EOSGRuntime.local_product_user_id
 		var max_players: int
@@ -2887,7 +2887,7 @@ class Sessions:
 		func _init():
 			super._init("CreateSessionSearchOptions")
 
-		var max_search_results: int
+		var max_search_results = 10
 
 	class GetInviteIdByIndexOptions extends BaseClass:
 		func _init():
@@ -3355,10 +3355,20 @@ enum ExternalCredentialType {
 	AmazonAccessToken = 17
 }
 
+## This seems to be outdated
 enum OnlinePlatformType {
 	Unknown = 0,
 	Epic = 100,
 	Steam = 4000
+}
+
+# TODO: remove once OnlinePlatformType is documented in EOS docs
+enum Undocumented_OnlinePlatformType {
+	Unknown = 0,
+	A = 1000,
+	B = 2000,
+	C = 3000,
+	D = 4000,
 }
 
 enum LoginStatus {

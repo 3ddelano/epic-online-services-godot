@@ -85,9 +85,9 @@ Dictionary IEOS::sessions_interface_create_session_modification(Ref<RefCounted> 
     options.BucketId = bucket_id.get_data();
     options.MaxPlayers = static_cast<uint32_t>(max_players);
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.bPresenceEnabled = presence_enabled;
+    options.bPresenceEnabled = presence_enabled ? EOS_TRUE : EOS_FALSE;
     options.SessionId = session_id.get_data();
-    options.bSanctionsEnabled = sanctions_enabled;
+    options.bSanctionsEnabled = sanctions_enabled ? EOS_TRUE : EOS_FALSE;
     options.AllowedPlatformIdsCount = allowed_platform_ids.size();
     if (allowed_platform_ids.size() > 0) {
         uint32_t *allowed_platform_ids_array = (uint32_t *)malloc(sizeof(uint32_t) * allowed_platform_ids.size());
@@ -124,9 +124,12 @@ Dictionary IEOS::sessions_interface_create_session_search(Ref<RefCounted> p_opti
 }
 
 int IEOS::sessions_interface_dump_session_state(Ref<RefCounted> p_options) {
+    CharString session_name = VARIANT_TO_CHARSTRING(p_options->get("session_name"));
+
     EOS_Sessions_DumpSessionStateOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONS_DUMPSESSIONSTATE_API_LATEST;
+    options.SessionName = session_name.get_data();
 
     return static_cast<int>(EOS_Sessions_DumpSessionState(s_sessionsInterface, &options));
 }
@@ -227,8 +230,11 @@ void IEOS::sessions_interface_end_session(Ref<RefCounted> p_options) {
 }
 
 void IEOS::sessions_interface_join_session(Ref<RefCounted> p_options) {
-    CharString session_name = VARIANT_TO_CHARSTRING(p_options->get("session_name"));
     Ref<EOSGSessionDetails> session_details = Object::cast_to<EOSGSessionDetails>(p_options->get("session_details"));
+    ERR_FAIL_NULL_MSG(session_details, "Error joining session. JoinSessionOptions.session_details is null.");
+    ERR_FAIL_NULL_MSG(session_details->get_internal(), "Error joining session. EOSGSessionDetails is null.");
+
+    CharString session_name = VARIANT_TO_CHARSTRING(p_options->get("session_name"));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     bool presence_enabled = p_options->get("presence_enabled");
 
@@ -238,7 +244,7 @@ void IEOS::sessions_interface_join_session(Ref<RefCounted> p_options) {
     options.SessionName = session_name.get_data();
     options.SessionHandle = session_details->get_internal();
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.bPresenceEnabled = presence_enabled;
+    options.bPresenceEnabled = presence_enabled ? EOS_TRUE : EOS_FALSE;
     p_options->reference();
 
     EOS_Sessions_JoinSession(s_sessionsInterface, &options, (void *)*p_options, [](const EOS_Sessions_JoinSessionCallbackInfo *data) {
@@ -407,6 +413,8 @@ void IEOS::sessions_interface_unregister_players(Ref<RefCounted> p_options) {
 
 void IEOS::sessions_interface_update_session(Ref<RefCounted> p_options) {
     Ref<EOSGSessionModification> session_modification = Object::cast_to<EOSGSessionModification>(p_options->get("session_modification"));
+    ERR_FAIL_NULL_MSG(session_modification, "Error updating session. UpdateSessionOptions.session_modification is null.");
+    ERR_FAIL_NULL_MSG(session_modification->get_internal(), "Error updating session. EOSGSessionModification is null.");
 
     EOS_Sessions_UpdateSessionOptions options;
     memset(&options, 0, sizeof(options));
