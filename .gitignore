@@ -1,12 +1,16 @@
 # Godot logs
 logs/
 
+sample/android
+
 .env
 vc140.pdb
 .sconsign.dblite
 
 *.obj
 *.os
+
+**/*.tmp
 
 temp/
 

@@ -588,6 +588,7 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
     initOptions.ReallocateMemoryFunction = nullptr;
     initOptions.ReleaseMemoryFunction = nullptr;
     initOptions.Reserved = nullptr;
+    // TODO: Implement EOS_Android_InitializeOptions for Android
     initOptions.SystemInitializeOptions = nullptr;
     initOptions.OverrideThreadAffinity = nullptr;
 

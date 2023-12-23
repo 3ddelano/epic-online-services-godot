@@ -596,7 +596,7 @@ func test_sessions_interface():
 	# update_sess = await EOS.get_instance().sessions_interface_update_session_callback
 	# print("--- Sessions: update_session: ", update_sess)
 
-	
+
 	# Search session
 	#var create_search_opts = EOS.Sessions.CreateSessionSearchOptions.new()
 	#var create_session_search = EOS.Sessions.SessionsInterface.create_session_search(create_search_opts)
@@ -626,7 +626,7 @@ func test_sessions_interface():
 	# EOS.Sessions.SessionsInterface.join_session(join_sess_opts)
 	# print("--- Sessions: join_session: ", await EOS.get_instance().sessions_interface_join_session_callback)
 
-	
+
 	# Register players
 	var reg_players_opts = EOS.Sessions.RegisterPlayersOptions.new()
 	reg_players_opts.session_name = "TestSession001"
