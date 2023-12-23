@@ -12,11 +12,11 @@ protected:
     static void _bind_methods();
 
 public:
-    int set_status(int new_status);
-    int set_raw_rich_text(const String &p_raw_rich_text);
-    int set_data(Dictionary p_data);
     int delete_data(Array p_keys);
+    int set_data(Dictionary p_data);
     int set_join_info(const String &p_join_info);
+    int set_raw_rich_text(const String &p_raw_rich_text);
+    int set_status(int new_status);
 
     EOSGPresenceModification(){};
     ~EOSGPresenceModification() {

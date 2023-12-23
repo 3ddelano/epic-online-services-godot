@@ -1,5 +1,6 @@
 #include "register_types.h"
 
+#include "eosg_active_session.h"
 #include "eosg_continuance_token.h"
 #include "eosg_file_transfer_request.h"
 #include "eosg_lobby_details.h"
@@ -8,6 +9,9 @@
 #include "eosg_multiplayer_peer.h"
 #include "eosg_packet_peer_mediator.h"
 #include "eosg_presence_modification.h"
+#include "eosg_session_details.h"
+#include "eosg_session_modification.h"
+#include "eosg_session_search.h"
 #include "eosg_transaction.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/godot.hpp"
@@ -31,16 +35,21 @@ void initialize_eosg_module(ModuleInitializationLevel p_level) {
     _mediator = memnew(EOSGPacketPeerMediator);
     Engine::get_singleton()->register_singleton("EOSGPacketPeerMediator", EOSGPacketPeerMediator::get_singleton());
 
-    ClassDB::register_class<godot::EOSGMultiplayerPeer>();
-    ClassDB::register_class<godot::EOSGContinuanceToken>();
-    ClassDB::register_class<godot::EOSGTransaction>();
-    ClassDB::register_class<godot::EOSGPresenceModification>();
-    ClassDB::register_class<godot::EOSGLobbyModification>();
-    ClassDB::register_class<godot::EOSGLobbySearch>();
-    ClassDB::register_class<godot::EOSGLobbyDetails>();
     ClassDB::register_abstract_class<godot::EOSGFileTransferRequest>();
     ClassDB::register_class<godot::EOSGPlayerDataStorageFileTransferRequest>();
     ClassDB::register_class<godot::EOSGTitleStorageFileTransferRequest>();
+
+    ClassDB::register_class<godot::EOSGActiveSession>();
+    ClassDB::register_class<godot::EOSGContinuanceToken>();
+    ClassDB::register_class<godot::EOSGLobbyDetails>();
+    ClassDB::register_class<godot::EOSGLobbyModification>();
+    ClassDB::register_class<godot::EOSGLobbySearch>();
+    ClassDB::register_class<godot::EOSGMultiplayerPeer>();
+    ClassDB::register_class<godot::EOSGPresenceModification>();
+    ClassDB::register_class<godot::EOSGSessionDetails>();
+    ClassDB::register_class<godot::EOSGSessionModification>();
+    ClassDB::register_class<godot::EOSGSessionSearch>();
+    ClassDB::register_class<godot::EOSGTransaction>();
 }
 
 void uninitialize_eosg_module(ModuleInitializationLevel p_level) {

@@ -11,6 +11,8 @@ func load_env(p_path := "res://.env"):
 	var ret = {}
 	while not file.eof_reached():
 		var line = file.get_line()
+		# skip comment lines
+		if line.lstrip(" ").begins_with("#"): continue
 		var tokens = line.split("=", false, 1)
 		if tokens.size() == 2:
 			ret[tokens[0]] = tokens[1].lstrip("\"").rstrip("\"");

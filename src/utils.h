@@ -1,10 +1,14 @@
 #pragma once
+#include "eosg_active_session.h"
 #include "eosg_continuance_token.h"
 #include "eosg_lobby_details.h"
 #include "eosg_lobby_modification.h"
 #include "eosg_lobby_search.h"
 #include "eosg_playerdatastorage_file_transfer_request.h"
 #include "eosg_presence_modification.h"
+#include "eosg_session_details.h"
+#include "eosg_session_modification.h"
+#include "eosg_session_search.h"
 #include "eosg_titlestorage_file_transfer_request.h"
 #include "eosg_transaction.h"
 #include "godot_cpp/core/memory.hpp"
@@ -25,6 +29,14 @@ using namespace godot;
 #else
 #define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
 #endif
+
+#define EOSG_EOS_HANDLE_TO_WRAPPER(m_eos_handle, m_wrapper) \
+    if (m_eos_handle == nullptr) {                          \
+        return Variant();                                   \
+    }                                                       \
+    Ref<m_wrapper> wrapper = memnew(m_wrapper());           \
+    wrapper->set_internal(m_eos_handle);                    \
+    return wrapper;
 
 String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId);
 
@@ -54,12 +66,7 @@ static Variant eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo *pin
 }
 
 static Variant eosg_continuance_token_to_wrapper(EOS_ContinuanceToken p_continuance_token) {
-    if (p_continuance_token == nullptr) {
-        return Variant();
-    }
-    Ref<EOSGContinuanceToken> continuance_token = memnew(EOSGContinuanceToken());
-    continuance_token->set_internal(p_continuance_token);
-    return continuance_token;
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_continuance_token, EOSGContinuanceToken);
 }
 
 static Variant eosg_auth_id_token_to_dict_and_release(EOS_Auth_IdToken *authIdToken) {
@@ -217,12 +224,7 @@ static Variant eosg_ecom_catalog_offer_to_dict_and_release(EOS_Ecom_CatalogOffer
 }
 
 static Variant eosg_ecom_transaction_to_wrapper(EOS_Ecom_HTransaction p_transaction) {
-    if (p_transaction == nullptr) {
-        return Variant();
-    }
-    Ref<EOSGTransaction> transaction = memnew(EOSGTransaction());
-    transaction->set_internal(p_transaction);
-    return transaction;
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_transaction, EOSGTransaction);
 }
 
 static Variant eosg_user_info_external_user_info_to_dict_and_release(EOS_UserInfo_ExternalUserInfo *externalUserInfo) {
@@ -359,12 +361,7 @@ static Variant eosg_presence_presence_info_to_dict_and_release(EOS_Presence_Info
 }
 
 static Variant eosg_presence_presence_modification_to_wrapper(EOS_HPresenceModification p_presence_modification) {
-    if (p_presence_modification == nullptr) {
-        return Variant();
-    }
-    Ref<EOSGPresenceModification> presence_modification = memnew(EOSGPresenceModification());
-    presence_modification->set_internal(p_presence_modification);
-    return presence_modification;
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_presence_modification, EOSGPresenceModification);
 }
 
 static Variant eosg_achievements_definition_to_dict_and_release(EOS_Achievements_DefinitionV2 *definition) {
@@ -481,7 +478,7 @@ static Variant eosg_kws_permission_status_to_dict_and_release(EOS_KWS_Permission
     return ret;
 }
 
-static Variant eos_lobby_details_info_to_dict_and_release(EOS_LobbyDetails_Info *info) {
+static Variant eosg_lobby_details_info_to_dict_and_release(EOS_LobbyDetails_Info *info) {
     if (info == nullptr) {
         return Variant();
     }
@@ -501,7 +498,7 @@ static Variant eos_lobby_details_info_to_dict_and_release(EOS_LobbyDetails_Info 
     return ret;
 }
 
-static Variant eos_lobby_details_member_info_to_dict_and_release(EOS_LobbyDetails_MemberInfo *memberInfo) {
+static Variant eosg_lobby_details_member_info_to_dict_and_release(EOS_LobbyDetails_MemberInfo *memberInfo) {
     if (memberInfo == nullptr) {
         return Variant();
     }
@@ -513,7 +510,7 @@ static Variant eos_lobby_details_member_info_to_dict_and_release(EOS_LobbyDetail
     return ret;
 }
 
-static Variant eos_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData *attributeData) {
+static Variant eosg_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData *attributeData) {
     if (attributeData == nullptr) {
         return Variant();
     }
@@ -532,52 +529,34 @@ static Variant eos_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData *attribu
             ret["value"] = EOSG_GET_STRING(attributeData->Value.AsUtf8);
             break;
         default:
-            UtilityFunctions::printerr("\nError: EOSG Utils: eos_lobby_attribute_data_to_dict: Unknown value type: ", static_cast<int>(attributeData->ValueType), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
+            UtilityFunctions::printerr("\nError: EOSG Utils: eosg_lobby_attribute_data_to_dict: Unknown value type: ", static_cast<int>(attributeData->ValueType), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
             break;
     }
 
     return ret;
 }
 
-static Variant eos_lobby_attribute_to_dict_and_release(EOS_Lobby_Attribute *attribute) {
+static Variant eosg_lobby_attribute_to_dict_and_release(EOS_Lobby_Attribute *attribute) {
     if (attribute == nullptr) {
         return Variant();
     }
     Dictionary ret;
     ret["visibility"] = static_cast<int>(attribute->Visibility);
-    ret["data"] = eos_lobby_attribute_data_to_dict(attribute->Data);
+    ret["data"] = eosg_lobby_attribute_data_to_dict(attribute->Data);
     EOS_Lobby_Attribute_Release(attribute);
     return ret;
 }
 
 static Variant eosg_lobby_lobby_modification_to_wrapper(EOS_HLobbyModification lobbyModification) {
-    if (lobbyModification == nullptr) {
-        return Variant();
-    }
-
-    Ref<EOSGLobbyModification> lobby_modification = memnew(EOSGLobbyModification());
-    lobby_modification->set_internal(lobbyModification);
-    return lobby_modification;
+    EOSG_EOS_HANDLE_TO_WRAPPER(lobbyModification, EOSGLobbyModification);
 }
 
 static Variant eosg_lobby_lobby_search_to_wrapper(EOS_HLobbySearch lobbySearch) {
-    if (lobbySearch == nullptr) {
-        return Variant();
-    }
-
-    Ref<EOSGLobbySearch> lobby_search = memnew(EOSGLobbySearch());
-    lobby_search->set_internal(lobbySearch);
-    return lobby_search;
+    EOSG_EOS_HANDLE_TO_WRAPPER(lobbySearch, EOSGLobbySearch);
 }
 
 static Variant eosg_lobby_lobby_details_to_wrapper(EOS_HLobbyDetails lobbyDetails) {
-    if (lobbyDetails == nullptr) {
-        return Variant();
-    }
-
-    Ref<EOSGLobbyDetails> lobby_details = memnew(EOSGLobbyDetails());
-    lobby_details->set_internal(lobbyDetails);
-    return lobby_details;
+    EOSG_EOS_HANDLE_TO_WRAPPER(lobbyDetails, EOSGLobbyDetails);
 }
 
 static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant p_local_rtc_options) {
@@ -603,9 +582,9 @@ static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant
     EOS_Lobby_LocalRTCOptions options;
     options.ApiVersion = EOS_LOBBY_LOCALRTCOPTIONS_API_LATEST;
     options.Flags = flags;
-    options.bUseManualAudioInput = use_manual_audio_input;
-    options.bUseManualAudioOutput = use_manual_audio_output;
-    options.bLocalAudioDeviceInputStartsMuted = local_audio_device_input_starts_muted;
+    options.bUseManualAudioInput = use_manual_audio_input ? EOS_TRUE : EOS_FALSE;
+    options.bUseManualAudioOutput = use_manual_audio_output ? EOS_TRUE : EOS_FALSE;
+    options.bLocalAudioDeviceInputStartsMuted = local_audio_device_input_starts_muted ? EOS_TRUE : EOS_FALSE;
 
     return options;
 }
@@ -626,13 +605,7 @@ static Variant eosg_playerdatastorage_file_metadata_to_dict_and_release(EOS_Play
 }
 
 static Variant eosg_playerdatastorage_file_tranfer_request_to_wrapper(EOS_HPlayerDataStorageFileTransferRequest request) {
-    if (request == nullptr) {
-        return Variant();
-    }
-
-    Ref<EOSGPlayerDataStorageFileTransferRequest> file_transfer_request = memnew(EOSGPlayerDataStorageFileTransferRequest());
-    file_transfer_request->set_internal(request);
-    return file_transfer_request;
+    EOSG_EOS_HANDLE_TO_WRAPPER(request, EOSGPlayerDataStorageFileTransferRequest);
 }
 
 static Variant eosg_titlestorage_file_metadata_to_dict_and_release(EOS_TitleStorage_FileMetadata *metadata) {
@@ -650,13 +623,7 @@ static Variant eosg_titlestorage_file_metadata_to_dict_and_release(EOS_TitleStor
 }
 
 static Variant eosg_titlestorage_file_tranfer_request_to_wrapper(EOS_HTitleStorageFileTransferRequest request) {
-    if (request == nullptr) {
-        return Variant();
-    }
-
-    Ref<EOSGTitleStorageFileTransferRequest> file_transfer_request = memnew(EOSGTitleStorageFileTransferRequest());
-    file_transfer_request->set_internal(request);
-    return file_transfer_request;
+    EOSG_EOS_HANDLE_TO_WRAPPER(request, EOSGTitleStorageFileTransferRequest);
 }
 
 static Variant eosg_sanctions_player_sanction_to_dict_and_release(EOS_Sanctions_PlayerSanction *playerSanction) {
@@ -671,4 +638,114 @@ static Variant eosg_sanctions_player_sanction_to_dict_and_release(EOS_Sanctions_
     ret["reference_id"] = EOSG_GET_STRING(playerSanction->ReferenceId);
     EOS_Sanctions_PlayerSanction_Release(playerSanction);
     return ret;
+}
+
+static Variant eosg_sessions_session_details_settings_to_dict(const EOS_SessionDetails_Settings *settings) {
+    if (settings == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["bucket_id"] = EOSG_GET_STRING(settings->BucketId);
+    ret["num_public_connections"] = static_cast<int>(settings->NumPublicConnections);
+    ret["allow_join_in_progress"] = EOSG_GET_BOOL(settings->bAllowJoinInProgress);
+    ret["permission_level"] = static_cast<int>(settings->PermissionLevel);
+    ret["invites_allowed"] = EOSG_GET_BOOL(settings->bInvitesAllowed);
+    ret["sanctions_enabled"] = EOSG_GET_BOOL(settings->bSanctionsEnabled);
+
+    Array allowed_platform_ids_array = Array();
+    for (int i = 0; i < settings->AllowedPlatformIdsCount; i++) {
+        allowed_platform_ids_array.append(static_cast<int>(settings->AllowedPlatformIds[i]));
+    }
+    ret["allowed_platform_ids"] = allowed_platform_ids_array;
+    return ret;
+}
+
+static Variant eosg_sessions_session_details_info_to_dict(const EOS_SessionDetails_Info *sessionDetails) {
+    if (sessionDetails == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["session_id"] = EOSG_GET_STRING(sessionDetails->SessionId);
+    ret["host_address"] = EOSG_GET_STRING(sessionDetails->HostAddress);
+    ret["num_open_public_connections"] = static_cast<int>(sessionDetails->NumOpenPublicConnections);
+    ret["owner_user_id"] = eosg_product_user_id_to_string(sessionDetails->OwnerUserId);
+    ret["owner_server_client_id"] = EOSG_GET_STRING(sessionDetails->OwnerServerClientId);
+    ret["settings"] = eosg_sessions_session_details_settings_to_dict(sessionDetails->Settings);
+    return ret;
+}
+
+static Variant eosg_sessions_session_details_info_to_dict_and_release(EOS_SessionDetails_Info *sessionDetails) {
+    Variant ret = eosg_sessions_session_details_info_to_dict(sessionDetails);
+    EOS_SessionDetails_Info_Release(sessionDetails);
+    return ret;
+}
+
+static Variant eosg_sessions_active_session_info_to_dict_and_release(EOS_ActiveSession_Info *info) {
+    if (info == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["session_name"] = EOSG_GET_STRING(info->SessionName);
+    ret["local_user_id"] = eosg_product_user_id_to_string(info->LocalUserId);
+    ret["state"] = static_cast<int>(info->State);
+    ret["session_details"] = eosg_sessions_session_details_info_to_dict(info->SessionDetails);
+    EOS_ActiveSession_Info_Release(info);
+    return ret;
+}
+
+static Variant eosg_sessions_attribute_data_to_dict(EOS_Sessions_AttributeData *attributeData) {
+    if (attributeData == nullptr) {
+        return Variant();
+    }
+    Dictionary ret;
+    ret["key"] = EOSG_GET_STRING(attributeData->Key);
+    ret["value_type"] = static_cast<int>(attributeData->ValueType);
+
+    switch (attributeData->ValueType) {
+        case EOS_EAttributeType::EOS_AT_INT64:
+            ret["value"] = attributeData->Value.AsInt64;
+            break;
+        case EOS_EAttributeType::EOS_AT_DOUBLE:
+            ret["value"] = attributeData->Value.AsDouble;
+            break;
+        case EOS_EAttributeType::EOS_AT_STRING:
+            ret["value"] = EOSG_GET_STRING(attributeData->Value.AsUtf8);
+            break;
+        default:
+            UtilityFunctions::printerr("\nError: EOSG Utils: eosg_sessions_attribute_data_to_dict: Unknown value type: ", static_cast<int>(attributeData->ValueType), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
+            break;
+    }
+
+    return ret;
+}
+
+static Variant eosg_sessions_session_details_attribute_to_dict_and_release(EOS_SessionDetails_Attribute *attribute) {
+    if (attribute == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["data"] = eosg_sessions_attribute_data_to_dict(attribute->Data);
+    ret["advertisement_type"] = static_cast<int>(attribute->AdvertisementType);
+    EOS_SessionDetails_Attribute_Release(attribute);
+    return ret;
+}
+
+static Variant eosg_sessions_active_session_to_wrapper(EOS_HActiveSession p_active_session) {
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_active_session, EOSGActiveSession);
+}
+
+static Variant eosg_sessions_session_details_to_wrapper(EOS_HSessionDetails p_session_details) {
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_session_details, EOSGSessionDetails);
+}
+
+static Variant eosg_sessions_session_modification_to_wrapper(EOS_HSessionModification p_session_modification) {
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_session_modification, EOSGSessionModification);
+}
+
+static Variant eosg_sessions_session_search_to_wrapper(EOS_HSessionSearch p_session_search) {
+    EOSG_EOS_HANDLE_TO_WRAPPER(p_session_search, EOSGSessionSearch);
 }

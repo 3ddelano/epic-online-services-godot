@@ -61,17 +61,17 @@ class Achievements:
 		func _init():
 			super._init("CopyPlayerAchievementByAchievementIdOptions")
 
-		var target_user_id: String
 		var achievement_id: String
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 	class CopyPlayerAchievementByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyPlayerAchievementByIndexOptions")
 
-		var target_user_id: String
 		var achievement_index: int
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id: String
 
 	class GetAchievementDefinitionCountOptions extends BaseClass:
 		func _init():
@@ -81,7 +81,7 @@ class Achievements:
 		func _init():
 			super._init("QueryDefinitionsOptions")
 
-		var local_user_id = ""
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -95,8 +95,8 @@ class Achievements:
 		func _init():
 			super._init("QueryPlayerAchievementsOptions")
 
-		var target_user_id: String
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -176,34 +176,34 @@ class Connect:
 		func _init():
 			super._init("CopyIdTokenOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class CopyProductUserExternalAccountByAccountIdOptions extends BaseClass:
 		func _init():
 			super._init("CopyProductUserExternalAccountByAccountIdOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 		var account_id: String
 
 	class CopyProductUserExternalAccountByAccountTypeOptions extends BaseClass:
 		func _init():
 			super._init("CopyProductUserExternalAccountByAccountTypeOptions")
 
-		var target_user_id: String
-		var account_id_type: ExternalAccountType = -1
+		var target_user_id = EOSGRuntime.local_product_user_id
+		var account_id_type: ExternalAccountType
 
 	class CopyProductUserExternalAccountByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyProductUserExternalAccountByIndexOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 		var external_account_info_index: int
 
 	class CopyProductUserInfoOptions extends BaseClass:
 		func _init():
 			super._init("CopyProductUserInfoOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 	class CreateDeviceIdOptions extends BaseClass:
 		func _init():
@@ -223,7 +223,7 @@ class Connect:
 		func _init():
 			super._init("CreateUserOptions")
 
-		var continuance_token: RefCounted # ContinuanceTokenWrapper
+		var continuance_token: EOSGContinuanceToken
 
 		var client_data = null
 
@@ -231,37 +231,37 @@ class Connect:
 		func _init():
 			super._init("GetExternalAccountMappingsOptions")
 
-		var local_user_id: String
-		var account_id_type: int # ExternalAccountType
+		var account_id_type: ExternalAccountType
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var target_external_user_id: String
 
 	class GetProductUserExternalAccountCountOptions extends BaseClass:
 		func _init():
 			super._init("GetProductUserExternalAccountCountOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 	class QueryProductUserIdMappingOptions extends BaseClass:
 		func _init():
 			super._init("QueryProductUserIdMappingOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var product_user_ids: Array # Array[String]
 
 	class GetProductUserIdMappingOptions extends BaseClass:
 		func _init():
 			super._init("GetProductUserIdMappingOptions")
 
-		var local_user_id: String
-		var account_id_type: int # ExternalAccountType
-		var target_product_user_id: String
+		var account_id_type: ExternalAccountType
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_product_user_id = EOSGRuntime.local_product_user_id
 
 	class LinkAccountOptions extends BaseClass:
 		func _init():
 			super._init("LinkAccountOptions")
 
 		var continuance_token = null # ContinuanceTokenWrapper
-		var local_user_id = null # String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -284,8 +284,8 @@ class Connect:
 		func _init():
 			super._init("TransferDeviceIdAccountOptions")
 
-		var primary_local_user_id: String
-		var local_device_user_id: String
+		var primary_local_user_id = EOSGRuntime.local_product_user_id
+		var local_device_user_id = EOSGRuntime.local_product_user_id
 		var product_user_id_to_preserve: String
 
 		var client_data = null
@@ -294,7 +294,7 @@ class Connect:
 		func _init():
 			super._init("UnlinkAccountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -305,21 +305,13 @@ class Connect:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_id_token(options)
 
-		static func copy_product_user_external_account_by_account_id(
-			options: CopyProductUserExternalAccountByAccountIdOptions
-		) -> Dictionary:
+		static func copy_product_user_external_account_by_account_id(options: CopyProductUserExternalAccountByAccountIdOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_product_user_external_account_by_account_id(options)
 
-		static func copy_product_user_external_account_by_account_type(
-			options: CopyProductUserExternalAccountByAccountTypeOptions
-		) -> Dictionary:
-			return IEOS.connect_interface_copy_product_user_external_account_by_account_type(
-				options
-			)
+		static func copy_product_user_external_account_by_account_type(options: CopyProductUserExternalAccountByAccountTypeOptions) -> Dictionary:
+			return IEOS.connect_interface_copy_product_user_external_account_by_account_type(options)
 
-		static func copy_product_user_external_account_by_index(
-			options: CopyProductUserExternalAccountByIndexOptions
-		) -> Dictionary:
+		static func copy_product_user_external_account_by_index(options: CopyProductUserExternalAccountByIndexOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_product_user_external_account_by_index(options)
 
 		static func copy_product_user_info(options: CopyProductUserInfoOptions) -> Dictionary:
@@ -403,13 +395,23 @@ class Auth:
 		NO_USER_INTERFACE = 1
 	}
 
+	class Credentials extends BaseClass:
+		func _init():
+			super._init("Credentials")
+
+		var external_type: ExternalCredentialType = -1
+		var id: String
+		var token: String
+		var type: LoginCredentialType = -1
+
+
 	class LoginOptions extends BaseClass:
 		func _init():
 			super._init("LoginOptions")
 
 		var credentials: Credentials
-		var scope_flags: ScopeFlags = -1
 		var login_flags: LoginFlags = LoginFlags.None
+		var scope_flags: ScopeFlags = -1
 
 		var client_data = null
 
@@ -417,24 +419,15 @@ class Auth:
 		func _init():
 			super._init("LogoutOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
-
-	class Credentials extends BaseClass:
-		func _init():
-			super._init("Credentials")
-
-		var type: LoginCredentialType = -1
-		var id: String
-		var token: String
-		var external_type: ExternalCredentialType = -1
 
 	class CopyIdTokenOptions extends BaseClass:
 		func _init():
 			super._init("CopyIdTokenOptions")
 
-		var account_id: String
+		var account_id = EOSGRuntime.local_epic_account_id
 
 	class CopyUserAuthTokenOptions extends BaseClass:
 		func _init():
@@ -445,15 +438,16 @@ class Auth:
 			super._init("DeletePersistentAuthOptions")
 
 		var refresh_token = null
+
 		var client_data = null
 
 	class LinkAccountOptions extends BaseClass:
 		func _init():
 			super._init("LinkAccountOptions")
 
-		var link_account_flags: int # LinkAccountFlags
-		var continuance_token: RefCounted # ContinuanceTokenWrapper
-		var local_user_id: String
+		var continuance_token: EOSGContinuanceToken
+		var link_account_flags: LinkAccountFlags
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -461,8 +455,8 @@ class Auth:
 		func _init():
 			super._init("QueryIdTokenOptions")
 
-		var local_user_id: String
-		var target_account_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_account_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -485,16 +479,16 @@ class Auth:
 		func _init():
 			super._init("Token")
 
-		var app: String
-		var client_id: String
-		var account_id: String
 		var access_token: String
-		var expires_in: float
-		var expires_at: String
+		var account_id: String
+		var app: String
 		var auth_type: int
-		var refresh_token: String
-		var refresh_expires_in: float
+		var client_id: String
+		var expires_at: String
+		var expires_in: float
 		var refresh_expires_at: String
+		var refresh_expires_in: float
+		var refresh_token: String
 
 	class VerifyUserAuthOptions extends BaseClass:
 		func _init():
@@ -521,16 +515,16 @@ class Auth:
 			var token: Token = Token.new()
 			if func_result.token:
 				var token_dict = func_result.token
-				token.app = token_dict.app
-				token.client_id = token_dict.client_id
-				token.account_id = token_dict.account_id
 				token.access_token = token_dict.access_token
-				token.expires_in = token_dict.expires_in
-				token.expires_at = token_dict.expires_at
+				token.account_id = token_dict.account_id
+				token.app = token_dict.app
 				token.auth_type = token_dict.auth_type
-				token.refresh_token = token_dict.refresh_token
-				token.refresh_expires_in = token_dict.refresh_expires_in
+				token.client_id = token_dict.client_id
+				token.expires_at = token_dict.expires_at
+				token.expires_in = token_dict.expires_in
 				token.refresh_expires_at = token_dict.refresh_expires_at
+				token.refresh_expires_in = token_dict.refresh_expires_in
+				token.refresh_token = token_dict.refresh_token
 
 			return {result_code = func_result.result_code, token = token}
 
@@ -581,15 +575,15 @@ class CustomInvites:
 		func _init():
 			super._init("SetCustomInviteOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var payload: String
 
 	class SendCustomInviteOptions extends BaseClass:
 		func _init():
 			super._init("SendCustomInviteOptions")
 
-		var local_user_id: String
-		var target_user_ids = [] # Array[String]
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_ids: Array # Array[String]
 
 		var client_data = null
 
@@ -597,17 +591,17 @@ class CustomInvites:
 		func _init():
 			super._init("FinalizeInviteOptions")
 
-		var target_user_id: String
-		var local_user_id: String
 		var custom_invite_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var processing_result: Result
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 	class SendRequestToJoinOptions extends BaseClass:
 		func _init():
 			super._init("SendRequestToJoinOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -615,8 +609,8 @@ class CustomInvites:
 		func _init():
 			super._init("AcceptRequestToJoinOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -624,8 +618,8 @@ class CustomInvites:
 		func _init():
 			super._init("RejectRequestToJoinOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -659,29 +653,30 @@ class Stats:
 		func _init():
 			super._init("CopyStatByIndexOptions")
 
-		var target_user_id: String
+
+		var target_user_id = EOSGRuntime.local_product_user_id
 		var stat_index: int
 
 	class CopyStatByNameOptions extends BaseClass:
 		func _init():
 			super._init("CopyStatByNameOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 		var name: String
 
 	class GetStatsCountOptions extends BaseClass:
 		func _init():
 			super._init("GetStatsCountOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 	class IngestStatOptions extends BaseClass:
 		func _init():
 			super._init("IngestStatOptions")
 
-		var local_user_id: String
-		var target_user_id: String
-		var stats: Array # Array[Dictionary] IngestData: {stat_name: String, ingest_amount: int}
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var stats: Array # Array[Dictionary] {stat_name: String, ingest_amount: int}
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -689,8 +684,8 @@ class Stats:
 		func _init():
 			super._init("QueryStatsOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 		var stat_names: Array # Array[String]
 		var start_time = STATS_TIME_UNDEFINED
 		var end_time = STATS_TIME_UNDEFINED
@@ -777,19 +772,19 @@ class Platform:
 		func _init():
 			super._init("CreateOptions")
 
-		var product_id: String
-		var sandbox_id: String
-		var deployment_id: String
 		var client_id: String
 		var client_secret: String
+		var deployment_id: String
 		var encryption_key: String
+		var product_id: String
+		var sandbox_id: String
 
-		var is_server: bool
-		var override_locale_code: String
-		var override_country_code: String
+		var cache_directory = ProjectSettings.globalize_path("user://eosg-cache")
 		var flags: int = -1
+		var is_server: bool
+		var override_country_code: String
+		var override_locale_code: String
 		var tick_budget_in_milliseconds: int
-		var cache_directory = ProjectSettings.globalize_path("user://eos-cache")
 
 		var rtc_options := RTCOptions.new()
 
@@ -857,29 +852,29 @@ class Ecom:
 		func _init():
 			super._init("CheckoutOptions")
 
-		var local_user_id: String
-		var entries: Array # [{offer_id: String}]
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var entries: Array # Array[Dictionary] {offer_id: String}
 		var override_catalog_namespace: String
 
 	class CopyEntitlementByIdOptions extends BaseClass:
 		func _init():
 			super._init("CopyEntitlementByIdOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_id: String
 
 	class CopyEntitlementByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyEntitlementByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_index: int
 
 	class CopyEntitlementByNameAndIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyEntitlementByNameAndIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_name: String
 		var index: int
 
@@ -887,14 +882,14 @@ class Ecom:
 		func _init():
 			super._init("CopyItemByIdOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 
 	class CopyItemImageInfoByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyItemImageInfoByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 		var image_info_index: int
 
@@ -902,7 +897,7 @@ class Ecom:
 		func _init():
 			super._init("CopyItemReleaseByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 		var release_index: int
 
@@ -910,21 +905,21 @@ class Ecom:
 		func _init():
 			super._init("CopyOfferByIdOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_id: String
 
 	class CopyOfferByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyOfferByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_index: int
 
 	class CopyOfferImageInfoByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyOfferImageInfoByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_id: String
 		var image_info_index: int
 
@@ -932,7 +927,7 @@ class Ecom:
 		func _init():
 			super._init("CopyOfferItemByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_id: String
 		var item_index: int
 
@@ -940,35 +935,35 @@ class Ecom:
 		func _init():
 			super._init("CopyTransactionByIdOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var transaction_id: String
 
 	class CopyTransactionByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyTransactionByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var transaction_index: int
 
 	class GetEntitlementsByNameCountOptions extends BaseClass:
 		func _init():
 			super._init("GetEntitlementsByNameCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_name: String
 
 	class GetEntitlementsCountOptions extends BaseClass:
 		func _init():
 			super._init("GetEntitlementsCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 
 	class GetItemImageInfoCountOptions extends BaseClass:
 		func _init():
 			super._init("GetItemImageInfoCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 
 	class GetItemReleaseCountOptions extends BaseClass:
@@ -982,33 +977,33 @@ class Ecom:
 		func _init():
 			super._init("GetOfferCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class GetOfferImageInfoCountOptions extends BaseClass:
 		func _init():
 			super._init("GetOfferImageInfoCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_id: String
 
 	class GetOfferItemCountOptions extends BaseClass:
 		func _init():
 			super._init("GetOfferItemCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var offer_id: String
 
 	class GetTransactionCountOptions extends BaseClass:
 		func _init():
 			super._init("GetTransactionCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class QueryEntitlementsOptions extends BaseClass:
 		func _init():
 			super._init("QueryEntitlementsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_names: Array # Array[String]
 		var include_redeemed: bool
 
@@ -1016,8 +1011,8 @@ class Ecom:
 		func _init():
 			super._init("QueryOffersOptions")
 
-		var local_user_id: String
-		var override_catalog_namespace = null # String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var override_catalog_namespace: String
 
 		var client_data = null
 
@@ -1025,9 +1020,9 @@ class Ecom:
 		func _init():
 			super._init("QueryOwnershipOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var catalog_item_ids: Array # Array[String]
-		var catalog_namespace = null # String
+		var catalog_namespace: String
 
 		var client_data = null
 
@@ -1035,7 +1030,7 @@ class Ecom:
 		func _init():
 			super._init("QueryOwnershipTokenOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var catalog_item_ids: Array # Array[String]
 		var catalog_namespace = null # String
 
@@ -1045,7 +1040,7 @@ class Ecom:
 		func _init():
 			super._init("RedeemEntitlementsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_ids:  Array # Array[String]
 
 		var client_data = null
@@ -1054,13 +1049,13 @@ class Ecom:
 		func _init():
 			super._init("GetLastRedeemedEntitlementsCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class CopyLastRedeemedEntitlementByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyLastRedeemedEntitlementByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var redeemed_entitlement_index: String
 
 
@@ -1160,8 +1155,8 @@ class Friends:
 		func _init():
 			super._init("AcceptInviteOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -1169,27 +1164,27 @@ class Friends:
 		func _init():
 			super._init("GetFriendAtIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var index: int
 
 	class GetFriendsCountOptions extends BaseClass:
 		func _init():
 			super._init("GetFriendsCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class GetStatusOptions extends BaseClass:
 		func _init():
 			super._init("GetStatusOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class QueryFriendsOptions extends BaseClass:
 		func _init():
 			super._init("QueryFriendsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -1197,8 +1192,8 @@ class Friends:
 		func _init():
 			super._init("RejectInviteOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -1206,8 +1201,8 @@ class Friends:
 		func _init():
 			super._init("SendInviteOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -1244,14 +1239,14 @@ class KWS:
 		func _init():
 			super._init("CopyPermissionByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var index: int
 
 	class CreateUserOptions extends BaseClass:
 		func _init():
 			super._init("CreateUserOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		## Date of birth in ISO8601 form (YYYY-MM-DD)
 		var date_of_birth: String
 		var parent_email: String
@@ -1260,14 +1255,14 @@ class KWS:
 		func _init():
 			super._init("GetPermissionByKeyOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var key: String
 
 	class GetPermissionsCountOptions extends BaseClass:
 		func _init():
 			super._init("GetPermissionsCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class QueryAgeGateOptions extends BaseClass:
 		func _init():
@@ -1277,20 +1272,20 @@ class KWS:
 		func _init():
 			super._init("QueryPermissionsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class RequestPermissionsOptions extends BaseClass:
 		func _init():
 			super._init("RequestPermissionsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var permission_keys: Array # Array[String]
 
 	class UpdateParentEmailOptions extends BaseClass:
 		func _init():
 			super._init("UpdateParentEmailOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var parent_email: String
 
 	class KWSInterface:
@@ -1383,7 +1378,7 @@ class Leaderboards:
 		func _init():
 			super._init("QueryLeaderboardDefinitionsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var start_time = LEADERBOARD_TIME_UNDEFINED
 		var end_time = LEADERBOARD_TIME_UNDEFINED
 
@@ -1393,7 +1388,7 @@ class Leaderboards:
 		func _init():
 			super._init("QueryLeaderboardRanksOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var leaderboard_id: String
 
 		var client_data = null
@@ -1402,7 +1397,7 @@ class Leaderboards:
 		func _init():
 			super._init("QueryLeaderboardUserScoresOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var user_ids: Array # Array[String]
 		var stat_info: Array[Dictionary] # [{stat_name: String, aggregation: LeaderboardAggregation}]
 		var start_time = null # String
@@ -1465,24 +1460,24 @@ class Lobby:
 
 	enum LobbyPermissionLevel { PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2 }
 
-	const LOBBY_SEARCH_BUCKET_ID = "bucket"
-	const LOBBY_SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
-	const LOBBY_SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
+	const SEARCH_BUCKET_ID = "bucket"
+	const SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
+	const SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
 
 	class CreateLobbyOptions extends BaseClass:
 		func _init():
 			super._init("CreateLobbyOptions")
 
-		var local_user_id: String
+		var allow_invites: bool
 		var bucket_id: String
+		var disable_host_migration: bool
+		var enable_join_by_id: bool
+		var enable_rtc_room: bool
 		var lobby_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var max_lobby_members: int
 		var permission_level: LobbyPermissionLevel
 		var presence_enabled: bool
-		var allow_invites: bool
-		var disable_host_migration: bool
-		var enable_rtc_room: bool
-		var enable_join_by_id: bool
 		var rejoin_after_kick_requires_invite: bool
 
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
@@ -1499,7 +1494,7 @@ class Lobby:
 		func _init():
 			super._init("DestroyLobbyOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 		var client_data = null
@@ -1508,7 +1503,7 @@ class Lobby:
 		func _init():
 			super._init("JoinLobbyOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_details: EOSGLobbyDetails
 		var presence_enabled: bool
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
@@ -1525,7 +1520,7 @@ class Lobby:
 		func _init():
 			super._init("JoinLobbyByIdOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 		var presence_enabled: bool
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
@@ -1542,7 +1537,7 @@ class Lobby:
 		func _init():
 			super._init("LeaveLobbyOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 		var client_data = null
@@ -1551,7 +1546,7 @@ class Lobby:
 		func _init():
 			super._init("UpdateLobbyModificationOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 		var client_data = null
@@ -1568,7 +1563,7 @@ class Lobby:
 		func _init():
 			super._init("PromoteMemberOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var target_user_id: String
 		var lobby_id: String
 
@@ -1578,7 +1573,7 @@ class Lobby:
 		func _init():
 			super._init("KickMemberOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var target_user_id: String
 		var lobby_id: String
 
@@ -1588,7 +1583,7 @@ class Lobby:
 		func _init():
 			super._init("HardMuteMemberOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var target_user_id: String
 		var lobby_id: String
 		var hard_mute: bool
@@ -1599,7 +1594,7 @@ class Lobby:
 		func _init():
 			super._init("SendInviteOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var target_user_id: String
 		var lobby_id: String
 
@@ -1609,7 +1604,7 @@ class Lobby:
 		func _init():
 			super._init("RejectInviteOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var invite_id: String
 
 		var client_data = null
@@ -1626,20 +1621,20 @@ class Lobby:
 		func _init():
 			super._init("GetInviteCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class GetInviteIdByIndexOptions extends BaseClass:
 		func _init():
 			super._init("GetInviteIdByIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var index: int
 
 	class CreateLobbySearchOptions extends BaseClass:
 		func _init():
 			super._init("CreateLobbySearchOptions")
 
-		var max_results: int
+		var max_results = 10
 
 	class CopyLobbyDetailsByInviteIdOptions extends BaseClass:
 		func _init():
@@ -1657,21 +1652,21 @@ class Lobby:
 		func _init():
 			super._init("CopyLobbyDetailsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 	class GetRtcRoomNameOptions extends BaseClass:
 		func _init():
 			super._init("GetRtcRoomNameOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 	class IsRtcRoomConnectedOptions extends BaseClass:
 		func _init():
 			super._init("IsRtcRoomConnectedOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
 
@@ -1743,8 +1738,6 @@ class Lobby:
 
 
 
-
-
 class Metrics:
 	enum MetricsAccountIdType { Epic = 0, External = 1 }
 
@@ -1756,10 +1749,10 @@ class Metrics:
 
 		var account_id_type: MetricsAccountIdType
 		var account_id: String
-		var display_name: String
 		var controller_type: UserControllerType
-		var server_ip = null # String
+		var display_name: String
 		var game_session_id = null # String
+		var server_ip = null # String
 
 	class EndPlayerSessionOptions extends BaseClass:
 		func _init():
@@ -1786,35 +1779,35 @@ class Mods:
 		func _init():
 			super._init("CopyModInfoOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var type: ModEnumerationType
 
 	class EnumerateModsOptions extends BaseClass:
 		func _init():
 			super._init("EnumerateModsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var type: ModEnumerationType
 
 	class InstallModOptions extends BaseClass:
 		func _init():
 			super._init("InstallModOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var mod: Dictionary
 
 	class UninstallModOptions extends BaseClass:
 		func _init():
 			super._init("UninstallModOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var mod: Dictionary
 
 	class UpdateModOptions extends BaseClass:
 		func _init():
 			super._init("UpdateModOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var mod: Dictionary
 
 	class ModsInterface:
@@ -1916,20 +1909,20 @@ class Presence:
 		func _init():
 			super._init("CopyPresenceOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class CreatePresenceModificationOptions extends BaseClass:
 		func _init():
 			super._init("CopyPresenceOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class PresenceModificationSetDataOptions extends BaseClass:
 		func _init():
 			super._init("PresenceModificationSetDataOptions")
 
-		var records: Array[Dictionary] # [{key: string, value: string}]
+		var records: Array[Dictionary] # {key: String, value: String}
 
 	class PresenceModificationDeleteDataOptions extends BaseClass:
 		func _init():
@@ -1959,22 +1952,22 @@ class Presence:
 		func _init():
 			super._init("GetJoinInfoOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class HasPresenceOptions extends BaseClass:
 		func _init():
 			super._init("HasPresenceOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class QueryPresenceOptions extends BaseClass:
 		func _init():
 			super._init("QueryPresenceOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -1982,7 +1975,7 @@ class Presence:
 		func _init():
 			super._init("SetPresenceOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var presence_modification: RefCounted # PresenceModificationWrapper
 
 		var client_data = null
@@ -2027,11 +2020,11 @@ class Reports:
 		func _init():
 			super._init("SendPlayerBehaviorReportOptions")
 
-		var reporter_user_id: String
-		var reported_user_id: String
 		var category: PlayerReportsCategory
-		var message: String
 		var context: String
+		var message: String
+		var reported_user_id: String
+		var reporter_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2048,14 +2041,14 @@ class ProgressionSnapshot:
 		func _init():
 			super._init("BeginSnapshotOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class AddProgressionOptions extends BaseClass:
 		func _init():
 			super._init("AddProgressionOptions")
 
-		var snapshot_id: int
 		var key: String
+		var snapshot_id: int
 		var value: String
 
 	class SubmitSnapshotOptions extends BaseClass:
@@ -2070,7 +2063,7 @@ class ProgressionSnapshot:
 		func _init():
 			super._init("DeleteSnapshotOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2257,7 +2250,7 @@ class UI:
 		func _init():
 			super._init("GetFriendsVisibleOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class GetToggleFriendsKeyOptions extends BaseClass:
 		func _init():
@@ -2267,7 +2260,7 @@ class UI:
 		func _init():
 			super._init("HideFriendsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -2287,7 +2280,7 @@ class UI:
 		func _init():
 			super._init("ShowFriendsOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -2295,20 +2288,20 @@ class UI:
 		func _init():
 			super._init("GetFriendsExclusiveInputOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 	class ShowBlockPlayerOptions extends BaseClass:
 		func _init():
 			super._init("ShowBlockPlayerOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var target_user_id: String
 
 	class ShowReportPlayerOptions extends BaseClass:
 		func _init():
 			super._init("ShowReportPlayerOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var target_user_id: String
 
 	class PauseSocialOverlayOptions extends BaseClass:
@@ -2326,14 +2319,14 @@ class UI:
 			super._init("ReportInputStateOptions")
 
 		var button_down_flags: InputStateButtonFlags
-		var mouse_pos_x: int
-		var mouse_pos_y: int
 		var gamepad_index: int
 		var left_stick_x: float
 		var left_stick_y: float
+		var left_trigger: float
+		var mouse_pos_x: int
+		var mouse_pos_y: int
 		var right_stick_x: float
 		var right_stick_y: float
-		var left_trigger: float
 		var right_trigger: float
 
 	class PrePresentOptions extends BaseClass:
@@ -2344,7 +2337,7 @@ class UI:
 		func _init():
 			super._init("ShowNativeProfileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var target_user_id: String
 
 	class UIInterface:
@@ -2407,51 +2400,50 @@ class UI:
 
 
 class UserInfo:
-
 	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
 		func _init():
 			super._init("CopyExternalUserInfoByAccountIdOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 		var account_id: String
 
 	class CopyExternalUserInfoByAccountTypeOptions extends BaseClass:
 		func _init():
 			super._init("CopyExternalUserInfoByAccountTypeOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 		var account_type: ExternalAccountType
 
 	class CopyExternalUserInfoByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyExternalUserInfoByIndexOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 		var index: int
 
 	class CopyUserInfoOptions extends BaseClass:
 		func _init():
 			super._init("CopyUserInfoOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class GetExternalUserInfoCountOptions extends BaseClass:
 		func _init():
 			super._init("GetExternalUserInfoCountOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class QueryUserInfoOptions extends BaseClass:
 		func _init():
 			super._init("QueryUserInfoOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -2459,7 +2451,7 @@ class UserInfo:
 		func _init():
 			super._init("QueryUserInfoByDisplayNameOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var display_name: String
 
 		var client_data = null
@@ -2468,9 +2460,9 @@ class UserInfo:
 		func _init():
 			super._init("QueryUserInfoByExternalAccountOptions")
 
-		var local_user_id: String
-		var external_account_id: String
 		var account_type: ExternalAccountType
+		var external_account_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null
 
@@ -2478,15 +2470,15 @@ class UserInfo:
 		func _init():
 			super._init("CopyBestDisplayNameOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 
 	class CopyBestDisplayNameWithPlatformOptions extends BaseClass:
 		func _init():
 			super._init("CopyBestDisplayNameWithPlatformOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var target_user_id = EOSGRuntime.local_epic_account_id
 		var target_platform_type: OnlinePlatformType
 
 	class GetLocalPlatformTypeOptions extends BaseClass:
@@ -2526,6 +2518,8 @@ class UserInfo:
 
 		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
 			return IEOS.user_info_interface_get_local_platform_type(options)
+
+
 
 
 
@@ -2606,7 +2600,7 @@ class TitleStorage:
 		func _init():
 			super._init("QueryFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 		var client_data = null
@@ -2615,7 +2609,7 @@ class TitleStorage:
 		func _init():
 			super._init("QueryFileListOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var list_of_tags: Array # [String]
 
 		var client_data = null
@@ -2624,27 +2618,27 @@ class TitleStorage:
 		func _init():
 			super._init("CopyFileMetadataByFilenameOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 	class GetFileMetadataCountOptions extends BaseClass:
 		func _init():
 			super._init("GetFileMetadataCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class CopyFileMetadataAtIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyFileMetadataAtIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var index: int
 
 	class DeleteCacheOptions extends BaseClass:
 		func _init():
 			super._init("DeleteCacheOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2652,7 +2646,7 @@ class TitleStorage:
 		func _init():
 			super._init("ReadFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 		var read_chunk_length_bytes = 4096
 
@@ -2689,7 +2683,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("QueryFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 		var client_data = null
@@ -2698,7 +2692,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("QueryFileListOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2706,29 +2700,29 @@ class PlayerDataStorage:
 		func _init():
 			super._init("CopyFileMetadataByFilenameOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 	class GetFileMetadataCountOptions extends BaseClass:
 		func _init():
 			super._init("GetFileMetadataCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 	class CopyFileMetadataAtIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyFileMetadataAtIndexOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var index: int
 
 	class DuplicateFileOptions extends BaseClass:
 		func _init():
 			super._init("DuplicateFileOptions")
 
-		var local_user_id: String
-		var source_filename: String
 		var destination_filename: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var source_filename: String
 
 		var client_data = null
 
@@ -2736,7 +2730,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("DeleteFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 		var client_data = null
@@ -2745,7 +2739,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("DeleteCacheOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2753,7 +2747,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("ReadFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 		var read_chunk_length_bytes = 4096
 
@@ -2763,7 +2757,7 @@ class PlayerDataStorage:
 		func _init():
 			super._init("WriteFileOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var filename: String
 
 		var data: PackedByteArray
@@ -2806,13 +2800,14 @@ class PlayerDataStorage:
 
 
 
+
 class Sanctions:
 	class QueryActivePlayerSanctionsOptions extends BaseClass:
 		func _init():
 			super._init("QueryActivePlayerSanctionsOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2820,7 +2815,7 @@ class Sanctions:
 		func _init():
 			super._init("GetPlayerSanctionCountOptions")
 
-		var target_user_id: String
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2828,9 +2823,9 @@ class Sanctions:
 		func _init():
 			super._init("CopyPlayerSanctionByIndexOptions")
 
-		var local_user_id: String
-		var target_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 		var sanction_index: int
+		var target_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -2843,6 +2838,266 @@ class Sanctions:
 
 		static func copy_player_sanction_by_index(options: CopyPlayerSanctionByIndexOptions) -> Variant:
 			return IEOS.sanctions_interface_copy_player_sanction_by_index(options)
+
+
+
+
+
+class Sessions:
+	enum OnlineSessionState {
+		NoSession,
+		Creating,
+		Pending,
+		Starting,
+		InProgress,
+		Ending,
+		Ended,
+		Destroying
+	}
+
+	enum SessionAttributeAdvertisementType {
+		DontAdvertise,
+		Advertise
+	}
+
+	enum OnlineSessionPermissionLevel {
+		PublicAdvertised,
+		JoinViaPresence,
+		InviteOnly
+	}
+
+	const SEARCH_BUCKET_ID = "bucket"
+	const SEARCH_EMPTY_SERVERS_ONLY = "emptyonly"
+	const SEARCH_NONEMPTY_SERVERS_ONLY = "nonemptyonly"
+	const SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
+
+	class CopyActiveSessionDetailsOptions extends BaseClass:
+		func _init():
+			super._init("CopyActiveSessionDetailsOptions")
+
+		var session_name: String
+
+	class CopySessionDetailsByInviteIdOptions extends BaseClass:
+		func _init():
+			super._init("CopySessionDetailsByInviteIdOptions")
+
+		var invite_id: String
+
+	class CopySessionDetailsByUiEventIdOptions extends BaseClass:
+		func _init():
+			super._init("CopySessionDetailsByUiEventIdOptions")
+
+		var ui_event_id: String
+
+	class CopySessionDetailsForPresenceOptions extends BaseClass:
+		func _init():
+			super._init("CopySessionDetailsForPresenceOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+
+	class CreateSessionModificationOptions extends BaseClass:
+		func _init():
+			super._init("CreateSessionModificationOptions")
+
+		var allowed_platform_ids = [] # Array[int]
+		var bucket_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var max_players: int
+		var presence_enabled: bool
+		var sanctions_enabled: bool
+		var session_id: String
+		var session_name: String
+
+	class CreateSessionSearchOptions extends BaseClass:
+		func _init():
+			super._init("CreateSessionSearchOptions")
+
+		var max_search_results = 10
+
+	class GetInviteIdByIndexOptions extends BaseClass:
+		func _init():
+			super._init("GetInviteIdByIndexOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var index: int
+
+	class UpdateSessionModificationOptions extends BaseClass:
+		func _init():
+			super._init("UpdateSessionModificationOptions")
+
+		var session_name: String
+
+	class DumpSessionStateOptions extends BaseClass:
+		func _init():
+			super._init("DumpSessionStateOptions")
+
+		var session_name: String
+
+	class GetInviteCountOptions extends BaseClass:
+		func _init():
+			super._init("GetInviteCountOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+
+	class IsUserInSessionOptions extends BaseClass:
+		func _init():
+			super._init("IsUserInSessionOptions")
+
+		var session_name: String
+		var target_user_id = EOSGRuntime.local_product_user_id
+
+	class DestroySessionOptions extends BaseClass:
+		func _init():
+			super._init("DestroySessionOptions")
+
+		var session_name: String
+
+		var client_data = null
+
+	class EndSessionOptions extends BaseClass:
+		func _init():
+			super._init("EndSessionOptions")
+
+		var session_name: String
+
+		var client_data = null
+
+	class JoinSessionOptions extends BaseClass:
+		func _init():
+			super._init("JoinSessionOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var presence_enabled: bool
+		var session_details: EOSGSessionDetails
+		var session_name: String
+
+		var client_data = null
+
+	class QueryInvitesOptions extends BaseClass:
+		func _init():
+			super._init("QueryInvitesOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+
+		var client_data = null
+
+	class RegisterPlayersOptions extends BaseClass:
+		func _init():
+			super._init("RegisterPlayersOptions")
+
+		var session_name: String
+		var players_to_register: Array # Array[String]
+
+		var client_data = null
+
+	class RejectInviteOptions extends BaseClass:
+		func _init():
+			super._init("RejectInviteOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var invite_id: String
+
+		var client_data = null
+
+	class SendInviteOptions extends BaseClass:
+		func _init():
+			super._init("SendInviteOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var session_name: String
+		var target_user_id: String
+
+		var client_data = null
+
+	class StartSessionOptions extends BaseClass:
+		func _init():
+			super._init("StartSessionOptions")
+
+		var session_name: String
+
+		var client_data = null
+
+	class UnregisterPlayersOptions extends BaseClass:
+		func _init():
+			super._init("UnregisterPlayersOptions")
+
+		var session_name: String
+		var players_to_unregister: Array # Array[String]
+
+		var client_data = null
+
+	class UpdateSessionOptions extends BaseClass:
+		func _init():
+			super._init("UpdateSessionOptions")
+
+		var session_modification: EOSGSessionModification
+
+		var client_data = null
+
+	class SessionsInterface:
+		static func copy_active_session_details(options: CopyActiveSessionDetailsOptions) -> Dictionary:
+			return IEOS.sessions_interface_copy_active_session_details(options)
+
+		static func copy_session_details_by_invite_id(options: CopySessionDetailsByInviteIdOptions) -> Dictionary:
+			return IEOS.sessions_interface_copy_session_details_by_invite_id(options)
+
+		static func copy_session_details_by_ui_event_id(options: CopySessionDetailsByUiEventIdOptions) -> Dictionary:
+			return IEOS.sessions_interface_copy_session_details_by_ui_event_id(options)
+
+		static func copy_session_details_for_presence(options: CopySessionDetailsForPresenceOptions) -> Dictionary:
+			return IEOS.sessions_interface_copy_session_details_for_presence(options)
+
+		static func create_session_modification(options: CreateSessionModificationOptions) -> Dictionary:
+			return IEOS.sessions_interface_create_session_modification(options)
+
+		static func create_session_search(options: CreateSessionSearchOptions) -> Dictionary:
+			return IEOS.sessions_interface_create_session_search(options)
+
+		static func get_invite_id_by_index(options: GetInviteIdByIndexOptions) -> Dictionary:
+			return IEOS.sessions_interface_get_invite_id_by_index(options)
+
+		static func update_session_modification(options: UpdateSessionModificationOptions) -> Dictionary:
+			return IEOS.sessions_interface_update_session_modification(options)
+
+		static func dump_session_state(options: DumpSessionStateOptions) -> int:
+			return IEOS.sessions_interface_dump_session_state(options)
+
+		static func get_invite_count(options: GetInviteCountOptions) -> int:
+			return IEOS.sessions_interface_get_invite_count(options)
+
+		static func is_user_in_session(options: IsUserInSessionOptions) -> int:
+			return IEOS.sessions_interface_is_user_in_session(options)
+
+		static func destroy_session(options: DestroySessionOptions) -> void:
+			IEOS.sessions_interface_destroy_session(options)
+
+		static func end_session(options: EndSessionOptions) -> void:
+			IEOS.sessions_interface_end_session(options)
+
+		static func join_session(options: JoinSessionOptions) -> void:
+			IEOS.sessions_interface_join_session(options)
+
+		static func query_invites(options: QueryInvitesOptions) -> void:
+			IEOS.sessions_interface_query_invites(options)
+
+		static func register_players(options: RegisterPlayersOptions) -> void:
+			IEOS.sessions_interface_register_players(options)
+
+		static func reject_invite(options: RejectInviteOptions) -> void:
+			IEOS.sessions_interface_reject_invite(options)
+
+		static func send_invite(options: SendInviteOptions) -> void:
+			IEOS.sessions_interface_send_invite(options)
+
+		static func start_session(options: StartSessionOptions) -> void:
+			IEOS.sessions_interface_start_session(options)
+
+		static func unregister_players(options: UnregisterPlayersOptions) -> void:
+			IEOS.sessions_interface_unregister_players(options)
+
+		static func update_session(options: UpdateSessionOptions) -> void:
+			IEOS.sessions_interface_update_session(options)
+
 
 
 
@@ -2885,7 +3140,6 @@ enum Result {
 	LimitExceeded = 22,
 	Disabled = 23,
 	DuplicateNotAllowed = 24,
-	MissingParameters_DEPRECATED = 25,
 	InvalidSandboxId = 26,
 	TimedOut = 27,
 	PartialResult = 28,
@@ -3004,7 +3258,6 @@ enum Result {
 	ConnectLinkAccountFailed = 7005,
 	ConnectExternalServiceUnavailable = 7006,
 	ConnectExternalServiceConfigurationFailure = 7007,
-	ConnectLinkAccountFailedMissingNintendoIdAccountDEPRECATED = 7008,
 	SocialOverlayLoadError = 8000,
 	LobbyNotOwner = 9000,
 	LobbyInvalidLock = 9001,
@@ -3127,10 +3380,20 @@ enum ExternalCredentialType {
 	AmazonAccessToken = 17
 }
 
+## This seems to be outdated
 enum OnlinePlatformType {
 	Unknown = 0,
 	Epic = 100,
 	Steam = 4000
+}
+
+# TODO: remove once OnlinePlatformType is documented in EOS docs
+enum Undocumented_OnlinePlatformType {
+	Unknown = 0,
+	A = 1000,
+	B = 2000,
+	C = 3000,
+	D = 4000,
 }
 
 enum LoginStatus {

@@ -11,8 +11,8 @@
  * Clients can only connect to a server instance and cannot accept connection requests
  * from anyone. Clients are only allowed to be connected to a single peer and that peer
  * must be a server. Mesh instances can arbitrarily connect to each other using a common
- * socket id. They can also connect to a server instance. The socket id must be the same on 
- * all mesh instances if they are to connect to each other. Once connected, mesh instances can 
+ * socket id. They can also connect to a server instance. The socket id must be the same on
+ * all mesh instances if they are to connect to each other. Once connected, mesh instances can
  * send packets to each other just like a server and clients, but those packets will not be relayed. A mesh instance can only send
  * packets to peers they are directly connected to.
  ****************************************/
@@ -108,7 +108,7 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
 
     //Create the socket we are trying to connect to
     socket = EOSGSocket(socket_id);
-        if (socket.get_name().is_empty()) {
+    if (socket.get_name().is_empty()) {
         _close();
         ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create client.");
     }
@@ -1073,7 +1073,7 @@ void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemo
         emit_signal("peer_disconnected", peer_id);
     }
 
-    //If this callback is called when we're a client and the reason isn't due to the local user closing the connection, 
+    //If this callback is called when we're a client and the reason isn't due to the local user closing the connection,
     //it probably means the connection to the server has failed. Close the peer in this case.
     if (active_mode == MODE_CLIENT && data->Reason != EOS_EConnectionClosedReason::EOS_CCR_ClosedByLocalUser) {
         EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);

@@ -138,16 +138,16 @@ int EOSGLobbyModification::remove_member_attribute(const String &p_key) {
 }
 
 int EOSGLobbyModification::set_allowed_platform_ids(const TypedArray<int> &p_platform_ids) {
-    uint32_t *platform_ids_array = new uint32_t[p_platform_ids.size()];
-    for (int i = 0; i < p_platform_ids.size(); i++) {
-        platform_ids_array[i] = static_cast<uint32_t>(p_platform_ids[i]);
-    }
-
     EOS_LobbyModification_SetAllowedPlatformIdsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETALLOWEDPLATFORMIDS_API_LATEST;
-    options.AllowedPlatformIds = platform_ids_array;
     options.AllowedPlatformIdsCount = p_platform_ids.size();
+
+    uint32_t *platform_ids_array = (uint32_t *)memalloc(sizeof(uint32_t) * options.AllowedPlatformIdsCount);
+    for (int i = 0; i < options.AllowedPlatformIdsCount; i++) {
+        platform_ids_array[i] = static_cast<uint32_t>(p_platform_ids[i]);
+    }
+    options.AllowedPlatformIds = platform_ids_array;
 
     return static_cast<int>(EOS_LobbyModification_SetAllowedPlatformIds(m_internal, &options));
 }

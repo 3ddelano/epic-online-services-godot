@@ -31,10 +31,20 @@ if env["platform"] == "windows":
     env.Append(LINKFLAGS=["/ignore:4099"])
     
     env.Append(LIBS=["EOSSDK-Win64-Shipping"])
+    
 elif env["platform"] == "linux":
     env.Append(LIBS=["EOSSDK-Linux-Shipping.so"])
+    
 elif env["platform"] == "macos":
     env.Append(LIBS=["EOSSDK-Mac-Shipping.dylib"])
+
+elif env["platform"] == "android":
+    eos_android_arch = "arm64-v8a"
+    if env["arch"] == "x86_64":
+        eos_android_arch = "x86_64"
+    
+    env.Append(LIBPATH=[eos_sdk_folder + "Bin/Android/static-stdc++/libs/" + eos_android_arch + "/"]) 
+    env.Append(LIBS=["EOSSDK"])
 
 
 if env["platform"] == "macos":
@@ -60,6 +70,9 @@ def on_complete(target, source, env):
 # Disable scons cache for source files
 NoCache(sources)
 
-complete_command = Command('complete', library, on_complete)
-Depends(complete_command, library)
-Default(complete_command)
+if env["platform"] == "windows":
+    complete_command = Command('complete', library, on_complete)
+    Depends(complete_command, library)
+    Default(complete_command)
+else:
+    Default(library)

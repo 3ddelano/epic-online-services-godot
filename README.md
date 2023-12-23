@@ -6,19 +6,13 @@ Epic Online Services Godot (WIP)
 
 <img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.2-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.1" src="https://img.shields.io/badge/-Epic Online Services 1.16.1-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
-> Tested on: Windows 10 x64 and Linux x64
+> Supports Windows x64, Linux x64 and Android
 
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
 
 #### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4.2
 #### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3 Mono (C#) (un maintained)
-
-## [View Current Project Status](#current-project-status)
-
-## [Demo Video (Coming Soon)](#)
-
-## [Documentation (Coming Soon)](#)
 
 
 ## Support Development
@@ -27,15 +21,29 @@ Epic Online Services Godot (WIP)
 
 <a href="https://www.buymeacoffee.com/3ddelano" target="_blank"><img height="41" width="174" src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a>
 <br>
-<a href="https://github.com/sponsors/3ddelano" target="_blank">Github Sponsor</a>
+<a href="https://github.com/sponsors/3ddelano" target="_blank"><h4>Github Sponsor</h4></a>
 
 #### Want to support in other ways? Contact me on Discord: `@3ddelano`
 
 Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](https://discord.gg/FZY9TqW)
 
 
-How does it work
---------------
+## [View Current Project Status](#current-project-status)
+
+## [Demo Video (Coming Soon)](#)
+
+## [Documentation (Coming Soon)](#)
+
+## Screenshots
+
+- Windows
+   <img src="./_media/windows_auth_success.png">
+
+- Android
+   <img src="./_media/android_auth_success.jpg">
+
+
+## How does it work
 
 This project uses GDExtension to wrap the Epic Online Services C SDK so that it can be easily used in Godot using GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like user login, logout, achievement unlock, etc.
 
@@ -46,9 +54,9 @@ Installation
 This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps below:
 
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
-2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `addons/` folder in of your project.
-3. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2` plugin.
-4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below simple script.
+2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
+3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2` plugin.
+4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below starter script.
     ```GDScript
     # In main script
     extends Node
@@ -156,7 +164,7 @@ To develop this plugin, follow the below steps:
    scons platform=windows target=template_release
    ```
 
-6. The built GDExtension library will be in the `addons/epic-online-services-godot/bin/` folder.
+6. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample project.
 
 
 ### How to run the sample project?
@@ -189,6 +197,135 @@ Follow the instructions in [Running the service for local development](https://d
 - After exporting the game
   
   Bootstrap the exported game executable (eg. `My Amazing Game.exe`)
+
+
+## Exporting for Android
+
+### Pre-requisites
+
+- EOS Android SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal))
+
+1. Setup the Android Build Template in your Godot project by following the tutorial [Gradle builds for Andriod](https://docs.godotengine.org/en/stable/tutorials/export/android_gradle_build.html). This will create an android project in `res://android/build`.
+
+2. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
+
+3. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
+	
+	Before
+	```
+	dependencies {
+    	implementation libraries.kotlinStdLib
+    	implementation libraries.androidxFragment
+		... other code
+	```
+
+	After
+	```
+	dependencies {
+		implementation libraries.kotlinStdLib
+		implementation libraries.androidxFragment
+		
+		// EOS SDK dependencies
+		implementation 'androidx.appcompat:appcompat:1.0.0'
+		implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+		implementation 'androidx.security:security-crypto:1.0.0'
+		implementation 'androidx.browser:browser:1.0.0'
+		implementation files('../../../thirdparty/eos-sdk/SDK/Bin/Android/static-stdc++/aar/eos-sdk.aar')
+
+		...other code
+	```
+
+4. In the `res://android/build/build.gradle` file, add the following lines after the `defaultConfig` in the `android` section.
+	
+	Before
+	```
+	android {
+
+		... other code
+
+		defaultConfig {
+			... other code
+		
+			// Feel free to modify the application id to your own.
+			applicationId getExportPackageName()
+			versionCode getExportVersionCode()
+			versionName getExportVersionName()
+			minSdkVersion getExportMinSdkVersion()
+			targetSdkVersion getExportTargetSdkVersion()
+
+			missingDimensionStrategy 'products', 'template'
+		}
+
+		... other code
+	```
+
+	After
+	```
+	android {
+
+		... other code
+
+		defaultConfig {
+			... other code
+		
+			// Feel free to modify the application id to your own.
+			applicationId getExportPackageName()
+			versionCode getExportVersionCode()
+			versionName getExportVersionName()
+			minSdkVersion getExportMinSdkVersion()
+			targetSdkVersion getExportTargetSdkVersion()
+
+			missingDimensionStrategy 'products', 'template'
+
+			// This is needed by EOS Android SDK
+			String ClientId = "PUT YOUR EOS CLIENT ID HERE"
+			resValue("string", "eos_login_protocol_scheme", "eos." + ClientId.toLowerCase())
+		}
+
+		... other code
+	```
+
+5. In the `res://android/build/config.gradle` file, update the `minSdk` to `23` to match with the requirements of the `EOS Android SDK`.
+
+	Before
+	```
+	minSdk             : 22,
+	```
+	After
+	```
+	minSdk             : 23,
+	```
+
+6. In the `res://android/build/src/com/godot/game/GodotGame.java` file, update it as follows.
+	```java
+	package com.godot.game;
+
+	import com.epicgames.mobile.eossdk.EOSSDK;     // added
+	import org.godotengine.godot.GodotActivity;
+
+	import android.os.Bundle;
+
+	public class GodotApp extends GodotActivity {
+		static {                                   // added
+			System.loadLibrary("EOSSDK");          // added
+		}                                          // added
+		
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			EOSSDK.init(getApplicationContext());  // added
+
+			setTheme(R.style.GodotAppMainTheme);
+			super.onCreate(savedInstanceState);
+		}
+	}
+
+	```
+
+7. Now open your project in the Godot Editor, and goto `Project -> Export` and create a new Android export profile.
+
+8. In the `Gradle Build` section, enable `Use Gradle Build`. In the `Architectures` section enable `arm64-v8a`. In the `Permissions` section ensure that `ACESSS_NETWORK_STATE`, `ACCESS_WIFI_STATE` and `INTERNET` are enabled. These permissions are needed for the EOS SDK to work. Fill in the other details such as package name, etc as needed.
+
+9. You can now export the Android APK by clicking the Export Project button.
 
 
 ## Current Project Status
@@ -251,7 +388,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [ ] Sample
 - Sessions Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - TitleStorage Interface
   - [x] Implementation
