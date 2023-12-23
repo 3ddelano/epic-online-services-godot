@@ -76,10 +76,7 @@ Error EOSGMultiplayerPeer::create_server(const String &socket_id) {
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
     if (socket.get_name().is_empty()) {
-        unique_id = 0;
-        active_mode = MODE_NONE;
-        connection_status = CONNECTION_DISCONNECTED;
-        polling = false;
+        _close();
         ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create server.");
     }
 
@@ -112,7 +109,7 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     //Create the socket we are trying to connect to
     socket = EOSGSocket(socket_id);
         if (socket.get_name().is_empty()) {
-        polling = false;
+        _close();
         ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create client.");
     }
 
@@ -164,10 +161,7 @@ Error EOSGMultiplayerPeer::create_mesh(const String &socket_id) {
     //Create a socket where we will be listening for connections
     socket = EOSGSocket(socket_id);
     if (socket.get_name().is_empty()) {
-        unique_id = 0;
-        active_mode = MODE_NONE;
-        connection_status = CONNECTION_DISCONNECTED;
-        polling = false;
+        _close();
         ERR_FAIL_V_MSG(ERR_CANT_CREATE, "Failed to create mesh.");
     }
 
@@ -762,10 +756,13 @@ void EOSGMultiplayerPeer::_close() {
     socket.close();
     active_mode = MODE_NONE;
     connection_status = CONNECTION_DISCONNECTED;
-    peers.clear();
     pending_connection_requests.clear();
     unique_id = 0;
     set_refuse_new_connections(false);
+
+    if (peers.is_empty()) { //Go ahead and unregister if there were no peers connected
+        EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);
+    }
 }
 
 /****************************************
@@ -1083,7 +1080,8 @@ void EOSGMultiplayerPeer::remote_connection_closed_callback(const EOS_P2P_OnRemo
         _close();
     }
 
-    if (data->Reason == EOS_EConnectionClosedReason::EOS_CCR_ClosedByLocalUser) {
+    //The peer has closed their connection. Once all peers have been removed, unregister from the mediator
+    if (connection_status == CONNECTION_DISCONNECTED && peers.is_empty()) {
         EOSGPacketPeerMediator::get_singleton()->unregister_peer(this);
     }
 
