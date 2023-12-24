@@ -1875,28 +1875,28 @@ class P2P:
 
 	class P2PInterface:
 		static func get_packet_queue_info() -> Dictionary:
-			return IEOS.p2p_get_packet_queue_info()
+			return IEOS.p2p_interface_get_packet_queue_info()
 		
 		static func get_port_range() -> Dictionary:
-			return IEOS.p2p_get_port_range()
+			return IEOS.p2p_interface_get_port_range()
 
 		static func get_nat_type() -> NATType:
-			return IEOS.p2p_get_nat_type() as NATType
+			return IEOS.p2p_interface_get_nat_type() as NATType
 		
 		static func get_relay_control() -> RelayControl:
-			return IEOS.p2p_get_relay_control() as RelayControl
+			return IEOS.p2p_interface_get_relay_control() as RelayControl
 		
 		static func query_nat_type() -> void:
-			IEOS.p2p_query_nat_type()
+			IEOS.p2p_interface_query_nat_type()
 
 		static func set_packet_queue_size(options: SetPacketQueueSizeOptions) -> void:
-			IEOS.p2p_set_packet_queue_size(options)
+			IEOS.p2p_interface_set_packet_queue_size(options)
 
 		static func set_port_range(options: SetPortRangeOptions) -> void:
-			IEOS.p2p_set_port_range(options)
+			IEOS.p2p_interface_set_port_range(options)
 
 		static func set_relay_control(relay_control: RelayControl) -> void:
-			IEOS.p2p_set_relay_control(relay_control)
+			IEOS.p2p_interface_set_relay_control(relay_control)
 
 
 
