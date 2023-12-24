@@ -168,7 +168,7 @@ bool EOSGPacketPeerMediator::register_peer(EOSGMultiplayerPeer *peer) {
  * unregistration usually happens when a peer closes.
  ****************************************/
 void EOSGPacketPeerMediator::unregister_peer(EOSGMultiplayerPeer *peer) {
-    ERR_FAIL_COND_MSG(!active_peers.has(peer->get_socket()), "Failed to unregister peer. This peer has not been previously registered.");
+    if (!active_peers.has(peer->get_socket())) return;
 
     clear_packet_queue(peer->get_socket());
     socket_packet_queues.erase(peer->get_socket());
