@@ -1,3 +1,6 @@
+# Copyright (c) 2023-present Delano Lourenco
+# https://github.com/3ddelano/epic-online-services-godot/
+# MIT License
 @tool
 extends EditorPlugin
 

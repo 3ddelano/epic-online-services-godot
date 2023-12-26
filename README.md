@@ -21,7 +21,7 @@ Epic Online Services Godot (WIP)
 
 <a href="https://www.buymeacoffee.com/3ddelano" target="_blank"><img height="41" width="174" src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a>
 <br>
-<a href="https://github.com/sponsors/3ddelano" target="_blank"><h4>Github Sponsor</h4></a>
+<a href="https://github.com/sponsors/3ddelano" target="_blank">Github Sponsor</a>
 
 #### Want to support in other ways? Contact me on Discord: `@3ddelano`
 
@@ -149,22 +149,20 @@ To develop this plugin, follow the below steps:
    
    <img src="./_media/eos_folder_structure.png">
 
-3. Follow the steps to generate the GDExtension bindings for C++ based on [this tutorial](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_cpp_example.html#building-the-c-bindings). Now you should have dumped the GDextension API interface and built the `godot-cpp` library.
-
-4. Build the GDExtension plugin in debug mode (With debug symbols)
+3. Build the GDExtension plugin in debug mode (With debug symbols)
    ```shell
    # In root folder
    scons platform=<platform> target=template_debug dev_build=yes
    ```
    Eg. `scons platform=windows target=template_debug dev_build=yes`
 
-5. Build the GDExtension plugin for release (Optimized)
+4. Build the GDExtension plugin for release (Optimized)
    ```shell
    # In root folder
    scons platform=windows target=template_release
    ```
 
-6. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample project.
+5. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample project.
 
 
 ### How to run the sample project?
@@ -175,7 +173,7 @@ To develop this plugin, follow the below steps:
 3. Copy your credentials (`Product Id`, `Sandbox Id`, `Deployment Id`, `Client Id`, `Client Secret`) of your Epic Games "Product" from the Epic Games Dev Portal and paste them in `Main.gd` script in the relevant sections. The encryption key is a random 64 character long string. These credentials need to be kept as private as possible. One way is to make sure to encrypt all scripts when exporting the final game. (See [Compiling with script key encryption](https://docs.godotengine.org/en/stable/development/compiling/compiling_with_script_encryption_key.html))
 
 4. Configure your Product on the EOS Dev Portal with the following configuration:
-  - In the `Client Policies` section in `Product Settings`, enable all the features except `Connect` (Disabled by Epic)
+  - In the `Client Policies` section in `Product Settings`, for the Client policy type choose `Custom policy`, enable the `User is required` and enable every features and action except `Connect` (Trusted Server Required). This will allow the sample to access the different services provided by Epic Online Services. In your actual game, the client policy is important and you should give minimal permissions to features.
   - In the `Permissions` section of `Epic Account Services`, enable all three: `Basic Profile`, `Online Presence` and `Friends`. 
   - (Optional if you want some pre-made achievements)
   In the `Achievements` section in `Game Services`, use the `Bulk Import` option and import the `HelloProduct.zip` file located at `res://HelloProduct.zip`
@@ -185,7 +183,7 @@ If you want to use the `Account Portal` login option in Epic Online Services, yo
 
 A sample of the generated `.ini` file for the Godot Editor is shown below (during game development):
 ```
-ApplicationPath=Godot_v4.0.0-stable_win64.exe
+ApplicationPath=Godot_v4.2.0-stable_win64.exe
 WorkingDirectory=
 WaitForExit=0
 NoOperation=0
@@ -193,7 +191,7 @@ NoOperation=0
 Follow the instructions in [Running the service for local development](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/Crossplayacrossplatforms/RedistributableInstaller/index.html#runningtheserviceforlocaldevelopment) and:
 - During game development
   
-  Bootstrap the Godot Editor executable (eg. `Godot_v4.0.0-stable_win64.exe`) to test the `Account Portal` login
+  Bootstrap the Godot Editor executable (eg. `Godot_v4.2.0-stable_win64.exe`) to test the `Account Portal` login
 - After exporting the game
   
   Bootstrap the exported game executable (eg. `My Amazing Game.exe`)
@@ -205,11 +203,13 @@ Follow the instructions in [Running the service for local development](https://d
 
 - EOS Android SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal))
 
-1. Setup the Android Build Template in your Godot project by following the tutorial [Gradle builds for Andriod](https://docs.godotengine.org/en/stable/tutorials/export/android_gradle_build.html). This will create an android project in `res://android/build`.
+1. Extract the `EOS Android SDK` zip downloaded from Epic Games, rename it to `eos-sdk` and paste it in the `thirdparty/` folder.
 
-2. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
+2. Setup the `Android Build Template` in your Godot project by following the tutorial [Gradle builds for Andriod](https://docs.godotengine.org/en/stable/tutorials/export/android_gradle_build.html). This will create an android project in `res://android/build`.
 
-3. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
+3. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
+
+4. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
 	
 	Before
 	```
