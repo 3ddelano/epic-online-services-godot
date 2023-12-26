@@ -103,10 +103,11 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: ${{ github.workspace }}/.scons-cache/
-                  key: ${{ matrix.identifier }}-${{ github.ref }}
+                  key: ${{ matrix.identifier }}
+                  #   key: ${{ matrix.identifier }}-${{ github.ref }}
                   restore-keys: |
-                      ${{ matrix.identifier }}-${{ github.ref }}
-                      ${{ matrix.identifier }}
+                      #   ${{ matrix.identifier }}-${{ github.ref }}
+                        ${{ matrix.identifier }}
               continue-on-error: true
 
             - name: Compile extension

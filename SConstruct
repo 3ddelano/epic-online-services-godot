@@ -20,7 +20,7 @@ eos_sdk_folder = "thirdparty/eos-sdk/SDK/"
 # Add source files
 env.Append(CPPPATH=["src/", eos_sdk_folder + "Include/"])
 sources = Glob("src/*.cpp")
-
+platform = env["platform"]
 
 env.Append(LIBPATH=[eos_sdk_folder + "Lib/"])
 env.Append(LIBPATH=[eos_sdk_folder + "Bin/"])
@@ -63,20 +63,19 @@ def copy_file(from_path, to_path):
     shutil.copyfile(from_path, to_path)
 
 def on_complete(target, source, env):
-    if env["platform"] == "windows":
+    if platform == "windows":
         shutil.rmtree(plugin_bin_folder + "/windows/x64", ignore_errors=True)
         shutil.copytree(eos_sdk_folder + "Bin/x64", plugin_bin_folder + "/windows/x64")
         copy_file(eos_sdk_folder + "Bin/EOSSDK-Win64-Shipping.dll", plugin_bin_folder + "/windows/EOSSDK-Win64-Shipping.dll")
     
-    elif env["platform"] == "linux":
+    elif platform == "linux":
         copy_file(eos_sdk_folder + "Bin/libEOSSDK-Linux-Shipping.so", plugin_bin_folder + "/linux/libEOSSDK-Linux-Shipping.so")
     
-    elif env["platform"] == "macos":
+    elif platform == "macos":
         copy_file(eos_sdk_folder + "Bin/libEOSSDK-Mac-Shipping.dylib", plugin_bin_folder + "/macos/libEOSSDK-Mac-Shipping.dylib")
 
 # Disable scons cache for source files
 NoCache(sources)
-
 
 complete_command = Command('complete', library, on_complete)
 Depends(complete_command, library)
