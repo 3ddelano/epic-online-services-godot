@@ -168,7 +168,8 @@ bool EOSGPacketPeerMediator::register_peer(EOSGMultiplayerPeer *peer) {
  * unregistration usually happens when a peer closes.
  ****************************************/
 void EOSGPacketPeerMediator::unregister_peer(EOSGMultiplayerPeer *peer) {
-    if (!active_peers.has(peer->get_socket())) return;
+    if (!active_peers.has(peer->get_socket()))
+        return;
 
     clear_packet_queue(peer->get_socket());
     socket_packet_queues.erase(peer->get_socket());
@@ -385,7 +386,11 @@ void EOS_CALL EOSGPacketPeerMediator::_on_incoming_connection_request(const EOS_
  * local user id received from the login and initialized EOSGPacketPeerMediator.
  ****************************************/
 void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
-    String local_user_id = data["local_user_id"].operator godot::String();
+    int result_code = data["result_code"];
+    if (static_cast<EOS_EResult>(result_code) != EOS_EResult::EOS_Success) {
+        return;
+    }
+    String local_user_id = data["local_user_id"];
     if (local_user_id != "") {
         EOSGMultiplayerPeer::set_local_user_id(local_user_id);
         EOSGPacketPeerMediator::get_singleton()->_init();
