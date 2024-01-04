@@ -51,7 +51,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     memset(&windowsRTCOptions, 0, sizeof(windowsRTCOptions));
     windowsRTCOptions.ApiVersion = EOS_WINDOWS_RTCOPTIONS_API_LATEST;
     if (OS::get_singleton()->has_feature("editor")) {
-        CharString xAudio29DllPath = ProjectSettings::get_singleton()->globalize_path("res://addons/epic-online-services-godot/bin/x64/xaudio2_9redist.dll").utf8();
+        CharString xAudio29DllPath = ProjectSettings::get_singleton()->globalize_path("res://addons/epic-online-services-godot/bin/windows/x64/xaudio2_9redist.dll").utf8();
         windowsRTCOptions.XAudio29DllPath = xAudio29DllPath.get_data();
     } else {
         CharString xAudio29DllPath = OS::get_singleton()->get_executable_path().get_base_dir().path_join("xaudio2_9redist.dll").utf8();
@@ -98,6 +98,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     // -----
     s_achievementsInterface = EOS_Platform_GetAchievementsInterface(s_platformInterface);
     EOS_Achievements_AddNotifyAchievementsUnlockedV2Options notifyAchievementsUnlockedV2Options;
+    memset(&notifyAchievementsUnlockedV2Options, 0, sizeof(notifyAchievementsUnlockedV2Options));
     notifyAchievementsUnlockedV2Options.ApiVersion = EOS_ACHIEVEMENTS_ADDNOTIFYACHIEVEMENTSUNLOCKEDV2_API_LATEST;
     EOS_Achievements_AddNotifyAchievementsUnlockedV2(s_achievementsInterface, &notifyAchievementsUnlockedV2Options, nullptr, [](const EOS_Achievements_OnAchievementsUnlockedCallbackV2Info *data) {
         Dictionary ret;
@@ -116,6 +117,24 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     // Connect Interface
     // -----
     s_connectInterface = EOS_Platform_GetConnectInterface(s_platformInterface);
+    EOS_Connect_AddNotifyAuthExpirationOptions notifyAuthExpirationOptions;
+    memset(&notifyAuthExpirationOptions, 0, sizeof(notifyAuthExpirationOptions));
+    notifyAuthExpirationOptions.ApiVersion = EOS_CONNECT_ADDNOTIFYAUTHEXPIRATION_API_LATEST;
+    EOS_Connect_AddNotifyAuthExpiration(s_connectInterface, &notifyAuthExpirationOptions, nullptr, [](const EOS_Connect_AuthExpirationCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        IEOS::get_singleton()->emit_signal("connect_interface_auth_expiration", ret);
+    });
+    EOS_Connect_AddNotifyLoginStatusChangedOptions notifyLoginStatusChangedOptions;
+    memset(&notifyLoginStatusChangedOptions, 0, sizeof(notifyLoginStatusChangedOptions));
+    notifyLoginStatusChangedOptions.ApiVersion = EOS_CONNECT_ADDNOTIFYLOGINSTATUSCHANGED_API_LATEST;
+    EOS_Connect_AddNotifyLoginStatusChanged(s_connectInterface, &notifyLoginStatusChangedOptions, nullptr, [](const EOS_Connect_LoginStatusChangedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["previous_status"] = static_cast<int>(data->PreviousStatus);
+        ret["current_status"] = static_cast<int>(data->CurrentStatus);
+        IEOS::get_singleton()->emit_signal("connect_interface_login_status_changed", ret);
+    });
 
     // -----
     // Custom Invites Interface
@@ -466,6 +485,23 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     s_statsInterface = EOS_Platform_GetStatsInterface(s_platformInterface);
 
     // -----
+    // RTC Interface
+    // -----
+    s_rtcInterface = EOS_Platform_GetRTCInterface(s_platformInterface);
+
+    // -----
+    // RTCAudio Interface
+    // -----
+    s_rtcAudioInterface = EOS_RTC_GetAudioInterface(s_rtcInterface);
+    EOS_RTCAudio_AddNotifyAudioDevicesChangedOptions notifyAudioDevicesChangedOptions;
+    memset(&notifyAudioDevicesChangedOptions, 0, sizeof(notifyAudioDevicesChangedOptions));
+    notifyAudioDevicesChangedOptions.ApiVersion = EOS_RTCAUDIO_ADDNOTIFYAUDIODEVICESCHANGED_API_LATEST;
+    EOS_RTCAudio_AddNotifyAudioDevicesChanged(s_rtcAudioInterface, &notifyAudioDevicesChangedOptions, nullptr, [](const EOS_RTCAudio_AudioDevicesChangedCallbackInfo *data) {
+        Dictionary ret;
+        IEOS::get_singleton()->emit_signal("rtc_audio_audio_devices_changed", ret);
+    });
+
+    // -----
     // TitleStorage Interface
     // -----
     s_titleStorageInterface = EOS_Platform_GetTitleStorageInterface(s_platformInterface);
@@ -666,6 +702,8 @@ void IEOS::platform_interface_release() {
     s_presenceInterface = nullptr;
     s_progressionSnapshotInterface = nullptr;
     s_reportsInterface = nullptr;
+    s_rtcAudioInterface = nullptr;
+    s_rtcInterface = nullptr;
     s_sanctionsInterface = nullptr;
     s_statsInterface = nullptr;
     s_titleStorageInterface = nullptr;

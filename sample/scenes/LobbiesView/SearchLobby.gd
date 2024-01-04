@@ -7,10 +7,10 @@ enum SearchType {
 	Search_UserId
 }
 
-@onready var search_lobby_type = %SearchLobbyType
-@onready var search_lobby_line_edit = %SearchLobbyLineEdit
-@onready var search_lobby_btn = %SearchLobbyBtn
-@onready var clear_search_lobby_btn = %ClearSearchLobbyBtn
+@onready var search_lobby_type: OptionButton = %SearchLobbyType
+@onready var search_lobby_line_edit: LineEdit = %SearchLobbyLineEdit
+@onready var search_lobby_btn: Button = %SearchLobbyBtn
+@onready var clear_search_lobby_btn: Button = %ClearSearchLobbyBtn
 
 var is_searches_shown = false
 var lobby_search: EOSGLobbySearch
@@ -18,7 +18,6 @@ var lobby_search: EOSGLobbySearch
 func _ready() -> void:
 	EOS.get_instance().lobby_search_find_callback.connect(_on_lobby_search_find_callback)
 	search_lobby_btn.pressed.connect(_on_search_lobby_btn_pressed)
-	search_lobby_btn.disabled = true
 
 	search_lobby_line_edit.text_changed.connect(_on_search_lobby_line_edit_text_changed)
 	search_lobby_line_edit.text_submitted.connect(func (_new_text): _on_search_lobby_btn_pressed())
@@ -49,9 +48,9 @@ func _on_search_lobby_btn_pressed():
 
 	lobby_search = create_search_ret.lobby_search
 	if search_type == SearchType.Search_Map:
-		lobby_search.set_parameter("MAP", search_string, EOS.ComparisonOp.Equal)
+		lobby_search.set_parameter(LobbiesView.MAP_ATTRIBUTE_KEY, search_string, EOS.ComparisonOp.Equal)
 	elif search_type == SearchType.Search_BucketId:
-		lobby_search.set_parameter("BUCKET_ID", search_string, EOS.ComparisonOp.Equal)
+		lobby_search.set_parameter(EOS.Lobby.SEARCH_BUCKET_ID, search_string, EOS.ComparisonOp.Equal)
 	elif search_type == SearchType.Search_LobbyId:
 		lobby_search.set_lobby_id(search_string)
 	elif search_type == SearchType.Search_UserId:
@@ -91,10 +90,13 @@ func _on_clear_search_lobby_btn_pressed():
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
 	var search_results: Array[EOSGLobbyDetails] = []
 	lobbies_view.handle_search_results(search_results)
+	lobbies_view.hide_search_results()
 
 
 func _on_search_lobby_line_edit_text_changed(new_text: String):
 	if new_text.strip_edges() == "":
 		search_lobby_btn.disabled = true
+		clear_search_lobby_btn.disabled = true
 	else:
 		search_lobby_btn.disabled = false
+		clear_search_lobby_btn.disabled = false

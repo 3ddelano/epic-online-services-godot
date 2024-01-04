@@ -2,8 +2,9 @@
 # https://github.com/3ddelano/epic-online-services-godot/
 # MIT License
 
-extends RefCounted
+## The main class to interact with Epic Online Services
 class_name EOS
+extends RefCounted
 
 
 static func get_instance():
@@ -241,9 +242,9 @@ class Connect:
 
 		var target_user_id = EOSGRuntime.local_product_user_id
 
-	class QueryProductUserIdMappingOptions extends BaseClass:
+	class QueryProductUserIdMappingsOptions extends BaseClass:
 		func _init():
-			super._init("QueryProductUserIdMappingOptions")
+			super._init("QueryProductUserIdMappingsOptions")
 
 		var local_user_id = EOSGRuntime.local_product_user_id
 		var product_user_ids: Array # Array[String]
@@ -335,14 +336,14 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id: String) -> LoginStatus:
+		static func get_login_status(local_user_id := EOSGRuntime.local_product_user_id) -> LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
-		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions) -> int:
+		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions = GetProductUserExternalAccountCountOptions.new()) -> int:
 			return IEOS.connect_interface_get_product_user_external_account_count(options)
 
-		static func query_product_user_id_mapping(options: QueryProductUserIdMappingOptions) -> void:
-			IEOS.connect_interface_query_product_user_id_mapping(options)
+		static func query_product_user_id_mappings(options: QueryProductUserIdMappingsOptions) -> void:
+			IEOS.connect_interface_query_product_user_id_mappings(options)
 
 		static func get_product_user_id_mapping(options: GetProductUserIdMappingOptions) -> Dictionary:
 			return IEOS.connect_interface_get_product_user_id_mapping(options)
@@ -508,7 +509,7 @@ class Auth:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.auth_interface_copy_id_token(options)
 
-		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id: String) -> Dictionary:
+		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
 			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
 				options, local_user_id
 			)
@@ -537,16 +538,16 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id: String) -> LoginStatus:
+		static func get_login_status(local_user_id := EOSGRuntime.local_epic_account_id) -> LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
 			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
 
-		static func get_merged_accounts_count(local_user_id: String) -> int:
+		static func get_merged_accounts_count(local_user_id := EOSGRuntime.local_epic_account_id) -> int:
 			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
 
-		static func get_selected_account_id(local_user_id: String) -> Dictionary:
+		static func get_selected_account_id(local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
 			return IEOS.auth_interface_get_selected_account_id(local_user_id)
 
 		static func link_account(options: LinkAccountOptions) -> void:
@@ -970,7 +971,7 @@ class Ecom:
 		func _init():
 			super._init("GetItemReleaseCountOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_epic_account_id
 		var item_id: String
 
 	class GetOfferCountOptions extends BaseClass:
@@ -1613,7 +1614,7 @@ class Lobby:
 		func _init():
 			super._init("QueryInvitesOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -1876,16 +1877,16 @@ class P2P:
 	class P2PInterface:
 		static func get_packet_queue_info() -> Dictionary:
 			return IEOS.p2p_interface_get_packet_queue_info()
-		
+
 		static func get_port_range() -> Dictionary:
 			return IEOS.p2p_interface_get_port_range()
 
 		static func get_nat_type() -> NATType:
 			return IEOS.p2p_interface_get_nat_type() as NATType
-		
+
 		static func get_relay_control() -> RelayControl:
 			return IEOS.p2p_interface_get_relay_control() as RelayControl
-		
+
 		static func query_nat_type() -> void:
 			IEOS.p2p_interface_query_nat_type()
 
@@ -3102,6 +3103,404 @@ class Sessions:
 
 
 
+class RTC:
+
+	enum ParticipantStatus {
+		Joined,
+		Left,
+	}
+
+	class AddNotifyDisconnectedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyDisconnectedOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyParticipantStatusChangedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyParticipantStatusChangedOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyRoomStatisticsUpdatedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyRoomStatisticsUpdatedOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class SetRoomSettingOptions extends BaseClass:
+		func _init():
+			super._init("SetRoomSettingOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var setting_key: String
+		var setting_value: String
+
+	class SetSettingOptions extends BaseClass:
+		func _init():
+			super._init("SetSettingOptions")
+
+		var setting_key: String
+		var setting_value: String
+
+	class BlockParticipantOptions extends BaseClass:
+		func _init():
+			super._init("BlockParticipantOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var participant_id: String
+		var blocked: bool
+
+		var client_data = null
+
+	class JoinRoomOptions extends BaseClass:
+		func _init():
+			super._init("JoinRoomOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var client_base_url: String
+		var participant_token: String
+		var participant_id: String
+		var flags: int
+		var manual_audio_input_enabled: bool
+		var manual_audio_output_enabled: bool
+
+		var client_data = null
+
+	class LeaveRoomOptions extends BaseClass:
+		func _init():
+			super._init("LeaveRoomOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+		var client_data = null
+
+	class RTCInterface:
+		static func add_notify_disconnected(options: AddNotifyDisconnectedOptions) -> int:
+			return IEOS.rtc_interface_add_notify_disconnected(options)
+
+		static func add_notify_participant_status_changed(options: AddNotifyParticipantStatusChangedOptions) -> int:
+			return IEOS.rtc_interface_add_notify_participant_status_changed(options)
+
+		static func add_notify_room_statistics_updated(options: AddNotifyRoomStatisticsUpdatedOptions) -> int:
+			return IEOS.rtc_interface_add_notify_room_statistics_updated(options)
+
+		static func set_room_setting(options: SetRoomSettingOptions) -> int:
+			return IEOS.rtc_interface_set_room_setting(options)
+
+		static func set_setting(options: SetSettingOptions) -> int:
+			return IEOS.rtc_interface_set_setting(options)
+
+		static func block_participant(options: BlockParticipantOptions) -> void:
+			IEOS.rtc_interface_block_participant(options)
+
+		static func join_room(options: JoinRoomOptions) -> void:
+			IEOS.rtc_interface_join_room(options)
+
+		static func leave_room(options: LeaveRoomOptions) -> void:
+			IEOS.rtc_interface_leave_room(options)
+
+		static func remove_notify_disconnected(notification_id: int) -> void:
+			IEOS.rtc_interface_remove_notify_disconnected(notification_id)
+
+		static func remove_notify_participant_status_changed(notification_id: int) -> void:
+			IEOS.rtc_interface_remove_notify_participant_status_changed(notification_id)
+
+		static func remove_notify_room_statistics_updated(notification_id: int) -> void:
+			IEOS.rtc_interface_remove_notify_room_statistics_updated(notification_id)
+
+
+
+class RTCAudio:
+	enum AudioStatus {
+		## Audio unsupported by the source (no devices)
+		Unsupported = 0,
+		## Audio enabled
+		Enabled = 1,
+		## Audio disabled
+		Disabled = 2,
+		## Audio disabled by the administrator
+		AdminDisabled = 3,
+		## Audio channel is disabled temporarily for both sending and receiving
+		NotListeningDisabled = 4
+	}
+
+	enum AudioInputStatus {
+		## The device is not in used right now (e.g: you are alone in the room). In such cases, the hardware resources are not allocated.
+		Idle = 0,
+		## The device is being used and capturing audio
+		Recording = 1,
+		## The SDK is in a recording state, but actually capturing silence because the device is exclusively being used by the platform at the moment.
+		## This only applies to certain platforms.
+		RecordingSilent = 2,
+		## The SDK is in a recording state, but actually capturing silence because the device is disconnected (e.g: the microphone is not plugged in).
+		## This only applies to certain platforms.
+		RecordingDisconnected = 3,
+		## Something failed while trying to use the device
+		Failed = 4
+	}
+
+	enum AudioOutputStatus{
+		## The device is not in used right now (e.g: you are alone in the room). In such cases, the hardware resources are not allocated.
+		Idle = 0,
+		## Device is in use
+		Playing = 1,
+		## Something failed while trying to use the device
+		Failed = 2
+	}
+
+	class CopyInputDeviceInformationByIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyInputDeviceInformationByIndexOptions")
+
+		var device_index: int
+
+	class CopyOutputDeviceInformationByIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyOutputDeviceInformationByIndexOptions")
+
+		var device_index: int
+
+	class AddNotifyAudioBeforeRenderOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyAudioBeforeRenderOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var unmixed_audio: bool
+
+	class AddNotifyAudioBeforeSendOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyAudioBeforeSendOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyAudioInputStateOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyAudioInputStateOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyAudioOutputStateOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyAudioOutputStateOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyParticipantUpdatedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyParticipantUpdatedOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class GetInputDevicesCountOptions extends BaseClass:
+		func _init():
+			super._init("GetInputDevicesCountOptions")
+
+	class GetOutputDevicesCountOptions extends BaseClass:
+		func _init():
+			super._init("GetOutputDevicesCountOptions")
+
+	class SendAudioOptions extends BaseClass:
+		func _init():
+			super._init("SendAudioOptions")
+
+		# TODO: update once send_audio is implemented
+
+	class QueryInputDevicesInformationOptions extends BaseClass:
+		func _init():
+			super._init("QueryInputDevicesInformationOptions")
+
+			var client_data = null
+
+	class QueryOutputDevicesInformationOptions extends BaseClass:
+		func _init():
+			super._init("QueryOutputDevicesInformationOptions")
+
+		var client_data = null
+
+	class RegisterPlatformUserOptions extends BaseClass:
+		func _init():
+			super._init("RegisterPlatformUserOptions")
+
+		var platform_user_id: String
+
+		var client_data = null
+
+	class SetInputDeviceSettingsOptions extends BaseClass:
+		func _init():
+			super._init("SetInputDeviceSettingsOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var real_device_id: String
+		var platform_aec: bool
+
+		var client_data = null
+
+	class SetOutputDeviceSettingsOptions extends BaseClass:
+		func _init():
+			super._init("SetOutputDeviceSettingsOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var real_device_id: String
+
+		var client_data = null
+
+	class UnregisterPlatformUserOptions extends BaseClass:
+		func _init():
+			super._init("UnregisterPlatformUserOptions")
+
+		var platform_user_id: String
+
+		var client_data = null
+
+	class UpdateParticipantVolumeOptions extends BaseClass:
+		func _init():
+			super._init("UpdateParticipantVolumeOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var participant_id: String
+		var volume: float
+
+		var client_data = null
+
+	class UpdateReceivingOptions extends BaseClass:
+		func _init():
+			super._init("UpdateReceivingOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var participant_id: String
+		var audio_enabled: bool
+
+		var client_data = null
+
+	class UpdateReceivingVolumeOptions extends BaseClass:
+		func _init():
+			super._init("UpdateReceivingVolumeOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var participant_id: String
+		var volume: float
+
+		var client_data = null
+
+	class UpdateSendingOptions extends BaseClass:
+		func _init():
+			super._init("UpdateSendingOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var audio_status: AudioStatus
+
+		var client_data = null
+
+	class UpdateSendingVolumeOptions extends BaseClass:
+		func _init():
+			super._init("UpdateSendingVolumeOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var volume: float
+
+		var client_data = null
+
+	class RTCAudioInterface:
+		static func copy_input_device_information_by_index(options: CopyInputDeviceInformationByIndexOptions) -> Dictionary:
+			return IEOS.rtc_audio_interface_copy_input_device_information_by_index(options)
+
+		static func copy_output_device_information_by_index(options: CopyOutputDeviceInformationByIndexOptions) -> Dictionary:
+			return IEOS.rtc_audio_interface_copy_output_device_information_by_index(options)
+
+		static func add_notify_audio_before_render(options: AddNotifyAudioBeforeRenderOptions) -> int:
+			return IEOS.rtc_audio_interface_add_notify_audio_before_render(options)
+
+		static func add_notify_audio_before_send(options: AddNotifyAudioBeforeSendOptions) -> int:
+			return IEOS.rtc_audio_interface_add_notify_audio_before_send(options)
+
+		static func add_notify_audio_input_state(options: AddNotifyAudioInputStateOptions) -> int:
+			return IEOS.rtc_audio_interface_add_notify_audio_input_state(options)
+
+		static func add_notify_audio_output_state(options: AddNotifyAudioOutputStateOptions) -> int:
+			return IEOS.rtc_audio_interface_add_notify_audio_output_state(options)
+
+		static func add_notify_participant_updated(options: AddNotifyParticipantUpdatedOptions) -> int:
+			return IEOS.rtc_audio_interface_add_notify_participant_updated(options)
+
+		static func get_input_devices_count(options := GetInputDevicesCountOptions.new()) -> int:
+			return IEOS.rtc_audio_interface_get_input_devices_count(options)
+
+		static func get_output_devices_count(options := GetOutputDevicesCountOptions.new()) -> int:
+			return IEOS.rtc_audio_interface_get_output_devices_count(options)
+
+		static func send_audio(options: SendAudioOptions) -> int:
+			return IEOS.rtc_audio_interface_send_audio(options)
+
+		static func query_input_devices_information(options := QueryInputDevicesInformationOptions.new()) -> void:
+			IEOS.rtc_audio_interface_query_input_devices_information(options)
+
+		static func query_output_devices_information(options := QueryOutputDevicesInformationOptions.new()) -> void:
+			IEOS.rtc_audio_interface_query_output_devices_information(options)
+
+		static func register_platform_user(options: RegisterPlatformUserOptions) -> void:
+			IEOS.rtc_audio_interface_register_platform_user(options)
+
+		static func remove_notify_audio_before_render(notification_id: int) -> void:
+			IEOS.rtc_audio_interface_remove_notify_audio_before_render(notification_id)
+
+		static func remove_notify_audio_before_send(notification_id: int) -> void:
+			IEOS.rtc_audio_interface_remove_notify_audio_before_send(notification_id)
+
+		static func remove_notify_audio_input_state(notification_id: int) -> void:
+			IEOS.rtc_audio_interface_remove_notify_audio_input_state(notification_id)
+
+		static func remove_notify_audio_output_state(notification_id: int) -> void:
+			IEOS.rtc_audio_interface_remove_notify_audio_output_state(notification_id)
+
+		static func remove_notify_participant_updated(notification_id: int) -> void:
+			IEOS.rtc_audio_interface_remove_notify_participant_updated(notification_id)
+
+		static func set_input_device_settings(options: SetInputDeviceSettingsOptions) -> void:
+			IEOS.rtc_audio_interface_set_input_device_settings(options)
+
+		static func set_output_device_settings(options: SetOutputDeviceSettingsOptions) -> void:
+			IEOS.rtc_audio_interface_set_output_device_settings(options)
+
+		static func unregister_platform_user(options: UnregisterPlatformUserOptions) -> void:
+			IEOS.rtc_audio_interface_unregister_platform_user(options)
+
+		static func update_participant_volume(options: UpdateParticipantVolumeOptions) -> void:
+			IEOS.rtc_audio_interface_update_participant_volume(options)
+
+		static func update_receiving(options: UpdateReceivingOptions) -> void:
+			IEOS.rtc_audio_interface_update_receiving(options)
+
+		static func update_receiving_volume(options: UpdateReceivingVolumeOptions) -> void:
+			IEOS.rtc_audio_interface_update_receiving_volume(options)
+
+		static func update_sending(options: UpdateSendingOptions) -> void:
+			IEOS.rtc_audio_interface_update_sending(options)
+
+		static func update_sending_volume(options: UpdateSendingVolumeOptions) -> void:
+			IEOS.rtc_audio_interface_update_sending_volume(options)
+
+
+
+
+
 class Version:
 	class VersionInterface:
 		static func get_version() -> String:
@@ -3400,28 +3799,6 @@ enum LoginStatus {
 	NotLoggedIn = 0,
 	UsingLocalProfile = 1,
 	LoggedIn = 2
-}
-
-enum RTCAudioInputStatus {
-	Idle = 0,
-	Recording = 1,
-	RecordingSilent = 2,
-	RecordingDisconnected = 3,
-	Failed = 4
-}
-
-enum RTCAudioOutputStatus {
-	Idle = 0,
-	Playing = 1,
-	Failed = 2
-}
-
-enum RTCAudioStatus {
-	Unsupported = 0,
-	Enabled = 1,
-	Disabled = 2,
-	AdminDisabled = 3,
-	NotListeningDisabled = 4
 }
 
 enum AttributeType {

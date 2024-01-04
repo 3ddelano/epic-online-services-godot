@@ -33,6 +33,10 @@ func set_token_text(text: String):
 	token_label.text = text
 
 
+func set_id_value(text: String):
+	id_lineedit.text = text
+
+
 func get_id_value() -> String:
 	return id_lineedit.text
 

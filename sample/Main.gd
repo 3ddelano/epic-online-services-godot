@@ -84,6 +84,7 @@ func _on_tab_pressed():
 #	test_sessions_interface()
 #	test_titlestorage_interface()
 #	test_user_info_interface()
+	test_rtc_interface()
 
 
 
@@ -321,6 +322,7 @@ func test_progression_snapshot_interface():
 
 
 
+
 func test_presence_interface():
 	var opts1 = EOS.Presence.CreatePresenceModificationOptions.new()
 	var create_pmod_ret = EOS.Presence.PresenceInterface.create_presence_modification(opts1)
@@ -461,14 +463,14 @@ func test_playerdatastorage_interface():
 	var write_file_opts = EOS.PlayerDataStorage.WriteFileOptions.new()
 	write_file_opts.filename = "testfile-002.txt"
 	write_file_opts.data = PackedByteArray([65, 66, 67])
-	var write_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.write_file(write_file_opts)
+	var _write_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.write_file(write_file_opts)
 	# write_transfer_request.cancel_request()
 	await EOS.get_instance().playerdatastorage_interface_write_file_callback
 
 	print("Reading file")
 	var read_file_opts = EOS.PlayerDataStorage.ReadFileOptions.new()
 	read_file_opts.filename = "testfile-002.txt"
-	var read_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.read_file(read_file_opts)
+	var _read_transfer_request: EOSGFileTransferRequest = EOS.PlayerDataStorage.PlayerDataStorageInterface.read_file(read_file_opts)
 	# print(read_transfer_request.get_filename())
 	# print(read_transfer_request.cancel_request())
 
@@ -488,7 +490,7 @@ func test_titlestorage_interface():
 
 	var read_file_opts = EOS.TitleStorage.ReadFileOptions.new()
 	read_file_opts.filename = "title-001.txt"
-	var read_transfer_request: EOSGFileTransferRequest = EOS.TitleStorage.TitleStorageInterface.read_file(read_file_opts)
+	var _read_transfer_request: EOSGFileTransferRequest = EOS.TitleStorage.TitleStorageInterface.read_file(read_file_opts)
 	#print(read_transfer_request.get_filename())
 	#print(read_transfer_request.cancel_request())
 
@@ -648,6 +650,14 @@ func test_sessions_interface():
 	destroy_sess_opts.session_name = "TestSession001"
 	EOS.Sessions.SessionsInterface.destroy_session(destroy_sess_opts)
 	print("--- Sessions: destroy_session: ", await EOS.get_instance().sessions_interface_destroy_session_callback)
+
+
+
+
+
+func test_rtc_interface():
+	#TODO: test rtc interface
+	pass
 
 
 

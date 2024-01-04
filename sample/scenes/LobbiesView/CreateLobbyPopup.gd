@@ -34,15 +34,21 @@ func _populate_options_btns():
 
 
 func _on_create_lobby_btn_pressed():
-	var _view: LobbiesView = Store.get_view("Lobbies")
-	_view.create_lobby(LobbiesView.GameLobby.new().from_dict({
+	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
+	var new_lobby = LobbiesView.GameLobby.new().from_dict({
 		bucket_id = _bucket_id.text.strip_edges(),
 		max_lobby_members = _max_players_options_btn.get_selected_metadata(),
 		presence_enabled = _presence_check_box.button_pressed,
 		enable_rtc_room = _rtc_voice_room_check_box.button_pressed,
 		permission_level = EOS.Lobby.LobbyPermissionLevel.PublicAdvertised if _public_check_box.button_pressed else EOS.Lobby.LobbyPermissionLevel.InviteOnly,
 		allow_invites = _allow_invites_check_box.button_pressed,
-	}))
+	})
+	new_lobby.attributes.append({
+		key = LobbiesView.MAP_ATTRIBUTE_KEY,
+		value = LobbiesView.Maps.keys()[_map_option_btn.get_selected_metadata()],
+		visibility = EOS.Lobby.LobbyAttributeVisibility.Public
+	})
+	lobbies_view.create_lobby(new_lobby)
 	hide()
 
 
@@ -56,7 +62,7 @@ func _reset():
 	_create_lobby_btn.disabled = true
 
 	_map_option_btn.select(0)
-	_max_players_options_btn.select(0)
+	_max_players_options_btn.select(1)
 
 
 func _on_bucket_id_text_changed(new_text: String):

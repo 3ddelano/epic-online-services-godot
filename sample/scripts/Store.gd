@@ -1,10 +1,7 @@
 extends Node
 
-# warning-ignore:unused_signal
 signal platform_create
-# warning-ignore:unused_signal
 signal login_success
-# warning-ignore:unused_signal
 signal logout_success
 
 

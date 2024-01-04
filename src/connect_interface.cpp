@@ -280,7 +280,7 @@ Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p
     return ret;
 }
 
-void IEOS::connect_interface_query_product_user_id_mapping(Ref<RefCounted> p_options) {
+void IEOS::connect_interface_query_product_user_id_mappings(Ref<RefCounted> p_options) {
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     TypedArray<String> p_product_user_ids = p_options->get("product_user_ids");
 

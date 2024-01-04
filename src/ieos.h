@@ -15,6 +15,8 @@
 #include "eos_presence.h"
 #include "eos_progressionsnapshot.h"
 #include "eos_reports.h"
+#include "eos_rtc.h"
+#include "eos_rtc_audio.h"
 #include "eos_sanctions.h"
 #include "eos_sdk.h"
 #include "eos_sessions.h"
@@ -63,6 +65,8 @@ protected:
     EOS_HPresence s_presenceInterface = nullptr;
     EOS_HProgressionSnapshot s_progressionSnapshotInterface = nullptr;
     EOS_HReports s_reportsInterface = nullptr;
+    EOS_HRTC s_rtcInterface = nullptr;
+    EOS_HRTCAudio s_rtcAudioInterface = nullptr;
     EOS_HSanctions s_sanctionsInterface = nullptr;
     EOS_HSessions s_sessionsInterface = nullptr;
     EOS_HStats s_statsInterface = nullptr;
@@ -151,7 +155,7 @@ public:
     void connect_interface_delete_device_id(Ref<RefCounted> options);
     void connect_interface_link_account(Ref<RefCounted> options);
     void connect_interface_login(Ref<RefCounted> options);
-    void connect_interface_query_product_user_id_mapping(Ref<RefCounted> options);
+    void connect_interface_query_product_user_id_mappings(Ref<RefCounted> options);
     void connect_interface_transfer_device_id_account(Ref<RefCounted> options);
     void connect_interface_unlink_account(Ref<RefCounted> options);
     void connect_interface_verify_id_token(Ref<RefCounted> options);
@@ -455,6 +459,51 @@ public:
     void sessions_interface_start_session(Ref<RefCounted> options);
     void sessions_interface_unregister_players(Ref<RefCounted> options);
     void sessions_interface_update_session(Ref<RefCounted> options);
+
+    // -----
+    // RTCAudio Interface
+    // -----
+    Dictionary rtc_audio_interface_copy_input_device_information_by_index(Ref<RefCounted> options);
+    Dictionary rtc_audio_interface_copy_output_device_information_by_index(Ref<RefCounted> options);
+    int rtc_audio_interface_add_notify_audio_before_render(Ref<RefCounted> options);
+    int rtc_audio_interface_add_notify_audio_before_send(Ref<RefCounted> options);
+    int rtc_audio_interface_add_notify_audio_input_state(Ref<RefCounted> options);
+    int rtc_audio_interface_add_notify_audio_output_state(Ref<RefCounted> options);
+    int rtc_audio_interface_add_notify_participant_updated(Ref<RefCounted> options);
+    int rtc_audio_interface_get_input_devices_count(Ref<RefCounted> options);
+    int rtc_audio_interface_get_output_devices_count(Ref<RefCounted> options);
+    int rtc_audio_interface_send_audio(Ref<RefCounted> options);
+    void rtc_audio_interface_query_input_devices_information(Ref<RefCounted> options);
+    void rtc_audio_interface_query_output_devices_information(Ref<RefCounted> options);
+    void rtc_audio_interface_register_platform_user(Ref<RefCounted> options);
+    void rtc_audio_interface_remove_notify_audio_before_render(int notification_id);
+    void rtc_audio_interface_remove_notify_audio_before_send(int notification_id);
+    void rtc_audio_interface_remove_notify_audio_input_state(int notification_id);
+    void rtc_audio_interface_remove_notify_audio_output_state(int notification_id);
+    void rtc_audio_interface_remove_notify_participant_updated(int notification_id);
+    void rtc_audio_interface_set_input_device_settings(Ref<RefCounted> options);
+    void rtc_audio_interface_set_output_device_settings(Ref<RefCounted> options);
+    void rtc_audio_interface_unregister_platform_user(Ref<RefCounted> options);
+    void rtc_audio_interface_update_participant_volume(Ref<RefCounted> options);
+    void rtc_audio_interface_update_receiving(Ref<RefCounted> options);
+    void rtc_audio_interface_update_receiving_volume(Ref<RefCounted> options);
+    void rtc_audio_interface_update_sending(Ref<RefCounted> options);
+    void rtc_audio_interface_update_sending_volume(Ref<RefCounted> options);
+
+    // -----
+    // RTC Interface
+    // -----
+    int rtc_interface_add_notify_disconnected(Ref<RefCounted> options);
+    int rtc_interface_add_notify_participant_status_changed(Ref<RefCounted> options);
+    int rtc_interface_add_notify_room_statistics_updated(Ref<RefCounted> options);
+    int rtc_interface_set_room_setting(Ref<RefCounted> options);
+    int rtc_interface_set_setting(Ref<RefCounted> options);
+    void rtc_interface_block_participant(Ref<RefCounted> options);
+    void rtc_interface_join_room(Ref<RefCounted> options);
+    void rtc_interface_leave_room(Ref<RefCounted> options);
+    void rtc_interface_remove_notify_disconnected(int notification_id);
+    void rtc_interface_remove_notify_participant_status_changed(int notification_id);
+    void rtc_interface_remove_notify_room_statistics_updated(int notification_id);
 };
 
 } // namespace godot

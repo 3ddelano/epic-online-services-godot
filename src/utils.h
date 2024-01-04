@@ -494,6 +494,12 @@ static Variant eosg_lobby_details_info_to_dict_and_release(EOS_LobbyDetails_Info
     ret["rtc_room_enabled"] = EOSG_GET_BOOL(info->bRTCRoomEnabled);
     ret["allow_join_by_id"] = EOSG_GET_BOOL(info->bAllowJoinById);
     ret["rejoin_after_kick_requires_invite"] = EOSG_GET_BOOL(info->bRejoinAfterKickRequiresInvite);
+    ret["presence_enabled"] = EOSG_GET_BOOL(info->bPresenceEnabled);
+    Array allowed_platform_ids = Array();
+    for (int i = 0; i < info->AllowedPlatformIdsCount; i++) {
+        allowed_platform_ids.append(static_cast<int>(info->AllowedPlatformIds[i]));
+    }
+    ret["allowed_platform_ids"] = allowed_platform_ids;
     EOS_LobbyDetails_Info_Release(info);
     return ret;
 }
@@ -748,4 +754,47 @@ static Variant eosg_sessions_session_modification_to_wrapper(EOS_HSessionModific
 
 static Variant eosg_sessions_session_search_to_wrapper(EOS_HSessionSearch p_session_search) {
     EOSG_EOS_HANDLE_TO_WRAPPER(p_session_search, EOSGSessionSearch);
+}
+
+static Variant eosg_rtc_audio_input_device_information_to_dict_and_release(EOS_RTCAudio_InputDeviceInformation *info) {
+    if (info == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["default_device"] = EOSG_GET_BOOL(info->bDefaultDevice);
+    ret["device_id"] = EOSG_GET_STRING(info->DeviceId);
+    ret["device_name"] = EOSG_GET_STRING(info->DeviceName);
+    EOS_RTCAudio_InputDeviceInformation_Release(info);
+    return ret;
+}
+
+static Variant eosg_rtc_audio_output_device_information_to_dict_and_release(EOS_RTCAudio_OutputDeviceInformation *info) {
+    if (info == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["default_device"] = EOSG_GET_BOOL(info->bDefaultDevice);
+    ret["device_id"] = EOSG_GET_STRING(info->DeviceId);
+    ret["device_name"] = EOSG_GET_STRING(info->DeviceName);
+    EOS_RTCAudio_OutputDeviceInformation_Release(info);
+    return ret;
+}
+
+static Variant eosg_rtc_audio_audio_buffer_to_dict(EOS_RTCAudio_AudioBuffer *audio_buffer) {
+    if (audio_buffer == nullptr) {
+        return Variant();
+    }
+
+    Dictionary ret;
+    ret["frames_count"] = static_cast<int>(audio_buffer->FramesCount);
+    Array frames = Array();
+    for (int i = 0; i < audio_buffer->FramesCount; i++) {
+        frames.append(audio_buffer->Frames[i]);
+    }
+    ret["frames"] = frames;
+    ret["sample_rate"] = audio_buffer->SampleRate;
+    ret["channels"] = audio_buffer->Channels;
+    return ret;
 }

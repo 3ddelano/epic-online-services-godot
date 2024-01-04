@@ -382,7 +382,7 @@ Follow the instructions in [Running the service for local development](https://d
   - [x] Implementation
   - [x] Sample
 - RTC Interface
-  - [ ] Implementation
+  - [x] Implementation
   - [ ] Sample
 - Sanctions Interface
   - [x] Implementation

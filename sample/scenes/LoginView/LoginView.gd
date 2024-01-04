@@ -67,20 +67,19 @@ func _ready() -> void:
 	logout_btn.pressed.connect(_on_logout_btn_pressed)
 
 	# Auth Interface callbacks
-	var instance = EOS.get_instance()
-	c = instance.auth_interface_login_callback.connect(_on_auth_interface_login_callback)
-	c = instance.auth_interface_logout_callback.connect(_on_auth_interface_logout_callback)
+	IEOS.auth_interface_login_callback.connect(_on_auth_interface_login_callback)
+	IEOS.auth_interface_logout_callback.connect(_on_auth_interface_logout_callback)
 	# Connect Interface callbacks
-	c = instance.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
-	c = instance.connect_interface_login_status_changed.connect(_on_connect_interface_login_status_changed)
-	c = instance.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
+	IEOS.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
+	IEOS.connect_interface_login_status_changed.connect(_on_connect_interface_login_status_changed)
+	IEOS.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
-	# TODO: (Remove) Autologin for debug purpose
+	# TODO: Remove Autologin (PersistentAuth) for debug purpose
 	if OS.is_debug_build():
 		await Store.platform_create
 		# perform_auth_login(EOS.Auth.LoginCredentialType.AccountPortal)
 		# perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
-		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
+		# perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
 
 
 func _on_auth_interface_login_callback(data: Dictionary):
@@ -143,7 +142,8 @@ func _on_query_user_info_callback(data: Dictionary):
 
 
 func _on_connect_interface_login_status_changed(data: Dictionary):
-	print("--- Connect: login_status_changed: ", data)
+	#print("--- Connect: login_status_changed: ", data)
+	pass
 
 
 func _on_connect_interface_login_callback(data: Dictionary):
@@ -156,7 +156,7 @@ func _on_connect_interface_login_callback(data: Dictionary):
 		var create_user_options = EOS.Connect.CreateUserOptions.new()
 		create_user_options.continuance_token = ctw
 		EOS.Connect.ConnectInterface.create_user(create_user_options)
-		var ret = await EOS.get_instance().connect_interface_create_user_callback
+		var ret = await IEOS.connect_interface_create_user_callback
 		print("--- Connect: create_user_callback: ", ret)
 
 	if not data.success:
@@ -197,6 +197,8 @@ func _on_login_btn_pressed():
 
 			if login_type == "DISCORD":
 				OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
+			elif login_type == "DEVELOPER":
+				enter_credentials.set_id_value("localhost:4545")
 		else:
 			# No data entry is required
 			match login_type:
@@ -209,11 +211,11 @@ func _on_login_btn_pressed():
 		match login_type:
 			"DEVICE_ID":
 				EOS.Auth.AuthInterface.delete_persistent_auth(EOS.Auth.DeletePersistentAuthOptions.new())
-				await EOS.get_instance().auth_interface_delete_persistent_auth_callback
+				await IEOS.auth_interface_delete_persistent_auth_callback
 				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
 				options1.device_model = " ".join(PackedStringArray([OS.get_name(), OS.get_model_name()]))
 				EOS.Connect.ConnectInterface.create_device_id(options1)
-				await EOS.get_instance().connect_interface_create_device_id_callback
+				await IEOS.connect_interface_create_device_id_callback
 				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
 			"DISCORD":
 				connect_account(EOS.ExternalCredentialType.DiscordAccessToken, login_token)
