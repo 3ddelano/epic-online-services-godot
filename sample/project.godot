@@ -24,7 +24,6 @@ EOSGRuntime="*res://addons/epic-online-services-godot/runtime.gd"
 [display]
 
 window/stretch/mode="canvas_items"
-window/stretch/scale_mode="integer"
 
 [dotnet]
 
