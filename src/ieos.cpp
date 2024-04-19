@@ -51,6 +51,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(connect_interface_get_product_user_id_mapping);
     IEOS_BIND_METHOD(connect_interface_link_account);
     IEOS_BIND_METHOD(connect_interface_login);
+    IEOS_BIND_METHOD(connect_interface_logout);
     IEOS_BIND_METHOD(connect_interface_query_product_user_id_mappings);
     IEOS_BIND_METHOD(connect_interface_transfer_device_id_account);
     IEOS_BIND_METHOD(connect_interface_unlink_account);
@@ -237,6 +238,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(sanctions_interface_copy_player_sanction_by_index);
     IEOS_BIND_METHOD(sanctions_interface_get_player_sanction_count);
     IEOS_BIND_METHOD(sanctions_interface_query_active_player_sanctions);
+    IEOS_BIND_METHOD(sanctions_interface_create_player_sanction_appeal);
     IEOS_BIND_METHOD(sessions_interface_copy_active_session_details);
     IEOS_BIND_METHOD(sessions_interface_copy_session_details_by_invite_id);
     IEOS_BIND_METHOD(sessions_interface_copy_session_details_by_ui_event_id);
@@ -324,6 +326,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(connect_interface_delete_device_id_callback);
     IEOS_BIND_SIGNAL(connect_interface_link_account_callback);
     IEOS_BIND_SIGNAL(connect_interface_login_callback);
+    IEOS_BIND_SIGNAL(connect_interface_logout_callback);
     IEOS_BIND_SIGNAL(connect_interface_login_status_changed);
     IEOS_BIND_SIGNAL(connect_interface_query_product_user_id_mappings_callback);
     IEOS_BIND_SIGNAL(connect_interface_transfer_device_id_account_callback);
@@ -432,6 +435,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(rtc_interface_participant_status_changed);
     IEOS_BIND_SIGNAL(rtc_interface_room_statistics_updated);
     IEOS_BIND_SIGNAL(sanctions_interface_query_active_player_sanctions_callback);
+    IEOS_BIND_SIGNAL(sanctions_interface_create_player_sanction_appeal_callback);
     IEOS_BIND_SIGNAL(session_search_find_callback);
     IEOS_BIND_SIGNAL(sessions_interface_destroy_session_callback);
     IEOS_BIND_SIGNAL(sessions_interface_end_session_callback);

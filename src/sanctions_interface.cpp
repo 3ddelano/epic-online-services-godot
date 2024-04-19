@@ -53,3 +53,26 @@ Dictionary IEOS::sanctions_interface_copy_player_sanction_by_index(Ref<RefCounte
     ret["sanction"] = eosg_sanctions_player_sanction_to_dict_and_release(outSanction);
     return ret;
 }
+
+void IEOS::sanctions_interface_create_player_sanction_appeal(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString reference_id = VARIANT_TO_CHARSTRING(p_options->get("reference_id"));
+    int reason = p_options->get("reason");
+
+    EOS_Sanctions_CreatePlayerSanctionAppealOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_SANCTIONS_CREATEPLAYERSANCTIONAPPEAL_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    options.ReferenceId = reference_id.get_data();
+    options.Reason = static_cast<EOS_ESanctionAppealReason>(reason);
+
+    EOS_Sanctions_CreatePlayerSanctionAppeal(s_sanctionsInterface, &options, (void *)*p_options, [](const EOS_Sanctions_CreatePlayerSanctionAppealCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["reference_id"] = EOSG_GET_STRING(data->ReferenceId);
+        IEOS::get_singleton()->emit_signal("sanctions_interface_create_player_sanction_appeal_callback", ret);
+    });
+}

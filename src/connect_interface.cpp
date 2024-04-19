@@ -68,6 +68,27 @@ void IEOS::connect_interface_login(Ref<RefCounted> p_options) {
     });
 }
 
+void IEOS::connect_interface_logout(Ref<RefCounted> p_options) {
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+
+    EOS_Connect_LogoutOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_CONNECT_LOGOUT_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    p_options->reference();
+
+    EOS_Connect_Logout(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_LogoutCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+
+        ret["client_data"] = client_data->get("client_data");
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        IEOS::get_singleton()->emit_signal("connect_interface_logout_callback", ret);
+    });
+}
+
 Dictionary IEOS::connect_interface_copy_id_token(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
@@ -363,7 +384,7 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
         ret["product_user_id"] = eosg_product_user_id_to_string(data->ProductUserId);
         ret["is_account_info_present"] = EOSG_GET_BOOL(data->bIsAccountInfoPresent);
         ret["account_id_type"] = static_cast<int>(data->AccountIdType);
-        ret["account_id"] = String(data->AccountId);
+        ret["account_id"] = EOSG_GET_STRING(data->AccountId);
         IEOS::get_singleton()->emit_signal("connect_interface_verify_id_token_callback", ret);
     });
 }

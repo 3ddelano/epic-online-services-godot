@@ -6,16 +6,13 @@
 class_name EOS
 extends RefCounted
 
-
 static func get_instance():
 	return IEOS
-
 
 ## Pretty prints the [enum Result] code and its string representation.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func print_result(p_result) -> void:
 	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
-
 
 ## Returns a string representation of the [enum Result] code.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
@@ -25,7 +22,6 @@ static func result_str(p_result) -> String:
 	var idx := Result.values().find(p_result)
 	return Result.keys()[idx]
 
-
 ## Returns whether the operation was completed.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func is_operation_complete(p_result) -> bool:
@@ -33,15 +29,14 @@ static func is_operation_complete(p_result) -> bool:
 		p_result = p_result["result_code"]
 	return IEOS.is_operation_complete(p_result)
 
-
 ## Returns whether the operation was successful.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func is_success(p_result) -> bool:
+	if typeof(p_result) == TYPE_BOOL:
+		return p_result == true
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
 	return p_result == Result.Success
-
-
 
 class Achievements:
 	const UNLOCK_TIME_UNDEFINED = -1
@@ -145,10 +140,6 @@ class Achievements:
 		static func unlock_achievements(options: UnlockAchievementsOptions) -> void:
 			IEOS.achievements_interface_unlock_achievements(options)
 
-
-
-
-
 class Connect:
 	class Credentials extends BaseClass:
 		func _init():
@@ -170,6 +161,14 @@ class Connect:
 
 		var credentials: Credentials
 		var user_login_info: UserLoginInfo
+
+		var client_data = null
+
+	class LogoutOptions extends BaseClass:
+		func _init():
+			super._init("LogoutOptions")
+
+		var local_user_id: String
 
 		var client_data = null
 
@@ -303,6 +302,9 @@ class Connect:
 		static func login(options: LoginOptions) -> void:
 			IEOS.connect_interface_login(options)
 
+		static func logout(options: LogoutOptions) -> void:
+			IEOS.connect_interface_logout(options)
+
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.connect_interface_copy_id_token(options)
 
@@ -336,10 +338,10 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id := EOSGRuntime.local_product_user_id) -> LoginStatus:
+		static func get_login_status(local_user_id:=EOSGRuntime.local_product_user_id) -> LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
-		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions = GetProductUserExternalAccountCountOptions.new()) -> int:
+		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions=GetProductUserExternalAccountCountOptions.new()) -> int:
 			return IEOS.connect_interface_get_product_user_external_account_count(options)
 
 		static func query_product_user_id_mappings(options: QueryProductUserIdMappingsOptions) -> void:
@@ -360,10 +362,6 @@ class Connect:
 		static func unlink_account(options: UnlinkAccountOptions) -> void:
 			IEOS.connect_interface_unlink_account(options)
 
-
-
-
-
 class Auth:
 	enum ScopeFlags {
 		NoFlags = 0x0,
@@ -375,9 +373,9 @@ class Auth:
 		Country = 0x20,
 	}
 
-	enum AuthTokenType { Client = 0, User = 1 }
+	enum AuthTokenType {Client = 0, User = 1}
 
-	enum LinkAccountFlags { NoFlags = 0x0, NintendoNsaId = 0x1 }
+	enum LinkAccountFlags {NoFlags = 0x0, NintendoNsaId = 0x1}
 
 	enum LoginCredentialType {
 		None = -1,
@@ -404,7 +402,6 @@ class Auth:
 		var id: String
 		var token: String
 		var type: LoginCredentialType = -1
-
 
 	class LoginOptions extends BaseClass:
 		func _init():
@@ -509,7 +506,7 @@ class Auth:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.auth_interface_copy_id_token(options)
 
-		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id:=EOSGRuntime.local_epic_account_id) -> Dictionary:
 			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
 				options, local_user_id
 			)
@@ -538,16 +535,16 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id := EOSGRuntime.local_epic_account_id) -> LoginStatus:
+		static func get_login_status(local_user_id:=EOSGRuntime.local_epic_account_id) -> LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
 			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
 
-		static func get_merged_accounts_count(local_user_id := EOSGRuntime.local_epic_account_id) -> int:
+		static func get_merged_accounts_count(local_user_id:=EOSGRuntime.local_epic_account_id) -> int:
 			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
 
-		static func get_selected_account_id(local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func get_selected_account_id(local_user_id:=EOSGRuntime.local_epic_account_id) -> Dictionary:
 			return IEOS.auth_interface_get_selected_account_id(local_user_id)
 
 		static func link_account(options: LinkAccountOptions) -> void:
@@ -561,10 +558,6 @@ class Auth:
 
 		static func verify_user_auth(options: VerifyUserAuthOptions) -> void:
 			IEOS.auth_interface_verify_user_auth(options)
-
-
-
-
 
 class CustomInvites:
 	enum ResquestToJoinResponse {
@@ -643,17 +636,12 @@ class CustomInvites:
 		static func reject_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_reject_request_to_join(options)
 
-
-
-
-
 class Stats:
 	const STATS_TIME_UNDEFINED = -1
 
 	class CopyStatByIndexOptions extends BaseClass:
 		func _init():
 			super._init("CopyStatByIndexOptions")
-
 
 		var target_user_id = EOSGRuntime.local_product_user_id
 		var stat_index: int
@@ -709,10 +697,6 @@ class Stats:
 		static func query_stats(options: QueryStatsOptions) -> void:
 			IEOS.stats_interface_query_stats(options)
 
-
-
-
-
 class Platform:
 	enum PlatformFlags {
 		None = 0x0,
@@ -767,7 +751,7 @@ class Platform:
 		func _init():
 			super._init("RTCOptions")
 
-		var background_mode = null ## See [enum EOS.Platform.RTCBackgroundMode]
+		var background_mode = null # # See [enum EOS.Platform.RTCBackgroundMode]
 
 	class CreateOptions extends BaseClass:
 		func _init():
@@ -786,10 +770,9 @@ class Platform:
 		var override_country_code: String
 		var override_locale_code: String
 		var tick_budget_in_milliseconds: int
+		var task_network_timeout_seconds = null # float
 
 		var rtc_options := RTCOptions.new()
-
-
 
 	class PlatformInterface:
 		static func create(options: CreateOptions) -> bool:
@@ -840,14 +823,10 @@ class Platform:
 		static func shutdown() -> Result:
 			return IEOS.platform_interface_shutdown()
 
-
-
-
-
 class Ecom:
-	enum ItemType { Durable = 0, Consumable = 1, Other = 2 }
+	enum ItemType {Durable = 0, Consumable = 1, Other = 2}
 
-	enum OwnershipStatus { NotOwned = 0, Owned = 1 }
+	enum OwnershipStatus {NotOwned = 0, Owned = 1}
 
 	class CheckoutOptions extends BaseClass:
 		func _init():
@@ -1042,7 +1021,7 @@ class Ecom:
 			super._init("RedeemEntitlementsOptions")
 
 		var local_user_id = EOSGRuntime.local_epic_account_id
-		var entitlement_ids:  Array # Array[String]
+		var entitlement_ids: Array # Array[String]
 
 		var client_data = null
 
@@ -1058,7 +1037,6 @@ class Ecom:
 
 		var local_user_id = EOSGRuntime.local_epic_account_id
 		var redeemed_entitlement_index: String
-
 
 	class EcomInterface:
 		static func checkout(options: CheckoutOptions) -> void:
@@ -1145,12 +1123,8 @@ class Ecom:
 		static func copy_last_redeemed_entitlement_by_index(options: CopyLastRedeemedEntitlementByIndexOptions) -> Dictionary:
 			return IEOS.ecom_interface_copy_last_redeemed_entitlement_by_index(options)
 
-
-
-
-
 class Friends:
-	enum FriendsStatus { NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3 }
+	enum FriendsStatus {NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3}
 
 	class AcceptInviteOptions extends BaseClass:
 		func _init():
@@ -1229,12 +1203,8 @@ class Friends:
 		static func send_invite(options: SendInviteOptions) -> void:
 			IEOS.friends_interface_send_invite(options)
 
-
-
-
-
 class KWS:
-	enum KWSPermissionStatus { Granted = 0, Rejected = 1, Pending = 2 }
+	enum KWSPermissionStatus {Granted = 0, Rejected = 1, Pending = 2}
 
 	class CopyPermissionByIndexOptions extends BaseClass:
 		func _init():
@@ -1314,14 +1284,10 @@ class KWS:
 		static func update_parent_email(options: UpdateParentEmailOptions) -> void:
 			IEOS.kws_interface_update_parent_email(options)
 
-
-
-
-
 class Leaderboards:
 	const LEADERBOARD_TIME_UNDEFINED = -1
 
-	enum LeaderboardAggregation { Min = 0, Max = 1, Sum = 2, Latest = 3 }
+	enum LeaderboardAggregation {Min = 0, Max = 1, Sum = 2, Latest = 3}
 
 	class CopyLeaderboardDefinitionByIndexOptions extends BaseClass:
 		func _init():
@@ -1443,12 +1409,8 @@ class Leaderboards:
 		static func query_leaderboard_user_scores(options: QueryLeaderboardUserScoresOptions) -> void:
 			IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
 
-
-
-
-
 class Lobby:
-	enum LobbyAttributeVisibility { Public = 0, Private = 1 }
+	enum LobbyAttributeVisibility {Public = 0, Private = 1}
 
 	enum LobbyMemberStatus {
 		Joined = 0,
@@ -1459,7 +1421,7 @@ class Lobby:
 		Closed = 5
 	}
 
-	enum LobbyPermissionLevel { PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2 }
+	enum LobbyPermissionLevel {PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2}
 
 	const SEARCH_BUCKET_ID = "bucket"
 	const SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
@@ -1670,7 +1632,6 @@ class Lobby:
 		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
-
 	class LobbyInterface:
 		static func create_lobby(options: CreateLobbyOptions) -> void:
 			IEOS.lobby_interface_create_lobby(options)
@@ -1735,14 +1696,10 @@ class Lobby:
 		static func is_rtc_room_connected(options: IsRtcRoomConnectedOptions) -> Dictionary:
 			return IEOS.lobby_interface_is_rtc_room_connected(options)
 
-
-
-
-
 class Metrics:
-	enum MetricsAccountIdType { Epic = 0, External = 1 }
+	enum MetricsAccountIdType {Epic = 0, External = 1}
 
-	enum UserControllerType { Unknown = 0, MouseKeyboard = 1, GamepadControl = 2, TouchControl = 3 }
+	enum UserControllerType {Unknown = 0, MouseKeyboard = 1, GamepadControl = 2, TouchControl = 3}
 
 	class BeginPlayerSessionOptions extends BaseClass:
 		func _init():
@@ -1769,12 +1726,8 @@ class Metrics:
 		static func end_player_session(options: EndPlayerSessionOptions) -> Result:
 			return IEOS.metrics_interface_end_player_session(options)
 
-
-
-
-
 class Mods:
-	enum ModEnumerationType { Installed = 0, AllAvailable }
+	enum ModEnumerationType {Installed = 0, AllAvailable}
 
 	class CopyModInfoOptions extends BaseClass:
 		func _init():
@@ -1827,10 +1780,6 @@ class Mods:
 		static func update_mod(options: UpdateModOptions) -> void:
 			IEOS.mods_interface_update_mod(options)
 
-
-
-
-
 class P2P:
 	enum ConnectionClosedReason {
 		Unknown = 0,
@@ -1846,19 +1795,19 @@ class P2P:
 		UnexpectedError = 10
 	}
 
-	enum ConnectionEstablishedType { NewConnection = 0, Reconnection = 1 }
+	enum ConnectionEstablishedType {NewConnection = 0, Reconnection = 1}
 
-	enum NATType { Unknown = 0, Open = 1, Moderate = 2, Strict = 3 }
+	enum NATType {Unknown = 0, Open = 1, Moderate = 2, Strict = 3}
 
-	enum PacketReliability { UnreliableUnordered = 0, ReliableUnordered = 1, ReliableOrdered = 2 }
+	enum PacketReliability {UnreliableUnordered = 0, ReliableUnordered = 1, ReliableOrdered = 2}
 
-	enum RelayControl { NoRelays = 0, AllowRelays = 1, ForceRelays = 2 }
+	enum RelayControl {NoRelays = 0, AllowRelays = 1, ForceRelays = 2}
 
-	enum NetworkType { NoConnection = 0, DirectConnection = 1, RelayedConnection = 2 }
+	enum NetworkType {NoConnection = 0, DirectConnection = 1, RelayedConnection = 2}
 
-	enum Mode { None = 0, Server = 1, Client = 2, Mesh = 3 }
+	enum Mode {None = 0, Server = 1, Client = 2, Mesh = 3}
 
-	enum ConnectionStatus { Disconnected = 0, Connecting = 1, Connected = 2 }
+	enum ConnectionStatus {Disconnected = 0, Connecting = 1, Connected = 2}
 
 	class SetPortRangeOptions extends BaseClass:
 		func _init():
@@ -1899,12 +1848,8 @@ class P2P:
 		static func set_relay_control(relay_control: RelayControl) -> void:
 			IEOS.p2p_interface_set_relay_control(relay_control)
 
-
-
-
-
 class Presence:
-	enum Status { Offline = 0, Online = 1, Away = 2, ExtendedAway = 3, DoNotDisturb = 4 }
+	enum Status {Offline = 0, Online = 1, Away = 2, ExtendedAway = 3, DoNotDisturb = 4}
 
 	class CopyPresenceOptions extends BaseClass:
 		func _init():
@@ -1981,7 +1926,6 @@ class Presence:
 
 		var client_data = null
 
-
 	class PresenceInterface:
 		static func copy_presence(options: CopyPresenceOptions) -> Dictionary:
 			return IEOS.presence_interface_copy_presence(options)
@@ -2000,10 +1944,6 @@ class Presence:
 
 		static func set_presence(options: SetPresenceOptions) -> void:
 			IEOS.presence_interface_set_presence(options)
-
-
-
-
 
 class Reports:
 	enum PlayerReportsCategory {
@@ -2032,10 +1972,6 @@ class Reports:
 	class ReportsInterface:
 		static func send_player_behavior_report(options: SendPlayerBehaviorReportOptions) -> void:
 			IEOS.reports_interface_send_player_behavior_report(options)
-
-
-
-
 
 class ProgressionSnapshot:
 	class BeginSnapshotOptions extends BaseClass:
@@ -2090,10 +2026,6 @@ class ProgressionSnapshot:
 		static func end_snapshot(options: EndSnapshotOptions) -> void:
 			IEOS.progression_snapshot_interface_end_snapshot(options)
 
-
-
-
-
 class UI:
 	const ModifierShift = 16
 	const KeyTypeMask = (1 << ModifierShift) - 1
@@ -2102,9 +2034,9 @@ class UI:
 	const Control_ = 2 << ModifierShift
 	const Alt = 4 << ModifierShift
 	const Meta = 8 << ModifierShift
-	const ValidModifierMask = Shift | Control_ | Alt | Meta
+	const ValidModifierMask = Shift|Control_|Alt|Meta
 
-	enum NotificationLocation { TopLeft, TopRight, BottomLeft, BottomRight }
+	enum NotificationLocation {TopLeft, TopRight, BottomLeft, BottomRight}
 
 	enum KeyCombination {
 		ModifierShift = 16,
@@ -2114,7 +2046,7 @@ class UI:
 		Control_ = 2 << ModifierShift,
 		Alt = 4 << ModifierShift,
 		Meta = 8 << ModifierShift,
-		ValidModifierMask = Shift | Control_ | Alt | Meta,
+		ValidModifierMask = Shift|Control_|Alt|Meta,
 		None = 0,
 		Space,
 		Backspace,
@@ -2396,10 +2328,6 @@ class UI:
 		static func show_native_profile(options: ShowNativeProfileOptions) -> void:
 			IEOS.ui_interface_show_native_profile(options)
 
-
-
-
-
 class UserInfo:
 	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
 		func _init():
@@ -2517,12 +2445,8 @@ class UserInfo:
 		static func copy_best_display_name_with_platform(options: CopyBestDisplayNameWithPlatformOptions) -> Dictionary:
 			return IEOS.user_info_interface_copy_best_display_name_with_platform(options)
 
-		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
+		static func get_local_platform_type(options: GetLocalPlatformTypeOptions=GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
 			return IEOS.user_info_interface_get_local_platform_type(options)
-
-
-
-
 
 class Logging:
 	enum LogCategory {
@@ -2591,10 +2515,6 @@ class Logging:
 
 	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> Result:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
-
-
-
-
 
 class TitleStorage:
 	class QueryFileOptions extends BaseClass:
@@ -2674,10 +2594,6 @@ class TitleStorage:
 
 		static func read_file(options: ReadFileOptions) -> Variant:
 			return IEOS.titlestorage_interface_read_file(options)
-
-
-
-
 
 class PlayerDataStorage:
 	class QueryFileOptions extends BaseClass:
@@ -2798,11 +2714,15 @@ class PlayerDataStorage:
 		static func write_file(options: WriteFileOptions) -> Variant:
 			return IEOS.playerdatastorage_interface_write_file(options)
 
-
-
-
-
 class Sanctions:
+	enum AppealReason {
+		Invalid = 0,
+		IncorrectSanction = 1,
+		CompromisedAccount = 2,
+		UnfairPunishment = 3,
+		AppealForForgiveness = 4,
+	}
+
 	class QueryActivePlayerSanctionsOptions extends BaseClass:
 		func _init():
 			super._init("QueryActivePlayerSanctionsOptions")
@@ -2830,6 +2750,16 @@ class Sanctions:
 
 		var client_data = null
 
+	class CreatePlayerSanctionAppealOptions extends BaseClass:
+		func _init():
+			super._init("CreatePlayerSanctionAppealOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var reason: AppealReason
+		var reference_id: String
+
+		var client_data = null
+
 	class SanctionsInterface:
 		static func query_active_player_sanctions(options: QueryActivePlayerSanctionsOptions) -> void:
 			IEOS.sanctions_interface_query_active_player_sanctions(options)
@@ -2840,9 +2770,8 @@ class Sanctions:
 		static func copy_player_sanction_by_index(options: CopyPlayerSanctionByIndexOptions) -> Variant:
 			return IEOS.sanctions_interface_copy_player_sanction_by_index(options)
 
-
-
-
+		static func create_player_sanction_appeal(options: CreatePlayerSanctionAppealOptions) -> void:
+			IEOS.sanctions_interface_create_player_sanction_appeal(options)
 
 class Sessions:
 	enum OnlineSessionState {
@@ -3099,10 +3028,6 @@ class Sessions:
 		static func update_session(options: UpdateSessionOptions) -> void:
 			IEOS.sessions_interface_update_session(options)
 
-
-
-
-
 class RTC:
 
 	enum ParticipantStatus {
@@ -3216,8 +3141,6 @@ class RTC:
 		static func remove_notify_room_statistics_updated(notification_id: int) -> void:
 			IEOS.rtc_interface_remove_notify_room_statistics_updated(notification_id)
 
-
-
 class RTCAudio:
 	enum AudioStatus {
 		## Audio unsupported by the source (no devices)
@@ -3247,7 +3170,7 @@ class RTCAudio:
 		Failed = 4
 	}
 
-	enum AudioOutputStatus{
+	enum AudioOutputStatus {
 		## The device is not in used right now (e.g: you are alone in the room). In such cases, the hardware resources are not allocated.
 		Idle = 0,
 		## Device is in use
@@ -3440,19 +3363,19 @@ class RTCAudio:
 		static func add_notify_participant_updated(options: AddNotifyParticipantUpdatedOptions) -> int:
 			return IEOS.rtc_audio_interface_add_notify_participant_updated(options)
 
-		static func get_input_devices_count(options := GetInputDevicesCountOptions.new()) -> int:
+		static func get_input_devices_count(options:=GetInputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_input_devices_count(options)
 
-		static func get_output_devices_count(options := GetOutputDevicesCountOptions.new()) -> int:
+		static func get_output_devices_count(options:=GetOutputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_output_devices_count(options)
 
 		static func send_audio(options: SendAudioOptions) -> int:
 			return IEOS.rtc_audio_interface_send_audio(options)
 
-		static func query_input_devices_information(options := QueryInputDevicesInformationOptions.new()) -> void:
+		static func query_input_devices_information(options:=QueryInputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_input_devices_information(options)
 
-		static func query_output_devices_information(options := QueryOutputDevicesInformationOptions.new()) -> void:
+		static func query_output_devices_information(options:=QueryOutputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_output_devices_information(options)
 
 		static func register_platform_user(options: RegisterPlatformUserOptions) -> void:
@@ -3497,10 +3420,6 @@ class RTCAudio:
 		static func update_sending_volume(options: UpdateSendingVolumeOptions) -> void:
 			IEOS.rtc_audio_interface_update_sending_volume(options)
 
-
-
-
-
 class Version:
 	class VersionInterface:
 		static func get_version() -> String:
@@ -3508,10 +3427,6 @@ class Version:
 
 		static func get_constants() -> Dictionary:
 			return IEOS.version_interface_get_constants()
-
-
-
-
 
 enum Result {
 	Success = 0,
@@ -3658,6 +3573,7 @@ enum Result {
 	ConnectExternalServiceUnavailable = 7006,
 	ConnectExternalServiceConfigurationFailure = 7007,
 	SocialOverlayLoadError = 8000,
+	InconsistentVirtualMemoryFunctions = 8001,
 	LobbyNotOwner = 9000,
 	LobbyInvalidLock = 9001,
 	LobbyLobbyAlreadyExists = 9002,
@@ -3724,6 +3640,8 @@ enum Result {
 	ParentEmailMissing = 15000,
 	UserGraduated = 15001,
 	AndroidJavaVMNotStored = 17000,
+	ReservedMustReferenceLocalVM = 17001,
+	ReservedMustBeNull = 17002,
 	PermissionRequiredPatchAvailable = 18000,
 	PermissionRequiredSystemUpdate = 18001,
 	PermissionAgeRestrictionFailure = 18002,
@@ -3737,6 +3655,11 @@ enum Result {
 	DesktopCrossplayServiceNotRunning = 19003,
 	CustomInvitesInviteFailed = 20000,
 	UserInfoBestDisplayNameIndeterminate = 22000,
+	OnNetworkRequestedDeprecatedCallbackNotSet = 23000,
+	CacheStorage_SizeKBNotMultipleOf16 = 23001,
+	CacheStorage_SizeKBBelowMinimumSize = 23002,
+	CacheStorage_SizeKBExceedsMaximumSize = 23003,
+	CacheStorage_IndexOutOfRangeRange = 23004,
 	UnexpectedError = 0x7FFFFFFF
 }
 
@@ -3754,7 +3677,8 @@ enum ExternalAccountType {
 	Google = 10,
 	Oculus = 11,
 	Itchio = 12,
-	Amazon = 13
+	Amazon = 13,
+	Viveport = 14,
 }
 
 enum ExternalCredentialType {
@@ -3776,7 +3700,9 @@ enum ExternalCredentialType {
 	ItchioJwt = 14,
 	ItchioKey = 15,
 	EpicIdToken = 16,
-	AmazonAccessToken = 17
+	AmazonAccessToken = 17,
+	SteamSessionTicket = 18,
+	ViveportUserToken = 19,
 }
 
 ## This seems to be outdated
@@ -3822,4 +3748,3 @@ enum ComparisonOp {
 	NotOneOf = 10,
 	Contains = 11
 }
-

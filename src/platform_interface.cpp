@@ -8,6 +8,7 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     CharString encryptionKey = VARIANT_TO_CHARSTRING(p_options->get("encryption_key"));
     int flags = p_options->get("flags");
     int tickBudgetInMilliseconds = p_options->get("tick_budget_in_milliseconds");
+    Variant taskNetworkTimeoutSeconds = p_options->get("task_network_timeout_seconds");
     CharString clientId = VARIANT_TO_CHARSTRING(p_options->get("client_id"));
     CharString clientSecret = VARIANT_TO_CHARSTRING(p_options->get("client_secret"));
     CharString overrideCountryCode = VARIANT_TO_CHARSTRING(p_options->get("override_country_code"));
@@ -69,6 +70,11 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     }
 
     platformOptions.RTCOptions = &rtcOptions;
+
+    double p_taskNetworkTimeoutSeconds = taskNetworkTimeoutSeconds;
+    if (taskNetworkTimeoutSeconds.get_type() != Variant::NIL) {
+        platformOptions.TaskNetworkTimeoutSeconds = &p_taskNetworkTimeoutSeconds;
+    }
 
     if (!platformOptions.IntegratedPlatformOptionsContainerHandle) {
         EOS_IntegratedPlatform_CreateIntegratedPlatformOptionsContainerOptions CreateIntegratedPlatformOptionsContainerOptions = {};

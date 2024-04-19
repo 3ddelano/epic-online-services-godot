@@ -155,6 +155,7 @@ public:
     void connect_interface_delete_device_id(Ref<RefCounted> options);
     void connect_interface_link_account(Ref<RefCounted> options);
     void connect_interface_login(Ref<RefCounted> options);
+    void connect_interface_logout(Ref<RefCounted> options);
     void connect_interface_query_product_user_id_mappings(Ref<RefCounted> options);
     void connect_interface_transfer_device_id_account(Ref<RefCounted> options);
     void connect_interface_unlink_account(Ref<RefCounted> options);
@@ -434,6 +435,7 @@ public:
     Dictionary sanctions_interface_copy_player_sanction_by_index(Ref<RefCounted> options);
     int sanctions_interface_get_player_sanction_count(Ref<RefCounted> options);
     void sanctions_interface_query_active_player_sanctions(Ref<RefCounted> options);
+    void sanctions_interface_create_player_sanction_appeal(Ref<RefCounted> options);
 
     // -----
     // Sessions Interface
@@ -493,6 +495,7 @@ public:
     // -----
     // RTC Interface
     // -----
+    // TODO: impl rtc_interface_get_data_interface
     int rtc_interface_add_notify_disconnected(Ref<RefCounted> options);
     int rtc_interface_add_notify_participant_status_changed(Ref<RefCounted> options);
     int rtc_interface_add_notify_room_statistics_updated(Ref<RefCounted> options);

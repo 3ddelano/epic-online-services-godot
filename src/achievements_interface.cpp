@@ -130,7 +130,8 @@ void IEOS::achievements_interface_query_player_achievements(Ref<RefCounted> p_op
         Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
         ret["client_data"] = client_data->get("client_data");
-        ret["user_id"] = eosg_product_user_id_to_string(data->UserId);
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["target_user_id"] = eosg_product_user_id_to_string(data->TargetUserId);
         IEOS::get_singleton()->emit_signal("achievements_interface_query_player_achievements_callback", ret);
     });
 }

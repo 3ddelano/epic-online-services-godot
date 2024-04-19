@@ -1,10 +1,10 @@
-Epic Online Services Godot (WIP)
+Epic Online Services Godot
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
 ### Unofficial Epic Online Services wrapper for Godot Engine 4.2 (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.2-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.1" src="https://img.shields.io/badge/-Epic Online Services 1.16.1-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.2-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.3" src="https://img.shields.io/badge/-Epic Online Services 1.16.3-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Supports Windows x64, Linux x64 and Android
 
@@ -30,7 +30,11 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 
 ## [View Current Project Status](#current-project-status)
 
-## [Demo Video (Coming Soon)](#)
+## [Demo Video (Youtube)](https://www.youtube.com/watch?v=ENyvF4yVjKg)
+[Watch the playlist](https://www.youtube.com/playlist?list=PL5t0hR7ADzun5JYF4e2a2FtZEWYHxK83_)
+
+[![Epic Online Services Tutorial series](https://img.youtube.com/vi/ENyvF4yVjKg/0.jpg)](https://www.youtube.com/playlist?list=PL5t0hR7ADzun5JYF4e2a2FtZEWYHxK83_)
+
 
 ## [Documentation (Coming Soon)](#)
 
@@ -45,7 +49,7 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 
 ## How does it work
 
-This project uses GDExtension to wrap the Epic Online Services C SDK so that it can be easily used in Godot using GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like user login, logout, achievement unlock, etc.
+This project uses GDExtension to wrap the `Epic Online Services C SDK` so that it can be easily used in Godot using GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like user login, logout, achievement unlock, etc.
 
 
 Installation
@@ -56,42 +60,43 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
 3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2` plugin.
-4. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below starter script.
+4. Restart the godot editor.
+5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below starter script.
     ```GDScript
     # In main script
     extends Node
 
     func _ready() -> void:
         # Initialize the SDK
-        var init_options = EOS.Platform.InitializeOptions.new()
-        init_options.product_name = "PRODUCT_NAME_HERE"
-        init_options.product_version = "PRODUCT_VERSION_HERE"
+        var init_opts = EOS.Platform.InitializeOptions.new()
+        init_opts.product_name = "PRODUCT_NAME_HERE"
+        init_opts.product_version = "PRODUCT_VERSION_HERE"
 
-        var init_result := EOS.Platform.PlatformInterface.initialize(init_options)
-        if init_result != EOS.Result.Success:
-            print("Failed to initialize EOS SDK: ", EOS.result_str(init_result))
+        var init_res := EOS.Platform.PlatformInterface.initialize(init_opts)
+        if not EOS.is_success(init_res):
+            print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
             return
 
         # Create platform
-        var create_options = EOS.Platform.CreateOptions.new()
-        create_options.product_id = "PRODUCT_ID_HERE"
-        create_options.sandbox_id = "SANDBOX_ID_HERE"
-        create_options.deployment_id = "DEPLOYMENT_ID_HERE"
-        create_options.client_id = "CLIENT_ID_HERE"
-        create_options.client_secret = "CLIENT_SECRET_HERE"
-        create_options.encryption_key = "ENCRYPTION_KEY_HERE"
+        var create_opts = EOS.Platform.CreateOptions.new()
+        create_opts.product_id = "PRODUCT_ID_HERE"
+        create_opts.sandbox_id = "SANDBOX_ID_HERE"
+        create_opts.deployment_id = "DEPLOYMENT_ID_HERE"
+        create_opts.client_id = "CLIENT_ID_HERE"
+        create_opts.client_secret = "CLIENT_SECRET_HERE"
+        create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
 
         # Enable Social Overlay on Windows
         if OS.get_name() == "Windows":
-            create_options.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
+            create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 
-        var create_success := EOS.Platform.PlatformInterface.create(create_options)
+        var create_success := EOS.Platform.PlatformInterface.create(create_opts)
         if not create_success:
             print("Failed to create EOS Platform")
             return
 
         # Setup Logs from EOS
-        EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
+        IEOS.logging_interface_callback.connect(_on_logging_interface_callback)
         var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
         if res != EOS.Result.Success:
             print("Failed to set log level: ", EOS.result_str(res))
@@ -106,22 +111,26 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
 
     func _anonymous_login() -> void:
         # Login using Device ID (no user interaction/credentials required)
+		# Note: Device ID login method is for mobile devices
+		# Note: It may not work on some desktops
+		# Note: Rather for testing using the Dev Auth tool login method
         var opts = EOS.Connect.CreateDeviceIdOptions.new()
         opts.device_model = OS.get_name() + " " + OS.get_model_name()
         EOS.Connect.ConnectInterface.create_device_id(opts)
-        await EOS.get_instance().connect_interface_create_device_id_callback
+        await IEOS.connect_interface_create_device_id_callback
 
         var credentials = EOS.Connect.Credentials.new()
         credentials.token = null
         credentials.type = EOS.ExternalCredentialType.DeviceidAccessToken
 
-        var login_options = EOS.Connect.LoginOptions.new()
-        login_options.credentials = credentials
-        var user_login_info = EOS.Connect.UserLoginInfo.new()
+		var user_login_info = EOS.Connect.UserLoginInfo.new()
         user_login_info.display_name = "Anon User"
-        login_options.user_login_info = user_login_info
-        EOS.Connect.ConnectInterface.login(login_options)
-        EOS.get_instance().connect_interface_login_callback.connect(_on_connect_interface_login_callback)
+
+        var login_opts = EOS.Connect.LoginOptions.new()
+        login_opts.credentials = credentials
+        login_opts.user_login_info = user_login_info
+        IEOS.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
+        EOS.Connect.ConnectInterface.login(login_opts)
 
     func _on_connect_interface_login_callback(data: Dictionary) -> void:
         if not data.success:
