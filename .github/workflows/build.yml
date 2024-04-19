@@ -68,9 +68,23 @@ jobs:
                       dev_build: no
                       platform: android
                       arch: arm64
+                    - identifier: android-x86_64-debug
+                      name: 🤖 Android x86_64 Debug
+                      runner: ubuntu-20.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: android
+                      arch: x86_64
+                    - identifier: android-x86_64-release
+                      name: 🤖 Android x86_64 Release
+                      runner: ubuntu-20.04
+                      target: template_release
+                      dev_build: no
+                      platform: android
+                      arch: x86_64
         steps:
             - name: Set up Python
-              uses: actions/setup-python@v4
+              uses: actions/setup-python@v5
               with:
                   python-version: "3.x"
 
@@ -82,19 +96,20 @@ jobs:
                   scons --version
 
             - name: Checkout project
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   submodules: false
 
             - name: Checkout godot-cpp
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   repository: godotengine/godot-cpp
                   path: godot-cpp
                   submodules: recursive
+                  ref: "54136ee8357c5140a3775c54f08db5f7deda2058"
 
             - name: Checkout private EOS SDK mirror repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
                   repository: 3ddelano/eos-sdk-mirror
@@ -120,7 +135,7 @@ jobs:
                   link-to-sdk: true
 
             - name: Setup build cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ github.workspace }}/.scons-cache/
                   key: ${{ matrix.identifier }}
@@ -158,10 +173,18 @@ jobs:
               run: |
                   Remove-Item ${{ github.workspace }}/artifact/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
+            - name: Upload artifact ${{ matrix.platform }}-${{ matrix.target }}-${{ matrix.arch }}
+              uses: actions/upload-artifact@v3
+              with:
+                  name: ${{ github.event.repository.name }}-${{ matrix.platform }}-${{ matrix.target }}-${{ matrix.arch }}-${{ github.sha }}
+                  path: |
+                      ${{ github.workspace }}/${{ matrix.platform }}-${{ matrix.target }}-${{ matrix.arch }}/artifact/
+                  retention-days: 14
+
             - name: Upload artifact
               uses: actions/upload-artifact@v3
               with:
-                  name: ${{ github.event.repository.name }}-${{ github.sha }}
+                  name: ${{ github.event.repository.name }}-all${{ github.sha }}
                   path: |
                       ${{ github.workspace }}/artifact/
                   retention-days: 14
