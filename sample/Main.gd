@@ -30,7 +30,7 @@ func _ready() -> void:
 		init_res = EOS.Platform.PlatformInterface.initialize(init_opts)
 		init_retry_count -= 1
 		await get_tree().create_timer(0.2).timeout
-	
+
 	if not EOS.is_success(init_res):
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
 		return

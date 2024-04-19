@@ -235,11 +235,11 @@ Follow the instructions in [Running the service for local development](https://d
 		implementation libraries.androidxFragment
 		
 		// EOS SDK dependencies
-		implementation 'androidx.appcompat:appcompat:1.0.0'
-		implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+		implementation 'androidx.appcompat:appcompat:1.5.1'
+		implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 		implementation 'androidx.security:security-crypto:1.0.0'
-		implementation 'androidx.browser:browser:1.0.0'
-		implementation files('../../../thirdparty/eos-sdk/SDK/Bin/Android/static-stdc++/aar/eos-sdk.aar')
+		implementation 'androidx.browser:browser:1.4.0'
+		implementation files('../../../thirdparty/eos-sdk/SDK/Bin/Android/static-stdc++/aar/eossdk-StaticSTDC-release.aar')
 
 		...other code
 	```
@@ -298,7 +298,7 @@ Follow the instructions in [Running the service for local development](https://d
 
 	Before
 	```
-	minSdk             : 22,
+	minSdk             : 21,
 	```
 	After
 	```
@@ -321,10 +321,11 @@ Follow the instructions in [Running the service for local development](https://d
 		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
-			EOSSDK.init(getApplicationContext());  // added
-
+			EOSSDK.init(getActivity());  // added
+			
 			setTheme(R.style.GodotAppMainTheme);
 			super.onCreate(savedInstanceState);
+
 		}
 	}
 
@@ -334,7 +335,7 @@ Follow the instructions in [Running the service for local development](https://d
 
 8. In the `Gradle Build` section, enable `Use Gradle Build`. In the `Architectures` section enable `arm64-v8a`. In the `Permissions` section ensure that `ACESSS_NETWORK_STATE`, `ACCESS_WIFI_STATE` and `INTERNET` are enabled. These permissions are needed for the EOS SDK to work. Fill in the other details such as package name, etc as needed.
 
-9. You can now export the Android APK by clicking the Export Project button.
+9. You can now export the Android APK by clicking the `Export Project` button.
 
 
 ## Current Project Status

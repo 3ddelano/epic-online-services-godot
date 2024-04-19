@@ -54,7 +54,20 @@ jobs:
                       dev_build: no
                       platform: windows
                       arch: x86_64
-
+                    - identifier: android-arm64-debug
+                      name: 🤖 Android arm64 Debug
+                      runner: ubuntu-20.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: android
+                      arch: arm64
+                    - identifier: android-arm64-release
+                      name: 🤖 Android arm64 Release
+                      runner: ubuntu-20.04
+                      target: template_release
+                      dev_build: no
+                      platform: android
+                      arch: arm64
         steps:
             - name: Set up Python
               uses: actions/setup-python@v4
@@ -86,7 +99,7 @@ jobs:
                   token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
                   repository: 3ddelano/eos-sdk-mirror
                   path: thirdparty/eos-sdk
-                  ref: "877da7fd24b7b9580d7a54df49863c2eb58d28b0"
+                  ref: "6454f08fa83748bb568da7e056d20af5c2021f32"
 
             - name: (Windows) Install mingw64
               if: ${{ matrix.platform == 'windows' }}
@@ -98,6 +111,13 @@ jobs:
               run: |
                   sudo apt-get update -qq
                   sudo apt-get install -qqq build-essential pkg-config
+
+            - name: (Android) Install dependencies
+              if: ${{ matrix.platform == 'android' }}
+              uses: nttld/setup-ndk@v1
+              with:
+                  ndk-version: r23c
+                  link-to-sdk: true
 
             - name: Setup build cache
               uses: actions/cache@v3
