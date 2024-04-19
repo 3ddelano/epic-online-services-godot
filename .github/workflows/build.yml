@@ -178,7 +178,7 @@ jobs:
                   path: |
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
-    merge:
+    merge-platforms:
         runs-on: ubuntu-latest
         needs: build
         strategy:
@@ -191,7 +191,7 @@ jobs:
                     - identifier: macos-universal
                       name: 🍎 macOS (universal)
                       matchpattern: macos
-                    - identifier: windows-x86_64
+                    - identifier: windows
                       name: 🏁 Windows
                       matchpattern: windows
                     - identifier: android-arm64
@@ -205,9 +205,13 @@ jobs:
             - name: Merge artifacts for platform
               uses: actions/upload-artifact/merge@v4
               with:
-                  name: ${{ github.event.repository.name }}-${{ matrix.identifier }}-${{ github.sha }}
+                  name: ${{ github.event.repository.name }}-${{ matrix.matchpattern }}-${{ github.sha }}
                   pattern: ${{ github.event.repository.name }}-${{ matrix.matchpattern }}*
 
+    merge-all:
+        runs-on: ubuntu-latest
+        needs: merge-platforms
+        steps:
             - name: Merge artifacts into single
               uses: actions/upload-artifact/merge@v4
               with:
