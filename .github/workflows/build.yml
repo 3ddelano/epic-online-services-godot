@@ -159,31 +159,57 @@ jobs:
             - name: Create artifact folder
               shell: sh
               run: |
-                  mkdir -p '${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/'
+                  mkdir -p '${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/'
 
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
-                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/'
+                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/'
 
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  Remove-Item ${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
+                  Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-${{ matrix.platform }}-${{ matrix.arch }}-${{ github.sha }}
                   path: |
-                      ${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/
+                      ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
     merge:
         runs-on: ubuntu-latest
         needs: build
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - identifier: linux-x86_64
+                      name: 🐧 Linux
+                      matchpattern: linux
+                    - identifier: macos-universal
+                      name: 🍎 macOS (universal)
+                      matchpattern: macos
+                    - identifier: windows-x86_64
+                      name: 🏁 Windows
+                      matchpattern: windows
+                    - identifier: android-arm64
+                      name: 🤖 Android arm64
+                      matchpattern: android-arm64
+                    - identifier: android-x86_64
+                      name: 🤖 Android x86_64
+                      matchpattern: android-x86_64
+
         steps:
-            - name: Merge artifacts
+            - name: Merge artifacts for platform
+              uses: actions/upload-artifact/merge@v4
+              with:
+                  name: ${{ github.event.repository.name }}-${{ matrix.identifier }}-${{ github.sha }}
+                  pattern: ${{ github.event.repository.name }}-${{ matrix.matchpattern }}*
+
+            - name: Merge artifacts into single
               uses: actions/upload-artifact/merge@v4
               with:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
-                  pattern: ${{ github.workspace }}/artifact-*
+                  pattern: ${{ github.event.repository.name }}-*
