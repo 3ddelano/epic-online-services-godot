@@ -139,10 +139,8 @@ jobs:
               with:
                   path: ${{ github.workspace }}/.scons-cache/
                   key: ${{ matrix.identifier }}
-                  #   key: ${{ matrix.identifier }}-${{ github.ref }}
                   restore-keys: |
-                      #   ${{ matrix.identifier }}-${{ github.ref }}
-                        ${{ matrix.identifier }}
+                      ${{ matrix.identifier }}
               continue-on-error: true
 
             - name: Compile extension
@@ -161,24 +159,24 @@ jobs:
             - name: Create artifact folder
               shell: sh
               run: |
-                  mkdir -p '${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/'
+                  mkdir -p '${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/'
 
             - name: Copy addons folder to artifact folder
               shell: sh
               run: |
-                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/'
+                  cp -n -r '${{ github.workspace }}/sample/addons' '${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/'
 
             - name: (Windows) Delete compilation files
               if: ${{ matrix.platform == 'windows' }}
               run: |
-                  Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
+                  Remove-Item ${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-${{ matrix.identifier }}-${{ github.sha }}
                   path: |
-                      ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
+                      ${{ github.workspace }}/artifact-${{ matrix.platform }}-${{ matrix.arch }}/
                   retention-days: 14
     merge:
         runs-on: ubuntu-latest
