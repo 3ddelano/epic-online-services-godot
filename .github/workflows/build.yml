@@ -174,7 +174,7 @@ jobs:
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-${{ matrix.platform }}-${{ matrix.arch }}-${{ github.sha }}
+                  name: ${{ github.event.repository.name }}-${{ matrix.identifier }}-${{ github.sha }}
                   path: |
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
