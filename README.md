@@ -1,4 +1,4 @@
-Epic Online Services Godot
+Epic Online Services Godot (EOSG)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
@@ -59,7 +59,7 @@ This is a regular plugin for `Godot 4.2`. To install the plugin follow the steps
 
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
-3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2` plugin.
+3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2 (EOSG)` plugin.
 4. Restart the godot editor.
 5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below starter script.
     ```GDScript

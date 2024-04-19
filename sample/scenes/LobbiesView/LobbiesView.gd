@@ -373,8 +373,8 @@ func _on_create_lobby_callback(data: Dictionary):
 
 	modify_lobby(current_lobby)
 
-	if current_lobby.is_rtc_room_enabled():
-		_subscribe_to_rtc_events()
+	#if current_lobby.is_rtc_room_enabled():
+		#_subscribe_to_rtc_events()
 
 
 func _on_update_lobby_callback(data: Dictionary):
