@@ -798,3 +798,26 @@ static Variant eosg_rtc_audio_audio_buffer_to_dict(EOS_RTCAudio_AudioBuffer *aud
     ret["channels"] = audio_buffer->Channels;
     return ret;
 }
+
+static EOS_AntiCheatCommon_LogPlayerUseWeaponData eosg_refcounted_to_anticheat_log_player_use_weapon_data(Ref<RefCounted> p_data) {
+    Variant p_player_handle = p_data->get("player_handle");
+    Vector3 p_player_position = p_data->get("player_position");
+    Quaternion p_player_view_rotation = p_data->get("player_view_rotation");
+    CharString p_weapon_name = VARIANT_TO_CHARSTRING(p_data->get("weapon_name"));
+
+    EOS_AntiCheatCommon_LogPlayerUseWeaponData use_weapon_data;
+    memset(&use_weapon_data, 0, sizeof(use_weapon_data));
+    use_weapon_data.PlayerHandle = (void *)p_player_handle;
+    use_weapon_data.PlayerPosition->x = p_player_position.x;
+    use_weapon_data.PlayerPosition->y = p_player_position.y;
+    use_weapon_data.PlayerPosition->z = p_player_position.z;
+    use_weapon_data.PlayerViewRotation->x = p_player_view_rotation.x;
+    use_weapon_data.PlayerViewRotation->y = p_player_view_rotation.y;
+    use_weapon_data.PlayerViewRotation->z = p_player_view_rotation.z;
+    use_weapon_data.PlayerViewRotation->w = p_player_view_rotation.w;
+    use_weapon_data.bIsPlayerViewZoomed = VARIANT_TO_EOS_BOOL(p_data->get("is_player_view_zoomed"));
+    use_weapon_data.bIsMeleeAttack = VARIANT_TO_EOS_BOOL(p_data->get("is_melee_attack"));
+    use_weapon_data.WeaponName = p_weapon_name.get_data();
+
+    return use_weapon_data;
+}

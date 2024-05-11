@@ -14,16 +14,14 @@ var selected_leaderboard = {
 	records = []
 }
 
-
 func _ready() -> void:
 	visibility_changed.connect(_on_query_leaderboard)
 	Store.logout_success.connect(_on_logout_success)
-	EOS.get_instance().leaderboards_interface_query_leaderboard_definitions_callback.connect(_on_query_leaderboard_definitions_callback)
-	EOS.get_instance().leaderboards_interface_query_leaderboard_ranks_callback.connect(_on_query_leaderboard_ranks_callback)
+	IEOS.leaderboards_interface_query_leaderboard_definitions_callback.connect(_on_query_leaderboard_definitions_callback)
+	IEOS.leaderboards_interface_query_leaderboard_ranks_callback.connect(_on_query_leaderboard_ranks_callback)
 	view_leaderboard_btn.pressed.connect(_on_view_leaderboard_btn_pressed)
 
 	_rebuild_ui()
-
 
 func _on_query_leaderboard():
 	if not visible: return
@@ -32,14 +30,12 @@ func _on_query_leaderboard():
 	query_leaderboard_opts.local_user_id = Store.product_user_id
 	EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_definitions(query_leaderboard_opts)
 
-
 func _on_logout_success():
 	leaderboards.clear()
 	_update_select_leaderboard_button()
 	selected_leaderboard.id = ""
 	selected_leaderboard.records = []
 	_rebuild_ui()
-
 
 func _on_query_leaderboard_definitions_callback(data: Dictionary):
 	print("--- Leaderboards: query_leaderboard_definitions_callback: ", EOS.result_str(data))
@@ -58,9 +54,7 @@ func _on_query_leaderboard_definitions_callback(data: Dictionary):
 		else:
 			leaderboards[leaderboard_data.definition.leaderboard_id] = leaderboard_data.definition
 
-
 	_update_select_leaderboard_button()
-
 
 func _update_select_leaderboard_button():
 	select_leaderboard_btn.clear()
@@ -70,7 +64,6 @@ func _update_select_leaderboard_button():
 		select_leaderboard_btn.add_item(leaderboard_ids[i], i)
 		select_leaderboard_btn.set_item_metadata(i, leaderboard_ids[i])
 
-
 func _on_view_leaderboard_btn_pressed():
 	var selected_leaderboard_id = select_leaderboard_btn.get_selected_metadata()
 	var query_ranks_opts = EOS.Leaderboards.QueryLeaderboardRanksOptions.new()
@@ -78,7 +71,6 @@ func _on_view_leaderboard_btn_pressed():
 	query_ranks_opts.leaderboard_id = selected_leaderboard_id
 	query_ranks_opts.client_data = selected_leaderboard_id
 	EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_ranks(query_ranks_opts)
-
 
 func _on_query_leaderboard_ranks_callback(data: Dictionary):
 	print("--- Leaderboards: query_leaderboard_ranks_callback: ", EOS.result_str(data))
@@ -99,7 +91,6 @@ func _on_query_leaderboard_ranks_callback(data: Dictionary):
 	selected_leaderboard.id = data.client_data
 	selected_leaderboard.records = leaderboard_records
 	_rebuild_ui()
-
 
 func _rebuild_ui():
 	if selected_leaderboard.id == "":
@@ -129,4 +120,3 @@ func _rebuild_ui():
 			rows_bbcode += "[cell]%s[/cell]" % display_name
 
 	leaderboard_data_richtextlabel.text = base_bbcode % rows_bbcode
-

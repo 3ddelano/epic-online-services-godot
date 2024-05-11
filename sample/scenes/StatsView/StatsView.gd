@@ -11,17 +11,15 @@ var stats = []
 @onready var my_stats = %MyStatsRichTextLabel
 @onready var status_label = %StatusLabel
 
-
 func _ready() -> void:
 	visibility_changed.connect(_on_query_stats)
 	Store.logout_success.connect(_on_logout_success)
-	EOS.get_instance().stats_interface_query_stats_callback.connect(_on_query_stats_callback)
-	EOS.get_instance().stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
+	IEOS.stats_interface_query_stats_callback.connect(_on_query_stats_callback)
+	IEOS.stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
 
 	stat_name.text_changed.connect(_on_stat_name_text_changed)
 	ingest_btn.pressed.connect(_on_ingest_btn_pressed)
 	refresh_my_stats_btn.pressed.connect(_on_query_stats)
-
 
 func _on_query_stats():
 	if not visible: return
@@ -31,11 +29,9 @@ func _on_query_stats():
 	query_opts.target_user_id = Store.product_user_id
 	EOS.Stats.StatsInterface.query_stats(query_opts)
 
-
 func _on_logout_success():
 	stats = []
 	_rebuild_ui()
-
 
 func _on_stat_name_text_changed(new_text: String):
 	if new_text.strip_edges() == "":
@@ -43,13 +39,11 @@ func _on_stat_name_text_changed(new_text: String):
 	else:
 		ingest_btn.disabled = false
 
-
 func _on_ingest_btn_pressed():
 	ingest_stat(stat_name.text, ingest_amount.value)
 
-
 func _on_query_stats_callback(data: Dictionary):
-	print("--- Stats: query_stats_callback: ", EOS.result_str(data) )
+	print("--- Stats: query_stats_callback: ", EOS.result_str(data))
 
 	var count_opts = EOS.Stats.GetStatsCountOptions.new()
 	count_opts.target_user_id = Store.product_user_id
@@ -68,7 +62,6 @@ func _on_query_stats_callback(data: Dictionary):
 			stats.append(ret.stat)
 	_rebuild_ui()
 
-
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
 	var ingest_opts = EOS.Stats.IngestStatOptions.new()
@@ -79,7 +72,6 @@ func ingest_stat(_stat_name: String, _ingest_amount: int):
 	]
 	EOS.Stats.StatsInterface.ingest_stat(ingest_opts)
 
-
 func _on_ingest_stat_callback(data: Dictionary):
 	print("--- Stats: ingest_stat_callback: ", EOS.result_str(data))
 
@@ -89,7 +81,6 @@ func _on_ingest_stat_callback(data: Dictionary):
 
 	status_label.text = "Ingesting Success"
 	_on_query_stats()
-
 
 func _rebuild_ui():
 	var base_bbcode = """[table=4]

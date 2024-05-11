@@ -23,7 +23,7 @@ func _ready() -> void:
 	_env = load_env()
 
 
-func get_var(p_name: String):
+func get_var(p_name: String, p_default = null):
 	if _env.has(p_name):
 		return _env[p_name]
-	return null
+	return p_default

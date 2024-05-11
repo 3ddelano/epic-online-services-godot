@@ -3,25 +3,21 @@ extends VBoxContainer
 
 @onready var logs_label = %LogsLabel
 
-
 func _ready() -> void:
-	EOS.get_instance().logging_interface_callback.connect(_on_logging_interface_callback)
+	IEOS.logging_interface_callback.connect(_on_logging_interface_callback)
 	Store.platform_create.connect(_on_platform_create)
-
 
 func _on_platform_create():
 	# Set logging categories and level
-	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
+	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AntiCheat, EOS.Logging.LogLevel.VeryVerbose)
 	if res != EOS.Result.Success:
 		print("Failed to set log level: ", EOS.result_str(res))
-
 
 func _on_logging_interface_callback(p_msg: Dictionary):
 	var msg = EOS.Logging.LogMessage.from(p_msg) as EOS.Logging.LogMessage
 	log_msg(msg.level, msg.message, msg.category)
 
-
-func log_msg(level: int, msg: String, category := ""):
+func log_msg(level: int, msg: String, category:=""):
 	var color = "#ffffff"
 	var level_str = "Info"
 	match level:

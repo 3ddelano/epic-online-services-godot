@@ -7,13 +7,11 @@ var friends = []
 @onready var list_title_rich_text_label = %ListTitleRichTextLabel
 @onready var friend_richtextlabel = %FriendsRichTextLabel
 
-
 func _ready() -> void:
 	visibility_changed.connect(_query_friends)
 	Store.logout_success.connect(_on_logout_success)
-	EOS.get_instance().friends_interface_query_friends_callback.connect(_on_query_friends_callback)
-	EOS.get_instance().user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
-
+	IEOS.friends_interface_query_friends_callback.connect(_on_query_friends_callback)
+	IEOS.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
 func _query_friends():
 	if not visible: return
@@ -26,18 +24,15 @@ func _query_friends():
 	query_opts.client_data = "friends_list"
 	EOS.Friends.FriendsInterface.query_friends(query_opts)
 
-
 func _on_logout_success():
 	friends = []
 	_rebuild_ui()
-
 
 func _on_query_friends_callback(data: Dictionary):
 	if data.client_data != "friends_list": return
 	print("--- Friends: query_friends_callback: ", EOS.result_str(data))
 
 	_copy_all_friends()
-
 
 func _copy_all_friends():
 	var get_count_opts = EOS.Friends.GetFriendsCountOptions.new()
@@ -57,7 +52,6 @@ func _copy_all_friends():
 		query_user_opts.client_data = "friends_list"
 		EOS.UserInfo.UserInfoInterface.query_user_info(query_user_opts)
 
-
 func _on_query_user_info_callback(data: Dictionary):
 	if data.client_data != "friends_list": return
 	print("--- Friends: UserInfo: query_user_info_callback: ", EOS.result_str(data))
@@ -72,7 +66,6 @@ func _on_query_user_info_callback(data: Dictionary):
 	else:
 		friends.append(user_info_data.user_info)
 		_rebuild_ui()
-
 
 func _rebuild_ui():
 	list_title_rich_text_label.text = "[b]Friends List (%s)[/b]" % str(friends.size())

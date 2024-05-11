@@ -305,6 +305,38 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(user_info_interface_query_user_info_by_external_account);
     IEOS_BIND_METHOD(version_interface_get_constants);
     IEOS_BIND_METHOD(version_interface_get_version);
+    IEOS_BIND_METHOD(anticheat_server_interface_begin_session);
+    IEOS_BIND_METHOD(anticheat_server_interface_end_session);
+    IEOS_BIND_METHOD(anticheat_server_interface_register_client);
+    IEOS_BIND_METHOD(anticheat_server_interface_unregister_client);
+    IEOS_BIND_METHOD(anticheat_server_interface_receive_message_from_client);
+    IEOS_BIND_METHOD(anticheat_server_interface_set_client_details);
+    IEOS_BIND_METHOD(anticheat_server_interface_set_game_session_id);
+    IEOS_BIND_METHOD(anticheat_server_interface_set_client_network_state);
+    IEOS_BIND_METHOD(anticheat_server_interface_get_protect_message_output_length);
+    IEOS_BIND_METHOD(anticheat_server_interface_protect_message);
+    IEOS_BIND_METHOD(anticheat_server_interface_unprotect_message);
+    IEOS_BIND_METHOD(anticheat_server_interface_register_event);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_event);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_game_round_start);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_game_round_end);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_spawn);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_despawn);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_revive);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_tick);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_use_weapon);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_use_ability);
+    IEOS_BIND_METHOD(anticheat_server_interface_log_player_take_damage);
+    IEOS_BIND_METHOD(anticheat_client_interface_begin_session);
+    IEOS_BIND_METHOD(anticheat_client_interface_end_session);
+    IEOS_BIND_METHOD(anticheat_client_interface_add_external_integrity_catalog);
+    IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_server);
+    IEOS_BIND_METHOD(anticheat_client_interface_get_protect_message_output_length);
+    IEOS_BIND_METHOD(anticheat_client_interface_protect_message);
+    IEOS_BIND_METHOD(anticheat_client_interface_unprotect_message);
+    IEOS_BIND_METHOD(anticheat_client_interface_register_peer);
+    IEOS_BIND_METHOD(anticheat_client_interface_unregister_peer);
+    IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_peer);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
     ADD_SIGNAL(MethodInfo("p2p_interface_query_nat_type_callback", PropertyInfo(Variant::INT, "nat_type")));
@@ -471,6 +503,12 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_by_display_name_callback);
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_by_external_account_callback);
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_callback);
+    IEOS_BIND_SIGNAL(anticheatserver_interface_message_to_client_callback);
+    IEOS_BIND_SIGNAL(anticheatserver_interface_client_action_required_callback);
+    IEOS_BIND_SIGNAL(anticheatserver_interface_client_auth_status_changed_callback);
+    IEOS_BIND_SIGNAL(anticheat_client_interface_message_to_server_callback);
+    IEOS_BIND_SIGNAL(anticheat_client_interface_message_to_peer_callback);
+    IEOS_BIND_SIGNAL(anticheat_client_interface_client_integrity_violated_callback);
 }
 
 int IEOS::shutdown() {

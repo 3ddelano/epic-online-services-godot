@@ -536,6 +536,109 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     // -----
     s_userInfoInterface = EOS_Platform_GetUserInfoInterface(s_platformInterface);
 
+    // -----
+    // AntiCheatServer Interface
+    // -----
+    s_antiCheatServerInterface = EOS_Platform_GetAntiCheatServerInterface(s_platformInterface);
+    EOS_AntiCheatServer_AddNotifyMessageToClientOptions notifyMessageToClientOptions;
+    notifyMessageToClientOptions.ApiVersion = EOS_ANTICHEATSERVER_ADDNOTIFYMESSAGETOCLIENT_API_LATEST;
+    EOS_AntiCheatServer_AddNotifyMessageToClient(s_antiCheatServerInterface, &notifyMessageToClientOptions, nullptr, [](const EOS_AntiCheatCommon_OnMessageToClientCallbackInfo *data) {
+        PackedByteArray buffer;
+        buffer.resize(data->MessageDataSizeBytes);
+        std::memcpy(buffer.ptrw(), data->MessageData, data->MessageDataSizeBytes);
+
+        String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+
+        Dictionary ret;
+        ret["client_handle"] = client_handle;
+        ret["message_data"] = buffer;
+        IEOS::get_singleton()->emit_signal("anticheatserver_interface_message_to_client_callback", ret);
+    });
+
+    EOS_AntiCheatServer_AddNotifyClientActionRequiredOptions notifyClientActionRequiredOptions;
+    notifyClientActionRequiredOptions.ApiVersion = EOS_ANTICHEATSERVER_ADDNOTIFYCLIENTACTIONREQUIRED_API_LATEST;
+    EOS_AntiCheatServer_AddNotifyClientActionRequired(s_antiCheatServerInterface, &notifyClientActionRequiredOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientActionRequiredCallbackInfo *data) {
+        Dictionary ret;
+        String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+        ret["client_handle"] = client_handle;
+        ret["client_action"] = static_cast<int>(data->ClientAction);
+        ret["action_reason_code"] = static_cast<int>(data->ActionReasonCode);
+        ret["action_reason_details_string"] = EOSG_GET_STRING(data->ActionReasonDetailsString);
+        IEOS::get_singleton()->emit_signal("anticheatserver_interface_client_action_required_callback", ret);
+    });
+
+    EOS_AntiCheatServer_AddNotifyClientAuthStatusChangedOptions notifyClientAuthStatusChangedOptions;
+    notifyClientAuthStatusChangedOptions.ApiVersion = EOS_ANTICHEATSERVER_ADDNOTIFYCLIENTAUTHSTATUSCHANGED_API_LATEST;
+    EOS_AntiCheatServer_AddNotifyClientAuthStatusChanged(s_antiCheatServerInterface, &notifyClientAuthStatusChangedOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientAuthStatusChangedCallbackInfo *data) {
+        Dictionary ret;
+        String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+        ret["client_handle"] = client_handle;
+        ret["client_auth_status"] = static_cast<int>(data->ClientAuthStatus);
+        IEOS::get_singleton()->emit_signal("anticheatserver_interface_client_auth_status_changed_callback", ret);
+    });
+
+    // -----
+    // AntiCheatClient Interface
+    // -----
+    s_antiCheatClientInterface = EOS_Platform_GetAntiCheatClientInterface(s_platformInterface);
+    if (s_antiCheatClientInterface != nullptr) {
+        EOS_AntiCheatClient_AddNotifyMessageToServerOptions notifyMessageToServerOptions;
+        notifyMessageToServerOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYMESSAGETOSERVER_API_LATEST;
+        EOS_AntiCheatClient_AddNotifyMessageToServer(s_antiCheatClientInterface, &notifyMessageToServerOptions, nullptr, [](const EOS_AntiCheatClient_OnMessageToServerCallbackInfo *data) {
+            PackedByteArray buffer;
+            buffer.resize(data->MessageDataSizeBytes);
+            std::memcpy(buffer.ptrw(), data->MessageData, data->MessageDataSizeBytes);
+
+            Dictionary ret;
+            ret["message_data"] = buffer;
+            IEOS::get_singleton()->emit_signal("anticheat_client_interface_message_to_server_callback", ret);
+        });
+
+        EOS_AntiCheatClient_AddNotifyMessageToPeerOptions notifyMessageToPeerOptions;
+        notifyMessageToPeerOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYMESSAGETOPEER_API_LATEST;
+        EOS_AntiCheatClient_AddNotifyMessageToPeer(s_antiCheatClientInterface, &notifyMessageToPeerOptions, nullptr, [](const EOS_AntiCheatCommon_OnMessageToClientCallbackInfo *data) {
+            PackedByteArray buffer;
+            buffer.resize(data->MessageDataSizeBytes);
+            std::memcpy(buffer.ptrw(), data->MessageData, data->MessageDataSizeBytes);
+
+            String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+
+            Dictionary ret;
+            ret["client_handle"] = client_handle;
+            ret["message_data"] = buffer;
+            IEOS::get_singleton()->emit_signal("anticheat_client_interface_message_to_peer_callback", ret);
+        });
+
+        EOS_AntiCheatClient_AddNotifyPeerActionRequiredOptions notifyPeerActionRequiredOptions;
+        notifyPeerActionRequiredOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYPEERACTIONREQUIRED_API_LATEST;
+        EOS_AntiCheatClient_AddNotifyPeerActionRequired(s_antiCheatClientInterface, &notifyPeerActionRequiredOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientActionRequiredCallbackInfo *data) {
+            String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+            Dictionary ret;
+            ret["client_handle"] = client_handle;
+            ret["client_action"] = static_cast<int>(data->ClientAction);
+            ret["action_reason_code"] = static_cast<int>(data->ActionReasonCode);
+            ret["action_reason_details_string"] = EOSG_GET_STRING(data->ActionReasonDetailsString);
+        });
+
+        EOS_AntiCheatClient_AddNotifyPeerAuthStatusChangedOptions notifyPeerAuthStatusChangedOptions;
+        notifyPeerAuthStatusChangedOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYPEERAUTHSTATUSCHANGED_API_LATEST;
+        EOS_AntiCheatClient_AddNotifyPeerAuthStatusChanged(s_antiCheatClientInterface, &notifyPeerAuthStatusChangedOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientAuthStatusChangedCallbackInfo *data) {
+            String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+            Dictionary ret;
+            ret["client_handle"] = client_handle;
+            ret["client_auth_status"] = static_cast<int>(data->ClientAuthStatus);
+        });
+
+        EOS_AntiCheatClient_AddNotifyClientIntegrityViolatedOptions notifyClientIntegrityViolatedOptions;
+        notifyClientIntegrityViolatedOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYCLIENTINTEGRITYVIOLATED_API_LATEST;
+        EOS_AntiCheatClient_AddNotifyClientIntegrityViolated(s_antiCheatClientInterface, &notifyClientIntegrityViolatedOptions, nullptr, [](const EOS_AntiCheatClient_OnClientIntegrityViolatedCallbackInfo *data) {
+            Dictionary ret;
+            ret["violation_type"] = static_cast<int>(data->ViolationType);
+            ret["violation_message"] = EOSG_GET_STRING(data->ViolationMessage);
+            IEOS::get_singleton()->emit_signal("anticheat_client_interface_client_integrity_violated_callback", ret);
+        });
+    }
+
     return true;
 }
 
@@ -708,13 +811,16 @@ void IEOS::platform_interface_release() {
     s_presenceInterface = nullptr;
     s_progressionSnapshotInterface = nullptr;
     s_reportsInterface = nullptr;
-    s_rtcAudioInterface = nullptr;
     s_rtcInterface = nullptr;
+    s_rtcAudioInterface = nullptr;
     s_sanctionsInterface = nullptr;
+    s_sessionsInterface = nullptr;
     s_statsInterface = nullptr;
     s_titleStorageInterface = nullptr;
     s_uiInterface = nullptr;
     s_userInfoInterface = nullptr;
+    s_antiCheatServerInterface = nullptr;
+    s_antiCheatClientInterface = nullptr;
 
     if (s_platformInterface != nullptr) {
         EOS_Platform_Release(s_platformInterface);

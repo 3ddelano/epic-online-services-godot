@@ -3420,6 +3420,365 @@ class RTCAudio:
 		static func update_sending_volume(options: UpdateSendingVolumeOptions) -> void:
 			IEOS.rtc_audio_interface_update_sending_volume(options)
 
+class AntiCheatServer:
+
+	class BeginSessionOptions extends BaseClass:
+		func _init():
+			super._init("BeginSessionOptions")
+
+		var register_timeout_seconds := 60
+		var server_name: String
+		var local_user_id: String
+		var enable_gameplay_data: bool
+
+	class EndSessionOptions extends BaseClass:
+		func _init():
+			super._init("EndSessionOptions")
+
+	class RegisterClientOptions extends BaseClass:
+		func _init():
+			super._init("RegisterClientOptions")
+
+		var client_handle: String
+		var client_type: AntiCheatCommonClientType
+		var client_platform: AntiCheatCommonClientPlatform
+		var ip_address: String
+		var user_id: String
+
+	class UnregisterClientOptions extends BaseClass:
+		func _init():
+			super._init("UnregisterClientOptions")
+
+		var client_handle: String
+
+	class ReceiveMessageFromClientOptions extends BaseClass:
+		func _init():
+			super._init("ReceiveMessageFromClientOptions")
+
+		var client_handle: String
+		var data: PackedByteArray
+
+	class SetClientDetailsOptions extends BaseClass:
+		func _init():
+			super._init("SetClientDetailsOptions")
+
+		var client_handle: String
+		var client_flags: AntiCheatCommonClientFlags
+		var client_input: AntiCheatCommonClientInput
+
+	class SetGameSessionIdOptions extends BaseClass:
+		func _init():
+			super._init("SetGameSessionIdOptions")
+
+		var game_session_id: String
+
+	class SetClientNetworkStateOptions extends BaseClass:
+		func _init():
+			super._init("SetClientNetworkStateOptions")
+
+		var client_handle: String
+		var is_network_active: bool
+
+	class GetProtectMessageOutputLengthOptions extends BaseClass:
+		func _init():
+			super._init("GetProtectMessageOutputLengthOptions")
+
+		var data_length_bytes: int
+
+	class ProtectMessageOptions extends BaseClass:
+		func _init():
+			super._init("ProtectMessageOptions")
+
+		var client_handle: String
+		var data: PackedByteArray
+		var out_buffer_size_bytes: int
+
+	class UnprotectMessageOptions extends BaseClass:
+		func _init():
+			super._init("UnprotectMessageOptions")
+
+		var client_handle: String
+		var data: PackedByteArray
+		var out_buffer_size_bytes: int
+
+	class RegisterEventOptions extends BaseClass:
+		func _init():
+			super._init("RegisterEventOptions")
+
+		var event_id: String
+		var event_name: String
+		var event_type: AntiCheatCommonEventType
+		var param_defs: Array # {param_type: AntiCheatCommonEventParamType, param_name: String}
+
+	class LogEventOptions extends BaseClass:
+		func _init():
+			super._init("LogEventOptions")
+
+		var client_handle: String
+		var event_id: String
+		var params: Array # Supported types int, String, Vector3, float, Quaternion
+
+	class LogGameRoundStartOptions extends BaseClass:
+		func _init():
+			super._init("LogGameRoundStartOptions")
+
+		var session_identifier: String
+		var level_name: String
+		var mode_name: String
+		var round_time_seconds: int
+
+	class LogGameRoundEndOptions extends BaseClass:
+		func _init():
+			super._init("LogGameRoundEndOptions")
+
+		var winning_team_id: String
+
+	class LogPlayerSpawnOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerSpawnOptions")
+
+		var spawned_player_handle: String
+		var team_id: String
+		var character_id: String
+
+	class LogPlayerDespawnOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerDespawnOptions")
+
+		var despawned_player_handle: String
+
+	class LogPlayerReviveOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerReviveOptions")
+
+		var revived_player_handle: String
+		var reviver_player_handle: String
+
+	class LogPlayerTickOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerTickOptions")
+
+		var player_handle: String
+		var player_position: Vector3
+		var player_view_rotation: Quaternion
+		var player_health: float
+		var player_movement_state: AntiCheatCommonPlayerMovementState
+		var player_view_position: Vector3
+		var is_player_view_zoomed: bool
+
+	class LogPlayerUseWeaponOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerUseWeaponOptions")
+
+		var player_handle: String
+		var player_position: Vector3
+		var player_view_rotation: Quaternion
+		var weapon_name: String
+		var is_player_view_zoomed: bool
+		var is_melee_attacK: bool
+
+	class LogPlayerUseAbilityOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerUseAbilityOptions")
+
+		var player_handle: String
+		var ability_id: int
+		var ability_duration_ms: int
+		var ability_cooldown_ms: int
+
+	class LogPlayerTakeDamageOptions extends BaseClass:
+		func _init():
+			super._init("LogPlayerTakeDamageOptions")
+
+		var victim_player_handle: String
+		var victim_player_position: Vector3
+		var victim_player_view_rotation: Quaternion
+
+		var attacker_player_handle: String
+		var attacker_player_position: Vector3
+		var attacker_player_view_rotation: Quaternion
+
+		var damage_taken: float
+		var health_remaining: float
+		var damage_source: AntiCheatCommonPlayerTakeDamageSource
+		var damage_type: AntiCheatCommonPlayerTakeDamageType
+		var damage_result: AntiCheatCommonPlayerTakeDamageResult
+		var tim_since_player_use_weapon_ms: int
+		var damage_position: Vector3
+		var attacked_player_view_position: Vector3
+		var player_use_weapon_data: LogPlayerUseWeaponOptions
+
+		var is_hitscan_attack: bool
+		var has_line_of_sight: bool
+		var is_critical_hit: bool
+
+	class AntiCheatServerInterface:
+		static func begin_session(options: BeginSessionOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_begin_session(options)
+
+		static func end_session() -> EOS.Result:
+			return IEOS.anticheat_server_interface_end_session(EndSessionOptions.new())
+
+		static func register_client(options: RegisterClientOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_register_client(options)
+
+		static func unregister_client(options: UnregisterClientOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_unregister_client(options)
+
+		static func receive_message_from_client(options: ReceiveMessageFromClientOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_receive_message_from_client(options)
+
+		static func set_client_details(options: SetClientDetailsOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_set_client_details(options)
+
+		static func set_game_session_id(options: SetGameSessionIdOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_set_game_session_id(options)
+
+		static func set_client_network_state(options: SetClientNetworkStateOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_set_client_network_state(options)
+
+		static func get_protect_message_output_length(options: GetProtectMessageOutputLengthOptions) -> Dictionary:
+			return IEOS.anticheat_server_interface_get_protect_message_output_length(options)
+
+		static func protect_message(options: ProtectMessageOptions) -> Dictionary:
+			return IEOS.anticheat_server_interface_protect_message(options)
+
+		static func unprotect_message(options: UnprotectMessageOptions) -> Dictionary:
+			return IEOS.anticheat_server_interface_unprotect_message(options)
+
+		static func register_event(options: RegisterEventOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_register_event(options)
+
+		static func log_event(options: LogEventOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_event(options)
+
+		static func log_game_round_start(options: LogGameRoundStartOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_game_round_start(options)
+
+		static func log_game_round_end(options: LogGameRoundEndOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_game_round_end(options)
+
+		static func log_player_spawn(options: LogPlayerSpawnOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_spawn(options)
+
+		static func log_player_despawn(options: LogPlayerDespawnOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_despawn(options)
+
+		static func log_player_revive(options: LogPlayerReviveOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_revive(options)
+
+		static func log_player_tick(options: LogPlayerTickOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_tick(options)
+
+		static func log_player_use_weapon(options: LogPlayerUseWeaponOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_use_weapon(options)
+
+		static func log_player_use_ability(options: LogPlayerUseAbilityOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_use_ability(options)
+
+		static func log_player_take_damage(options: LogPlayerTakeDamageOptions) -> EOS.Result:
+			return IEOS.anticheat_server_interface_log_player_take_damage(options)
+
+class AntiCheatClient:
+
+	class BeginSessionOptions extends BaseClass:
+		func _init():
+			super._init("BeginSessionOptions")
+
+		var local_user_id: String
+		var mode: AntiCheatClientMode
+
+	class EndSessionOptions extends BaseClass:
+		func _init():
+			super._init("EndSessionOptions")
+
+	class AddExternalIntegrityCatalogOptions extends BaseClass:
+		func _init():
+			super._init("AddExternalIntegrityCatalogOptions")
+
+		var path_to_file_bin: String
+
+	class ReceiveMessageFromServerOptions extends BaseClass:
+		func _init():
+			super._init("ReceiveMessageFromServerOptions")
+
+		var data: PackedByteArray
+
+	class GetProtectMessageOutputLengthOptions extends BaseClass:
+		func _init():
+			super._init("GetProtectMessageOutputLengthOptions")
+
+		var data_length_bytes: int
+
+	class ProtectMessageOptions extends BaseClass:
+		func _init():
+			super._init("ProtectMessageOptions")
+
+		var data: PackedByteArray
+		var out_buffer_size_bytes: int
+
+	class UnprotectMessageOptions extends BaseClass:
+		func _init():
+			super._init("UnprotectMessageOptions")
+
+		var data: PackedByteArray
+		var out_buffer_size_bytes: int
+
+	class RegisterPeerOptions extends BaseClass:
+		func _init():
+			super._init("RegisterPeerOptions")
+
+		var peer_handle: String
+		var client_type: AntiCheatCommonClientType
+		var client_platform: AntiCheatCommonClientPlatform
+		var authentication_timeout: int = 60
+		var ip_address: String
+		var peer_product_user_id: String
+
+	class UnregisterPeerOptions extends BaseClass:
+		func _init():
+			super._init("UnregisterPeerOptions")
+
+		var peer_handle: String
+
+	class ReceiveMessageFromPeerOptions extends BaseClass:
+		func _init():
+			super._init("ReceiveMessageFromPeerOptions")
+
+		var peer_handle: String
+		var data: PackedByteArray
+
+	class AntiCheatClientInterface:
+		static func begin_session(options: BeginSessionOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_begin_session(options)
+
+		static func end_session() -> EOS.Result:
+			return IEOS.anticheat_client_interface_end_session(EndSessionOptions.new())
+
+		static func add_external_integrity_catalog(options: AddExternalIntegrityCatalogOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_add_external_integrity_catalog(options)
+
+		static func receive_message_from_server(options: ReceiveMessageFromServerOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_receive_message_from_server(options)
+
+		static func get_protect_message_output_length(options: GetProtectMessageOutputLengthOptions) -> Dictionary:
+			return IEOS.anticheat_client_interface_get_protect_message_output_length(options)
+
+		static func protect_message(options: ProtectMessageOptions) -> Dictionary:
+			return IEOS.anticheat_client_interface_protect_message(options)
+
+		static func unprotect_message(options: UnprotectMessageOptions) -> Dictionary:
+			return IEOS.anticheat_client_interface_unprotect_message(options)
+
+		static func register_peer(options: RegisterPeerOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_register_peer(options)
+
+		static func unregister_peer(options: UnregisterPeerOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_unregister_peer(options)
+
+		static func receive_message_from_peer(options: ReceiveMessageFromPeerOptions) -> EOS.Result:
+			return IEOS.anticheat_client_interface_receive_message_from_peer(options)
+
 class Version:
 	class VersionInterface:
 		static func get_version() -> String:
@@ -3747,4 +4106,115 @@ enum ComparisonOp {
 	OneOf = 9,
 	NotOneOf = 10,
 	Contains = 11
+}
+
+enum AntiCheatCommonClientType {
+	ProtectedClient = 0,
+	UnprotectedClient = 1,
+	AIBot = 2
+}
+
+enum AntiCheatCommonClientPlatform {
+	Unknown = 0,
+	Windows = 1,
+	Mac = 2,
+	Linux = 3,
+	Xbox = 4,
+	PlayStation = 5,
+	Nintendo = 6,
+	iOS = 7,
+	Android = 8,
+}
+
+enum AntiCheatCommonClientAction {
+	Invalid = 0,
+	RemovePlayer = 1,
+}
+
+enum AntiCheatCommonClientActionReason {
+	Invalid = 0,
+	InternalError = 1,
+	InvalidMessage = 2,
+	AuthenticationFailed = 3,
+	NullClient = 4,
+	HeartbeatTimeout = 5,
+	ClientViolation = 6,
+	BackendViolation = 7,
+	TemporaryCooldown = 8,
+	TemporaryBanned = 9,
+	PermanentBanned = 10,
+}
+
+enum AntiCheatCommonClientAuthStatus {
+	Invalid = 0,
+	LocalAuthComplete = 1,
+	RemoteAuthComplete = 2,
+}
+
+enum AntiCheatCommonClientFlags {
+	None = 0,
+	Admin = (1 << 0),
+}
+
+enum AntiCheatCommonClientInput {
+	Unknown = 0,
+	MouseKeyboard = 1,
+	Gamepad = 2,
+	TouchInput = 3,
+}
+
+enum AntiCheatCommonEventType {
+	Invalid = 0,
+	GameEvent = 1,
+	PlayerEvent = 2,
+}
+
+enum AntiCheatCommonEventParamType {
+	Invalid = 0,
+	ClientHandle = 1,
+	String = 2,
+	UInt32 = 3,
+	Int32 = 4,
+	UInt64 = 5,
+	Int64 = 6,
+	Vector3f = 7,
+	Quat = 8,
+	Float = 9,
+}
+
+enum AntiCheatCommonPlayerMovementState {
+	None = 0,
+	Crouching = 1,
+	Prone = 2,
+	Mounted = 3,
+	Swimming = 4,
+	Falling = 5,
+	Flying = 6,
+	OnLadder = 7,
+}
+
+enum AntiCheatCommonPlayerTakeDamageSource {
+	None = 0,
+	Player = 1,
+	NonPlayerCharacter = 2,
+	World = 3,
+}
+
+enum AntiCheatCommonPlayerTakeDamageType {
+	None = 0,
+	PointDamage = 1,
+	RadialDamage = 2,
+	DamageOverTime = 3,
+}
+
+enum AntiCheatCommonPlayerTakeDamageResult {
+	EOS_ACCPTDR_None = 0,
+	EOS_ACCPTDR_Downed = 1,
+	EOS_ACCPTDR_Eliminated = 2,
+}
+
+enum AntiCheatClientMode {
+	Invalid = 0,
+	ClientServer = 1,
+	PeerToPeer = 2,
 }

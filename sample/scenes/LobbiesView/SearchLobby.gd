@@ -16,11 +16,11 @@ var is_searches_shown = false
 var lobby_search: EOSGLobbySearch
 
 func _ready() -> void:
-	EOS.get_instance().lobby_search_find_callback.connect(_on_lobby_search_find_callback)
+	IEOS.lobby_search_find_callback.connect(_on_lobby_search_find_callback)
 	search_lobby_btn.pressed.connect(_on_search_lobby_btn_pressed)
 
 	search_lobby_line_edit.text_changed.connect(_on_search_lobby_line_edit_text_changed)
-	search_lobby_line_edit.text_submitted.connect(func (_new_text): _on_search_lobby_btn_pressed())
+	search_lobby_line_edit.text_submitted.connect(func(_new_text): _on_search_lobby_btn_pressed())
 
 	clear_search_lobby_btn.pressed.connect(_on_clear_search_lobby_btn_pressed)
 
@@ -32,7 +32,6 @@ func _populate_search_lobby_options():
 	for i in range(len(search_type_names)):
 		search_lobby_type.add_item(": ".join(search_type_names[i].split("_")), i)
 		search_lobby_type.set_item_metadata(i, search_type_values[i])
-
 
 func _on_search_lobby_btn_pressed():
 	var search_type = search_lobby_type.get_selected_metadata()
@@ -61,7 +60,6 @@ func _on_search_lobby_btn_pressed():
 
 	lobby_search.find(Store.product_user_id)
 
-
 func _on_lobby_search_find_callback(data: Dictionary):
 	print("--- Lobby: lobby_search_find_callback: ", EOS.result_str(data))
 
@@ -82,7 +80,6 @@ func _on_lobby_search_find_callback(data: Dictionary):
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
 	lobbies_view.handle_search_results(search_results)
 
-
 func _on_clear_search_lobby_btn_pressed():
 	search_lobby_line_edit.text = ""
 
@@ -91,7 +88,6 @@ func _on_clear_search_lobby_btn_pressed():
 	var search_results: Array[EOSGLobbyDetails] = []
 	lobbies_view.handle_search_results(search_results)
 	lobbies_view.hide_search_results()
-
 
 func _on_search_lobby_line_edit_text_changed(new_text: String):
 	if new_text.strip_edges() == "":

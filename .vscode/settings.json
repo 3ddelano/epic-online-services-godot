@@ -12,7 +12,8 @@
   "files.associations": {
     "*.rmd": "markdown",
     "utility": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "unordered_map": "cpp"
   },
   "grammarly.selectors": [
     {

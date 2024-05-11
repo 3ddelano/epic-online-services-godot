@@ -194,12 +194,9 @@ jobs:
                     - identifier: windows
                       name: 🏁 Windows
                       matchpattern: windows
-                    - identifier: android-arm64
-                      name: 🤖 Android arm64
-                      matchpattern: android-arm64
-                    - identifier: android-x86_64
-                      name: 🤖 Android x86_64
-                      matchpattern: android-x86_64
+                    - identifier: android
+                      name: 🤖 Android
+                      matchpattern: android
 
         steps:
             - name: Merge artifacts for platform

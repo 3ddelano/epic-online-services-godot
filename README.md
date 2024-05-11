@@ -15,6 +15,24 @@ Epic Online Services Godot (EOSG)
 #### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3 Mono (C#) (un maintained)
 
 
+## Features
+
+- Authentication (Epic Games, Steam, Discord, Anonymous etc)
+- Social Overlay on Windows
+- Achievements
+- Stats & Leaderboards
+- Lobby, Sessions and Multiplayer
+- Voice
+- Metrics
+- Mods
+- Player/Title data storage
+- Progression Snapshot
+- Reports and Sanctions
+- Ecommerce (Ecom Epic Games Store)
+- AntiCheat
+
+#### [View Current Project Status](#current-project-status)
+
 ## Support Development
 
 #### Making this project took a lot of time and effort, reading the Epic Online Services documentation countless times and testing each method in Godot. I would really appreciate if you could support the project in any way.
@@ -28,7 +46,6 @@ Epic Online Services Godot (EOSG)
 Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](https://discord.gg/FZY9TqW)
 
 
-## [View Current Project Status](#current-project-status)
 
 ## [Demo Video (Youtube)](https://www.youtube.com/watch?v=ENyvF4yVjKg)
 [Watch the playlist](https://www.youtube.com/playlist?list=PL5t0hR7ADzun5JYF4e2a2FtZEWYHxK83_)
@@ -340,84 +357,35 @@ Follow the instructions in [Running the service for local development](https://d
 
 ## Current Project Status
 
-- Auth Interface
-  - [x] Implementation
-  - [x] Sample
-- Achievements Interface
-  - [x] Implementation
-  - [x] Sample
-- Connect Interface
-  - [x] Implementation
-  - [x] Sample
-- CustomInvites Interface
-  - [x] Implementation
-  - [x] Sample
-- Friends Interface
-  - [x] Implementation
-  - [x] Sample
-- Stats Interface
-  - [x] Implementation
-  - [x] Sample
-- UserInfo Interface
-  - [x] Implementation
-  - [x] Sample
-- Leaderboards Interface
-  - [x] Implementation
-  - [x] Sample
-- KWS Interface
-  - [x] Implementation
-  - [ ] Sample (No general access yet)
-- Lobby Interface
-  - [x] Implementation
-  - [ ] Sample
-- Metrics Interface
-  - [x] Implementation
-  - [x] Sample
-- Mods Interface
-  - [x] Implementation
-  - [x] Sample
-- P2P Interface
-  - [x] Implementation
-  - [ ] Sample
-- PlayerDataStorage Interface
-  - [x] Implementation
-  - [ ] Sample
-- Presence Interface
-  - [x] Implementation
-  - [x] Sample
-- ProgressionSnapshot Interface
-  - [x] Implementation
-  - [x] Sample
-- Reports Interface
-  - [x] Implementation
-  - [x] Sample
-- RTC Interface
-  - [x] Implementation
-  - [ ] Sample
-- Sanctions Interface
-  - [x] Implementation
-  - [ ] Sample
-- Sessions Interface
-  - [x] Implementation
-  - [ ] Sample
-- TitleStorage Interface
-  - [x] Implementation
-  - [ ] Sample
-- UI Interface
-  - [x] Implementation
-  - [x] Sample
-- Ecom Interface
-  - [x] Implementation
-  - [ ] Sample (Needs Epic Games Store access)
-- AntiCheatServer Interface
-  - [ ] Implementation
-  - [ ] Sample
-- AntiCheatClient Interface
-  - [ ] Implementation
-  - [ ] Sample
-- Version Interface
-  - [x] Implementation
-  - [x] Sample
-- Integrated Platform Interface
-  - [ ] Implementation
-  - [ ] Sample
+- Completed with sample
+  - Auth Interface
+  - Achievements Interface
+  - Connect Interface
+  - CustomInvites Interface
+  - Friends Interface
+  - Stats Interface
+  - UserInfo Interface
+  - Leaderboards Interface
+  - Metrics Interface
+  - Mods Interface
+  - Presence Interface
+  - ProgressionSnapshot Interface
+  - Reports Interface
+  - UI Interface
+  - Version Interface
+
+- Completed without sample
+  - KWS Interface
+  - Lobby Interface
+  - P2P Interface
+  - PlayerDataStorage Interface
+  - RTC Interface
+  - Sanctions Interface
+  - Sessions Interface
+  - TitleStorage Interface
+  - Ecom Interface
+  - AntiCheatServer Interface
+  - AntiCheatClient Interface
+
+- Not completed
+  - Integrated Platform Interface

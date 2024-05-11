@@ -1,5 +1,7 @@
 #pragma once
 #include "eos_achievements.h"
+#include "eos_anticheatclient.h"
+#include "eos_anticheatserver.h"
 #include "eos_auth.h"
 #include "eos_custominvites.h"
 #include "eos_ecom.h"
@@ -33,6 +35,7 @@
 #include "godot_cpp/core/binder_common.hpp"
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
+#include "unordered_map"
 #include "utils.h"
 #ifdef _WIN32
 #include "Windows/eos_Windows.h"
@@ -73,6 +76,10 @@ protected:
     EOS_HTitleStorage s_titleStorageInterface = nullptr;
     EOS_HUI s_uiInterface = nullptr;
     EOS_HUserInfo s_userInfoInterface = nullptr;
+    EOS_HAntiCheatServer s_antiCheatServerInterface = nullptr;
+    EOS_HAntiCheatClient s_antiCheatClientInterface = nullptr;
+
+    std::unordered_map<std::string, void *> anticheat_client_map; // {String: String} key: hash value: string
 
 public:
     bool isEOSValid = false; // is true if EOS Platform is initialized
@@ -507,6 +514,64 @@ public:
     void rtc_interface_remove_notify_disconnected(int notification_id);
     void rtc_interface_remove_notify_participant_status_changed(int notification_id);
     void rtc_interface_remove_notify_room_statistics_updated(int notification_id);
+
+    // -----
+    // AntiCheatServer Interface
+    // -----
+    int anticheat_server_interface_begin_session(Ref<RefCounted> options);
+    int anticheat_server_interface_end_session(Ref<RefCounted> options);
+    int anticheat_server_interface_register_client(Ref<RefCounted> options);
+    int anticheat_server_interface_unregister_client(Ref<RefCounted> options);
+    int anticheat_server_interface_receive_message_from_client(Ref<RefCounted> options);
+    int anticheat_server_interface_set_client_details(Ref<RefCounted> options);
+    int anticheat_server_interface_set_game_session_id(Ref<RefCounted> options);
+    int anticheat_server_interface_set_client_network_state(Ref<RefCounted> options);
+    Dictionary anticheat_server_interface_get_protect_message_output_length(Ref<RefCounted> options);
+    Dictionary anticheat_server_interface_protect_message(Ref<RefCounted> options);
+    Dictionary anticheat_server_interface_unprotect_message(Ref<RefCounted> options);
+    int anticheat_server_interface_register_event(Ref<RefCounted> options);
+    int anticheat_server_interface_log_event(Ref<RefCounted> options);
+    int anticheat_server_interface_log_game_round_start(Ref<RefCounted> options);
+    int anticheat_server_interface_log_game_round_end(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_spawn(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_despawn(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_revive(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_tick(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_use_weapon(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_use_ability(Ref<RefCounted> options);
+    int anticheat_server_interface_log_player_take_damage(Ref<RefCounted> options);
+
+    // -----
+    // AntiCheatClient Interface
+    // -----
+    int anticheat_client_interface_begin_session(Ref<RefCounted> options);
+    int anticheat_client_interface_end_session(Ref<RefCounted> options);
+    int anticheat_client_interface_add_external_integrity_catalog(Ref<RefCounted> options);
+    int anticheat_client_interface_receive_message_from_server(Ref<RefCounted> options);
+    Dictionary anticheat_client_interface_get_protect_message_output_length(Ref<RefCounted> options);
+    Dictionary anticheat_client_interface_protect_message(Ref<RefCounted> options);
+    Dictionary anticheat_client_interface_unprotect_message(Ref<RefCounted> options);
+    int anticheat_client_interface_register_peer(Ref<RefCounted> options);
+    int anticheat_client_interface_unregister_peer(Ref<RefCounted> options);
+    int anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> options);
+
+    void *_anticheat_player_id_to_handle(CharString p_player_id) {
+        std::string player_id = p_player_id.get_data();
+
+        if (anticheat_client_map.count(player_id) == 0) {
+            anticheat_client_map[player_id] = malloc(1);
+        }
+        return anticheat_client_map[player_id];
+    }
+
+    String _anticheat_player_handle_to_id(void *p_player_handle) {
+        for (auto const &[key, val] : anticheat_client_map) {
+            if (val == p_player_handle) {
+                return String(key.c_str());
+            }
+        }
+        return String("");
+    }
 };
 
 } // namespace godot
