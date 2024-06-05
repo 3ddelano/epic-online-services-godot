@@ -10,6 +10,13 @@ plugin_bin_folder = "sample/addons/epic-online-services-godot/bin"
 eos_sdk_folder = "thirdparty/eos-sdk/SDK/"
 
 
+# Add source files
+env.Append(CPPPATH=["src/", eos_sdk_folder + "Include/"])
+sources = Glob("src/*.cpp")
+platform = env["platform"]
+build_target = env["target"]
+
+
 def copy_file(from_path, to_path):
     if not os.path.exists(os.path.dirname(to_path)):
         os.makedirs(os.path.dirname(to_path))
@@ -58,7 +65,7 @@ def on_complete(target, source, env):
         framework_folder = plugin_bin_folder + f"/macos/{lib_name}.{platform}.framework"
         # Copies EOS dylib inside framework folder
         copy_file(eos_sdk_folder + "Bin/libEOSSDK-Mac-Shipping.dylib", framework_folder + f"/libEOSSDK-Mac-Shipping.dylib")
-        lib_path = f"{framework_folder}/{lib_name}.{platform}.{env['target']}"
+        lib_path = f"{framework_folder}/{lib_name}.{platform}.{build_target}"
         print(f"Updating libEOSSDK-Mac-Shipping.dylib path in {lib_path}")
         os.system(f"install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib {lib_path}")
 
@@ -70,12 +77,6 @@ def on_complete(target, source, env):
 # - CPPDEFINES are for pre-processor defines
 # - LINKFLAGS are for linking flags
 
-
-# Add source files
-env.Append(CPPPATH=["src/", eos_sdk_folder + "Include/"])
-sources = Glob("src/*.cpp")
-platform = env["platform"]
-target = env['target']
 
 env.Append(LIBPATH=[eos_sdk_folder + "Lib/"])
 env.Append(LIBPATH=[eos_sdk_folder + "Bin/"])
@@ -106,7 +107,7 @@ elif env["platform"] == "android":
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        f"{plugin_bin_folder}/macos/{lib_name}.{platform}.{target}.framework/{lib_name}.{platform}.{target}",
+        f"{plugin_bin_folder}/macos/{lib_name}.{platform}.{build_target}.framework/{lib_name}.{platform}.{build_target}",
         source=sources,)
 else:
     library = env.SharedLibrary(
