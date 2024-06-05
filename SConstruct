@@ -53,7 +53,6 @@ def extract_eos_android_libraries():
 
 
 def on_complete(target, source, env):
-    print(f"build {build_target}")
     if platform == "windows":
         shutil.rmtree(plugin_bin_folder + "/windows/x64", ignore_errors=True)
         shutil.copytree(eos_sdk_folder + "Bin/x64", plugin_bin_folder + "/windows/x64")
