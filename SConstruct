@@ -45,7 +45,7 @@ def extract_eos_android_libraries():
     os.remove(zip_file)
 
 
-def on_complete(_target, _source, _env):
+def on_complete(target, source, env):
     if platform == "windows":
         shutil.rmtree(plugin_bin_folder + "/windows/x64", ignore_errors=True)
         shutil.copytree(eos_sdk_folder + "Bin/x64", plugin_bin_folder + "/windows/x64")
@@ -58,7 +58,7 @@ def on_complete(_target, _source, _env):
         framework_folder = plugin_bin_folder + f"/macos/{lib_name}.{platform}.framework"
         # Copies EOS dylib inside framework folder
         copy_file(eos_sdk_folder + "Bin/libEOSSDK-Mac-Shipping.dylib", framework_folder + f"/libEOSSDK-Mac-Shipping.dylib")
-        lib_path = f"{framework_folder}/{lib_name}.{platform}.{target}"
+        lib_path = f"{framework_folder}/{lib_name}.{platform}.{env['target']}"
         print(f"Updating libEOSSDK-Mac-Shipping.dylib path in {lib_path}")
         os.system(f"install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib {lib_path}")
 
