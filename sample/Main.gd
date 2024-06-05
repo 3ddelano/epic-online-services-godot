@@ -98,9 +98,9 @@ func _on_tab_pressed():
 #	test_sessions_interface()
 #	test_titlestorage_interface()
 #	test_user_info_interface()
-	#test_rtc_interface()
-	#test_anticheat_server_interface()
-	test_anticheat_client_interface()
+#	test_rtc_interface()
+#	test_anticheat_server_interface()
+#	test_anticheat_client_interface()
 
 func test_auth_interface():
 	print("--- Auth: get_logged_in_accounts_count: ", EOS.Auth.AuthInterface.get_logged_in_accounts_count())

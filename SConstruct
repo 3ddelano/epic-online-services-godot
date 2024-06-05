@@ -45,7 +45,7 @@ def extract_eos_android_libraries():
     os.remove(zip_file)
 
 
-def on_complete(target, source, env):
+def on_complete(_target, _source, _env):
     if platform == "windows":
         shutil.rmtree(plugin_bin_folder + "/windows/x64", ignore_errors=True)
         shutil.copytree(eos_sdk_folder + "Bin/x64", plugin_bin_folder + "/windows/x64")
@@ -55,8 +55,12 @@ def on_complete(target, source, env):
         copy_file(eos_sdk_folder + "Bin/libEOSSDK-Linux-Shipping.so", plugin_bin_folder + "/linux/libEOSSDK-Linux-Shipping.so")
     
     elif platform == "macos":
-        copy_file(eos_sdk_folder + "Bin/libEOSSDK-Mac-Shipping.dylib", plugin_bin_folder + "/macos/libEOSSDK-Mac-Shipping.dylib")
-
+        framework_folder = plugin_bin_folder + f"/macos/{lib_name}.{platform}.framework"
+        # Copies EOS dylib inside framework folder
+        copy_file(eos_sdk_folder + "Bin/libEOSSDK-Mac-Shipping.dylib", framework_folder + f"/libEOSSDK-Mac-Shipping.dylib")
+        lib_path = f"{framework_folder}/{lib_name}.{platform}.{target}"
+        print(f"Updating libEOSSDK-Mac-Shipping.dylib path in {lib_path}")
+        os.system(f"install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib {lib_path}")
 
 # For reference:
 # - CCFLAGS are compilation flags shared between C and C++
@@ -71,6 +75,7 @@ def on_complete(target, source, env):
 env.Append(CPPPATH=["src/", eos_sdk_folder + "Include/"])
 sources = Glob("src/*.cpp")
 platform = env["platform"]
+target = env['target']
 
 env.Append(LIBPATH=[eos_sdk_folder + "Lib/"])
 env.Append(LIBPATH=[eos_sdk_folder + "Bin/"])
@@ -101,11 +106,11 @@ elif env["platform"] == "android":
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        f"{plugin_bin_folder}/macos/{lib_name}.{env['platform']}.{env['target']}.framework/{lib_name}.{env['platform']}.{env['target']}",
+        f"{plugin_bin_folder}/macos/{lib_name}.{platform}.{target}.framework/{lib_name}.{platform}.{target}",
         source=sources,)
 else:
     library = env.SharedLibrary(
-        f"{plugin_bin_folder}/{env['platform']}/{lib_name}{env['suffix']}{env['SHLIBSUFFIX']}",
+        f"{plugin_bin_folder}/{platform}/{lib_name}{env['suffix']}{env['SHLIBSUFFIX']}",
         source=sources,
     )
 

@@ -9,7 +9,7 @@ func _ready() -> void:
 
 func _on_platform_create():
 	# Set logging categories and level
-	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AntiCheat, EOS.Logging.LogLevel.VeryVerbose)
+	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
 	if res != EOS.Result.Success:
 		print("Failed to set log level: ", EOS.result_str(res))
 
