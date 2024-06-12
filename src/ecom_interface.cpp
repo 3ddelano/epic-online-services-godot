@@ -555,7 +555,7 @@ Dictionary IEOS::ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefC
     options.RedeemedEntitlementIndex = static_cast<uint32_t>(p_options->get("redeemed_entitlement_index"));
 
     char *outEntitlementId = (char *)memalloc(EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1);
-    int outEntitlementIdLength = 0;
+    int outEntitlementIdLength = EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1;
     EOS_EResult res = EOS_Ecom_CopyLastRedeemedEntitlementByIndex(s_ecomInterface, &options, outEntitlementId, &outEntitlementIdLength);
 
     Dictionary ret;

@@ -292,7 +292,7 @@ Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p
     options.TargetProductUserId = eosg_string_to_product_user_id(target_product_user_id.get_data());
 
     char *outAccountId = (char *)memalloc(EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1);
-    int outAccountIdLength = 0;
+    int outAccountIdLength = EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1;
     EOS_EResult res = EOS_Connect_GetProductUserIdMapping(s_connectInterface, &options, outAccountId, &outAccountIdLength);
 
     Dictionary ret;

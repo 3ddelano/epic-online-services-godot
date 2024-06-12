@@ -29,7 +29,6 @@ class GameLobby extends BaseClass:
 	func is_valid() -> bool:
 		return id != ""
 
-
 	func is_owner(user_id: String) -> bool:
 		return owner_id == user_id
 
@@ -45,17 +44,14 @@ class GameLobby extends BaseClass:
 				return mem
 		return null
 
-
 	func is_rtc_room_enabled():
 		return enable_rtc_room
-
 
 	func get_attribute(key: String):
 		for attr in attributes:
 			if attr.data.key == key:
 				return attr
 		return null
-
 
 	func init_from_id(lobby_id: String):
 		id = lobby_id
@@ -70,7 +66,6 @@ class GameLobby extends BaseClass:
 
 		var lobby_details = copy_ret.lobby_details
 		init_from_details(lobby_details)
-
 
 	func init_from_details(lobby_details: EOSGLobbyDetails):
 		var new_lobby_owner_id = lobby_details.get_lobby_owner()
@@ -97,6 +92,7 @@ class GameLobby extends BaseClass:
 		# Get attributes
 		attributes = []
 
+		print("Got attr count: ", lobby_details.get_attribute_count())
 		for attr_idx in lobby_details.get_attribute_count():
 			var copy_attr_ret = lobby_details.copy_attribute_by_index(attr_idx)
 			if not EOS.is_success(copy_attr_ret):
@@ -109,6 +105,7 @@ class GameLobby extends BaseClass:
 		members = []
 
 		var member_count = lobby_details.get_member_count()
+		print("Got mem count: ", member_count)
 		for member_idx in member_count:
 			var member_id = lobby_details.get_member_by_index(member_idx)
 			var member = GameLobbyMember.new()
@@ -128,13 +125,12 @@ class GameLobby extends BaseClass:
 					member.init_skin_from_string(attribute.data.value)
 
 				# Copy RTC status from old members
-				var old_member = old_members.filter(func (m): return m.product_id == member.product_id)
+				var old_member = old_members.filter(func(m): return m.product_id == member.product_id)
 				if old_member.size() == 0:
 					continue
 
 				member.rtc_state = old_member[0].rtc_state
 				old_members.erase(old_member[0])
-
 
 class GameLobbyMember extends BaseClass:
 	func _init():
@@ -159,7 +155,7 @@ class GameLobbyMember extends BaseClass:
 	func init_skin_from_string(p_skin: String):
 		var skin_names = Skins.keys()
 		var idx = skin_names.find(p_skin)
-		if idx == -1:
+		if idx == - 1:
 			print("Invalid skin name: ", p_skin)
 			current_skin = Skins.Human
 			return
@@ -168,7 +164,7 @@ class GameLobbyMember extends BaseClass:
 	static func get_skin_string(skin: Skins) -> String:
 		var skin_names = Skins.keys()
 		var idx = Skins.values().find(skin)
-		if idx == -1:
+		if idx == - 1:
 			print("Invalid skin: ", skin)
 			return ""
 		return skin_names[idx]
@@ -182,9 +178,6 @@ class GameLobbyMember extends BaseClass:
 			if attr.data.key == key:
 				return attr
 		return null
-
-
-
 
 enum Maps {
 	Margao,
@@ -244,7 +237,6 @@ func _ready() -> void:
 	hide_search_results()
 	hide_current_lobby()
 
-
 func create_lobby(lobby: GameLobby) -> bool:
 	# Check if there is a current lobby. Leave it.
 	if current_lobby.is_valid():
@@ -265,7 +257,6 @@ func create_lobby(lobby: GameLobby) -> bool:
 
 	return true
 
-
 func current_lobby_destroy() -> bool:
 	if not current_lobby.is_valid():
 		return false
@@ -282,7 +273,6 @@ func current_lobby_destroy() -> bool:
 	current_lobby = GameLobby.new()
 
 	return true
-
 
 func leave_lobby() -> void:
 	if not current_lobby.is_valid():
@@ -304,7 +294,6 @@ func leave_lobby() -> void:
 
 	current_lobby = GameLobby.new()
 
-
 func modify_lobby(lobby: GameLobby) -> bool:
 	if not current_lobby.is_valid():
 		print("Unable to modify lobby. Current lobby is invalid")
@@ -313,7 +302,7 @@ func modify_lobby(lobby: GameLobby) -> bool:
 	if not current_lobby.is_owner(Store.product_user_id):
 		print("Unable to modify lobby. Only lobby owner can modify lobby.")
 		return false
-
+	
 	var modify_opts = EOS.Lobby.UpdateLobbyModificationOptions.new()
 	modify_opts.lobby_id = current_lobby.id
 
@@ -321,7 +310,7 @@ func modify_lobby(lobby: GameLobby) -> bool:
 	if not EOS.is_success(update_ret):
 		print("Failed to update lobby modification: ", EOS.result_str(update_ret))
 		return false
-
+	
 	var lobby_modification: EOSGLobbyModification = update_ret.lobby_modification
 
 	var set_perm_ret = lobby_modification.set_permission_level(lobby.permission_level)
@@ -353,16 +342,15 @@ func modify_lobby(lobby: GameLobby) -> bool:
 	var update_opts = EOS.Lobby.UpdateLobbyOptions.new()
 	update_opts.lobby_modification = lobby_modification
 	EOS.Lobby.LobbyInterface.update_lobby(update_opts)
-
+	
 	return true
-
 
 func _on_show_create_lobby_btn_pressed():
 	create_lobby_popup.popup_centered()
 
-
 func _on_create_lobby_callback(data: Dictionary):
 	print("--- Lobby: create_lobby_callback: ", EOS.result_str(data))
+	print("Lobby Id: ", data.lobby_id)
 
 	if not (EOS.is_operation_complete(data) and EOS.is_success(data)):
 		print("Failed to create lobby")
@@ -376,7 +364,6 @@ func _on_create_lobby_callback(data: Dictionary):
 	#if current_lobby.is_rtc_room_enabled():
 		#_subscribe_to_rtc_events()
 
-
 func _on_update_lobby_callback(data: Dictionary):
 	print("--- Lobby: update_lobby_callback: ", EOS.result_str(data))
 
@@ -388,7 +375,7 @@ func _on_update_lobby_callback(data: Dictionary):
 
 	var copy_details_opts = EOS.Lobby.CopyLobbyDetailsOptions.new()
 	copy_details_opts.lobby_id = current_lobby.id
-
+	
 	var copy_details_ret = EOS.Lobby.LobbyInterface.copy_lobby_details(copy_details_opts)
 	if not EOS.is_success(copy_details_ret):
 		print("Failed to copy lobby details: ", EOS.result_str(copy_details_ret))
@@ -397,8 +384,7 @@ func _on_update_lobby_callback(data: Dictionary):
 	var lobby_details: EOSGLobbyDetails = copy_details_ret.lobby_details
 	current_lobby.init_from_details(lobby_details)
 	current_lobby_node.update(current_lobby)
-	set_initial_member_attributes()
-
+	#set_initial_member_attributes()
 
 func _on_join_lobby_accepted(data: Dictionary):
 	print("--- Lobby: join_lobby_accepted_callback: ", data)
@@ -416,7 +402,6 @@ func _on_join_lobby_accepted(data: Dictionary):
 	var lobby_details = copy_ret.lobby_details
 	join_lobby(lobby_details.lobby_id)
 
-
 func set_initial_member_attributes():
 	if not current_lobby.is_valid():
 		return
@@ -427,7 +412,6 @@ func set_initial_member_attributes():
 			if member.member_attributes.is_empty():
 				var attr = {key = SKIN_ATTRIBUTE_KEY, value = GameLobbyMember.get_skin_string(member.current_skin)}
 				set_member_attribute(attr)
-
 
 func set_member_attribute(attr: Dictionary):
 	if not current_lobby.is_valid():
@@ -452,7 +436,6 @@ func set_member_attribute(attr: Dictionary):
 	var update_opts = EOS.Lobby.UpdateLobbyOptions.new()
 	update_opts.lobby_modification = lobby_modification
 	EOS.Lobby.LobbyInterface.update_lobby(update_opts)
-
 
 func _subscribe_to_rtc_events():
 	if not current_lobby.is_rtc_room_enabled():
@@ -486,16 +469,13 @@ func _subscribe_to_rtc_events():
 	notify_participant_updated_opts.room_name = current_lobby.rtc_room_name
 	EOS.RTCAudio.RTCAudioInterface.add_notify_participant_updated(notify_participant_updated_opts)
 
-
 func hide_current_lobby():
 	current_lobby_node.hide()
-
 
 func handle_search_results(search_results: Array[EOSGLobbyDetails]):
 	hide_current_lobby()
 	search_lobby_results.show()
 	search_lobby_results.update_results(search_results)
-
 
 func hide_search_results():
 	search_lobby_results.hide()

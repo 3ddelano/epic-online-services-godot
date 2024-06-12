@@ -174,12 +174,17 @@ void IEOS::lobby_interface_update_lobby(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_LOBBY_UPDATELOBBY_API_LATEST;
     options.LobbyModificationHandle = lobby_modification->get_internal();
     p_options->reference();
+    lobby_modification->reference();
 
     EOS_Lobby_UpdateLobby(s_lobbyInterface, &options, (void *)*p_options, [](const EOS_Lobby_UpdateLobbyCallbackInfo *data) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
         Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
         client_data->unreference();
+
+        Ref<EOSGLobbyModification> got_lobby_modification = Object::cast_to<EOSGLobbyModification>(client_data->get("lobby_modification"));
+        got_lobby_modification->unreference();
+
         ret["client_data"] = client_data->get("client_data");
         ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
         IEOS::get_singleton()->emit_signal("lobby_interface_update_lobby_callback", ret);
@@ -416,9 +421,11 @@ Dictionary IEOS::lobby_interface_copy_lobby_details(Ref<RefCounted> p_options) {
     EOS_HLobbyDetails outLobbyDetails = nullptr;
     EOS_EResult res = EOS_Lobby_CopyLobbyDetailsHandle(s_lobbyInterface, &options, &outLobbyDetails);
 
+    Variant lobby_details = eosg_lobby_lobby_details_to_wrapper(outLobbyDetails);
+
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["lobby_details"] = eosg_lobby_lobby_details_to_wrapper(outLobbyDetails);
+    ret["lobby_details"] = lobby_details;
     return ret;
 }
 

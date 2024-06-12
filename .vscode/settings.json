@@ -13,7 +13,13 @@
     "*.rmd": "markdown",
     "utility": "cpp",
     "sstream": "cpp",
-    "unordered_map": "cpp"
+    "unordered_map": "cpp",
+    "algorithm": "cpp",
+    "chrono": "cpp",
+    "iterator": "cpp",
+    "xhash": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   },
   "grammarly.selectors": [
     {
