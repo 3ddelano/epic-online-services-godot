@@ -22,5 +22,21 @@ public:
     EOS_ContinuanceToken get_internal() {
         return m_internal;
     }
+
+    String to_string() {
+        int32_t outBufferLength = 0;
+        EOS_ContinuanceToken_ToString(m_internal, nullptr, &outBufferLength);
+
+        // outBufferLength is set to required length
+        char *outBuffer = (char *)(memalloc(outBufferLength + 1));
+
+        EOS_EResult res = EOS_ContinuanceToken_ToString(m_internal, outBuffer, &outBufferLength);
+
+        if (res == EOS_EResult::EOS_Success) {
+            return String("ContinuanceToken[") + String(outBuffer) + String("]");
+        }
+
+        return "ContinuanceToken[to_string failed]";
+    }
 };
 } // namespace godot
