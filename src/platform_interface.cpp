@@ -118,6 +118,16 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
     // Auth Interface
     // -----
     s_authInterface = EOS_Platform_GetAuthInterface(s_platformInterface);
+    EOS_Auth_AddNotifyLoginStatusChangedOptions notifyAuthLoginStatusChangedOptions;
+    memset(&notifyAuthLoginStatusChangedOptions, 0, sizeof(notifyAuthLoginStatusChangedOptions));
+    notifyAuthLoginStatusChangedOptions.ApiVersion = EOS_AUTH_ADDNOTIFYLOGINSTATUSCHANGED_API_LATEST;
+    EOS_Auth_AddNotifyLoginStatusChanged(s_authInterface, &notifyAuthLoginStatusChangedOptions, nullptr, [](const EOS_Auth_LoginStatusChangedCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
+        ret["prev_status"] = static_cast<int>(data->PrevStatus);
+        ret["current_status"] = static_cast<int>(data->CurrentStatus);
+        IEOS::get_singleton()->emit_signal("auth_interface_login_status_changed", ret);
+    });
 
     // -----
     // Connect Interface
@@ -131,10 +141,10 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         IEOS::get_singleton()->emit_signal("connect_interface_auth_expiration", ret);
     });
-    EOS_Connect_AddNotifyLoginStatusChangedOptions notifyLoginStatusChangedOptions;
-    memset(&notifyLoginStatusChangedOptions, 0, sizeof(notifyLoginStatusChangedOptions));
-    notifyLoginStatusChangedOptions.ApiVersion = EOS_CONNECT_ADDNOTIFYLOGINSTATUSCHANGED_API_LATEST;
-    EOS_Connect_AddNotifyLoginStatusChanged(s_connectInterface, &notifyLoginStatusChangedOptions, nullptr, [](const EOS_Connect_LoginStatusChangedCallbackInfo *data) {
+    EOS_Connect_AddNotifyLoginStatusChangedOptions notifyConnectLoginStatusChangedOptions;
+    memset(&notifyConnectLoginStatusChangedOptions, 0, sizeof(notifyConnectLoginStatusChangedOptions));
+    notifyConnectLoginStatusChangedOptions.ApiVersion = EOS_CONNECT_ADDNOTIFYLOGINSTATUSCHANGED_API_LATEST;
+    EOS_Connect_AddNotifyLoginStatusChanged(s_connectInterface, &notifyConnectLoginStatusChangedOptions, nullptr, [](const EOS_Connect_LoginStatusChangedCallbackInfo *data) {
         Dictionary ret;
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
         ret["previous_status"] = static_cast<int>(data->PreviousStatus);
