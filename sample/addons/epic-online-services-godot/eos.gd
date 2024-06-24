@@ -227,6 +227,14 @@ class Connect:
 
 		var client_data = null
 
+	class QueryExternalAccountMappingsOptions extends BaseClass:
+		func _init():
+			super._init("QueryExternalAccountMappingsOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var account_id_type: ExternalAccountType
+		var external_account_ids: Array # Array[String]
+
 	class GetExternalAccountMappingsOptions extends BaseClass:
 		func _init():
 			super._init("GetExternalAccountMappingsOptions")
@@ -328,6 +336,9 @@ class Connect:
 
 		static func delete_device_id(options: DeleteDeviceIdOptions) -> void:
 			IEOS.connect_interface_delete_device_id(options)
+
+		static func query_external_account_mappings(options: QueryExternalAccountMappingsOptions) -> void:
+			IEOS.connect_interface_query_external_account_mappings(options)
 
 		static func get_external_account_mapping(options: GetExternalAccountMappingsOptions) -> String:
 			return IEOS.connect_interface_get_external_account_mapping(options)

@@ -164,6 +164,7 @@ public:
     void connect_interface_login(Ref<RefCounted> options);
     void connect_interface_logout(Ref<RefCounted> options);
     void connect_interface_query_product_user_id_mappings(Ref<RefCounted> options);
+    void connect_interface_query_external_account_mappings(Ref<RefCounted> options);
     void connect_interface_transfer_device_id_account(Ref<RefCounted> options);
     void connect_interface_unlink_account(Ref<RefCounted> options);
     void connect_interface_verify_id_token(Ref<RefCounted> options);

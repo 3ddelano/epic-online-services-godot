@@ -334,6 +334,41 @@ void IEOS::connect_interface_query_product_user_id_mappings(Ref<RefCounted> p_op
     });
 }
 
+void IEOS::connect_interface_query_external_account_mappings(Ref<RefCounted> p_options) {
+    CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    int p_account_id_type = p_options->get("account_id_type");
+    TypedArray<String> p_external_account_ids = p_options->get("external_account_ids");
+
+    const char **external_account_ids = nullptr;
+    if (p_external_account_ids.size() > 0) {
+        external_account_ids = (const char **)memalloc(sizeof(const char *) * p_external_account_ids.size());
+        for (int i = 0; i < p_external_account_ids.size(); i++) {
+            String external_account_id = p_external_account_ids[i];
+            CharString external_account_id_cstr = external_account_id.utf8();
+            external_account_ids[i] = external_account_id_cstr.get_data();
+        }
+    }
+
+    EOS_Connect_QueryExternalAccountMappingsOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_CONNECT_QUERYEXTERNALACCOUNTMAPPINGS_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id.get_data());
+    options.AccountIdType = static_cast<EOS_EExternalAccountType>(p_account_id_type);
+    options.ExternalAccountIds = external_account_ids;
+    options.ExternalAccountIdCount = p_external_account_ids.size();
+    p_options->reference();
+
+    EOS_Connect_QueryExternalAccountMappings(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_QueryExternalAccountMappingsCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        IEOS::get_singleton()->emit_signal("connect_interface_query_external_account_mappings_callback", ret);
+    });
+}
+
 void IEOS::connect_interface_link_account(Ref<RefCounted> p_options) {
     Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
     ERR_FAIL_NULL_MSG(p_continuance_token, "Error linking account. LinkAccountOptions.continuance_token is null.");

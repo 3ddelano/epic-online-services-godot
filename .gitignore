@@ -2,6 +2,7 @@
 logs/
 
 sample/android
+sample/android_debug.keystore
 
 .env
 vc140.pdb

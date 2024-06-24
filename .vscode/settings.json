@@ -19,7 +19,8 @@
     "iterator": "cpp",
     "xhash": "cpp",
     "xtree": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "string": "cpp"
   },
   "grammarly.selectors": [
     {

@@ -151,9 +151,15 @@ func test_connect_interface():
 	id_token.product_user_id = ret5.id_token.product_user_id
 	print("-- Connect: copy_id_token: Id token: ", id_token)
 
+	var opts11 = EOS.Connect.QueryExternalAccountMappingsOptions.new()
+	opts11.account_id_type = EOS.ExternalAccountType.Epic
+	opts11.external_account_ids = [Store.second_epic_account_id]
+	EOS.Connect.ConnectInterface.query_external_account_mappings(opts11)
+	print("--- Connect: query_external_account_mappings: ", await IEOS.connect_interface_query_external_account_mappings_callback)
+
 	var opts6 = EOS.Connect.GetExternalAccountMappingsOptions.new()
-	opts6.account_id_type = EOS.ExternalAccountType.Discord
-	opts6.target_external_user_id = "External Account Id Here"
+	opts6.account_id_type = EOS.ExternalAccountType.Epic
+	opts6.target_external_user_id = Store.second_epic_account_id
 	print("--- Connect: get_external_account_mapping: ", EOS.Connect.ConnectInterface.get_external_account_mapping(opts6))
 
 	print("--- Connect: get_logged_in_user_by_index(0): ", EOS.Connect.ConnectInterface.get_logged_in_user_by_index(0))

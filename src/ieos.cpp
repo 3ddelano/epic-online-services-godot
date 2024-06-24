@@ -52,6 +52,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(connect_interface_link_account);
     IEOS_BIND_METHOD(connect_interface_login);
     IEOS_BIND_METHOD(connect_interface_logout);
+    IEOS_BIND_METHOD(connect_interface_query_external_account_mappings);
     IEOS_BIND_METHOD(connect_interface_query_product_user_id_mappings);
     IEOS_BIND_METHOD(connect_interface_transfer_device_id_account);
     IEOS_BIND_METHOD(connect_interface_unlink_account);
@@ -358,8 +359,9 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(connect_interface_delete_device_id_callback);
     IEOS_BIND_SIGNAL(connect_interface_link_account_callback);
     IEOS_BIND_SIGNAL(connect_interface_login_callback);
-    IEOS_BIND_SIGNAL(connect_interface_logout_callback);
     IEOS_BIND_SIGNAL(connect_interface_login_status_changed);
+    IEOS_BIND_SIGNAL(connect_interface_logout_callback);
+    IEOS_BIND_SIGNAL(connect_interface_query_external_account_mappings_callback);
     IEOS_BIND_SIGNAL(connect_interface_query_product_user_id_mappings_callback);
     IEOS_BIND_SIGNAL(connect_interface_transfer_device_id_account_callback);
     IEOS_BIND_SIGNAL(connect_interface_unlink_account_callback);
