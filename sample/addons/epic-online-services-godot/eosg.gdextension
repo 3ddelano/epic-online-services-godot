@@ -16,5 +16,5 @@ android.debug.x86_64 = "bin/android/libeosg.android.template_debug.dev.x86_64.so
 android.release.x86_64 = "bin/android/libeosg.android.template_release.x86_64.so"
 
 [dependencies]
-windows.debug.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "bin/windows/x64/xaudio2_9redist.dll"]
-windows.release.x86_64 = ["bin/windows/EOSSDK-Win64-Shipping.dll", "bin/windows/x64/xaudio2_9redist.dll"]
+windows.debug.x86_64 = {"bin/windows/EOSSDK-Win64-Shipping.dll": "", "bin/windows/x64/xaudio2_9redist.dll": ""}
+windows.release.x86_64 = {"bin/windows/EOSSDK-Win64-Shipping.dll": "", "bin/windows/x64/xaudio2_9redist.dll": ""}
