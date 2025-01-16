@@ -598,7 +598,7 @@ func test_anticheat_server_interface():
 
 	var begin_sess_opts = EOS.AntiCheatServer.BeginSessionOptions.new()
 	begin_sess_opts.register_timeout_seconds = 60
-	begin_sess_opts.server_name = "Godot 4.2 server"
+	begin_sess_opts.server_name = "Godot 4.3 server"
 	begin_sess_opts.enable_gameplay_data = false
 
 	print("--- AntiCheatServer: begin_session: ", EOS.AntiCheatServer.AntiCheatServerInterface.begin_session(begin_sess_opts))
