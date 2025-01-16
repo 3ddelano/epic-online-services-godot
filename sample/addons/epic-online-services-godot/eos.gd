@@ -349,10 +349,10 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id:=EOSGRuntime.local_product_user_id) -> LoginStatus:
+		static func get_login_status(local_user_id := EOSGRuntime.local_product_user_id) -> LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
-		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions=GetProductUserExternalAccountCountOptions.new()) -> int:
+		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions = GetProductUserExternalAccountCountOptions.new()) -> int:
 			return IEOS.connect_interface_get_product_user_external_account_count(options)
 
 		static func query_product_user_id_mappings(options: QueryProductUserIdMappingsOptions) -> void:
@@ -517,7 +517,7 @@ class Auth:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.auth_interface_copy_id_token(options)
 
-		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id:=EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
 			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
 				options, local_user_id
 			)
@@ -546,16 +546,16 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id:=EOSGRuntime.local_epic_account_id) -> LoginStatus:
+		static func get_login_status(local_user_id := EOSGRuntime.local_epic_account_id) -> LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
 			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
 
-		static func get_merged_accounts_count(local_user_id:=EOSGRuntime.local_epic_account_id) -> int:
+		static func get_merged_accounts_count(local_user_id := EOSGRuntime.local_epic_account_id) -> int:
 			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
 
-		static func get_selected_account_id(local_user_id:=EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func get_selected_account_id(local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
 			return IEOS.auth_interface_get_selected_account_id(local_user_id)
 
 		static func link_account(options: LinkAccountOptions) -> void:
@@ -735,15 +735,15 @@ class Platform:
 	}
 
 	enum DesktopCrossplayStatus {
-		EOS_DCS_OK = 0,
-		EOS_DCS_ApplicationNotBootstrapped = 1,
-		EOS_DCS_ServiceNotInstalled = 2,
-		EOS_DCS_ServiceStartFailed = 3,
-		EOS_DCS_ServiceNotRunning = 4,
-		EOS_DCS_OverlayDisabled = 5,
-		EOS_DCS_OverlayNotInstalled = 6,
-		EOS_DCS_OverlayTrustCheckFailed = 7,
-		EOS_DCS_OverlayLoadFailed = 8
+		OK = 0,
+		ApplicationNotBootstrapped = 1,
+		ServiceNotInstalled = 2,
+		ServiceStartFailed = 3,
+		ServiceNotRunning = 4,
+		OverlayDisabled = 5,
+		OverlayNotInstalled = 6,
+		OverlayTrustCheckFailed = 7,
+		OverlayLoadFailed = 8
 	}
 
 	enum RTCBackgroundMode {
@@ -2045,7 +2045,7 @@ class UI:
 	const Control_ = 2 << ModifierShift
 	const Alt = 4 << ModifierShift
 	const Meta = 8 << ModifierShift
-	const ValidModifierMask = Shift|Control_|Alt|Meta
+	const ValidModifierMask = Shift | Control_ | Alt | Meta
 
 	enum NotificationLocation {TopLeft, TopRight, BottomLeft, BottomRight}
 
@@ -2057,7 +2057,7 @@ class UI:
 		Control_ = 2 << ModifierShift,
 		Alt = 4 << ModifierShift,
 		Meta = 8 << ModifierShift,
-		ValidModifierMask = Shift|Control_|Alt|Meta,
+		ValidModifierMask = Shift | Control_ | Alt | Meta,
 		None = 0,
 		Space,
 		Backspace,
@@ -2456,7 +2456,7 @@ class UserInfo:
 		static func copy_best_display_name_with_platform(options: CopyBestDisplayNameWithPlatformOptions) -> Dictionary:
 			return IEOS.user_info_interface_copy_best_display_name_with_platform(options)
 
-		static func get_local_platform_type(options: GetLocalPlatformTypeOptions=GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
+		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
 			return IEOS.user_info_interface_get_local_platform_type(options)
 
 class Logging:
@@ -3374,19 +3374,19 @@ class RTCAudio:
 		static func add_notify_participant_updated(options: AddNotifyParticipantUpdatedOptions) -> int:
 			return IEOS.rtc_audio_interface_add_notify_participant_updated(options)
 
-		static func get_input_devices_count(options:=GetInputDevicesCountOptions.new()) -> int:
+		static func get_input_devices_count(options := GetInputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_input_devices_count(options)
 
-		static func get_output_devices_count(options:=GetOutputDevicesCountOptions.new()) -> int:
+		static func get_output_devices_count(options := GetOutputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_output_devices_count(options)
 
 		static func send_audio(options: SendAudioOptions) -> int:
 			return IEOS.rtc_audio_interface_send_audio(options)
 
-		static func query_input_devices_information(options:=QueryInputDevicesInformationOptions.new()) -> void:
+		static func query_input_devices_information(options := QueryInputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_input_devices_information(options)
 
-		static func query_output_devices_information(options:=QueryOutputDevicesInformationOptions.new()) -> void:
+		static func query_output_devices_information(options := QueryOutputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_output_devices_information(options)
 
 		static func register_platform_user(options: RegisterPlatformUserOptions) -> void:
@@ -3537,6 +3537,7 @@ class AntiCheatServer:
 		var level_name: String
 		var mode_name: String
 		var round_time_seconds: int
+		var competition_type: AntiCheatCommonGameRoundCompetitionType
 
 	class LogGameRoundEndOptions extends BaseClass:
 		func _init():
@@ -4075,10 +4076,12 @@ enum ExternalCredentialType {
 	ViveportUserToken = 19,
 }
 
-## This seems to be outdated
 enum OnlinePlatformType {
 	Unknown = 0,
 	Epic = 100,
+	PSN = 1000,
+	Nintendo = 2000,
+	XBL = 3000,
 	Steam = 4000
 }
 
@@ -4123,6 +4126,13 @@ enum AntiCheatCommonClientType {
 	ProtectedClient = 0,
 	UnprotectedClient = 1,
 	AIBot = 2
+}
+
+enum AntiCheatCommonGameRoundCompetitionType {
+	None = 0,
+	Casual = 1,
+	Ranked = 2,
+	Competitive = 3
 }
 
 enum AntiCheatCommonClientPlatform {
@@ -4219,9 +4229,12 @@ enum AntiCheatCommonPlayerTakeDamageType {
 }
 
 enum AntiCheatCommonPlayerTakeDamageResult {
-	EOS_ACCPTDR_None = 0,
-	EOS_ACCPTDR_Downed = 1,
-	EOS_ACCPTDR_Eliminated = 2,
+	None = 0,
+	Downed_DEPRECATED = 1,
+	Eliminated_DEPRECATED = 2,
+	NormalToDowned = 3,
+	NormalToEliminated = 4,
+	DownedToEliminated = 5
 }
 
 enum AntiCheatClientMode {

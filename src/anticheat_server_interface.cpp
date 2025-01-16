@@ -283,6 +283,7 @@ int IEOS::anticheat_server_interface_log_game_round_start(Ref<RefCounted> p_opti
     CharString p_level_name = VARIANT_TO_CHARSTRING(p_options->get("level_name"));
     CharString p_mode_name = VARIANT_TO_CHARSTRING(p_options->get("mode_name"));
     int p_round_time_seconds = p_options->get("round_time_seconds");
+    int p_competition_type = p_options->get("competition_type");
 
     EOS_AntiCheatCommon_LogGameRoundStartOptions options;
     memset(&options, 0, sizeof(options));
@@ -297,6 +298,7 @@ int IEOS::anticheat_server_interface_log_game_round_start(Ref<RefCounted> p_opti
         options.ModeName = p_mode_name.get_data();
     }
     options.RoundTimeSeconds = static_cast<uint32_t>(p_round_time_seconds);
+    options.CompetitionType = static_cast<EOS_EAntiCheatCommonGameRoundCompetitionType>(p_competition_type);
 
     return static_cast<int>(EOS_AntiCheatServer_LogGameRoundStart(s_antiCheatServerInterface, &options));
 }
