@@ -224,26 +224,43 @@ jobs:
         permissions:
             contents: write
         steps:
-            - name: Download merged all artifact
+            - name: Download 'all' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
-            - name: Download android artifact
+            - name: Download 'android' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-android-${{ github.sha }}
-            - name: Download macos artifact
+            - name: Download 'macos' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
-            - name: Download linux artifact
+            - name: Download 'linux' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
-            - name: Download windows artifact
+            - name: Download 'windows' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
+            
+            - name: Zip 'all' artifact
+              run: |
+                  zip -r epic-online-services-godot-all-${{ github.sha }}.zip epic-online-services-godot-all-${{ github.sha }}
+            - name: Zip 'android' artifact
+              run: |
+                  zip -r epic-online-services-godot-android-${{ github.sha }}.zip epic-online-services-godot-android-${{ github.sha }}
+            - name: Zip 'macos' artifact
+              run: |
+                  zip -r epic-online-services-godot-macos-${{ github.sha }}.zip epic-online-services-godot-macos-${{ github.sha }}
+            - name: Zip 'linux' artifact
+              run: |
+                  zip -r epic-online-services-godot-linux-${{ github.sha }}.zip epic-online-services-godot-linux-${{ github.sha }}
+            - name: Zip 'windows' artifact
+              run: |
+                  zip -r epic-online-services-godot-windows-${{ github.sha }}.zip epic-online-services-godot-windows-${{ github.sha }}
+
             - name: Create draft release and upload assets
               uses: softprops/action-gh-release@v2
               if: startsWith(github.ref, 'refs/tags/')
@@ -251,8 +268,8 @@ jobs:
                   tag_name: ${{ github.ref_name }}
                   draft: true
                   files: |
-                      ${{ github.event.repository.name }}-all-${{ github.sha }}
-                      ${{ github.event.repository.name }}-android-${{ github.sha }}
-                      ${{ github.event.repository.name }}-macos-${{ github.sha }}
-                      ${{ github.event.repository.name }}-linux-${{ github.sha }}
-                      ${{ github.event.repository.name }}-windows-${{ github.sha }}
+                      ${{ github.event.repository.name }}-all-${{ github.sha }}.zip
+                      ${{ github.event.repository.name }}-android-${{ github.sha }}.zip
+                      ${{ github.event.repository.name }}-macos-${{ github.sha }}.zip
+                      ${{ github.event.repository.name }}-linux-${{ github.sha }}.zip
+                      ${{ github.event.repository.name }}-windows-${{ github.sha }}.zip
