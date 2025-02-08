@@ -84,14 +84,14 @@ jobs:
                       dev_build: no
                       platform: android
                       arch: x86_64
-                    - identifier: ios-debug
+                    - identifier: ios-arm64-debug
                       name: 🍏 iOS (arm64) Debug
                       runner: macos-latest
                       target: template_debug
                       dev_build: yes
                       platform: ios
                       arch: arm64
-                    - identifier: ios-release
+                    - identifier: ios-arm64-release
                       name: 🍏 iOS (arm64) Release
                       runner: macos-latest
                       target: template_release

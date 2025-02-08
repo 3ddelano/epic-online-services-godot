@@ -78,17 +78,22 @@ def on_complete(target, source, env):
         print("Generating xcframework for ios")
         
         # Delete existing xcframework if any
-        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.xcframework")
-        os.system(f"rm -rf {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
+        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.xcframework")
+        # os.system(f"rm -rf {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
 
-        os.system(f"xcodebuild -create-xcframework -library {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.a -output {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.xcframework")
-        os.system(f"xcodebuild -create-xcframework -library godot-cpp/bin/libgodot-cpp{genv['suffix']}.a -output {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
+        os.system(f"xcodebuild -create-xcframework -library {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.a -output {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.xcframework")
+        
+        # Handle the dev_build=yes case for godot-cpp
+        # suffix = genv['suffix']
+        # if env["dev_build"]:
+        #     suffix += ".dev"
+        # os.system(f"xcodebuild -create-xcframework -library godot-cpp/bin/libgodot-cpp{suffix}.a -output {plugin_bin_folder}/ios/libgodot-cpp{suffix}.xcframework")
         
         # Delete the plugin .a file
-        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.a")
+        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.a")
         
         # Copy the eos sdk framework to the plugin bin folder
-        copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.framework", plugin_bin_folder + "/ios/EOSSDK.framework")
+        # copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.framework", plugin_bin_folder + "/ios/EOSSDK.framework")
 
 
 # For reference:
@@ -144,7 +149,7 @@ if env["platform"] == "macos":
         source=sources,)
 elif env["platform"] == "ios":
     library = env.StaticLibrary(
-        f"{plugin_bin_folder}/{platform}/{lib_name}{env['suffix']}.a",
+        f"{plugin_bin_folder}/{platform}/{lib_name}.{platform}.{build_target}.a",
         source=sources,
     )
 else:
