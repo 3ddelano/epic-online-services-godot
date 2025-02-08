@@ -224,52 +224,78 @@ jobs:
         permissions:
             contents: write
         steps:
+            - name: Create download folder
+              run: mkdir -p ./download
+
+              # Download each merged artifact into the ./download folder
             - name: Download 'all' artifact
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-all-${{ github.sha }}
+                name: ${{ github.event.repository.name }}-all-${{ github.sha }}
+                path: ./download
             - name: Download 'android' artifact
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-android-${{ github.sha }}
+                name: ${{ github.event.repository.name }}-android-${{ github.sha }}
+                path: ./download
             - name: Download 'macos' artifact
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
+                name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
+                path: ./download
             - name: Download 'linux' artifact
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
+                name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
+                path: ./download
             - name: Download 'windows' artifact
               uses: actions/download-artifact@v4
               with:
-                  name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
-            
+                name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
+                path: ./download
+
+            - name: List download folder
+              run: ls -la ./download
+
+              # Now, re-zip each downloaded artifact folder.
             - name: Zip 'all' artifact
               run: |
-                  zip -r epic-online-services-godot-all-${{ github.sha }}.zip epic-online-services-godot-all-${{ github.sha }}
+                cd download
+                zip -r ../epic-online-services-godot-all-${{ github.sha }}.zip ${{ github.event.repository.name }}-all-${{ github.sha }}
+                cd ..
             - name: Zip 'android' artifact
               run: |
-                  zip -r epic-online-services-godot-android-${{ github.sha }}.zip epic-online-services-godot-android-${{ github.sha }}
+                cd download
+                zip -r ../epic-online-services-godot-android-${{ github.sha }}.zip ${{ github.event.repository.name }}-android-${{ github.sha }}
+                cd ..
             - name: Zip 'macos' artifact
               run: |
-                  zip -r epic-online-services-godot-macos-${{ github.sha }}.zip epic-online-services-godot-macos-${{ github.sha }}
+                cd download
+                zip -r ../epic-online-services-godot-macos-${{ github.sha }}.zip ${{ github.event.repository.name }}-macos-${{ github.sha }}
+                cd ..
             - name: Zip 'linux' artifact
               run: |
-                  zip -r epic-online-services-godot-linux-${{ github.sha }}.zip epic-online-services-godot-linux-${{ github.sha }}
+                cd download
+                zip -r ../epic-online-services-godot-linux-${{ github.sha }}.zip ${{ github.event.repository.name }}-linux-${{ github.sha }}
+                cd ..
             - name: Zip 'windows' artifact
               run: |
-                  zip -r epic-online-services-godot-windows-${{ github.sha }}.zip epic-online-services-godot-windows-${{ github.sha }}
+                cd download
+                zip -r ../epic-online-services-godot-windows-${{ github.sha }}.zip ${{ github.event.repository.name }}-windows-${{ github.sha }}
+                cd ..
+            
+            - name: List root directory after zipping
+              run: ls -la
 
             - name: Create draft release and upload assets
               uses: softprops/action-gh-release@v2
               if: startsWith(github.ref, 'refs/tags/')
               with:
-                  tag_name: ${{ github.ref_name }}
-                  draft: true
-                  files: |
-                      ${{ github.event.repository.name }}-all-${{ github.sha }}.zip
-                      ${{ github.event.repository.name }}-android-${{ github.sha }}.zip
-                      ${{ github.event.repository.name }}-macos-${{ github.sha }}.zip
-                      ${{ github.event.repository.name }}-linux-${{ github.sha }}.zip
-                      ${{ github.event.repository.name }}-windows-${{ github.sha }}.zip
+                tag_name: ${{ github.ref_name }}
+                draft: true
+                files: |
+                  epic-online-services-godot-all-${{ github.sha }}.zip
+                  epic-online-services-godot-android-${{ github.sha }}.zip
+                  epic-online-services-godot-macos-${{ github.sha }}.zip
+                  epic-online-services-godot-linux-${{ github.sha }}.zip
+                  epic-online-services-godot-windows-${{ github.sha }}.zip
