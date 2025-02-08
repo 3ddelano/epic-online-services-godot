@@ -224,19 +224,37 @@ jobs:
         permissions:
             contents: write
         steps:
-            - name: Download merged artifact
+            - name: Download merged all artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
-                  path: ./release-artifacts
-            - name: Create draft release and upload assets
+			- name: Download android artifact
+			  uses: actions/download-artifact@v4
+			  with:
+				  name: ${{ github.event.repository.name }}-android-${{ github.sha }}
+			- name: Download macos artifact
+			  uses: actions/download-artifact@v4
+			  with:
+				  name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
+			- name: Download linux artifact
+			  uses: actions/download-artifact@v4
+			  with:
+				  name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
+			- name: Download windows artifact
+			  uses: actions/download-artifact@v4
+			  with:
+				  name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
+            
+			- name: Create draft release and upload assets
               uses: softprops/action-gh-release@v2
               if: startsWith(github.ref, 'refs/tags/')
               with:
                   tag_name: ${{ github.ref_name }}
                   draft: true
                   files: |
-                      ./release-artifacts/**/*.zip
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+					  ${{ github.event.repository.name }}-all-${{ github.sha }}
+					  ${{ github.event.repository.name }}-android-${{ github.sha }}
+					  ${{ github.event.repository.name }}-macos-${{ github.sha }}
+					  ${{ github.event.repository.name }}-linux-${{ github.sha }}
+					  ${{ github.event.repository.name }}-windows-${{ github.sha }}
 
