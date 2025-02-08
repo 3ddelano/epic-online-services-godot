@@ -33,6 +33,10 @@ Epic Online Services Godot (EOSG)
 
 #### [View Current Project Status](#current-project-status)
 
+## Simple P2P Example
+
+A simple demo showcasing the EOS P2P multiplayer: [Click Here](https://github.com/LowFire/EOSGP2PInterfaceTestGame)
+
 ## Support Development
 
 #### Making this project took a lot of time and effort, reading the Epic Online Services documentation countless times and testing each method in Godot. I would really appreciate if you could support the project in any way.
