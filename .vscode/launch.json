@@ -1,17 +1,30 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Project",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${config:godot_tools.editor_path_4}",
-            "args": ["--debug"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/sample",
-            "environment": [],
-            "console": "integratedTerminal",
-            "preLaunchTask": "build"
-        }
-    ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Project (Windows)",
+			"type": "cppvsdbg",
+			"request": "launch",
+			"program": "${config:godotTools.editorPath.godot4}",
+			"args": ["--debug"],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/sample",
+			"environment": [],
+			"console": "integratedTerminal",
+			"preLaunchTask": "build"
+		},
+		{
+			"name": "Debug Project (Macos)",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${config:godotTools.editorPath.godot4}",
+			"args": ["--debug"],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/sample",
+			"environment": [],
+			"console": "integratedTerminal",
+			"MIMode": "lldb",
+			"preLaunchTask": "build"
+		}
+	]
 }

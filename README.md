@@ -190,6 +190,12 @@ To develop this plugin, follow the below steps:
 
 5. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample project.
 
+## Debugging GDExtension on MacOS
+
+If you get an error `Not allowed to attach to process` trying to debug GDExtension on MacOS using LLDB. Run the below command:
+```bash
+codesign --entitlements debug-entitlements.plist -f -s - /Applications/Godot.app/Contents/MacOS/Godot
+```
 
 ### How to run the sample project?
 > The sample Godot project is located in the **Sample** folder

@@ -6,7 +6,7 @@
             "group": "build",
             "type": "shell",
             "command": "scons",
-            "args": ["dev_build=yes", "-j7"],
+            "args": ["dev_build=yes"],
             "problemMatcher": "$msCompile"
         },
         {
@@ -14,7 +14,7 @@
             "group": "build",
             "type": "shell",
             "command": "scons",
-            "args": ["target=template_release", "-j8"],
+            "args": ["target=template_release"],
             "problemMatcher": "$msCompile"
         }
     ]
