@@ -68,6 +68,7 @@ int EOSGSessionSearch::set_parameter(const String &p_key, Variant p_value, int p
     memset(&attributeData, 0, sizeof(attributeData));
     attributeData.ApiVersion = EOS_SESSIONS_ATTRIBUTEDATA_API_LATEST;
     attributeData.Key = key.get_data();
+    CharString value;
 
     if (p_value.get_type() == Variant::Type::BOOL) {
         attributeData.ValueType = EOS_ESessionAttributeType::EOS_AT_BOOLEAN;
@@ -79,7 +80,7 @@ int EOSGSessionSearch::set_parameter(const String &p_key, Variant p_value, int p
         attributeData.ValueType = EOS_ESessionAttributeType::EOS_AT_DOUBLE;
         attributeData.Value.AsDouble = p_value;
     } else if (p_value.get_type() == Variant::Type::STRING) {
-        CharString value = VARIANT_TO_CHARSTRING(p_value);
+        value = VARIANT_TO_CHARSTRING(p_value);
         attributeData.ValueType = EOS_ESessionAttributeType::EOS_AT_STRING;
         attributeData.Value.AsUtf8 = value.get_data();
     }

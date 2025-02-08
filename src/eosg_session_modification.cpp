@@ -22,6 +22,7 @@ int EOSGSessionModification::add_attribute(const String &p_key, Variant p_value,
     memset(&sessionAttribute, 0, sizeof(sessionAttribute));
     sessionAttribute.ApiVersion = EOS_SESSIONS_ATTRIBUTEDATA_API_LATEST;
     sessionAttribute.Key = key.get_data();
+	CharString value;
 
     if (p_value.get_type() == Variant::Type::BOOL) {
         sessionAttribute.ValueType = EOS_ESessionAttributeType::EOS_AT_BOOLEAN;
@@ -33,7 +34,7 @@ int EOSGSessionModification::add_attribute(const String &p_key, Variant p_value,
         sessionAttribute.ValueType = EOS_ESessionAttributeType::EOS_AT_DOUBLE;
         sessionAttribute.Value.AsDouble = p_value;
     } else if (p_value.get_type() == Variant::Type::STRING) {
-        CharString value = VARIANT_TO_CHARSTRING(p_value);
+        value = VARIANT_TO_CHARSTRING(p_value);
         sessionAttribute.ValueType = EOS_ESessionAttributeType::EOS_AT_STRING;
         sessionAttribute.Value.AsUtf8 = value.get_data();
     }

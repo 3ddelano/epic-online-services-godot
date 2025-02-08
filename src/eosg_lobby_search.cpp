@@ -59,6 +59,7 @@ int EOSGLobbySearch::set_parameter(const String &p_key, Variant p_value, int p_c
     memset(&attributeData, 0, sizeof(attributeData));
     attributeData.ApiVersion = EOS_LOBBY_ATTRIBUTEDATA_API_LATEST;
     attributeData.Key = key.get_data();
+    CharString value;
 
     if (p_value.get_type() == Variant::Type::BOOL) {
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_BOOLEAN;
@@ -70,7 +71,7 @@ int EOSGLobbySearch::set_parameter(const String &p_key, Variant p_value, int p_c
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_DOUBLE;
         attributeData.Value.AsDouble = p_value;
     } else if (p_value.get_type() == Variant::Type::STRING) {
-        CharString value = VARIANT_TO_CHARSTRING(p_value);
+        value = VARIANT_TO_CHARSTRING(p_value);
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_STRING;
         attributeData.Value.AsUtf8 = value.get_data();
     }

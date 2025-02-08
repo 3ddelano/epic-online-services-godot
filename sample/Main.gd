@@ -60,7 +60,7 @@ func _ready() -> void:
 
 	var create_success: bool = EOS.Platform.PlatformInterface.create(create_opts)
 	var create_retry_count = 10
-	while not create_success&&create_retry_count > 0:
+	while not create_success && create_retry_count > 0:
 		create_success = EOS.Platform.PlatformInterface.create(create_opts)
 		create_retry_count -= 1
 		await get_tree().create_timer(0.2).timeout
@@ -194,7 +194,7 @@ func test_ecom_interface():
 	print("--- Ecom: query_offers: ", await IEOS.ecom_interface_query_offers_callback)
 
 	var checkout_options = EOS.Ecom.CheckoutOptions.new()
-	checkout_options.entries = [{
+	checkout_options.entries = [ {
 		offer_id = "OFFER ID HERE"
 	}]
 	EOS.Ecom.EcomInterface.checkout(checkout_options)
@@ -260,7 +260,7 @@ func test_reports_interface():
 	report_options.reported_user_id = Store.second_product_user_id
 	report_options.category = EOS.Reports.PlayerReportsCategory.Cheating
 	report_options.message = "this is a test report from godot"
-	report_options.context = JSON.stringify({hello="testing"})
+	report_options.context = JSON.stringify({hello = "testing"})
 	EOS.Reports.ReportsInterface.send_player_behavior_report(report_options)
 	print("--- Reports: send_player_behavior_report: ", EOS.result_str(await IEOS.reports_interface_send_player_behavior_report_callback))
 
@@ -298,8 +298,8 @@ func test_presence_interface():
 
 	var presence_modification: EOSGPresenceModification = create_pmod_ret.presence_modification
 	var set_data_ret = presence_modification.set_data({
-		test_key="test_val",
-		hello="world"
+		test_key = "test_val",
+		hello = "world"
 	})
 	print("--- EOSGPresenceModification: set_data: ", EOS.result_str(set_data_ret))
 
@@ -494,10 +494,10 @@ func test_sessions_interface():
 
 	var session_mod: EOSGSessionModification = create_sess_mod.session_modification
 
-	print("--- Sessions: SessionModification: set_permission_level: ", session_mod.set_permission_level(EOS.Sessions.OnlineSessionPermissionLevel.PublicAdvertised))
-	print("--- Sessions: SessionModification: set_join_in_progess_allowed: ", session_mod.set_join_in_progress_allowed(true))
-	print("--- Sessions: SessionModification: set_invites_allowed: ", session_mod.set_invites_allowed(true))
-	print("--- Sessions: SessionModification: add_attribute: ", session_mod.add_attribute(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.Sessions.SessionAttributeAdvertisementType.Advertise))
+	print("--- Sessions: SessionModification: set_permission_level: ", EOS.result_str(session_mod.set_permission_level(EOS.Sessions.OnlineSessionPermissionLevel.PublicAdvertised)))
+	print("--- Sessions: SessionModification: set_join_in_progess_allowed: ", EOS.result_str(session_mod.set_join_in_progress_allowed(true)))
+	print("--- Sessions: SessionModification: set_invites_allowed: ", EOS.result_str(session_mod.set_invites_allowed(true)))
+	print("--- Sessions: SessionModification: add_attribute: ", EOS.result_str(session_mod.add_attribute(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.Sessions.SessionAttributeAdvertisementType.Advertise)))
 
 	var update_sess_opts = EOS.Sessions.UpdateSessionOptions.new()
 	update_sess_opts.session_modification = session_mod
@@ -507,55 +507,52 @@ func test_sessions_interface():
 	var update_sess = await IEOS.sessions_interface_update_session_callback
 	print("--- Sessions: update_session: ", update_sess)
 
-	#var dump_sess_opts = EOS.Sessions.DumpSessionStateOptions.new()
-	#dump_sess_opts.session_name = "TestSession001"
-	#print("--- Sessions: dump_session_state: ", EOS.Sessions.SessionsInterface.dump_session_state(dump_sess_opts))
+	var dump_sess_opts = EOS.Sessions.DumpSessionStateOptions.new()
+	dump_sess_opts.session_name = "TestSession001"
+	print("--- Sessions: dump_session_state: ", EOS.result_str(EOS.Sessions.SessionsInterface.dump_session_state(dump_sess_opts)))
 
-	#var copy_active_session_opts = EOS.Sessions.CopyActiveSessionDetailsOptions.new()
-	#copy_active_session_opts.session_name = "TestSession001"
-	#var copy_active_session = EOS.Sessions.SessionsInterface.copy_active_session_details(copy_active_session_opts)
-	#print("--- Sessions: copy_active_session_details: ", copy_active_session)
+	var copy_active_session_opts = EOS.Sessions.CopyActiveSessionDetailsOptions.new()
+	copy_active_session_opts.session_name = "TestSession001"
+	var copy_active_session = EOS.Sessions.SessionsInterface.copy_active_session_details(copy_active_session_opts)
+	print("--- Sessions: copy_active_session_details: ", copy_active_session)
 
-	#var active_session: EOSGActiveSession = copy_active_session.active_session
-	#print("--- Sessions: ActiveSession: copy_info:", active_session.copy_info())
+	var active_session: EOSGActiveSession = copy_active_session.active_session
+	print("--- Sessions: ActiveSession: copy_info:", active_session.copy_info())
 
-	# Modify session
-	# var update_sess_mod_opts = EOS.Sessions.UpdateSessionModificationOptions.new()
-	# update_sess_mod_opts.session_name = "TestSession001"
-	# var update_sess_mod = EOS.Sessions.SessionsInterface.update_session_modification(update_sess_mod_opts)
-	# print("--- Sessions: update_session_modification: ", update_sess_mod)
-	# session_mod = update_sess_mod.session_modification
-
-	# print("--- Sessions: SessionModification: set_invites_allowed: ", session_mod.set_invites_allowed(false))
-
-	# update_sess_opts = EOS.Sessions.UpdateSessionOptions.new()
-	# update_sess_opts.session_modification = session_mod
-	# EOS.Sessions.SessionsInterface.update_session(update_sess_opts)
-
-	# update_sess = await IEOS.sessions_interface_update_session_callback
-	# print("--- Sessions: update_session: ", update_sess)
+	# Update session
+	var update_sess_mod_opts = EOS.Sessions.UpdateSessionModificationOptions.new()
+	update_sess_mod_opts.session_name = "TestSession001"
+	var update_sess_mod = EOS.Sessions.SessionsInterface.update_session_modification(update_sess_mod_opts)
+	print("--- Sessions: update_session_modification: ", update_sess_mod)
+	session_mod = update_sess_mod.session_modification
+	print("--- Sessions: SessionModification: set_invites_allowed: ", session_mod.set_invites_allowed(false))
+	update_sess_opts = EOS.Sessions.UpdateSessionOptions.new()
+	update_sess_opts.session_modification = session_mod
+	EOS.Sessions.SessionsInterface.update_session(update_sess_opts)
+	update_sess = await IEOS.sessions_interface_update_session_callback
+	print("--- Sessions: update_session: ", update_sess)
 
 	# Search session
-	#var create_search_opts = EOS.Sessions.CreateSessionSearchOptions.new()
-	#var create_session_search = EOS.Sessions.SessionsInterface.create_session_search(create_search_opts)
-	#print("--- Sessions: create_session_search: ", create_session_search)
+	var create_search_opts = EOS.Sessions.CreateSessionSearchOptions.new()
+	var create_session_search = EOS.Sessions.SessionsInterface.create_session_search(create_search_opts)
+	print("--- Sessions: create_session_search: ", create_session_search)
 
-	#var session_search: EOSGSessionSearch = create_session_search.session_search
-	#session_search.set_parameter(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.ComparisonOp.Equal)
-	#session_search.find(EOSGRuntime.local_product_user_id)
-	#print("--- Sessions: SessionSearch: find: ", await IEOS.session_search_find_callback)
+	var session_search: EOSGSessionSearch = create_session_search.session_search
+	session_search.set_parameter(EOS.Sessions.SEARCH_BUCKET_ID, bucket_id, EOS.ComparisonOp.Equal)
+	session_search.find(EOSGRuntime.local_product_user_id)
+	print("--- Sessions: SessionSearch: find: ", await IEOS.session_search_find_callback)
 
-	#var search_result_count = session_search.get_search_result_count()
-	#print("--- Sessions: SessionSearch: get_search_result_count: ", search_result_count)
+	var search_result_count = session_search.get_search_result_count()
+	print("--- Sessions: SessionSearch: get_search_result_count: ", search_result_count)
 
-	#for i in range(search_result_count):
-		#var search_result = session_search.copy_search_result_by_index(i)
-		#print("--- Sessions: copy_search_result_by_index(%d): " % i, search_result)
+	for i in range(search_result_count):
+		var search_result = session_search.copy_search_result_by_index(i)
+		print("--- Sessions: copy_search_result_by_index(%d): " % i, search_result)
 
-		#var session_details: EOSGSessionDetails = search_result.session_details
-		#print("--- Sessions: SessionDetails: copy_info: ", session_details.copy_info())
+		var session_details: EOSGSessionDetails = search_result.session_details
+		print("--- Sessions: SessionDetails: copy_info: ", session_details.copy_info())
 
-	# Join session
+	# # Join session
 	# var join_sess_opts = EOS.Sessions.JoinSessionOptions.new()
 	# join_sess_opts.session_name = "TestSession001"
 	# join_sess_opts.presence_enabled = true
@@ -573,15 +570,14 @@ func test_sessions_interface():
 	# Start session
 	var start_sess_opts = EOS.Sessions.StartSessionOptions.new()
 	start_sess_opts.session_name = "TestSession001"
-
 	EOS.Sessions.SessionsInterface.start_session(start_sess_opts)
 	print("--- Sessions: start_session: ", await IEOS.sessions_interface_start_session_callback)
 
-	# Destroy session
-	var destroy_sess_opts = EOS.Sessions.DestroySessionOptions.new()
-	destroy_sess_opts.session_name = "TestSession001"
-	EOS.Sessions.SessionsInterface.destroy_session(destroy_sess_opts)
-	print("--- Sessions: destroy_session: ", await IEOS.sessions_interface_destroy_session_callback)
+	# # Destroy session
+	# var destroy_sess_opts = EOS.Sessions.DestroySessionOptions.new()
+	# destroy_sess_opts.session_name = "TestSession001"
+	# EOS.Sessions.SessionsInterface.destroy_session(destroy_sess_opts)
+	# print("--- Sessions: destroy_session: ", await IEOS.sessions_interface_destroy_session_callback)
 
 func test_rtc_interface():
 	#TODO: test rtc interface
@@ -655,9 +651,9 @@ func _send_msg_to_server(local_user_id: String, jwt: String, mode: int):
 	var peer_id = multiplayer.get_remote_sender_id()
 	print("--- AntiCheatServer: _send_msg_to_server: got rpc: peer: %s, local_user_id: %d" % [peer_id, local_user_id])
 	anticheat_server_main.on_client_message_receive(peer_id, "register", {
-		local_user_id=local_user_id,
-		jwt=jwt,
-		mode=mode
+		local_user_id = local_user_id,
+		jwt = jwt,
+		mode = mode
 	})
 
 func get_view_manager():
