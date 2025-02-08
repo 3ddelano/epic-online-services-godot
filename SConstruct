@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import sys
 import shutil
 
 env = SConscript("godot-cpp/SConstruct")
@@ -22,6 +21,11 @@ def copy_file(from_path, to_path):
         os.makedirs(os.path.dirname(to_path))
     shutil.copyfile(from_path, to_path)
 
+def copy_folder(from_path, to_path):
+    if not os.path.exists(to_path):
+        os.makedirs(to_path)
+    shutil.rmtree(to_path, ignore_errors=True)
+    shutil.copytree(from_path, to_path)
 
 def extract_eos_android_libraries():
     libs_path = eos_sdk_folder + "Bin/Android/static-stdc++/libs/"
@@ -52,6 +56,7 @@ def extract_eos_android_libraries():
     os.remove(zip_file)
 
 
+genv = env
 def on_complete(target, source, env):
     if platform == "windows":
         shutil.rmtree(plugin_bin_folder + "/windows/x64", ignore_errors=True)
@@ -68,6 +73,23 @@ def on_complete(target, source, env):
         lib_path = f"{framework_folder}/{lib_name}.{platform}.{build_target}"
         print(f"Updating libEOSSDK-Mac-Shipping.dylib path in {lib_path}")
         os.system(f"install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib {lib_path}")
+        
+    elif platform == "ios":
+        print("Generating xcframework for ios")
+        
+        # Delete existing xcframework if any
+        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.xcframework")
+        os.system(f"rm -rf {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
+
+        os.system(f"xcodebuild -create-xcframework -library {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.a -output {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.xcframework")
+        os.system(f"xcodebuild -create-xcframework -library godot-cpp/bin/libgodot-cpp{genv['suffix']}.a -output {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
+        
+        # Delete the plugin .a file
+        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}{genv['suffix']}.a")
+        
+        # Copy the eos sdk framework to the plugin bin folder
+        copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.framework", plugin_bin_folder + "/ios/EOSSDK.framework")
+
 
 # For reference:
 # - CCFLAGS are compilation flags shared between C and C++
@@ -94,6 +116,17 @@ elif env["platform"] == "linux":
 elif env["platform"] == "macos":
     env.Append(LIBS=["EOSSDK-Mac-Shipping"])
 
+elif env["platform"] == "ios":
+    if env["ios_simulator"]:
+        raise Exception("ios simulator is not supported by EOS SDK")
+    if env["arch"] != "arm64":
+        raise Exception("Only arm64 is supported on iOS.")
+    env.Append(LINKFLAGS=[
+        "-F", eos_sdk_folder + "Bin/IOS/",
+        '-framework', 'AuthenticationServices',
+        '-framework', 'EOSSDK',
+    ])
+
 elif env["platform"] == "android":
     eos_android_arch = "arm64-v8a"
     if env["arch"] == "x86_64":
@@ -109,6 +142,11 @@ if env["platform"] == "macos":
     library = env.SharedLibrary(
         f"{plugin_bin_folder}/macos/{lib_name}.{platform}.{build_target}.framework/{lib_name}.{platform}.{build_target}",
         source=sources,)
+elif env["platform"] == "ios":
+    library = env.StaticLibrary(
+        f"{plugin_bin_folder}/{platform}/{lib_name}{env['suffix']}.a",
+        source=sources,
+    )
 else:
     library = env.SharedLibrary(
         f"{plugin_bin_folder}/{platform}/{lib_name}{env['suffix']}{env['SHLIBSUFFIX']}",

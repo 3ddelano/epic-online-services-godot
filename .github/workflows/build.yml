@@ -84,6 +84,20 @@ jobs:
                       dev_build: no
                       platform: android
                       arch: x86_64
+                    - identifier: ios-debug
+                      name: 🍏 iOS (arm64) Debug
+                      runner: macos-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: ios
+                      arch: arm64
+                    - identifier: ios-release
+                      name: 🍏 iOS (arm64) Release
+                      runner: macos-latest
+                      target: template_release
+                      dev_build: no
+                      platform: ios
+                      arch: arm64
         steps:
             - name: Set up Python
               uses: actions/setup-python@v5
