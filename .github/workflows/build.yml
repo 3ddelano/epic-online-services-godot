@@ -259,27 +259,27 @@ jobs:
             - name: Zip 'all' artifact
               run: |
                 cd artifact-all
-                zip -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip ${{ github.event.repository.name }}-all-${{ github.sha }}
+                zip -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip .
                 cd ..
             - name: Zip 'android' artifact
               run: |
                 cd artifact-android
-                zip -r ../${{ github.event.repository.name }}-android-${{ github.sha }}.zip ${{ github.event.repository.name }}-android-${{ github.sha }}
+                zip -r ../${{ github.event.repository.name }}-android-${{ github.sha }}.zip .
                 cd ..
             - name: Zip 'macos' artifact
               run: |
                 cd artifact-macos
-                zip -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip ${{ github.event.repository.name }}-macos-${{ github.sha }}
+                zip -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip .
                 cd ..
             - name: Zip 'linux' artifact
               run: |
                 cd artifact-linux
-                zip -r ../${{ github.event.repository.name }}-linux-${{ github.sha }}.zip ${{ github.event.repository.name }}-linux-${{ github.sha }}
+                zip -r ../${{ github.event.repository.name }}-linux-${{ github.sha }}.zip .
                 cd ..
             - name: Zip 'windows' artifact
               run: |
                 cd artifact-windows
-                zip -r ../${{ github.event.repository.name }}-windows-${{ github.sha }}.zip ${{ github.event.repository.name }}-windows-${{ github.sha }}
+                zip -r ../${{ github.event.repository.name }}-windows-${{ github.sha }}.zip .
                 cd ..
             
             - name: List all artifact folders post zipping
