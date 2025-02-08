@@ -260,11 +260,9 @@ public:
     }
 
     virtual Error _get_packet(const uint8_t **r_buffer, int32_t *r_buffer_size) override;
-    virtual Error _put_packet(const uint8_t *p_buffer, int32_t p_buffer_size);
+    virtual Error _put_packet(const uint8_t *p_buffer, int32_t p_buffer_size) override;
     virtual int32_t _get_available_packet_count() const override;
     virtual int32_t _get_max_packet_size() const override;
-    //virtual PackedByteArray _get_packet_script() override;
-    //virtual Error _put_packet_script(const PackedByteArray &p_buffer) override;
     virtual int32_t _get_packet_channel() const override;
     virtual MultiplayerPeer::TransferMode _get_packet_mode() const override;
     virtual void _set_transfer_channel(int32_t p_channel) override;

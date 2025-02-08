@@ -509,6 +509,8 @@ Error EOSGMultiplayerPeer::_put_packet(const uint8_t *p_buffer, int32_t p_buffer
             reliability = EOS_EPacketReliability::EOS_PR_ReliableOrdered;
             channel = CH_RELIABLE;
         } break;
+        case TRANSFER_MODE_UNRELIABLE_ORDERED: {
+        } break;
     }
     if (tr_channel > 0) {
         channel = CH_MAX + tr_channel - 1;

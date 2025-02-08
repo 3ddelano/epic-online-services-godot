@@ -10,6 +10,7 @@ sample/android_debug.keystore
 vc140.pdb
 .sconsign.dblite
 
+*.o
 *.obj
 *.os
 
