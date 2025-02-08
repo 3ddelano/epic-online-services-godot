@@ -225,18 +225,18 @@ jobs:
             contents: write
         steps:
             - name: Download merged artifact
-                uses: actions/download-artifact@v3
-                with:
-                    name: ${{ github.event.repository.name }}-all-${{ github.sha }}
-                    path: ./release-artifacts
+              uses: actions/download-artifact@v3
+              with:
+                  name: ${{ github.event.repository.name }}-all-${{ github.sha }}
+                  path: ./release-artifacts
             - name: Create draft release and upload assets
-                uses: softprops/action-gh-release@v2
-                if: startsWith(github.ref, 'refs/tags/')
-                with:
-                    tag_name: ${{ github.ref_name }}
-                    draft: true
-                    files: |
-                        ./release-artifacts/**/*.zip
-                env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v2
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  tag_name: ${{ github.ref_name }}
+                  draft: true
+                  files: |
+                      ./release-artifacts/**/*.zip
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
