@@ -122,9 +122,10 @@ void IEOS::kws_interface_request_permissions(Ref<RefCounted> p_options) {
     int p_permission_keys_size = p_permission_keys.size();
 
     const char **permissionsKeys = (const char **)memalloc(sizeof(char *) * p_permission_keys_size);
+	PERSISTENT_CHAR_ARRAY_CREATE(permissions_keys, permissions_keys_charstrings, p_permission_keys_size)
     for (int i = 0; i < p_permission_keys_size; i++) {
-        CharString permission_key = VARIANT_TO_CHARSTRING(p_permission_keys[i]);
-        permissionsKeys[i] = permission_key.get_data();
+		PERSISTENT_CHAR_ARRAY_SET(permissions_keys, permissions_keys_charstrings, i, p_permission_keys[i]);
+        permissionsKeys[i] = permissions_keys[i];
     }
 
     EOS_KWS_RequestPermissionsOptions options;

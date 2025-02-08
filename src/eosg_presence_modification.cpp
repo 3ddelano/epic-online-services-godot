@@ -36,16 +36,15 @@ int EOSGPresenceModification::set_data(Dictionary p_data) {
     int records_count = p_data.keys().size();
     EOS_Presence_DataRecord *records = (EOS_Presence_DataRecord *)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
 
+    PERSISTENT_CHAR_ARRAY_CREATE(data_keys, data_keys_charstrings, records_count);
+    PERSISTENT_CHAR_ARRAY_CREATE(data_values, data_values_charstrings, records_count);
     for (int i = 0; i < records_count; i++) {
-        String key = p_data.keys()[i];
-        String value = p_data[key];
-
-        CharString new_key = VARIANT_TO_CHARSTRING(key);
-        CharString new_value = VARIANT_TO_CHARSTRING(value);
+        PERSISTENT_CHAR_ARRAY_SET(data_keys, data_keys_charstrings, i, p_data.keys()[i]);
+        PERSISTENT_CHAR_ARRAY_SET(data_values, data_values_charstrings, i, p_data[p_data.keys()[i]]);
 
         records[i].ApiVersion = EOS_PRESENCE_DATARECORD_API_LATEST;
-        records[i].Key = new_key.get_data();
-        records[i].Value = new_value.get_data();
+        records[i].Key = data_keys[i];
+        records[i].Value = data_values[i];
     }
 
     EOS_PresenceModification_SetDataOptions options;
@@ -61,12 +60,12 @@ int EOSGPresenceModification::delete_data(Array p_keys) {
     int records_count = p_keys.size();
     EOS_PresenceModification_DataRecordId *records = (EOS_PresenceModification_DataRecordId *)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
 
+    PERSISTENT_CHAR_ARRAY_CREATE(data_keys, data_keys_charstrings, records_count)
     for (int i = 0; i < records_count; i++) {
-        String key = p_keys[i];
-        CharString p_key = VARIANT_TO_CHARSTRING(key);
+        PERSISTENT_CHAR_ARRAY_SET(data_keys, data_keys_charstrings, i, p_keys[i]);
 
         records[i].ApiVersion = EOS_PRESENCEMODIFICATION_DATARECORDID_API_LATEST;
-        records[i].Key = p_key.get_data();
+        records[i].Key = data_keys[i];
     }
 
     EOS_PresenceModification_DeleteDataOptions options;

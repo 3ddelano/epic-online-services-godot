@@ -23,9 +23,10 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
     int target_user_ids_count = p_target_user_ids.size();
 
     EOS_ProductUserId *targetUserIds = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * target_user_ids_count);
+	PERSISTENT_CHAR_ARRAY_CREATE(target_user_ids, target_user_ids_charstrings, target_user_ids_count)
     for (int i = 0; i < target_user_ids_count; i++) {
-        CharString target_user_id = VARIANT_TO_CHARSTRING(p_target_user_ids[i]);
-        targetUserIds[i] = eosg_string_to_product_user_id(target_user_id.get_data());
+        PERSISTENT_CHAR_ARRAY_SET(target_user_ids, target_user_ids_charstrings, i, p_target_user_ids[i]);
+        targetUserIds[i] = eosg_string_to_product_user_id(target_user_ids[i]);
     }
 
     EOS_CustomInvites_SendCustomInviteOptions options;

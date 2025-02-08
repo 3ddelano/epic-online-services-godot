@@ -205,13 +205,14 @@ int IEOS::anticheat_server_interface_register_event(Ref<RefCounted> p_options) {
     int p_event_type = p_options->get("event_type");
     Array p_param_defs = p_options->get("param_defs");
 
+    PERSISTENT_CHAR_ARRAY_CREATE(param_names, param_names_charstrings, p_param_defs.size());
     EOS_AntiCheatCommon_RegisterEventParamDef *paramDefs = (EOS_AntiCheatCommon_RegisterEventParamDef *)memalloc(sizeof(EOS_AntiCheatCommon_RegisterEventParamDef) * p_param_defs.size());
     for (int i = 0; i < p_param_defs.size(); i++) {
         Dictionary paramDef = p_param_defs[i];
         int param_type = paramDef["param_type"];
-        CharString param_name = VARIANT_TO_CHARSTRING(paramDef["param_name"]);
+        PERSISTENT_CHAR_ARRAY_SET(param_names, param_names_charstrings, i, paramDef["param_name"]);
         paramDefs[i].ParamType = static_cast<EOS_EAntiCheatCommonEventParamType>(param_type);
-        paramDefs[i].ParamName = param_name.get_data();
+        paramDefs[i].ParamName = param_names[i];
     }
 
     EOS_AntiCheatCommon_RegisterEventOptions options;

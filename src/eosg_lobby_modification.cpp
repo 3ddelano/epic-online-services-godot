@@ -53,6 +53,7 @@ int EOSGLobbyModification::set_invites_allowed(bool p_invites_allowed) {
 
 int EOSGLobbyModification::add_attribute(const String &p_key, Variant p_value, int p_visibility) {
     CharString key = p_key.utf8();
+    CharString value;
 
     EOS_Lobby_AttributeData attributeData;
     memset(&attributeData, 0, sizeof(attributeData));
@@ -69,7 +70,7 @@ int EOSGLobbyModification::add_attribute(const String &p_key, Variant p_value, i
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_DOUBLE;
         attributeData.Value.AsDouble = p_value;
     } else if (p_value.get_type() == Variant::Type::STRING) {
-        CharString value = VARIANT_TO_CHARSTRING(p_value);
+        value = VARIANT_TO_CHARSTRING(p_value);
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_STRING;
         attributeData.Value.AsUtf8 = value.get_data();
     }
@@ -101,6 +102,7 @@ int EOSGLobbyModification::add_member_attribute(const String &p_key, Variant p_v
     memset(&attributeData, 0, sizeof(attributeData));
     attributeData.ApiVersion = EOS_LOBBY_ATTRIBUTEDATA_API_LATEST;
     attributeData.Key = key.get_data();
+    CharString value;
 
     if (p_value.get_type() == Variant::Type::BOOL) {
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_BOOLEAN;
@@ -112,7 +114,7 @@ int EOSGLobbyModification::add_member_attribute(const String &p_key, Variant p_v
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_DOUBLE;
         attributeData.Value.AsDouble = p_value;
     } else if (p_value.get_type() == Variant::Type::STRING) {
-        CharString value = VARIANT_TO_CHARSTRING(p_value);
+        value = VARIANT_TO_CHARSTRING(p_value);
         attributeData.ValueType = EOS_ELobbyAttributeType::EOS_AT_STRING;
         attributeData.Value.AsUtf8 = value.get_data();
     }

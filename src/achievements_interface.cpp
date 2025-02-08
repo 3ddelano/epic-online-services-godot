@@ -141,10 +141,9 @@ void IEOS::achievements_interface_unlock_achievements(Ref<RefCounted> p_options)
     Array p_achievement_ids = p_options->get("achievement_ids");
     int achievement_ids_count = p_achievement_ids.size();
 
-    const char **achievement_ids = (const char **)memalloc(sizeof(char *) * achievement_ids_count);
+	PERSISTENT_CHAR_ARRAY_CREATE(achievement_ids, achievement_id_charstrings, achievement_ids_count)
     for (int i = 0; i < achievement_ids_count; i++) {
-        CharString achievement_id = VARIANT_TO_CHARSTRING(p_achievement_ids[i]);
-        achievement_ids[i] = achievement_id.get_data();
+		PERSISTENT_CHAR_ARRAY_SET(achievement_ids, achievement_id_charstrings, i, p_achievement_ids[i]);
     }
 
     EOS_Achievements_UnlockAchievementsOptions options;

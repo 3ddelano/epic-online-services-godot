@@ -306,12 +306,12 @@ void IEOS::connect_interface_query_product_user_id_mappings(Ref<RefCounted> p_op
     TypedArray<String> p_product_user_ids = p_options->get("product_user_ids");
 
     EOS_ProductUserId *product_user_ids = nullptr;
+	PERSISTENT_CHAR_ARRAY_CREATE(product_user_ids_cstr, product_user_ids_cstr_charstrings, p_product_user_ids.size());
     if (p_product_user_ids.size() > 0) {
         product_user_ids = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * p_product_user_ids.size());
         for (int i = 0; i < p_product_user_ids.size(); i++) {
-            String product_user_id = p_product_user_ids[i];
-            CharString product_user_id_cstr = product_user_id.utf8();
-            product_user_ids[i] = eosg_string_to_product_user_id(product_user_id_cstr.get_data());
+			PERSISTENT_CHAR_ARRAY_SET(product_user_ids_cstr, product_user_ids_cstr_charstrings, i, p_product_user_ids[i]);
+            product_user_ids[i] = eosg_string_to_product_user_id(product_user_ids_cstr[i]);
         }
     }
 
@@ -340,12 +340,12 @@ void IEOS::connect_interface_query_external_account_mappings(Ref<RefCounted> p_o
     TypedArray<String> p_external_account_ids = p_options->get("external_account_ids");
 
     const char **external_account_ids = nullptr;
+	PERSISTENT_CHAR_ARRAY_CREATE(external_account_ids_cstr, external_account_ids_cstr_charstrings, p_external_account_ids.size());
     if (p_external_account_ids.size() > 0) {
         external_account_ids = (const char **)memalloc(sizeof(const char *) * p_external_account_ids.size());
         for (int i = 0; i < p_external_account_ids.size(); i++) {
-            String external_account_id = p_external_account_ids[i];
-            CharString external_account_id_cstr = external_account_id.utf8();
-            external_account_ids[i] = external_account_id_cstr.get_data();
+			PERSISTENT_CHAR_ARRAY_SET(external_account_ids_cstr, external_account_ids_cstr_charstrings, i, p_external_account_ids[i]);
+			external_account_ids[i] = external_account_ids_cstr[i];
         }
     }
 

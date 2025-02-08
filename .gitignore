@@ -4,6 +4,8 @@ logs/
 sample/android
 sample/android_debug.keystore
 
+.DS_Store
+
 .env
 vc140.pdb
 .sconsign.dblite

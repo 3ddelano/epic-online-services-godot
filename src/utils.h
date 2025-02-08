@@ -38,6 +38,16 @@ using namespace godot;
     wrapper->set_internal(m_eos_handle);                    \
     return wrapper;
 
+#define PERSISTENT_CHAR_ARRAY_CREATE(array_name, storage_vector, count) \
+    Vector<CharString> storage_vector;                                  \
+    storage_vector.resize(count);                                       \
+    const char **array_name = (const char **) memalloc(sizeof(char *) * (count));
+
+#define PERSISTENT_CHAR_ARRAY_SET(array_name, storage_vector, index, variant_value) \
+    storage_vector.write[index] = VARIANT_TO_CHARSTRING(variant_value);             \
+    array_name[index] = storage_vector[index].get_data();
+
+
 String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId);
 
 static EOS_EpicAccountId eosg_string_to_epic_account_id(const char *p_account_id) {

@@ -56,11 +56,12 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
     int stats_count = p_stats.size();
 
     EOS_Stats_IngestData *stats = (EOS_Stats_IngestData *)memalloc(sizeof(EOS_Stats_IngestData) * stats_count);
+    PERSISTENT_CHAR_ARRAY_CREATE(stat_names, stat_names_charstrings, stats_count)
     for (int i = 0; i < stats_count; i++) {
         Dictionary p_stat = p_stats[i];
-        CharString stat_name = VARIANT_TO_CHARSTRING(p_stat["stat_name"]);
+        PERSISTENT_CHAR_ARRAY_SET(stat_names, stat_names_charstrings, i, p_stat["stat_name"]);
         stats[i].ApiVersion = EOS_STATS_INGESTDATA_API_LATEST;
-        stats[i].StatName = stat_name.get_data();
+        stats[i].StatName = stat_names[i];
         stats[i].IngestAmount = static_cast<int32_t>(static_cast<int>(p_stat["ingest_amount"]));
     }
 
@@ -92,9 +93,10 @@ void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
     int stat_names_count = p_stat_names.size();
 
     const char **stat_names = (const char **)memalloc(sizeof(const char *) * stat_names_count);
+	PERSISTENT_CHAR_ARRAY_CREATE(stat_names_cstr, stat_names_cstr_charstrings, stat_names_count)
     for (int i = 0; i < stat_names_count; i++) {
-        CharString stat_name = VARIANT_TO_CHARSTRING(p_stat_names[i]);
-        stat_names[i] = stat_name.get_data();
+		PERSISTENT_CHAR_ARRAY_SET(stat_names_cstr, stat_names_cstr_charstrings, i, p_stat_names[i]);
+        stat_names[i] = stat_names_cstr[i];
     }
 
     EOS_Stats_QueryStatsOptions options;
