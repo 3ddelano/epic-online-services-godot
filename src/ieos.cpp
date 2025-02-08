@@ -8,7 +8,6 @@ using namespace godot;
 void IEOS::_bind_methods() {
     ClassDB::bind_static_method("IEOS", D_METHOD("tick"), &IEOS::tick);
     IEOS_BIND_METHOD(is_operation_complete);
-    IEOS_BIND_METHOD(shutdown);
 
     // EOS Methods
     IEOS_BIND_METHOD(achievements_interface_copy_achievement_definition_v2_by_achievement_id);
@@ -513,11 +512,6 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(anticheat_client_interface_client_integrity_violated_callback);
 }
 
-int IEOS::shutdown() {
-    EOS_EResult result = EOS_Shutdown();
-    return static_cast<int>(result);
-}
-
 bool IEOS::is_operation_complete(int p_result_code) {
     return EOSG_GET_BOOL(EOS_EResult_IsOperationComplete(static_cast<EOS_EResult>(p_result_code)));
 }
@@ -540,7 +534,7 @@ IEOS::~IEOS() {
 }
 
 void IEOS::tick() {
-    if (IEOS::get_singleton()->s_platformInterface != nullptr) {
+    if (singleton != nullptr && IEOS::get_singleton()->s_platformInterface != nullptr) {
         EOS_Platform_Tick(IEOS::get_singleton()->s_platformInterface);
     }
 }

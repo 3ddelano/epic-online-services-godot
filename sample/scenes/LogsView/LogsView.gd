@@ -5,12 +5,12 @@ extends VBoxContainer
 
 func _ready() -> void:
 	IEOS.logging_interface_callback.connect(_on_logging_interface_callback)
-	Store.platform_create.connect(_on_platform_create)
+	Store.eos_initialized.connect(_on_eos_initialized)
 
-func _on_platform_create():
+func _on_eos_initialized():
 	# Set logging categories and level
-	var res: EOS.Result = EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
-	if res != EOS.Result.Success:
+	var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
+	if not EOS.is_success(res):
 		print("Failed to set log level: ", EOS.result_str(res))
 
 func _on_logging_interface_callback(p_msg: Dictionary):
@@ -44,4 +44,5 @@ func log_msg(level: int, msg: String, category:=""):
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
 	var to_print = "[color=#%s]%s\t%s\t[/color][color=%s]%s[/color]" % [darkened_color, _category, level_str, color, msg]
 	logs_label.text += to_print + "\n"
-	#print_rich(to_print)
+	# Uncomment the below line if you want to see EOS logs in terminal too
+	# print_rich(to_print)

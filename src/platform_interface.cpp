@@ -834,6 +834,7 @@ void IEOS::platform_interface_release() {
 
     if (s_platformInterface != nullptr) {
         EOS_Platform_Release(s_platformInterface);
+		s_platformInterface = nullptr;
     }
 }
 

@@ -215,7 +215,8 @@ func _on_login_btn_pressed():
 				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
 				options1.device_model = " ".join(PackedStringArray([OS.get_name(), OS.get_model_name()]))
 				EOS.Connect.ConnectInterface.create_device_id(options1)
-				await IEOS.connect_interface_create_device_id_callback
+				var res = await IEOS.connect_interface_create_device_id_callback
+				print("--- LoginView: Connect: create_device_id_callback: ", EOS.result_str(res))
 				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
 			"DISCORD":
 				connect_account(EOS.ExternalCredentialType.DiscordAccessToken, login_token)
