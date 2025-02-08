@@ -194,6 +194,8 @@ jobs:
                   path: |
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
+
+
     merge-platforms:
         runs-on: ubuntu-latest
         needs: build
@@ -213,6 +215,9 @@ jobs:
                     - identifier: android
                       name: 🤖 Android
                       matchpattern: android
+                    - identifier: ios
+                      name: 🍏 iOS
+                      matchpattern: ios
 
         steps:
             - name: Merge artifacts for platform
@@ -265,6 +270,11 @@ jobs:
               with:
                 name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
                 path: artifact-windows
+            - name: Download 'ios' artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ${{ github.event.repository.name }}-ios-${{ github.sha }}
+                path: artifact-ios
 
             - name: List all artifact folders
               run: |
@@ -295,6 +305,11 @@ jobs:
                 cd artifact-windows
                 zip -r ../${{ github.event.repository.name }}-windows-${{ github.sha }}.zip .
                 cd ..
+            - name: Zip 'ios' artifact
+              run: |
+                cd artifact-ios
+                zip -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
+                cd ..
             
             - name: List all artifact folders post zipping
               run: |
@@ -312,3 +327,4 @@ jobs:
                   ${{github.event.repository.name}}-macos-${{ github.sha }}.zip
                   ${{github.event.repository.name}}-linux-${{ github.sha }}.zip
                   ${{github.event.repository.name}}-windows-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-ios-${{ github.sha }}.zip
