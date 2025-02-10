@@ -215,6 +215,10 @@ jobs:
               run: |
                   Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
+            - name: View files recursive
+              run: |
+                  ls -R
+
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
