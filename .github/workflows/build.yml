@@ -232,18 +232,18 @@ jobs:
               with:
                   submodules: false
 
-			- name: View all files and folders before artifacts
+            - name: View all files and folders before artifacts
               run: |
                   ls -la
 
-			- name: Download all ios artifacts
+            - name: Download all ios artifacts
               uses: actions/download-artifact@v4
               with:
                   pattern: ${{ github.event.repository.name }}-ios*
                   path: .
                   merge-multiple: true
             
-			- name: View all files and folders
+            - name: View all files and folders
               run: |
                   cd ${{ github.event.repository.name }} && ls -la
             - name: Create xcframeworks
