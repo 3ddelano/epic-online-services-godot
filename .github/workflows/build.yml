@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - main
+            - "*"
         tags:
             - "*"
 jobs:
@@ -240,20 +240,20 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   pattern: ${{ github.event.repository.name }}-ios*
-                  path: .
+                  path: ./sample
                   merge-multiple: true
-            
+
             - name: View all files and folders
               run: |
-                  cd ${{ github.event.repository.name }} && ls -la
+                  cd ./sample/addons/epic-online-services-godot/bin/ios/ && ls -la
             - name: Create xcframeworks
               shell: bash
               run: |
-                  cd ${{ github.event.repository.name }} && chmod +x ./build-ios.sh && ./build-ios.sh
+                  chmod +x ./build-ios.sh && ./build-ios.sh
             - name: View all files and folders post build-ios
               run: |
-                  cd ${{ github.event.repository.name }} && ls -la
-            
+                  cd ./sample/addons/epic-online-services-godot/bin/ios && ls -la
+
     merge-platforms:
         runs-on: ubuntu-latest
         needs: create-ios-xcframeworks
