@@ -21,6 +21,7 @@ jobs:
                       dev_build: yes
                       platform: linux
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: linux-release
                       name: 🐧Linux Release
                       runner: ubuntu-24.04
@@ -28,6 +29,7 @@ jobs:
                       dev_build: no
                       platform: linux
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: macos-debug
                       name: 🍎 macOS (universal) Debug
                       runner: macos-latest
@@ -35,6 +37,7 @@ jobs:
                       dev_build: yes
                       platform: macos
                       arch: universal
+                      ios_simulator: no
                     - identifier: macos-release
                       name: 🍎 macOS (universal) Release
                       runner: macos-latest
@@ -42,6 +45,7 @@ jobs:
                       dev_build: no
                       platform: macos
                       arch: universal
+                      ios_simulator: no
                     - identifier: windows-debug
                       name: 🏁 Windows Debug
                       runner: windows-latest
@@ -49,6 +53,7 @@ jobs:
                       dev_build: yes
                       platform: windows
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: windows-release
                       name: 🏁 Windows Release
                       runner: windows-latest
@@ -56,6 +61,7 @@ jobs:
                       dev_build: no
                       platform: windows
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: android-arm64-debug
                       name: 🤖 Android arm64 Debug
                       runner: ubuntu-24.04
@@ -63,6 +69,7 @@ jobs:
                       dev_build: yes
                       platform: android
                       arch: arm64
+                      ios_simulator: no
                     - identifier: android-arm64-release
                       name: 🤖 Android arm64 Release
                       runner: ubuntu-24.04
@@ -70,6 +77,7 @@ jobs:
                       dev_build: no
                       platform: android
                       arch: arm64
+                      ios_simulator: no
                     - identifier: android-x86_64-debug
                       name: 🤖 Android x86_64 Debug
                       runner: ubuntu-24.04
@@ -77,6 +85,7 @@ jobs:
                       dev_build: yes
                       platform: android
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: android-x86_64-release
                       name: 🤖 Android x86_64 Release
                       runner: ubuntu-24.04
@@ -84,6 +93,7 @@ jobs:
                       dev_build: no
                       platform: android
                       arch: x86_64
+                      ios_simulator: no
                     - identifier: ios-arm64-debug
                       name: 🍏 iOS (arm64) Debug
                       runner: macos-latest
@@ -91,6 +101,7 @@ jobs:
                       dev_build: yes
                       platform: ios
                       arch: arm64
+                      ios_simulator: no
                     - identifier: ios-arm64-simulator-debug
                       name: 🍏 iOS Simulator (arm64) Debug
                       runner: macos-latest
@@ -106,8 +117,9 @@ jobs:
                       dev_build: no
                       platform: ios
                       arch: arm64
+                      ios_simulator: no
                     - identifier: ios-arm64-simulator-release
-                      name: 🍏 iOS (arm64) Release
+                      name: 🍏 iOS Simulator (arm64) Release
                       runner: macos-latest
                       target: template_release
                       dev_build: no
