@@ -10,6 +10,8 @@ windows.x86_64.debug = "bin/windows/libeosg.windows.template_debug.dev.x86_64.dl
 windows.x86_64.release = "bin/windows/libeosg.windows.template_release.x86_64.dll"
 macos.debug = "bin/macos/libeosg.macos.template_debug.framework"
 macos.release = "bin/macos/libeosg.macos.template_release.framework"
+ios.debug = "bin/ios/libeosg.ios.template_debug.xcframework"
+ios.release = "bin/ios/libeosg.ios.template_release.xcframework"
 android.debug.arm64 = "bin/android/libeosg.android.template_debug.dev.arm64.so"
 android.release.arm64 = "bin/android/libeosg.android.template_release.arm64.so"
 android.debug.x86_64 = "bin/android/libeosg.android.template_debug.dev.x86_64.so"
@@ -18,3 +20,6 @@ android.release.x86_64 = "bin/android/libeosg.android.template_release.x86_64.so
 [dependencies]
 windows.debug.x86_64 = {"bin/windows/EOSSDK-Win64-Shipping.dll": "", "bin/windows/x64/xaudio2_9redist.dll": ""}
 windows.release.x86_64 = {"bin/windows/EOSSDK-Win64-Shipping.dll": "", "bin/windows/x64/xaudio2_9redist.dll": ""}
+[dependencies]
+ios.debug = {"bin/ios/libgodot-cpp.ios.template_debug.xcframework": "", "bin/ios/EOSSDK.xcframework": ""}
+ios.release = {"bin/ios/libgodot-cpp.ios.template_release.xcframework": "", "bin/ios/EOSSDK.xcframework": ""}

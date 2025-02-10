@@ -91,6 +91,14 @@ jobs:
                       dev_build: yes
                       platform: ios
                       arch: arm64
+                    - identifier: ios-arm64-simulator-debug
+                      name: 🍏 iOS Simulator (arm64) Debug
+                      runner: macos-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: ios
+                      arch: arm64
+					  ios_simulator: yes
                     - identifier: ios-arm64-release
                       name: 🍏 iOS (arm64) Release
                       runner: macos-latest
@@ -98,6 +106,14 @@ jobs:
                       dev_build: no
                       platform: ios
                       arch: arm64
+					- identifier: ios-arm64-simulator-release
+                      name: 🍏 iOS (arm64) Release
+                      runner: macos-latest
+                      target: template_release
+                      dev_build: no
+                      platform: ios
+                      arch: arm64
+					  ios_simulator: yes
         steps:
             - name: Set up Python
               uses: actions/setup-python@v5
@@ -130,7 +146,7 @@ jobs:
                   token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
                   repository: 3ddelano/eos-sdk-mirror
                   path: thirdparty/eos-sdk
-                  ref: "6ae7506bf7558600a373d60a66bd1ae08fb5c093"
+                  ref: "193b33ffa0f18bf76afd6949099949273c1f79a6"
 
             - name: (Windows) Install mingw64
               if: ${{ matrix.platform == 'windows' }}
@@ -165,7 +181,8 @@ jobs:
                   SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
                   SCONS_CACHE_LIMIT: 7168
               run: |
-                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
+                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}' ios_simulator='${{ matrix.ios_simulator }}'
+
 
             - name: Copy extra files to addon folder
               shell: sh
@@ -195,6 +212,21 @@ jobs:
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
 
+	create-xcframeworks:
+		runs-on: macos-latest
+		needs: build
+		steps:
+			- name: Download all ios artifacts
+			  uses: actions/download-artifact@v4
+			  with:
+			     pattern: ${{ github.event.repository.name }}-ios*
+			- name: Run ls to view all files and folders
+			  run: |
+				ls -la
+			- name: Create xcframeworks
+			  shell: bash
+			  run: |
+				chmod +x ./build-ios.sh && ./build-ios.sh
 
     merge-platforms:
         runs-on: ubuntu-latest

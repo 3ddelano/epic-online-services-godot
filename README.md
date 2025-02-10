@@ -6,7 +6,7 @@ Epic Online Services Godot (EOSG)
 
 <img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.4" src="https://img.shields.io/badge/-Epic Online Services 1.16.4-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
-> Supports Windows x64, Linux x64 and Android
+> Supports Windows x64, Linux x64, Android, MacOS, iOS (iphone/simulator) arm64
 
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
@@ -35,7 +35,7 @@ Epic Online Services Godot (EOSG)
 
 ## Simple P2P Example
 
-A simple demo showcasing the EOS P2P multiplayer: [Click Here](https://github.com/LowFire/EOSGP2PInterfaceTestGame)
+A simple demo showcasing P2P multiplayer using Epic Online Services: [Click Here](https://github.com/LowFire/EOSGP2PInterfaceTestGame)
 
 ## Support Development
 
@@ -66,6 +66,9 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 
 - Android
    <img src="./_media/android_auth_success.jpg">
+
+- iOS
+   <img src="./_media/ios_simulator_run.png">
 
 
 ## How does it work
@@ -364,6 +367,9 @@ Follow the instructions in [Running the service for local development](https://d
 
 9. You can now export the Android APK by clicking the `Export Project` button.
 
+## Exporting for iOS
+
+Export the project from Godot editor for iOS target. You might get a build error during this process, ignore it. Open the generated iOS project in XCode and build the project. The build should be successful. EOSG has support for iOS arm64 device and iOS arm64 simulator.
 
 ## Current Project Status
 

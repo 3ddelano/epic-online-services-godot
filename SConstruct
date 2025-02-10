@@ -73,27 +73,7 @@ def on_complete(target, source, env):
         lib_path = f"{framework_folder}/{lib_name}.{platform}.{build_target}"
         print(f"Updating libEOSSDK-Mac-Shipping.dylib path in {lib_path}")
         os.system(f"install_name_tool -change @rpath/libEOSSDK-Mac-Shipping.dylib @loader_path/libEOSSDK-Mac-Shipping.dylib {lib_path}")
-        
-    elif platform == "ios":
-        print("Generating xcframework for ios")
-        
-        # Delete existing xcframework if any
-        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.xcframework")
-        # os.system(f"rm -rf {plugin_bin_folder}/ios/libgodot-cpp{genv['suffix']}.xcframework")
 
-        os.system(f"xcodebuild -create-xcframework -library {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.a -output {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.xcframework")
-        
-        # Handle the dev_build=yes case for godot-cpp
-        # suffix = genv['suffix']
-        # if env["dev_build"]:
-        #     suffix += ".dev"
-        # os.system(f"xcodebuild -create-xcframework -library godot-cpp/bin/libgodot-cpp{suffix}.a -output {plugin_bin_folder}/ios/libgodot-cpp{suffix}.xcframework")
-        
-        # Delete the plugin .a file
-        os.system(f"rm -rf {plugin_bin_folder}/ios/{lib_name}.{platform}.{build_target}.a")
-        
-        # Copy the eos sdk framework to the plugin bin folder
-        # copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.framework", plugin_bin_folder + "/ios/EOSSDK.framework")
 
 
 # For reference:
@@ -122,15 +102,16 @@ elif env["platform"] == "macos":
     env.Append(LIBS=["EOSSDK-Mac-Shipping"])
 
 elif env["platform"] == "ios":
-    if env["ios_simulator"]:
-        raise Exception("ios simulator is not supported by EOS SDK")
     if env["arch"] != "arm64":
         raise Exception("Only arm64 is supported on iOS.")
+    copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.xcframework", plugin_bin_folder + "/ios/EOSSDK.xcframework")
+    
     env.Append(LINKFLAGS=[
-        "-F", eos_sdk_folder + "Bin/IOS/",
+        "-F", plugin_bin_folder + f"/ios/EOSSDK.xcframework/ios-arm64{"-simulator" if env["ios_simulator"] else ""}",
         '-framework', 'AuthenticationServices',
         '-framework', 'EOSSDK',
     ])
+    
 
 elif env["platform"] == "android":
     eos_android_arch = "arm64-v8a"
@@ -147,11 +128,6 @@ if env["platform"] == "macos":
     library = env.SharedLibrary(
         f"{plugin_bin_folder}/macos/{lib_name}.{platform}.{build_target}.framework/{lib_name}.{platform}.{build_target}",
         source=sources,)
-elif env["platform"] == "ios":
-    library = env.StaticLibrary(
-        f"{plugin_bin_folder}/{platform}/{lib_name}.{platform}.{build_target}.a",
-        source=sources,
-    )
 else:
     library = env.SharedLibrary(
         f"{plugin_bin_folder}/{platform}/{lib_name}{env['suffix']}{env['SHLIBSUFFIX']}",
@@ -160,7 +136,7 @@ else:
 
 
 # Disable scons cache for source files
-NoCache(sources)
+# NoCache(sources)
 
 complete_command = Command('complete', library, on_complete)
 Depends(complete_command, library)
