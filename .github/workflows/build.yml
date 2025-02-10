@@ -235,14 +235,14 @@ jobs:
                   merge-multiple: true
             - name: View all files and folders
               run: |
-                  cd ${{ github.event.repository.name }} && ls -R
+                  cd ${{ github.event.repository.name }} && ls -la
             - name: Create xcframeworks
               shell: bash
               run: |
                   cd ${{ github.event.repository.name }} && chmod +x ./build-ios.sh && ./build-ios.sh
             - name: View all files and folders post build-ios
               run: |
-                  cd ${{ github.event.repository.name }} && ls -R
+                  cd ${{ github.event.repository.name }} && ls -la
             
     merge-platforms:
         runs-on: ubuntu-latest
