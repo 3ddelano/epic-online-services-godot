@@ -245,7 +245,7 @@ jobs:
 
             - name: Fix the artifact download path
               run: |
-                  mv ./sample/${{ github.event.repository.name }}/addons ./sample/
+                  mv -f ./sample/${{ github.event.repository.name }}/addons ./sample/
 
             - name: View all files and folders in sample
               run: |
