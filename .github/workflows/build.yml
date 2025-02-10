@@ -5,7 +5,7 @@ on:
         branches:
             - main
         tags:
-            - '*'
+            - "*"
 jobs:
     build:
         runs-on: ${{ matrix.runner }}
@@ -223,27 +223,30 @@ jobs:
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
                   retention-days: 14
 
-    create-xcframeworks:
+    create-ios-xcframeworks:
         runs-on: macos-latest
         needs: build
         steps:
             - name: Download all ios artifacts
               uses: actions/download-artifact@v4
               with:
-                 pattern: ${{ github.event.repository.name }}-ios*
-                 path: .
-                 merge-multiple: true
-            - name: Run ls to view all files and folders
+                  pattern: ${{ github.event.repository.name }}-ios*
+                  path: .
+                  merge-multiple: true
+            - name: View all files and folders
               run: |
-                ls -la
+                  cd ${{ github.event.repository.name }} && ls -R
             - name: Create xcframeworks
               shell: bash
               run: |
-                chmod +x ./build-ios.sh && ./build-ios.sh
-
+                  cd ${{ github.event.repository.name }} && chmod +x ./build-ios.sh && ./build-ios.sh
+            - name: View all files and folders post build-ios
+              run: |
+                  cd ${{ github.event.repository.name }} && ls -R
+            
     merge-platforms:
         runs-on: ubuntu-latest
-        needs: create-xcframeworks
+        needs: create-ios-xcframeworks
         strategy:
             fail-fast: false
             matrix:
@@ -282,7 +285,7 @@ jobs:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
                   pattern: ${{ github.event.repository.name }}-*
                   retention-days: 14
-    
+
     upload-to-release:
         if: startsWith(github.ref, 'refs/tags/')
         runs-on: ubuntu-latest
@@ -293,8 +296,8 @@ jobs:
             - name: Download 'all' artifact
               uses: actions/download-artifact@v4
               with:
-                name: ${{ github.event.repository.name }}-all-${{ github.sha }}
-                path: artifact-all
+                  name: ${{ github.event.repository.name }}-all-${{ github.sha }}
+                  path: artifact-all
             # - name: Download 'android' artifact
             #   uses: actions/download-artifact@v4
             #   with:
@@ -303,8 +306,8 @@ jobs:
             - name: Download 'macos' artifact
               uses: actions/download-artifact@v4
               with:
-                name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
-                path: artifact-macos
+                  name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
+                  path: artifact-macos
             # - name: Download 'linux' artifact
             #   uses: actions/download-artifact@v4
             #   with:
@@ -318,8 +321,8 @@ jobs:
             - name: Download 'ios' artifact
               uses: actions/download-artifact@v4
               with:
-                name: ${{ github.event.repository.name }}-ios-${{ github.sha }}
-                path: artifact-ios
+                  name: ${{ github.event.repository.name }}-ios-${{ github.sha }}
+                  path: artifact-ios
 
             # - name: List all artifact folders
             #   run: |
@@ -327,9 +330,9 @@ jobs:
 
             - name: Zip 'all' artifact
               run: |
-                cd artifact-all
-                zip -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip .
-                cd ..
+                  cd artifact-all
+                  zip -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip .
+                  cd ..
             # - name: Zip 'android' artifact
             #   run: |
             #     cd artifact-android
@@ -337,9 +340,9 @@ jobs:
             #     cd ..
             - name: Zip 'macos' artifact
               run: |
-                cd artifact-macos
-                zip -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip .
-                cd ..
+                  cd artifact-macos
+                  zip -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip .
+                  cd ..
             # - name: Zip 'linux' artifact
             #   run: |
             #     cd artifact-linux
@@ -352,10 +355,10 @@ jobs:
             #     cd ..
             - name: Zip 'ios' artifact
               run: |
-                cd artifact-ios
-                zip -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
-                cd ..
-            
+                  cd artifact-ios
+                  zip -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
+                  cd ..
+
             # - name: List all artifact folders post zipping
             #   run: |
             #       ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
