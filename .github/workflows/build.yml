@@ -243,6 +243,10 @@ jobs:
                   path: ./sample
                   merge-multiple: true
 
+            - name: Fix the artifact download path
+              run: |
+                  mv ./sample/${{ github.event.repository.name }}/addons ./sample/addons
+
             - name: View all files and folders
               run: |
                   cd ./sample/addons/epic-online-services-godot/bin/ios/ && ls -la
