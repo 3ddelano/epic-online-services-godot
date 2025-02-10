@@ -247,9 +247,9 @@ jobs:
               run: |
                   mv ./sample/${{ github.event.repository.name }}/addons ./sample/addons
 
-            - name: View all files and folders
+            - name: View all files and folders in sample
               run: |
-                  cd ./sample/addons/epic-online-services-godot/bin/ios/ && ls -la
+                  cd ./sample/ && ls -R
             - name: Create xcframeworks
               shell: bash
               run: |
