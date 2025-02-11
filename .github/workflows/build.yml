@@ -150,18 +150,18 @@ jobs:
             - name: Compile extension
               shell: sh
               if: ${{ matrix.platform != 'ios' }}
-			  env:
+              env:
                   SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
                   SCONS_CACHE_LIMIT: 7168
               run: |
                   scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
 
-			- name: Compile extension (iOS)
-			  shell: sh
-			  if: ${{ matrix.platform == 'ios' }}
-			  env:
-				  SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
-				  SCONS_CACHE_LIMIT: 7168
+            - name: Compile extension (iOS)
+              shell: sh
+              if: ${{ matrix.platform == 'ios' }}
+              env:
+                  SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+                  SCONS_CACHE_LIMIT: 7168
               run: |
                   chmod +x ./build-ios.sh && ./build-ios.sh
 
