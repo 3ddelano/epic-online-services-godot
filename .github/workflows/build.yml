@@ -87,6 +87,7 @@ jobs:
                     - identifier: ios-arm64-all
                       name: 🍏 iOS (arm64) All
                       runner: macos-latest
+        steps:
             - name: Set up Python
               uses: actions/setup-python@v5
               with:
