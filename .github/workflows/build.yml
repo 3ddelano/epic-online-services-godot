@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - main
+            - "*"
         tags:
             - "*"
 jobs:
@@ -14,30 +14,27 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    # - identifier: linux-debug
-                    #   name: 🐧 Linux Debug
-                    #   runner: ubuntu-24.04
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: linux
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    # - identifier: linux-release
-                    #   name: 🐧Linux Release
-                    #   runner: ubuntu-24.04
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: linux
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    # - identifier: macos-debug
-                    #   name: 🍎 macOS (universal) Debug
-                    #   runner: macos-latest
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: macos
-                    #   arch: universal
-                    #   ios_simulator: no
+                    - identifier: linux-debug
+                      name: 🐧 Linux Debug
+                      runner: ubuntu-24.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: linux
+                      arch: x86_64
+                    - identifier: linux-release
+                      name: 🐧Linux Release
+                      runner: ubuntu-24.04
+                      target: template_release
+                      dev_build: no
+                      platform: linux
+                      arch: x86_64
+                    - identifier: macos-debug
+                      name: 🍎 macOS (universal) Debug
+                      runner: macos-latest
+                      target: template_debug
+                      dev_build: yes
+                      platform: macos
+                      arch: universal
                     - identifier: macos-release
                       name: 🍎 macOS (universal) Release
                       runner: macos-latest
@@ -45,87 +42,52 @@ jobs:
                       dev_build: no
                       platform: macos
                       arch: universal
-                      ios_simulator: no
-                    # - identifier: windows-debug
-                    #   name: 🏁 Windows Debug
-                    #   runner: windows-latest
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: windows
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    # - identifier: windows-release
-                    #   name: 🏁 Windows Release
-                    #   runner: windows-latest
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: windows
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    # - identifier: android-arm64-debug
-                    #   name: 🤖 Android arm64 Debug
-                    #   runner: ubuntu-24.04
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: android
-                    #   arch: arm64
-                    #   ios_simulator: no
-                    # - identifier: android-arm64-release
-                    #   name: 🤖 Android arm64 Release
-                    #   runner: ubuntu-24.04
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: android
-                    #   arch: arm64
-                    #   ios_simulator: no
-                    # - identifier: android-x86_64-debug
-                    #   name: 🤖 Android x86_64 Debug
-                    #   runner: ubuntu-24.04
-                    #   target: template_debug
-                    #   dev_build: yes
-                    #   platform: android
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    # - identifier: android-x86_64-release
-                    #   name: 🤖 Android x86_64 Release
-                    #   runner: ubuntu-24.04
-                    #   target: template_release
-                    #   dev_build: no
-                    #   platform: android
-                    #   arch: x86_64
-                    #   ios_simulator: no
-                    - identifier: ios-arm64-debug
-                      name: 🍏 iOS (arm64) Debug
-                      runner: macos-latest
+                    - identifier: windows-debug
+                      name: 🏁 Windows Debug
+                      runner: windows-latest
                       target: template_debug
                       dev_build: yes
-                      platform: ios
-                      arch: arm64
-                      ios_simulator: no
-                    - identifier: ios-arm64-simulator-debug
-                      name: 🍏 iOS Simulator (arm64) Debug
-                      runner: macos-latest
+                      platform: windows
+                      arch: x86_64
+                    - identifier: windows-release
+                      name: 🏁 Windows Release
+                      runner: windows-latest
+                      target: template_release
+                      dev_build: no
+                      platform: windows
+                      arch: x86_64
+                    - identifier: android-arm64-debug
+                      name: 🤖 Android arm64 Debug
+                      runner: ubuntu-24.04
                       target: template_debug
                       dev_build: yes
-                      platform: ios
+                      platform: android
                       arch: arm64
-                      ios_simulator: yes
-                    - identifier: ios-arm64-release
-                      name: 🍏 iOS (arm64) Release
-                      runner: macos-latest
+                    - identifier: android-arm64-release
+                      name: 🤖 Android arm64 Release
+                      runner: ubuntu-24.04
                       target: template_release
                       dev_build: no
-                      platform: ios
+                      platform: android
                       arch: arm64
-                      ios_simulator: no
-                    - identifier: ios-arm64-simulator-release
-                      name: 🍏 iOS Simulator (arm64) Release
-                      runner: macos-latest
+                    - identifier: android-x86_64-debug
+                      name: 🤖 Android x86_64 Debug
+                      runner: ubuntu-24.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: android
+                      arch: x86_64
+                    - identifier: android-x86_64-release
+                      name: 🤖 Android x86_64 Release
+                      runner: ubuntu-24.04
                       target: template_release
                       dev_build: no
+                      platform: android
+                      arch: x86_64
+                    - identifier: ios-arm64-all
+                      name: 🍏 iOS (arm64) All
+                      runner: macos-latest
                       platform: ios
-                      arch: arm64
-                      ios_simulator: yes
         steps:
             - name: Set up Python
               uses: actions/setup-python@v5
@@ -189,11 +151,21 @@ jobs:
 
             - name: Compile extension
               shell: sh
+              if: ${{ matrix.platform != 'ios' }}
               env:
                   SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
                   SCONS_CACHE_LIMIT: 7168
               run: |
-                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}' ios_simulator='${{ matrix.ios_simulator }}'
+                  scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
+
+            - name: (iOS) Compile extension
+              shell: sh
+              if: ${{ matrix.platform == 'ios' }}
+              env:
+                  SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+                  SCONS_CACHE_LIMIT: 7168
+              run: |
+                  chmod +x ./build-ios.sh && ./build-ios.sh
 
             - name: Copy extra files to addon folder
               shell: sh
@@ -215,48 +187,22 @@ jobs:
               run: |
                   Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
+            - name: View artifact files recursive
+              run: |
+                  cd ${{ github.workspace }}/artifact-${{ matrix.identifier }}/ && ls -R
+
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-${{ matrix.identifier }}-${{ github.sha }}
                   path: |
                       ${{ github.workspace }}/artifact-${{ matrix.identifier }}/
+                  compression-level: 9
                   retention-days: 14
 
-    create-ios-xcframeworks:
-        runs-on: macos-latest
-        needs: build
-        steps:
-            - name: Checkout project
-              uses: actions/checkout@v4
-              with:
-                  submodules: false
-
-            - name: View all files and folders before artifacts
-              run: |
-                  ls -la
-
-            - name: Download all ios artifacts
-              uses: actions/download-artifact@v4
-              with:
-                  pattern: ${{ github.event.repository.name }}-ios*
-                  path: .
-                  merge-multiple: true
-            
-            - name: View all files and folders
-              run: |
-                  cd ${{ github.event.repository.name }} && ls -la
-            - name: Create xcframeworks
-              shell: bash
-              run: |
-                  cd ${{ github.event.repository.name }} && chmod +x ./build-ios.sh && ./build-ios.sh
-            - name: View all files and folders post build-ios
-              run: |
-                  cd ${{ github.event.repository.name }} && ls -la
-            
     merge-platforms:
         runs-on: ubuntu-latest
-        needs: create-ios-xcframeworks
+        needs: build
         strategy:
             fail-fast: false
             matrix:
@@ -283,6 +229,7 @@ jobs:
               with:
                   name: ${{ github.event.repository.name }}-${{ matrix.matchpattern }}-${{ github.sha }}
                   pattern: ${{ github.event.repository.name }}-${{ matrix.matchpattern }}*
+                  compression-level: 9
                   retention-days: 14
 
     merge-all:
@@ -294,6 +241,7 @@ jobs:
               with:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
                   pattern: ${{ github.event.repository.name }}-*
+                  compression-level: 9
                   retention-days: 14
 
     upload-to-release:
@@ -308,81 +256,81 @@ jobs:
               with:
                   name: ${{ github.event.repository.name }}-all-${{ github.sha }}
                   path: artifact-all
-            # - name: Download 'android' artifact
-            #   uses: actions/download-artifact@v4
-            #   with:
-            #     name: ${{ github.event.repository.name }}-android-${{ github.sha }}
-            #     path: artifact-android
+            - name: Download 'android' artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ${{ github.event.repository.name }}-android-${{ github.sha }}
+                path: artifact-android
             - name: Download 'macos' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-macos-${{ github.sha }}
                   path: artifact-macos
-            # - name: Download 'linux' artifact
-            #   uses: actions/download-artifact@v4
-            #   with:
-            #     name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
-            #     path: artifact-linux
-            # - name: Download 'windows' artifact
-            #   uses: actions/download-artifact@v4
-            #   with:
-            #     name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
-            #     path: artifact-windows
+            - name: Download 'linux' artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ${{ github.event.repository.name }}-linux-${{ github.sha }}
+                path: artifact-linux
+            - name: Download 'windows' artifact
+              uses: actions/download-artifact@v4
+              with:
+                name: ${{ github.event.repository.name }}-windows-${{ github.sha }}
+                path: artifact-windows
             - name: Download 'ios' artifact
               uses: actions/download-artifact@v4
               with:
                   name: ${{ github.event.repository.name }}-ios-${{ github.sha }}
                   path: artifact-ios
 
-            # - name: List all artifact folders
-            #   run: |
-            #       ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
+            - name: List all artifact folders
+              run: |
+                  ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
 
             - name: Zip 'all' artifact
               run: |
                   cd artifact-all
-                  zip -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip .
+                  zip -9 -r ../${{ github.event.repository.name }}-all-${{ github.sha }}.zip .
                   cd ..
-            # - name: Zip 'android' artifact
-            #   run: |
-            #     cd artifact-android
-            #     zip -r ../${{ github.event.repository.name }}-android-${{ github.sha }}.zip .
-            #     cd ..
+            - name: Zip 'android' artifact
+              run: |
+                cd artifact-android
+                zip -9 -r ../${{ github.event.repository.name }}-android-${{ github.sha }}.zip .
+                cd ..
             - name: Zip 'macos' artifact
               run: |
                   cd artifact-macos
-                  zip -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip .
+                  zip -9 -r ../${{ github.event.repository.name }}-macos-${{ github.sha }}.zip .
                   cd ..
-            # - name: Zip 'linux' artifact
-            #   run: |
-            #     cd artifact-linux
-            #     zip -r ../${{ github.event.repository.name }}-linux-${{ github.sha }}.zip .
-            #     cd ..
-            # - name: Zip 'windows' artifact
-            #   run: |
-            #     cd artifact-windows
-            #     zip -r ../${{ github.event.repository.name }}-windows-${{ github.sha }}.zip .
-            #     cd ..
+            - name: Zip 'linux' artifact
+              run: |
+                cd artifact-linux
+                zip -9 -r ../${{ github.event.repository.name }}-linux-${{ github.sha }}.zip .
+                cd ..
+            - name: Zip 'windows' artifact
+              run: |
+                cd artifact-windows
+                zip -9 -r ../${{ github.event.repository.name }}-windows-${{ github.sha }}.zip .
+                cd ..
             - name: Zip 'ios' artifact
               run: |
                   cd artifact-ios
-                  zip -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
+                  zip -9 -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
                   cd ..
 
-            # - name: List all artifact folders post zipping
-            #   run: |
-            #       ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
+            - name: List all artifact folders post zipping
+              run: |
+                  ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
 
-            # - name: Create draft release and upload assets
-            #   uses: softprops/action-gh-release@v2
-            #   if: startsWith(github.ref, 'refs/tags/')
-            #   with:
-            #     tag_name: ${{ github.ref_name }}
-            #     draft: true
-            #     files: |
-            #       ${{github.event.repository.name}}-all-${{ github.sha }}.zip
-            #       ${{github.event.repository.name}}-android-${{ github.sha }}.zip
-            #       ${{github.event.repository.name}}-macos-${{ github.sha }}.zip
-            #       ${{github.event.repository.name}}-linux-${{ github.sha }}.zip
-            #       ${{github.event.repository.name}}-windows-${{ github.sha }}.zip
-            #       ${{github.event.repository.name}}-ios-${{ github.sha }}.zip
+            - name: Create draft release and upload assets
+              uses: softprops/action-gh-release@v2
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                tag_name: ${{ github.ref_name }}
+                draft: true
+                files: |
+                  ${{github.event.repository.name}}-all-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-android-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-macos-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-linux-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-windows-${{ github.sha }}.zip
+                  ${{github.event.repository.name}}-ios-${{ github.sha }}.zip

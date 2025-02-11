@@ -5,8 +5,8 @@ if [ "$1" = "build=n" ] || [ "$1" = "build=N" ] || [ "$1" = "build=no" ] || [ "$
     build=no
 fi
 
-if [ "$build" = "y" ]; then
-	echo "Building eosg for iOS targets"
+if [ "$build" = "yes" ]; then
+	echo "Building for iOS targets"
     # Debug builds
     scons arch=arm64 ios_simulator=yes platform=ios target=template_debug dev_build=yes
     scons arch=arm64 ios_simulator=no platform=ios target=template_debug dev_build=yes
