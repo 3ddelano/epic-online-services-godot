@@ -87,6 +87,7 @@ jobs:
                     - identifier: ios-arm64-all
                       name: 🍏 iOS (arm64) All
                       runner: macos-latest
+                      platform: ios
         steps:
             - name: Set up Python
               uses: actions/setup-python@v5
@@ -157,7 +158,7 @@ jobs:
               run: |
                   scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' dev_build='${{ matrix.dev_build }}'
 
-            - name: Compile extension (iOS)
+            - name: (iOS) Compile extension
               shell: sh
               if: ${{ matrix.platform == 'ios' }}
               env:
