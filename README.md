@@ -240,18 +240,14 @@ Follow the instructions in [Running the service for local development](https://d
 
 ### Pre-requisites
 
-- EOS Android SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal))
+1. Setup the `Android Build Template` in your Godot project by following the tutorial [Gradle builds for Andriod](https://docs.godotengine.org/en/stable/tutorials/export/android_gradle_build.html). This will create an android project in `res://android/build`.
 
-1. Extract the `EOS Android SDK` zip downloaded from Epic Games, rename it to `eos-sdk` and paste it in the `thirdparty/` folder.
+2. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
 
-2. Setup the `Android Build Template` in your Godot project by following the tutorial [Gradle builds for Andriod](https://docs.godotengine.org/en/stable/tutorials/export/android_gradle_build.html). This will create an android project in `res://android/build`.
-
-3. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
-
-4. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
+3. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
 	
 	Before
-	```
+	```gradle
 	dependencies {
     	implementation libraries.kotlinStdLib
     	implementation libraries.androidxFragment
@@ -259,7 +255,7 @@ Follow the instructions in [Running the service for local development](https://d
 	```
 
 	After
-	```
+	```gradle
 	dependencies {
 		implementation libraries.kotlinStdLib
 		implementation libraries.androidxFragment
@@ -269,7 +265,8 @@ Follow the instructions in [Running the service for local development](https://d
 		implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 		implementation 'androidx.security:security-crypto:1.0.0'
 		implementation 'androidx.browser:browser:1.4.0'
-		implementation files('../../../thirdparty/eos-sdk/SDK/Bin/Android/static-stdc++/aar/eossdk-StaticSTDC-release.aar')
+		// Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
+		implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
 
 		...other code
 	```
@@ -277,7 +274,7 @@ Follow the instructions in [Running the service for local development](https://d
 4. In the `res://android/build/build.gradle` file, add the following lines after the `defaultConfig` in the `android` section.
 	
 	Before
-	```
+	```gradle
 	android {
 
 		... other code
@@ -299,7 +296,7 @@ Follow the instructions in [Running the service for local development](https://d
 	```
 
 	After
-	```
+	```gradle
 	android {
 
 		... other code
@@ -327,11 +324,11 @@ Follow the instructions in [Running the service for local development](https://d
 5. In the `res://android/build/config.gradle` file, update the `minSdk` to `23` to match with the requirements of the `EOS Android SDK`.
 
 	Before
-	```
+	```gradle
 	minSdk             : 21,
 	```
 	After
-	```
+	```gradle
 	minSdk             : 23,
 	```
 
