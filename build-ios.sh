@@ -5,11 +5,16 @@ if [ "$1" = "build=n" ] || [ "$1" = "build=N" ] || [ "$1" = "build=no" ] || [ "$
     build=no
 fi
 
+dev_build=no
+if [ "$2" = "dev_build=y" ] || [ "$2" = "dev_build=Y" ] || [ "$2" = "dev_build=yes" ] || [ "$2" = "dev_build=1" ]; then
+	dev_build=yes
+fi
+
 if [ "$build" = "yes" ]; then
 	echo "Building for iOS targets"
     # Debug builds
-    scons arch=arm64 ios_simulator=yes platform=ios target=template_debug dev_build=yes
-    scons arch=arm64 ios_simulator=no platform=ios target=template_debug dev_build=yes
+    scons arch=arm64 ios_simulator=yes platform=ios target=template_debug dev_build=${dev_build}
+    scons arch=arm64 ios_simulator=no platform=ios target=template_debug dev_build=${dev_build}
 
     # Release builds
     scons arch=arm64 ios_simulator=yes platform=ios target=template_release dev_build=no
