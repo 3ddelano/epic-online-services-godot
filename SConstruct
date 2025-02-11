@@ -38,6 +38,9 @@ def extract_eos_android_libraries():
     # Copy aar to zip file
     copy_file(aar_file, zip_file)
     
+    # Copy aar to plugin bin/android
+    copy_file(aar_file, plugin_bin_folder + "/android/eossdk-StaticSTDC-release.aar")
+    
     # Create folder if doesnt exist
     if not os.path.exists(libs_path + "extracted"):
         os.makedirs(libs_path + "extracted")
