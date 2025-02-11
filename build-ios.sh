@@ -6,8 +6,10 @@ if [ "$1" = "build=n" ] || [ "$1" = "build=N" ] || [ "$1" = "build=no" ] || [ "$
 fi
 
 dev_build=no
+dev_build_ext=""
 if [ "$2" = "dev_build=y" ] || [ "$2" = "dev_build=Y" ] || [ "$2" = "dev_build=yes" ] || [ "$2" = "dev_build=1" ]; then
 	dev_build=yes
+	dev_build_ext=".dev"
 fi
 
 if [ "$build" = "yes" ]; then
@@ -29,8 +31,8 @@ rm -rf ${eosg_ios_bin_dir}/libgodot-cpp.ios.template*
 
 # Create libgodot-cpp xcframework
 xcodebuild -create-xcframework \
--library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug.dev.arm64.a \
--library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug.dev.arm64.simulator.a \
+-library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug${dev_build_ext}.arm64.a \
+-library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug${dev_build_ext}.arm64.simulator.a \
 -output ${eosg_ios_bin_dir}/libgodot-cpp.ios.template_debug.xcframework
 
 xcodebuild -create-xcframework \
@@ -40,8 +42,8 @@ xcodebuild -create-xcframework \
 
 # Create libeosg xcframework
 xcodebuild -create-xcframework \
--library ${eosg_ios_bin_dir}/libeosg.ios.template_debug.dev.arm64.dylib \
--library ${eosg_ios_bin_dir}/libeosg.ios.template_debug.dev.arm64.simulator.dylib \
+-library ${eosg_ios_bin_dir}/libeosg.ios.template_debug${dev_build_ext}.arm64.dylib \
+-library ${eosg_ios_bin_dir}/libeosg.ios.template_debug${dev_build_ext}.arm64.simulator.dylib \
 -output ${eosg_ios_bin_dir}/libeosg.ios.template_debug.xcframework
 
 xcodebuild -create-xcframework \
