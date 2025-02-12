@@ -2,6 +2,7 @@
 using namespace std;
 
 void IEOS::ecom_interface_checkout(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString override_catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("override_catalog_namespace"));
 
@@ -41,6 +42,7 @@ void IEOS::ecom_interface_checkout(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::ecom_interface_copy_entitlement_by_id(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString entitlement_id = VARIANT_TO_CHARSTRING(p_options->get("entitlement_id"));
 
@@ -59,6 +61,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_id(Ref<RefCounted> p_options
 }
 
 Dictionary IEOS::ecom_interface_copy_entitlement_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_CopyEntitlementByIndexOptions options;
@@ -76,6 +79,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_index(Ref<RefCounted> p_opti
 }
 
 Dictionary IEOS::ecom_interface_copy_entitlement_by_name_and_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString entitlement_name = VARIANT_TO_CHARSTRING(p_options->get("entitlement_name"));
 
@@ -95,6 +99,7 @@ Dictionary IEOS::ecom_interface_copy_entitlement_by_name_and_index(Ref<RefCounte
 }
 
 Dictionary IEOS::ecom_interface_copy_item_by_id(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString item_id = VARIANT_TO_CHARSTRING(p_options->get("item_id"));
 
@@ -113,6 +118,7 @@ Dictionary IEOS::ecom_interface_copy_item_by_id(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::ecom_interface_copy_item_image_info_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString item_id = VARIANT_TO_CHARSTRING(p_options->get("item_id"));
     int image_info_index = p_options->get("image_info_index");
@@ -133,6 +139,7 @@ Dictionary IEOS::ecom_interface_copy_item_image_info_by_index(Ref<RefCounted> p_
 }
 
 Dictionary IEOS::ecom_interface_copy_item_release_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString item_id = VARIANT_TO_CHARSTRING(p_options->get("item_id"));
     int release_index = p_options->get("release_index");
@@ -153,6 +160,7 @@ Dictionary IEOS::ecom_interface_copy_item_release_by_index(Ref<RefCounted> p_opt
 }
 
 Dictionary IEOS::ecom_interface_copy_offer_by_id(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString offer_id = VARIANT_TO_CHARSTRING(p_options->get("offer_id"));
 
@@ -171,6 +179,7 @@ Dictionary IEOS::ecom_interface_copy_offer_by_id(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::ecom_interface_copy_offer_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     int offer_index = p_options->get("offer_index");
 
@@ -189,6 +198,7 @@ Dictionary IEOS::ecom_interface_copy_offer_by_index(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::ecom_interface_copy_offer_image_info_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString offer_id = VARIANT_TO_CHARSTRING(p_options->get("offer_id"));
     int image_info_index = p_options->get("image_info_index");
@@ -209,6 +219,7 @@ Dictionary IEOS::ecom_interface_copy_offer_image_info_by_index(Ref<RefCounted> p
 }
 
 Dictionary IEOS::ecom_interface_copy_offer_item_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString offer_id = VARIANT_TO_CHARSTRING(p_options->get("offer_id"));
     int image_index = p_options->get("item_index");
@@ -229,6 +240,7 @@ Dictionary IEOS::ecom_interface_copy_offer_item_by_index(Ref<RefCounted> p_optio
 }
 
 Dictionary IEOS::ecom_interface_copy_transaction_by_id(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString transaction_id = VARIANT_TO_CHARSTRING(p_options->get("transaction_id"));
 
@@ -247,6 +259,7 @@ Dictionary IEOS::ecom_interface_copy_transaction_by_id(Ref<RefCounted> p_options
 }
 
 Dictionary IEOS::ecom_interface_copy_transaction_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     int transaction_index = p_options->get("transaction_index");
 
@@ -265,6 +278,7 @@ Dictionary IEOS::ecom_interface_copy_transaction_by_index(Ref<RefCounted> p_opti
 }
 
 int IEOS::ecom_interface_get_entitlements_by_name_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString entitlement_name = VARIANT_TO_CHARSTRING(p_options->get("entitlement_name"));
 
@@ -278,6 +292,7 @@ int IEOS::ecom_interface_get_entitlements_by_name_count(Ref<RefCounted> p_option
 }
 
 int IEOS::ecom_interface_get_entitlements_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_GetEntitlementsCountOptions options;
@@ -289,6 +304,7 @@ int IEOS::ecom_interface_get_entitlements_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_item_image_info_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString item_id = VARIANT_TO_CHARSTRING(p_options->get("item_id"));
 
@@ -302,6 +318,7 @@ int IEOS::ecom_interface_get_item_image_info_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_item_release_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString item_id = VARIANT_TO_CHARSTRING(p_options->get("item_id"));
 
@@ -315,6 +332,7 @@ int IEOS::ecom_interface_get_item_release_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_offer_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_GetOfferCountOptions options;
@@ -326,6 +344,7 @@ int IEOS::ecom_interface_get_offer_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_offer_image_info_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString offer_id = VARIANT_TO_CHARSTRING(p_options->get("offer_id"));
 
@@ -339,6 +358,7 @@ int IEOS::ecom_interface_get_offer_image_info_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_offer_item_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString offer_id = VARIANT_TO_CHARSTRING(p_options->get("offer_id"));
 
@@ -352,6 +372,7 @@ int IEOS::ecom_interface_get_offer_item_count(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_transaction_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_GetTransactionCountOptions options;
@@ -363,6 +384,7 @@ int IEOS::ecom_interface_get_transaction_count(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_query_entitlements(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_QueryEntitlementsOptions options;
@@ -396,6 +418,7 @@ void IEOS::ecom_interface_query_entitlements(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_query_offers(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString override_catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("override_catalog_namespace"));
 
@@ -420,6 +443,7 @@ void IEOS::ecom_interface_query_offers(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_query_ownership(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("catalog_namespace"));
 
@@ -466,6 +490,7 @@ void IEOS::ecom_interface_query_ownership(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_query_ownership_token(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("catalog_namespace"));
 
@@ -503,6 +528,7 @@ void IEOS::ecom_interface_query_ownership_token(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_redeem_entitlements(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     TypedArray<String> p_entitlement_ids = p_options->get("entitlement_ids");
 
@@ -535,6 +561,7 @@ void IEOS::ecom_interface_redeem_entitlements(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ecom_interface_get_last_redeemed_entitlements_count(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_GetLastRedeemedEntitlementsCountOptions options;
@@ -546,6 +573,7 @@ int IEOS::ecom_interface_get_last_redeemed_entitlements_count(Ref<RefCounted> p_
 }
 
 Dictionary IEOS::ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_ecomInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_CopyLastRedeemedEntitlementByIndexOptions options;
@@ -565,6 +593,7 @@ Dictionary IEOS::ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefC
 }
 
 void IEOS::ecom_interface_query_entitlement_token(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_QueryEntitlementTokenOptions options;
@@ -598,6 +627,7 @@ void IEOS::ecom_interface_query_entitlement_token(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ecom_interface_query_ownership_by_sandbox_ids(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Ecom_QueryOwnershipBySandboxIdsOptions options;

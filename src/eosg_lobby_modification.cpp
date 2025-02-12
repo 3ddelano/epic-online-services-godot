@@ -15,6 +15,7 @@ void EOSGLobbyModification::_bind_methods() {
 }
 
 int EOSGLobbyModification::set_bucket_id(const String &p_bucket_id) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString bucket_id = p_bucket_id.utf8();
     EOS_LobbyModification_SetBucketIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -25,6 +26,7 @@ int EOSGLobbyModification::set_bucket_id(const String &p_bucket_id) {
 }
 
 int EOSGLobbyModification::set_permission_level(int p_permission_level) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_LobbyModification_SetPermissionLevelOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETPERMISSIONLEVEL_API_LATEST;
@@ -34,6 +36,7 @@ int EOSGLobbyModification::set_permission_level(int p_permission_level) {
 }
 
 int EOSGLobbyModification::set_max_members(int p_max_members) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_LobbyModification_SetMaxMembersOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETMAXMEMBERS_API_LATEST;
@@ -43,6 +46,7 @@ int EOSGLobbyModification::set_max_members(int p_max_members) {
 }
 
 int EOSGLobbyModification::set_invites_allowed(bool p_invites_allowed) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_LobbyModification_SetInvitesAllowedOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETINVITESALLOWED_API_LATEST;
@@ -52,6 +56,7 @@ int EOSGLobbyModification::set_invites_allowed(bool p_invites_allowed) {
 }
 
 int EOSGLobbyModification::add_attribute(const String &p_key, Variant p_value, int p_visibility) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
     CharString value;
 
@@ -85,6 +90,7 @@ int EOSGLobbyModification::add_attribute(const String &p_key, Variant p_value, i
 }
 
 int EOSGLobbyModification::remove_attribute(const String &p_key) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_LobbyModification_RemoveAttributeOptions options;
@@ -96,6 +102,7 @@ int EOSGLobbyModification::remove_attribute(const String &p_key) {
 }
 
 int EOSGLobbyModification::add_member_attribute(const String &p_key, Variant p_value, int p_visibility) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_Lobby_AttributeData attributeData;
@@ -129,6 +136,7 @@ int EOSGLobbyModification::add_member_attribute(const String &p_key, Variant p_v
 }
 
 int EOSGLobbyModification::remove_member_attribute(const String &p_key) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_LobbyModification_RemoveMemberAttributeOptions options;
@@ -140,6 +148,7 @@ int EOSGLobbyModification::remove_member_attribute(const String &p_key) {
 }
 
 int EOSGLobbyModification::set_allowed_platform_ids(const TypedArray<int> &p_platform_ids) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_LobbyModification_SetAllowedPlatformIdsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETALLOWEDPLATFORMIDS_API_LATEST;

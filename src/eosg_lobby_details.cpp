@@ -18,6 +18,7 @@ void EOSGLobbyDetails::_bind_methods() {
 }
 
 String EOSGLobbyDetails::get_lobby_owner() {
+    ERR_FAIL_NULL_V(m_internal, "");
     EOS_LobbyDetails_GetLobbyOwnerOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETLOBBYOWNER_API_LATEST;
@@ -25,6 +26,7 @@ String EOSGLobbyDetails::get_lobby_owner() {
 }
 
 Dictionary EOSGLobbyDetails::copy_info() {
+    ERR_FAIL_NULL_V(m_internal, {});
     EOS_LobbyDetails_CopyInfoOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_COPYINFO_API_LATEST;
@@ -39,6 +41,7 @@ Dictionary EOSGLobbyDetails::copy_info() {
 }
 
 int EOSGLobbyDetails::get_attribute_count() {
+    ERR_FAIL_NULL_V(m_internal, 0);
     EOS_LobbyDetails_GetAttributeCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETATTRIBUTECOUNT_API_LATEST;
@@ -46,6 +49,7 @@ int EOSGLobbyDetails::get_attribute_count() {
 }
 
 Dictionary EOSGLobbyDetails::copy_attribute_by_index(int p_index) {
+    ERR_FAIL_NULL_V(m_internal, {});
     EOS_LobbyDetails_CopyAttributeByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_COPYATTRIBUTEBYINDEX_API_LATEST;
@@ -61,6 +65,7 @@ Dictionary EOSGLobbyDetails::copy_attribute_by_index(int p_index) {
 }
 
 Dictionary EOSGLobbyDetails::copy_attribute_by_key(const String &p_key) {
+    ERR_FAIL_NULL_V(m_internal, {});
     CharString key = p_key.utf8();
 
     EOS_LobbyDetails_CopyAttributeByKeyOptions options;
@@ -78,6 +83,7 @@ Dictionary EOSGLobbyDetails::copy_attribute_by_key(const String &p_key) {
 }
 
 int EOSGLobbyDetails::get_member_count() {
+    ERR_FAIL_NULL_V(m_internal, 0);
     EOS_LobbyDetails_GetMemberCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETMEMBERCOUNT_API_LATEST;
@@ -85,6 +91,7 @@ int EOSGLobbyDetails::get_member_count() {
 }
 
 String EOSGLobbyDetails::get_member_by_index(int p_index) {
+    ERR_FAIL_NULL_V(m_internal, "");
     EOS_LobbyDetails_GetMemberByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYDETAILS_GETMEMBERBYINDEX_API_LATEST;
@@ -93,6 +100,7 @@ String EOSGLobbyDetails::get_member_by_index(int p_index) {
 }
 
 int EOSGLobbyDetails::get_member_attribute_count(const String &p_target_user_id) {
+    ERR_FAIL_NULL_V(m_internal, 0);
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_GetMemberAttributeCountOptions options;
@@ -104,6 +112,7 @@ int EOSGLobbyDetails::get_member_attribute_count(const String &p_target_user_id)
 }
 
 Dictionary EOSGLobbyDetails::copy_member_attribute_by_index(const String &p_target_user_id, int p_index) {
+    ERR_FAIL_NULL_V(m_internal, {});
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_CopyMemberAttributeByIndexOptions options;
@@ -122,6 +131,7 @@ Dictionary EOSGLobbyDetails::copy_member_attribute_by_index(const String &p_targ
 }
 
 Dictionary EOSGLobbyDetails::copy_member_attribute_by_key(const String &p_target_user_id, const String &p_key) {
+    ERR_FAIL_NULL_V(m_internal, {});
     CharString targetUserId = p_target_user_id.utf8();
     CharString key = p_key.utf8();
 
@@ -141,6 +151,7 @@ Dictionary EOSGLobbyDetails::copy_member_attribute_by_key(const String &p_target
 }
 
 Dictionary EOSGLobbyDetails::copy_member_info(const String &p_target_user_id) {
+    ERR_FAIL_NULL_V(m_internal, {});
     CharString targetUserId = p_target_user_id.utf8();
 
     EOS_LobbyDetails_CopyMemberInfoOptions options;

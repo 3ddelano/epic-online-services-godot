@@ -11,6 +11,7 @@ void EOSGTransaction::_bind_methods() {
 };
 
 String EOSGTransaction::get_id() {
+    ERR_FAIL_NULL_V(m_internal, "");
     char *outBuffer = (char *)memalloc(256);
     int32_t outLength = 0;
     EOS_Ecom_Transaction_GetTransactionId(m_internal, outBuffer, &outLength);
@@ -18,6 +19,7 @@ String EOSGTransaction::get_id() {
 }
 
 int EOSGTransaction::get_entitlement_count() {
+    ERR_FAIL_NULL_V(m_internal, 0);
     EOS_Ecom_Transaction_GetEntitlementsCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ECOM_TRANSACTION_GETENTITLEMENTSCOUNT_API_LATEST;
@@ -26,6 +28,7 @@ int EOSGTransaction::get_entitlement_count() {
 }
 
 Dictionary EOSGTransaction::copy_entitlement_by_index(int p_entitlement_index) {
+    ERR_FAIL_NULL_V(m_internal, {});
     EOS_Ecom_Transaction_CopyEntitlementByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ECOM_TRANSACTION_COPYENTITLEMENTBYINDEX_API_LATEST;

@@ -13,11 +13,12 @@ void EOSGPlayerDataStorageFileTransferRequest::_bind_methods() {
 }
 
 int EOSGPlayerDataStorageFileTransferRequest::get_file_request_state() {
-    ERR_FAIL_NULL_V_MSG(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState), "The object has not been initialized by EOS.");
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     return static_cast<int>(EOS_PlayerDataStorageFileTransferRequest_GetFileRequestState(m_internal));
 }
 
 Dictionary EOSGPlayerDataStorageFileTransferRequest::get_filename() {
+    ERR_FAIL_NULL_V(m_internal, {});
     Dictionary ret;
     if (m_internal == nullptr) {
         ret["result_code"] = static_cast<int>(EOS_EResult::EOS_InvalidState);
@@ -34,6 +35,6 @@ Dictionary EOSGPlayerDataStorageFileTransferRequest::get_filename() {
 }
 
 int EOSGPlayerDataStorageFileTransferRequest::cancel_request() {
-    ERR_FAIL_NULL_V_MSG(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState), "The object has not been initialized by EOS.");
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     return static_cast<int>(EOS_PlayerDataStorageFileTransferRequest_CancelRequest(m_internal));
 }

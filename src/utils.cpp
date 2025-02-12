@@ -14,7 +14,7 @@ String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
     }
 
     if (IEOS::get_singleton()->isEOSValid) {
-        UtilityFunctions::printerr("\nError: EOSG Utils: eosg_epic_account_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
+        UtilityFunctions::printerr("\n[EOSG]: eosg_epic_account_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
     }
 
     return "";
@@ -34,7 +34,7 @@ String eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
     }
 
     if (IEOS::get_singleton()->isEOSValid) {
-        UtilityFunctions::printerr("\nError: EOSG Utils: eosg_product_user_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
+        UtilityFunctions::printerr("\n[EOSG]: eosg_product_user_id_to_string: Got EOS Result: ", EOS_EResult_ToString(Result), "\n\tat: ", __func__, " (", __FILE__, ":", __LINE__, ") ", "\n");
     }
 
     return String("");

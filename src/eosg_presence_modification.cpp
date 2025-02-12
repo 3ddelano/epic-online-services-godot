@@ -13,6 +13,7 @@ void EOSGPresenceModification::_bind_methods() {
 }
 
 int EOSGPresenceModification::set_status(int new_status) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_PresenceModification_SetStatusOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PRESENCE_SETPRESENCE_API_LATEST;
@@ -22,6 +23,7 @@ int EOSGPresenceModification::set_status(int new_status) {
 }
 
 int EOSGPresenceModification::set_raw_rich_text(const String &p_raw_rich_text) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString new_raw_rich_text = VARIANT_TO_CHARSTRING(p_raw_rich_text);
 
     EOS_PresenceModification_SetRawRichTextOptions options;
@@ -33,6 +35,7 @@ int EOSGPresenceModification::set_raw_rich_text(const String &p_raw_rich_text) {
 }
 
 int EOSGPresenceModification::set_data(Dictionary p_data) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int records_count = p_data.keys().size();
     EOS_Presence_DataRecord *records = (EOS_Presence_DataRecord *)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
 
@@ -57,6 +60,7 @@ int EOSGPresenceModification::set_data(Dictionary p_data) {
 }
 
 int EOSGPresenceModification::delete_data(Array p_keys) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int records_count = p_keys.size();
     EOS_PresenceModification_DataRecordId *records = (EOS_PresenceModification_DataRecordId *)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
 
@@ -78,6 +82,7 @@ int EOSGPresenceModification::delete_data(Array p_keys) {
 }
 
 int EOSGPresenceModification::set_join_info(const String &p_join_info) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString new_join_info = VARIANT_TO_CHARSTRING(p_join_info);
 
     EOS_PresenceModification_SetJoinInfoOptions options;

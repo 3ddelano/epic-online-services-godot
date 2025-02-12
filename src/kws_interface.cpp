@@ -2,6 +2,7 @@
 using namespace godot;
 
 Dictionary IEOS::kws_interface_copy_permission_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_kwsInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_KWS_CopyPermissionByIndexOptions options;
@@ -20,7 +21,8 @@ Dictionary IEOS::kws_interface_copy_permission_by_index(Ref<RefCounted> p_option
 }
 
 void IEOS::kws_interface_create_user(Ref<RefCounted> p_options) {
-    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    ERR_FAIL_NULL(s_kwsInterface);
+	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString parent_email = VARIANT_TO_CHARSTRING(p_options->get("parent_email"));
     CharString date_of_birth = VARIANT_TO_CHARSTRING(p_options->get("date_of_birth"));
 
@@ -46,6 +48,7 @@ void IEOS::kws_interface_create_user(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::kws_interface_get_permission_by_key(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_kwsInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString key = VARIANT_TO_CHARSTRING(p_options->get("key"));
 
@@ -65,6 +68,7 @@ Dictionary IEOS::kws_interface_get_permission_by_key(Ref<RefCounted> p_options) 
 }
 
 int IEOS::kws_interface_get_permissions_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_kwsInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_KWS_GetPermissionsCountOptions options;
@@ -76,6 +80,7 @@ int IEOS::kws_interface_get_permissions_count(Ref<RefCounted> p_options) {
 }
 
 void IEOS::kws_interface_query_age_gate(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_kwsInterface);
     EOS_KWS_QueryAgeGateOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_KWS_QUERYAGEGATE_API_LATEST;
@@ -94,6 +99,7 @@ void IEOS::kws_interface_query_age_gate(Ref<RefCounted> p_options) {
 }
 
 void IEOS::kws_interface_query_permissions(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_kwsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_KWS_QueryPermissionsOptions options;
@@ -117,6 +123,7 @@ void IEOS::kws_interface_query_permissions(Ref<RefCounted> p_options) {
 }
 
 void IEOS::kws_interface_request_permissions(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_kwsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     Array p_permission_keys = p_options->get("permission_keys");
     int p_permission_keys_size = p_permission_keys.size();
@@ -148,6 +155,7 @@ void IEOS::kws_interface_request_permissions(Ref<RefCounted> p_options) {
 }
 
 void IEOS::kws_interface_update_parent_email(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_kwsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString parent_email = VARIANT_TO_CHARSTRING(p_options->get("parent_email"));
 

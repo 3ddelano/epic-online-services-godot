@@ -57,11 +57,10 @@ void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
         return;
     }
 
-    Engine::get_singleton()->unregister_singleton("IEOS");
-    memdelete(_ieos);
-
     Engine::get_singleton()->unregister_singleton("EOSGPacketPeerMediator");
+    Engine::get_singleton()->unregister_singleton("IEOS");
     memdelete(_mediator);
+    memdelete(_ieos);
 }
 
 extern "C" {

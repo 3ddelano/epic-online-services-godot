@@ -2,6 +2,7 @@
 using namespace std;
 
 Dictionary IEOS::presence_interface_copy_presence(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_presenceInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -21,6 +22,7 @@ Dictionary IEOS::presence_interface_copy_presence(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::presence_interface_create_presence_modification(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_presenceInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Presence_CreatePresenceModificationOptions options;
@@ -38,6 +40,7 @@ Dictionary IEOS::presence_interface_create_presence_modification(Ref<RefCounted>
 }
 
 Dictionary IEOS::presence_interface_get_join_info(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_presenceInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -59,6 +62,7 @@ Dictionary IEOS::presence_interface_get_join_info(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::presence_interface_has_presence(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_presenceInterface, false);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -73,6 +77,7 @@ bool IEOS::presence_interface_has_presence(Ref<RefCounted> p_options) {
 }
 
 void IEOS::presence_interface_query_presence(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_presenceInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -96,6 +101,7 @@ void IEOS::presence_interface_query_presence(Ref<RefCounted> p_options) {
 }
 
 void IEOS::presence_interface_set_presence(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_presenceInterface);
     Ref<EOSGPresenceModification> presence_modification = Object::cast_to<EOSGPresenceModification>(p_options->get("presence_modification"));
     ERR_FAIL_NULL_MSG(presence_modification, "Error setting presence. SetPresenceOptions.presence_modification is null.");
     ERR_FAIL_NULL_MSG(presence_modification->get_internal(), "Error setting presence. EOSGPresenceModification is null.");

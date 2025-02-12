@@ -528,13 +528,13 @@ IEOS::IEOS() {
 IEOS::~IEOS() {
     ERR_FAIL_COND(singleton != this);
     if (s_platformInterface != nullptr) {
-        EOS_Platform_Release(s_platformInterface);
+		platform_interface_release();
     }
     singleton = nullptr;
 }
 
 void IEOS::tick() {
-    if (singleton != nullptr && IEOS::get_singleton()->s_platformInterface != nullptr) {
+    if (singleton != nullptr && IEOS::get_singleton()->s_platformInterface != nullptr && IEOS::get_singleton()->isEOSValid) {
         EOS_Platform_Tick(IEOS::get_singleton()->s_platformInterface);
     }
 }

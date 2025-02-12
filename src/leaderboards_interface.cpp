@@ -2,6 +2,7 @@
 using namespace std;
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     EOS_Leaderboards_CopyLeaderboardDefinitionByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDDEFINITIONBYINDEX_API_LATEST;
@@ -17,6 +18,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_index(Ref
 }
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_leaderboard_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     CharString leaderboard_id = VARIANT_TO_CHARSTRING(p_options->get("leaderboard_id"));
     EOS_Leaderboards_CopyLeaderboardDefinitionByLeaderboardIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -33,6 +35,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_definition_by_leaderboa
 }
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     EOS_Leaderboards_CopyLeaderboardRecordByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LEADERBOARDS_COPYLEADERBOARDRECORDBYINDEX_API_LATEST;
@@ -48,6 +51,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_index(Ref<Ref
 }
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_user_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     CharString user_id = VARIANT_TO_CHARSTRING(p_options->get("user_id"));
 
     EOS_Leaderboards_CopyLeaderboardRecordByUserIdOptions options;
@@ -65,6 +69,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_record_by_user_id(Ref<R
 }
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     CharString stat_name = VARIANT_TO_CHARSTRING(p_options->get("stat_name"));
 
     EOS_Leaderboards_CopyLeaderboardUserScoreByIndexOptions options;
@@ -83,6 +88,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_index(Ref
 }
 
 Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_user_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, {});
     CharString user_id = VARIANT_TO_CHARSTRING(p_options->get("user_id"));
     CharString stat_name = VARIANT_TO_CHARSTRING(p_options->get("stat_name"));
 
@@ -102,6 +108,7 @@ Dictionary IEOS::leaderboards_interface_copy_leaderboard_user_score_by_user_id(R
 }
 
 int IEOS::leaderboards_interface_get_leaderboard_definition_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, 0);
     EOS_Leaderboards_GetLeaderboardDefinitionCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LEADERBOARDS_GETLEADERBOARDDEFINITIONCOUNT_API_LATEST;
@@ -110,6 +117,7 @@ int IEOS::leaderboards_interface_get_leaderboard_definition_count(Ref<RefCounted
 }
 
 int IEOS::leaderboards_interface_get_leaderboard_record_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, 0);
     EOS_Leaderboards_GetLeaderboardRecordCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LEADERBOARDS_GETLEADERBOARDRECORDCOUNT_API_LATEST;
@@ -118,6 +126,7 @@ int IEOS::leaderboards_interface_get_leaderboard_record_count(Ref<RefCounted> p_
 }
 
 int IEOS::leaderboards_interface_get_leaderboard_user_score_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_leaderboardsInterface, 0);
     CharString stat_name = VARIANT_TO_CHARSTRING(p_options->get("stat_name"));
 
     EOS_Leaderboards_GetLeaderboardUserScoreCountOptions options;
@@ -129,6 +138,7 @@ int IEOS::leaderboards_interface_get_leaderboard_user_score_count(Ref<RefCounted
 }
 
 void IEOS::leaderboards_interface_query_leaderboard_definitions(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_leaderboardsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Leaderboards_QueryLeaderboardDefinitionsOptions options;
@@ -150,6 +160,7 @@ void IEOS::leaderboards_interface_query_leaderboard_definitions(Ref<RefCounted> 
 }
 
 void IEOS::leaderboards_interface_query_leaderboard_ranks(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_leaderboardsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString leaderboard_id = VARIANT_TO_CHARSTRING(p_options->get("leaderboard_id"));
 
@@ -172,6 +183,7 @@ void IEOS::leaderboards_interface_query_leaderboard_ranks(Ref<RefCounted> p_opti
 }
 
 void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_leaderboardsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     Array p_user_ids = p_options->get("user_ids");

@@ -15,6 +15,7 @@ void EOSGSessionSearch::_bind_methods() {
 }
 
 Dictionary EOSGSessionSearch::copy_search_result_by_index(int p_index) {
+	ERR_FAIL_NULL_V(m_internal, {});
     EOS_SessionSearch_CopySearchResultByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONSEARCH_COPYSEARCHRESULTBYINDEX_API_LATEST;
@@ -30,6 +31,7 @@ Dictionary EOSGSessionSearch::copy_search_result_by_index(int p_index) {
 }
 
 int EOSGSessionSearch::get_search_result_count() {
+	ERR_FAIL_NULL_V(m_internal, 0);
     EOS_SessionSearch_GetSearchResultCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONSEARCH_GETSEARCHRESULTCOUNT_API_LATEST;
@@ -39,6 +41,7 @@ int EOSGSessionSearch::get_search_result_count() {
 }
 
 int EOSGSessionSearch::remove_parameter(const String &p_key, int p_comparison_op) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_SessionSearch_RemoveParameterOptions options;
@@ -52,6 +55,7 @@ int EOSGSessionSearch::remove_parameter(const String &p_key, int p_comparison_op
 }
 
 int EOSGSessionSearch::set_max_results(int p_max_results) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionSearch_SetMaxResultsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONSEARCH_SETMAXSEARCHRESULTS_API_LATEST;
@@ -62,6 +66,7 @@ int EOSGSessionSearch::set_max_results(int p_max_results) {
 }
 
 int EOSGSessionSearch::set_parameter(const String &p_key, Variant p_value, int p_comparison_op) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_Sessions_AttributeData attributeData;
@@ -95,6 +100,7 @@ int EOSGSessionSearch::set_parameter(const String &p_key, Variant p_value, int p
 }
 
 int EOSGSessionSearch::set_session_id(const String &p_session_id) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString session_id = p_session_id.utf8();
 
     EOS_SessionSearch_SetSessionIdOptions options;
@@ -107,6 +113,7 @@ int EOSGSessionSearch::set_session_id(const String &p_session_id) {
 }
 
 int EOSGSessionSearch::set_target_user_id(const String &p_target_user_id) {
+	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString target_user_id = p_target_user_id.utf8();
 
     EOS_SessionSearch_SetTargetUserIdOptions options;
@@ -119,6 +126,7 @@ int EOSGSessionSearch::set_target_user_id(const String &p_target_user_id) {
 }
 
 void EOSGSessionSearch::find(const String &p_local_user_id) {
+	ERR_FAIL_NULL(m_internal);
     CharString local_user_id = p_local_user_id.utf8();
 
     EOS_SessionSearch_FindOptions options;

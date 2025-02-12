@@ -2,6 +2,7 @@
 using namespace godot;
 
 int IEOS::anticheat_client_interface_begin_session(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     int p_mode = p_options->get("mode");
 
@@ -15,6 +16,7 @@ int IEOS::anticheat_client_interface_begin_session(Ref<RefCounted> p_options) {
 };
 
 int IEOS::anticheat_client_interface_end_session(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_AntiCheatClient_EndSessionOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_ENDSESSION_API_LATEST;
@@ -23,6 +25,7 @@ int IEOS::anticheat_client_interface_end_session(Ref<RefCounted> p_options) {
 }
 
 int IEOS::anticheat_client_interface_add_external_integrity_catalog(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString p_path_to_bin_file = VARIANT_TO_CHARSTRING(p_options->get("path_to_bin_file"));
     EOS_AntiCheatClient_AddExternalIntegrityCatalogOptions options;
     memset(&options, 0, sizeof(options));
@@ -33,6 +36,7 @@ int IEOS::anticheat_client_interface_add_external_integrity_catalog(Ref<RefCount
 }
 
 int IEOS::anticheat_client_interface_receive_message_from_server(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     PackedByteArray p_data = p_options->get("data");
 
     void *data = memalloc(p_data.size());
@@ -48,6 +52,7 @@ int IEOS::anticheat_client_interface_receive_message_from_server(Ref<RefCounted>
 }
 
 Dictionary IEOS::anticheat_client_interface_get_protect_message_output_length(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, {});
     int p_data_length_bytes = p_options->get("data_length_bytes");
 
     EOS_AntiCheatClient_GetProtectMessageOutputLengthOptions options;
@@ -70,6 +75,7 @@ Dictionary IEOS::anticheat_client_interface_get_protect_message_output_length(Re
 }
 
 Dictionary IEOS::anticheat_client_interface_protect_message(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, {});
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
     void *data = memalloc(data_length_bytes);
@@ -100,6 +106,7 @@ Dictionary IEOS::anticheat_client_interface_protect_message(Ref<RefCounted> p_op
 }
 
 Dictionary IEOS::anticheat_client_interface_unprotect_message(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, {});
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
     void *data = memalloc(data_length_bytes);
@@ -131,6 +138,7 @@ Dictionary IEOS::anticheat_client_interface_unprotect_message(Ref<RefCounted> p_
 }
 
 int IEOS::anticheat_client_interface_register_peer(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString p_peer_handle = VARIANT_TO_CHARSTRING(p_options->get("peer_handle"));
     int p_client_type = p_options->get("client_type");
     int p_client_platform = p_options->get("client_platform");
@@ -154,6 +162,7 @@ int IEOS::anticheat_client_interface_register_peer(Ref<RefCounted> p_options) {
 }
 
 int IEOS::anticheat_client_interface_unregister_peer(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString p_peer_handle = VARIANT_TO_CHARSTRING(p_options->get("peer_handle"));
 
     EOS_AntiCheatClient_UnregisterPeerOptions options;
@@ -165,6 +174,7 @@ int IEOS::anticheat_client_interface_unregister_peer(Ref<RefCounted> p_options) 
 }
 
 int IEOS::anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString p_peer_handle = VARIANT_TO_CHARSTRING(p_options->get("peer_handle"));
     PackedByteArray p_data = p_options->get("data");
 

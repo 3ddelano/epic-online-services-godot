@@ -4,6 +4,7 @@
 using namespace godot;
 
 void IEOS::titlestorage_interface_query_file(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_titleStorageInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString filename = VARIANT_TO_CHARSTRING(p_options->get("filename"));
 
@@ -26,6 +27,7 @@ void IEOS::titlestorage_interface_query_file(Ref<RefCounted> p_options) {
 }
 
 void IEOS::titlestorage_interface_query_file_list(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_titleStorageInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     Array list_of_tags = p_options->get("list_of_tags");
 
@@ -56,6 +58,7 @@ void IEOS::titlestorage_interface_query_file_list(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::titlestorage_interface_copy_file_metadata_by_filename(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_titleStorageInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString filename = VARIANT_TO_CHARSTRING(p_options->get("filename"));
 
@@ -75,6 +78,7 @@ Dictionary IEOS::titlestorage_interface_copy_file_metadata_by_filename(Ref<RefCo
 }
 
 int IEOS::titlestorage_interface_get_file_metadata_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_titleStorageInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_TitleStorage_GetFileMetadataCountOptions options;
@@ -86,6 +90,7 @@ int IEOS::titlestorage_interface_get_file_metadata_count(Ref<RefCounted> p_optio
 }
 
 Dictionary IEOS::titlestorage_interface_copy_file_metadata_at_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_titleStorageInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     int index = p_options->get("index");
 
@@ -105,6 +110,7 @@ Dictionary IEOS::titlestorage_interface_copy_file_metadata_at_index(Ref<RefCount
 }
 
 int IEOS::titlestorage_interface_delete_cache(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_titleStorageInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_TitleStorage_DeleteCacheOptions options;
@@ -127,6 +133,7 @@ int IEOS::titlestorage_interface_delete_cache(Ref<RefCounted> p_options) {
 }
 
 Variant IEOS::titlestorage_interface_read_file(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_titleStorageInterface, Variant());
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString filename = VARIANT_TO_CHARSTRING(p_options->get("filename"));
     int read_chunk_length_bytes = p_options->get("read_chunk_length_bytes");

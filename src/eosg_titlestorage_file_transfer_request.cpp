@@ -13,20 +13,16 @@ void EOSGTitleStorageFileTransferRequest::_bind_methods() {
 }
 
 int EOSGTitleStorageFileTransferRequest::get_file_request_state() {
-    ERR_FAIL_NULL_V_MSG(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState), "The object has not been initialized by EOS.");
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     return static_cast<int>(EOS_TitleStorageFileTransferRequest_GetFileRequestState(m_internal));
 }
 
 Dictionary EOSGTitleStorageFileTransferRequest::get_filename() {
-    Dictionary ret;
-    if (m_internal == nullptr) {
-        ret["result_code"] = static_cast<int>(EOS_EResult::EOS_InvalidState);
-        ret["filename"] = "";
-        return ret;
-    }
+    ERR_FAIL_NULL_V(m_internal, {});
     char *outBuffer = (char *)(memalloc(EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1));
     int outBufferLength = EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1;
     EOS_EResult result = EOS_TitleStorageFileTransferRequest_GetFilename(m_internal, EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1, outBuffer, &outBufferLength);
+    Dictionary ret;
     ret["result_code"] = static_cast<int>(result);
     ret["filename"] = EOSG_GET_STRING(outBuffer);
     memfree(outBuffer);
@@ -34,6 +30,6 @@ Dictionary EOSGTitleStorageFileTransferRequest::get_filename() {
 }
 
 int EOSGTitleStorageFileTransferRequest::cancel_request() {
-    ERR_FAIL_NULL_V_MSG(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState), "The object has not been initialized by EOS.");
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     return static_cast<int>(EOS_TitleStorageFileTransferRequest_CancelRequest(m_internal));
 }

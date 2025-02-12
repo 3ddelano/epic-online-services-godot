@@ -10,6 +10,7 @@ void EOSGActiveSession::_bind_methods() {
 }
 
 Dictionary EOSGActiveSession::copy_info() {
+    ERR_FAIL_NULL_V(m_internal, {});
     EOS_ActiveSession_CopyInfoOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ACTIVESESSION_COPYINFO_API_LATEST;
@@ -24,6 +25,7 @@ Dictionary EOSGActiveSession::copy_info() {
 }
 
 int EOSGActiveSession::get_registered_player_count() {
+    ERR_FAIL_NULL_V(m_internal, 0);
     EOS_ActiveSession_GetRegisteredPlayerCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ACTIVESESSION_GETREGISTEREDPLAYERCOUNT_API_LATEST;
@@ -32,6 +34,7 @@ int EOSGActiveSession::get_registered_player_count() {
 }
 
 String EOSGActiveSession::get_registered_player_by_index(int p_player_index) {
+    ERR_FAIL_NULL_V(m_internal, "");
     EOS_ActiveSession_GetRegisteredPlayerByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ACTIVESESSION_GETREGISTEREDPLAYERBYINDEX_API_LATEST;

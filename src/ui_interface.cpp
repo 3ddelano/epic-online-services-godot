@@ -2,6 +2,7 @@
 using namespace godot;
 
 int IEOS::ui_interface_acknowledge_event_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_UI_AcknowledgeEventIdOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_ACKNOWLEDGEEVENTID_API_LATEST;
@@ -12,6 +13,7 @@ int IEOS::ui_interface_acknowledge_event_id(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::ui_interface_get_friends_visible(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, false);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_UI_GetFriendsVisibleOptions options;
@@ -23,10 +25,12 @@ bool IEOS::ui_interface_get_friends_visible(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_get_notification_location_preference() {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_UI_ENotificationLocation::EOS_UNL_TopLeft));
     return static_cast<int>(EOS_UI_GetNotificationLocationPreference(s_uiInterface));
 }
 
 int IEOS::ui_interface_get_toggle_friends_key(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_UI_EKeyCombination::EOS_UIK_Shift | EOS_UI_EKeyCombination::EOS_UIK_F3));
     EOS_UI_GetToggleFriendsKeyOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_GETTOGGLEFRIENDSKEY_API_LATEST;
@@ -35,6 +39,7 @@ int IEOS::ui_interface_get_toggle_friends_key(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ui_interface_hide_friends(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_uiInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_UI_HideFriendsOptions options;
@@ -55,10 +60,12 @@ void IEOS::ui_interface_hide_friends(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::ui_interface_is_valid_key_combination(int key_combination) {
+    ERR_FAIL_NULL_V(s_uiInterface, false);
     return EOSG_GET_BOOL(EOS_UI_IsValidKeyCombination(s_uiInterface, static_cast<EOS_UI_EKeyCombination>(key_combination)));
 }
 
 int IEOS::ui_interface_set_display_preference(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_UI_SetDisplayPreferenceOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_SETDISPLAYPREFERENCE_API_LATEST;
@@ -68,6 +75,7 @@ int IEOS::ui_interface_set_display_preference(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_set_toggle_friends_key(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_UI_SetToggleFriendsKeyOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_SETTOGGLEFRIENDSKEY_API_LATEST;
@@ -77,6 +85,7 @@ int IEOS::ui_interface_set_toggle_friends_key(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ui_interface_show_friends(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_uiInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_UI_ShowFriendsOptions options;
@@ -97,6 +106,7 @@ void IEOS::ui_interface_show_friends(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::ui_interface_get_friends_exclusive_input(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, false);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_UI_GetFriendsExclusiveInputOptions options;
@@ -108,6 +118,7 @@ bool IEOS::ui_interface_get_friends_exclusive_input(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ui_interface_show_block_player(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_uiInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -131,6 +142,7 @@ void IEOS::ui_interface_show_block_player(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ui_interface_show_report_player(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_uiInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -154,6 +166,7 @@ void IEOS::ui_interface_show_report_player(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_pause_social_overlay(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_UI_PauseSocialOverlayOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_PAUSESOCIALOVERLAY_API_LATEST;
@@ -163,6 +176,7 @@ int IEOS::ui_interface_pause_social_overlay(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::ui_interface_is_social_overlay_paused(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, false);
     EOS_UI_IsSocialOverlayPausedOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_ISSOCIALOVERLAYPAUSED_API_LATEST;
@@ -171,6 +185,7 @@ bool IEOS::ui_interface_is_social_overlay_paused(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_set_toggle_friends_button(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int button_combination = p_options->get("button_combination");
 
     EOS_UI_SetToggleFriendsButtonOptions options;
@@ -182,6 +197,7 @@ int IEOS::ui_interface_set_toggle_friends_button(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_get_toggle_friends_button(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_UI_EInputStateButtonFlags::EOS_UISBF_None));
     EOS_UI_GetToggleFriendsButtonOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_GETTOGGLEFRIENDSBUTTON_API_LATEST;
@@ -190,10 +206,12 @@ int IEOS::ui_interface_get_toggle_friends_button(Ref<RefCounted> p_options) {
 }
 
 bool IEOS::ui_interface_is_valid_button_combination(int p_button_combination) {
+    ERR_FAIL_NULL_V(s_uiInterface, false);
     return EOSG_GET_BOOL(EOS_UI_IsValidButtonCombination(s_uiInterface, static_cast<EOS_UI_EInputStateButtonFlags>(p_button_combination)));
 }
 
 int IEOS::ui_interface_report_input_state(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int button_down_flags = p_options->get("button_down_flags");
     int mouse_pos_x = p_options->get("mouse_pos_x");
     int mouse_pos_y = p_options->get("mouse_pos_y");
@@ -225,6 +243,7 @@ int IEOS::ui_interface_report_input_state(Ref<RefCounted> p_options) {
 }
 
 int IEOS::ui_interface_pre_present(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_UI_PrePresentOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_UI_PREPRESENT_API_LATEST;
@@ -233,6 +252,7 @@ int IEOS::ui_interface_pre_present(Ref<RefCounted> p_options) {
 }
 
 void IEOS::ui_interface_show_native_profile(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_uiInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 

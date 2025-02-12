@@ -2,6 +2,7 @@
 using namespace std;
 
 int IEOS::metrics_interface_begin_player_session(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_metricsInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString account_id = VARIANT_TO_CHARSTRING(p_options->get("account_id"));
     CharString display_name = VARIANT_TO_CHARSTRING(p_options->get("display_name"));
     CharString server_ip = VARIANT_TO_CHARSTRING(p_options->get("server_ip"));
@@ -30,6 +31,7 @@ int IEOS::metrics_interface_begin_player_session(Ref<RefCounted> p_options) {
 }
 
 int IEOS::metrics_interface_end_player_session(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_metricsInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString account_id = VARIANT_TO_CHARSTRING(p_options->get("account_id"));
 
     EOS_Metrics_EndPlayerSessionOptions options;

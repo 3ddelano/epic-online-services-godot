@@ -16,6 +16,7 @@ void EOSGLobbySearch::_bind_methods() {
 }
 
 void EOSGLobbySearch::find(const String &p_local_user_id) {
+    ERR_FAIL_NULL(m_internal);
     CharString local_user_id = p_local_user_id.utf8();
     EOS_LobbySearch_FindOptions options;
     memset(&options, 0, sizeof(options));
@@ -32,6 +33,7 @@ void EOSGLobbySearch::find(const String &p_local_user_id) {
 }
 
 int EOSGLobbySearch::set_lobby_id(const String &p_lobby_id) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString lobby_id = p_lobby_id.utf8();
     EOS_LobbySearch_SetLobbyIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -42,6 +44,7 @@ int EOSGLobbySearch::set_lobby_id(const String &p_lobby_id) {
 }
 
 int EOSGLobbySearch::set_target_user_id(const String &p_target_user_id) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString target_user_id = p_target_user_id.utf8();
 
     EOS_LobbySearch_SetTargetUserIdOptions options;
@@ -53,6 +56,7 @@ int EOSGLobbySearch::set_target_user_id(const String &p_target_user_id) {
 }
 
 int EOSGLobbySearch::set_parameter(const String &p_key, Variant p_value, int p_comparison_op) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_Lobby_AttributeData attributeData;
@@ -86,6 +90,7 @@ int EOSGLobbySearch::set_parameter(const String &p_key, Variant p_value, int p_c
 }
 
 int EOSGLobbySearch::remove_parameter(const String &p_key, int p_comparison_op) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_LobbySearch_RemoveParameterOptions options;
@@ -98,6 +103,7 @@ int EOSGLobbySearch::remove_parameter(const String &p_key, int p_comparison_op) 
 }
 
 int EOSGLobbySearch::set_max_results(int p_max_results) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_LobbySearch_SetMaxResultsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYSEARCH_SETMAXRESULTS_API_LATEST;
@@ -107,6 +113,7 @@ int EOSGLobbySearch::set_max_results(int p_max_results) {
 }
 
 int EOSGLobbySearch::get_search_result_count() {
+    ERR_FAIL_NULL_V(m_internal, 0);
     EOS_LobbySearch_GetSearchResultCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYSEARCH_GETSEARCHRESULTCOUNT_API_LATEST;
@@ -115,6 +122,7 @@ int EOSGLobbySearch::get_search_result_count() {
 }
 
 Dictionary EOSGLobbySearch::copy_search_result_by_index(int p_index) {
+    ERR_FAIL_NULL_V(m_internal, {});
     EOS_LobbySearch_CopySearchResultByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBYSEARCH_COPYSEARCHRESULTBYINDEX_API_LATEST;

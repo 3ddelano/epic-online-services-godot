@@ -4,6 +4,7 @@
 using namespace godot;
 
 void IEOS::sanctions_interface_query_active_player_sanctions(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_sanctionsInterface);
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
@@ -26,6 +27,7 @@ void IEOS::sanctions_interface_query_active_player_sanctions(Ref<RefCounted> p_o
 }
 
 int IEOS::sanctions_interface_get_player_sanction_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_sanctionsInterface, 0);
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Sanctions_GetPlayerSanctionCountOptions options;
@@ -37,6 +39,7 @@ int IEOS::sanctions_interface_get_player_sanction_count(Ref<RefCounted> p_option
 }
 
 Dictionary IEOS::sanctions_interface_copy_player_sanction_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_sanctionsInterface, {});
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     int sanction_index = p_options->get("sanction_index");
 
@@ -55,6 +58,7 @@ Dictionary IEOS::sanctions_interface_copy_player_sanction_by_index(Ref<RefCounte
 }
 
 void IEOS::sanctions_interface_create_player_sanction_appeal(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_sanctionsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString reference_id = VARIANT_TO_CHARSTRING(p_options->get("reference_id"));
     int reason = p_options->get("reason");

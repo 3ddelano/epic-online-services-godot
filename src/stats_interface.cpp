@@ -2,6 +2,7 @@
 using namespace std;
 
 Dictionary IEOS::stats_interface_copy_stat_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_statsInterface, {});
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Stats_CopyStatByIndexOptions options;
@@ -20,6 +21,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_index(Ref<RefCounted> p_options) {
 }
 
 Dictionary IEOS::stats_interface_copy_stat_by_name(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_statsInterface, {});
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString name = VARIANT_TO_CHARSTRING(p_options->get("name"));
 
@@ -39,6 +41,7 @@ Dictionary IEOS::stats_interface_copy_stat_by_name(Ref<RefCounted> p_options) {
 }
 
 int IEOS::stats_interface_get_stats_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_statsInterface, 0);
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
     EOS_Stats_GetStatCountOptions options;
@@ -50,6 +53,7 @@ int IEOS::stats_interface_get_stats_count(Ref<RefCounted> p_options) {
 }
 
 void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_statsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     Array p_stats = p_options->get("stats");
@@ -87,6 +91,7 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
 }
 
 void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_statsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     Array p_stat_names = p_options->get("stat_names");

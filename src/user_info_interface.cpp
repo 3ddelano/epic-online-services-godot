@@ -2,6 +2,7 @@
 using namespace std;
 
 Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString account_id = VARIANT_TO_CHARSTRING(p_options->get("account_id"));
@@ -23,6 +24,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_id(Ref<R
 }
 
 Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_type(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -43,6 +45,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_account_type(Ref
 }
 
 Dictionary IEOS::user_info_interface_copy_external_user_info_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -63,6 +66,7 @@ Dictionary IEOS::user_info_interface_copy_external_user_info_by_index(Ref<RefCou
 }
 
 Dictionary IEOS::user_info_interface_copy_user_info(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -82,6 +86,7 @@ Dictionary IEOS::user_info_interface_copy_user_info(Ref<RefCounted> p_options) {
 }
 
 int IEOS::user_info_interface_get_external_user_info_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, 0);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -95,6 +100,7 @@ int IEOS::user_info_interface_get_external_user_info_count(Ref<RefCounted> p_opt
 }
 
 void IEOS::user_info_interface_query_user_info(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_userInfoInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -118,6 +124,7 @@ void IEOS::user_info_interface_query_user_info(Ref<RefCounted> p_options) {
 }
 
 void IEOS::user_info_interface_query_user_info_by_display_name(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_userInfoInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString display_name = VARIANT_TO_CHARSTRING(p_options->get("display_name"));
 
@@ -142,6 +149,7 @@ void IEOS::user_info_interface_query_user_info_by_display_name(Ref<RefCounted> p
 }
 
 void IEOS::user_info_interface_query_user_info_by_external_account(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_userInfoInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString external_account_id = VARIANT_TO_CHARSTRING(p_options->get("external_account_id"));
 
@@ -168,6 +176,7 @@ void IEOS::user_info_interface_query_user_info_by_external_account(Ref<RefCounte
 }
 
 Dictionary IEOS::user_info_interface_copy_best_display_name(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -187,6 +196,7 @@ Dictionary IEOS::user_info_interface_copy_best_display_name(Ref<RefCounted> p_op
 }
 
 Dictionary IEOS::user_info_interface_copy_best_display_name_with_platform(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     int target_platform_type = p_options->get("target_platform_type");
@@ -208,6 +218,7 @@ Dictionary IEOS::user_info_interface_copy_best_display_name_with_platform(Ref<Re
 }
 
 int IEOS::user_info_interface_get_local_platform_type(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_userInfoInterface, static_cast<int>(EOS_OPT_Unknown));
     EOS_UserInfo_GetLocalPlatformTypeOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_USERINFO_GETLOCALPLATFORMTYPE_API_LATEST;

@@ -3,6 +3,7 @@
 using namespace godot;
 
 Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_achievement_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, {});
     CharString achievement_id = VARIANT_TO_CHARSTRING(p_options->get("achievement_id"));
 
     EOS_Achievements_CopyAchievementDefinitionV2ByAchievementIdOptions options;
@@ -20,6 +21,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_achiev
 }
 
 Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, {});
     EOS_Achievements_CopyAchievementDefinitionV2ByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ACHIEVEMENTS_COPYACHIEVEMENTDEFINITIONV2BYINDEX_API_LATEST;
@@ -35,6 +37,7 @@ Dictionary IEOS::achievements_interface_copy_achievement_definition_v2_by_index(
 }
 
 Dictionary IEOS::achievements_interface_copy_player_achievement_by_achievement_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString achievement_id = VARIANT_TO_CHARSTRING(p_options->get("achievement_id"));
@@ -56,6 +59,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_achievement_i
 }
 
 Dictionary IEOS::achievements_interface_copy_player_achievement_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, {});
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -76,6 +80,7 @@ Dictionary IEOS::achievements_interface_copy_player_achievement_by_index(Ref<Ref
 }
 
 int IEOS::achievements_interface_get_achievement_definition_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, 0);
     EOS_Achievements_GetAchievementDefinitionCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ACHIEVEMENTS_GETACHIEVEMENTDEFINITIONCOUNT_API_LATEST;
@@ -84,6 +89,7 @@ int IEOS::achievements_interface_get_achievement_definition_count(Ref<RefCounted
 }
 
 void IEOS::achievements_interface_query_definitions(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_achievementsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
     EOS_Achievements_QueryDefinitionsOptions options;
@@ -103,6 +109,7 @@ void IEOS::achievements_interface_query_definitions(Ref<RefCounted> p_options) {
 }
 
 int IEOS::achievements_interface_get_player_achievement_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_achievementsInterface, 0);
     CharString user_id = VARIANT_TO_CHARSTRING(p_options->get("user_id"));
 
     EOS_Achievements_GetPlayerAchievementCountOptions options;
@@ -114,6 +121,7 @@ int IEOS::achievements_interface_get_player_achievement_count(Ref<RefCounted> p_
 }
 
 void IEOS::achievements_interface_query_player_achievements(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_achievementsInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
 
@@ -137,13 +145,14 @@ void IEOS::achievements_interface_query_player_achievements(Ref<RefCounted> p_op
 }
 
 void IEOS::achievements_interface_unlock_achievements(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_achievementsInterface);
     CharString user_id = VARIANT_TO_CHARSTRING(p_options->get("user_id"));
     Array p_achievement_ids = p_options->get("achievement_ids");
     int achievement_ids_count = p_achievement_ids.size();
 
-	PERSISTENT_CHAR_ARRAY_CREATE(achievement_ids, achievement_id_charstrings, achievement_ids_count)
+    PERSISTENT_CHAR_ARRAY_CREATE(achievement_ids, achievement_id_charstrings, achievement_ids_count)
     for (int i = 0; i < achievement_ids_count; i++) {
-		PERSISTENT_CHAR_ARRAY_SET(achievement_ids, achievement_id_charstrings, i, p_achievement_ids[i]);
+        PERSISTENT_CHAR_ARRAY_SET(achievement_ids, achievement_id_charstrings, i, p_achievement_ids[i]);
     }
 
     EOS_Achievements_UnlockAchievementsOptions options;

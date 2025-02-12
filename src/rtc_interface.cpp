@@ -1,6 +1,7 @@
 #include "ieos.h"
 
 void IEOS::rtc_interface_join_room(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_rtcInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     CharString client_base_url = VARIANT_TO_CHARSTRING(p_options->get("client_base_url"));
@@ -46,6 +47,7 @@ void IEOS::rtc_interface_join_room(Ref<RefCounted> p_options) {
 }
 
 void IEOS::rtc_interface_leave_room(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_rtcInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -69,6 +71,7 @@ void IEOS::rtc_interface_leave_room(Ref<RefCounted> p_options) {
 }
 
 void IEOS::rtc_interface_block_participant(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL(s_rtcInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     CharString participant_id = VARIANT_TO_CHARSTRING(p_options->get("participant_id"));
@@ -98,6 +101,7 @@ void IEOS::rtc_interface_block_participant(Ref<RefCounted> p_options) {
 }
 
 int IEOS::rtc_interface_set_setting(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString setting_name = VARIANT_TO_CHARSTRING(p_options->get("setting_name"));
     CharString setting_value = VARIANT_TO_CHARSTRING(p_options->get("setting_value"));
 
@@ -111,6 +115,7 @@ int IEOS::rtc_interface_set_setting(Ref<RefCounted> p_options) {
 }
 
 int IEOS::rtc_interface_set_room_setting(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString lcoal_user_id = VARIANT_TO_CHARSTRING(p_options->get("lcoal_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     CharString setting_name = VARIANT_TO_CHARSTRING(p_options->get("setting_name"));
@@ -128,6 +133,7 @@ int IEOS::rtc_interface_set_room_setting(Ref<RefCounted> p_options) {
 }
 
 int IEOS::rtc_interface_add_notify_disconnected(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -147,6 +153,7 @@ int IEOS::rtc_interface_add_notify_disconnected(Ref<RefCounted> p_options) {
 }
 
 int IEOS::rtc_interface_add_notify_participant_status_changed(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -179,6 +186,7 @@ int IEOS::rtc_interface_add_notify_participant_status_changed(Ref<RefCounted> p_
 }
 
 int IEOS::rtc_interface_add_notify_room_statistics_updated(Ref<RefCounted> p_options) {
+	ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -198,13 +206,16 @@ int IEOS::rtc_interface_add_notify_room_statistics_updated(Ref<RefCounted> p_opt
 }
 
 void IEOS::rtc_interface_remove_notify_disconnected(int p_notification_id) {
+	ERR_FAIL_NULL(s_rtcInterface);
     EOS_RTC_RemoveNotifyDisconnected(s_rtcInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_interface_remove_notify_participant_status_changed(int p_notification_id) {
+	ERR_FAIL_NULL(s_rtcInterface);
     EOS_RTC_RemoveNotifyParticipantStatusChanged(s_rtcInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_interface_remove_notify_room_statistics_updated(int p_notification_id) {
+	ERR_FAIL_NULL(s_rtcInterface);
     EOS_RTC_RemoveNotifyRoomStatisticsUpdated(s_rtcInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }

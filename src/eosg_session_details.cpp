@@ -10,6 +10,7 @@ void EOSGSessionDetails::_bind_methods() {
 }
 
 Dictionary EOSGSessionDetails::copy_info() {
+	ERR_FAIL_NULL_V(m_internal, {});
     EOS_SessionDetails_CopyInfoOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONDETAILS_COPYINFO_API_LATEST;
@@ -24,6 +25,7 @@ Dictionary EOSGSessionDetails::copy_info() {
 }
 
 Dictionary EOSGSessionDetails::copy_session_attribute_by_index(int p_attribute_index) {
+	ERR_FAIL_NULL_V(m_internal, {});
     EOS_SessionDetails_CopySessionAttributeByIndexOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONDETAILS_COPYSESSIONATTRIBUTEBYINDEX_API_LATEST;
@@ -39,6 +41,7 @@ Dictionary EOSGSessionDetails::copy_session_attribute_by_index(int p_attribute_i
 }
 
 Dictionary EOSGSessionDetails::copy_session_attribute_by_key(const String &p_attribute_key) {
+	ERR_FAIL_NULL_V(m_internal, {});
     CharString attribute_key = p_attribute_key.utf8();
 
     EOS_SessionDetails_CopySessionAttributeByKeyOptions options;
@@ -56,6 +59,7 @@ Dictionary EOSGSessionDetails::copy_session_attribute_by_key(const String &p_att
 }
 
 int EOSGSessionDetails::get_session_attribute_count() {
+	ERR_FAIL_NULL_V(m_internal, 0);
     EOS_SessionDetails_GetSessionAttributeCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONDETAILS_GETSESSIONATTRIBUTECOUNT_API_LATEST;

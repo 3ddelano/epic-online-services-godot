@@ -1,6 +1,7 @@
 #include "ieos.h"
 
 Dictionary IEOS::rtc_audio_interface_copy_input_device_information_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, {});
     int device_index = p_options->get("device_index");
 
     EOS_RTCAudio_CopyInputDeviceInformationByIndexOptions options;
@@ -18,6 +19,7 @@ Dictionary IEOS::rtc_audio_interface_copy_input_device_information_by_index(Ref<
 }
 
 Dictionary IEOS::rtc_audio_interface_copy_output_device_information_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, {});
     int device_index = p_options->get("device_index");
 
     EOS_RTCAudio_CopyOutputDeviceInformationByIndexOptions options;
@@ -35,6 +37,7 @@ Dictionary IEOS::rtc_audio_interface_copy_output_device_information_by_index(Ref
 }
 
 int IEOS::rtc_audio_interface_get_input_devices_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, 0);
     EOS_RTCAudio_GetInputDevicesCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_RTCAUDIO_GETINPUTDEVICESCOUNT_API_LATEST;
@@ -43,6 +46,7 @@ int IEOS::rtc_audio_interface_get_input_devices_count(Ref<RefCounted> p_options)
 }
 
 int IEOS::rtc_audio_interface_get_output_devices_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, 0);
     EOS_RTCAudio_GetOutputDevicesCountOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_RTCAUDIO_GETOUTPUTDEVICESCOUNT_API_LATEST;
@@ -56,6 +60,7 @@ int IEOS::rtc_audio_interface_send_audio(Ref<RefCounted> p_options) {
 }
 
 void IEOS::rtc_audio_interface_query_input_devices_information(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_QueryInputDevicesInformationOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_RTCAUDIO_QUERYINPUTDEVICESINFORMATION_API_LATEST;
@@ -72,6 +77,7 @@ void IEOS::rtc_audio_interface_query_input_devices_information(Ref<RefCounted> p
 }
 
 void IEOS::rtc_audio_interface_query_output_devices_information(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_QueryOutputDevicesInformationOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_RTCAUDIO_QUERYOUTPUTDEVICESINFORMATION_API_LATEST;
@@ -88,6 +94,7 @@ void IEOS::rtc_audio_interface_query_output_devices_information(Ref<RefCounted> 
 }
 
 void IEOS::rtc_audio_interface_register_platform_user(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString platform_user_id = VARIANT_TO_CHARSTRING(p_options->get("platform_user_id"));
 
     EOS_RTCAudio_RegisterPlatformUserOptions options;
@@ -108,6 +115,7 @@ void IEOS::rtc_audio_interface_register_platform_user(Ref<RefCounted> p_options)
 }
 
 void IEOS::rtc_audio_interface_set_input_device_settings(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString real_device_id = VARIANT_TO_CHARSTRING(p_options->get("real_device_id"));
     bool platform_aec = p_options->get("platform_aec");
@@ -132,6 +140,7 @@ void IEOS::rtc_audio_interface_set_input_device_settings(Ref<RefCounted> p_optio
 }
 
 void IEOS::rtc_audio_interface_set_output_device_settings(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString real_device_id = VARIANT_TO_CHARSTRING(p_options->get("real_device_id"));
 
@@ -154,6 +163,7 @@ void IEOS::rtc_audio_interface_set_output_device_settings(Ref<RefCounted> p_opti
 }
 
 void IEOS::rtc_audio_interface_unregister_platform_user(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString platform_user_id = VARIANT_TO_CHARSTRING(p_options->get("platform_user_id"));
 
     EOS_RTCAudio_UnregisterPlatformUserOptions options;
@@ -174,6 +184,7 @@ void IEOS::rtc_audio_interface_unregister_platform_user(Ref<RefCounted> p_option
 }
 
 void IEOS::rtc_audio_interface_update_participant_volume(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     CharString participant_id = VARIANT_TO_CHARSTRING(p_options->get("participant_id"));
@@ -203,6 +214,7 @@ void IEOS::rtc_audio_interface_update_participant_volume(Ref<RefCounted> p_optio
 }
 
 void IEOS::rtc_audio_interface_update_receiving_volume(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     float volume = p_options->get("volume");
@@ -229,6 +241,7 @@ void IEOS::rtc_audio_interface_update_receiving_volume(Ref<RefCounted> p_options
 }
 
 void IEOS::rtc_audio_interface_update_receiving(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     CharString participant_id = VARIANT_TO_CHARSTRING(p_options->get("participant_id"));
@@ -258,6 +271,7 @@ void IEOS::rtc_audio_interface_update_receiving(Ref<RefCounted> p_options) {
 }
 
 void IEOS::rtc_audio_interface_update_sending_volume(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     float volume = p_options->get("volume");
@@ -284,6 +298,7 @@ void IEOS::rtc_audio_interface_update_sending_volume(Ref<RefCounted> p_options) 
 }
 
 void IEOS::rtc_audio_interface_update_sending(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     int audio_status = p_options->get("audio_status");
@@ -310,6 +325,7 @@ void IEOS::rtc_audio_interface_update_sending(Ref<RefCounted> p_options) {
 }
 
 int IEOS::rtc_audio_interface_add_notify_audio_before_render(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
     bool unmixed_audio = p_options->get("unmixed_audio");
@@ -334,6 +350,7 @@ int IEOS::rtc_audio_interface_add_notify_audio_before_render(Ref<RefCounted> p_o
 }
 
 int IEOS::rtc_audio_interface_add_notify_audio_before_send(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -354,6 +371,7 @@ int IEOS::rtc_audio_interface_add_notify_audio_before_send(Ref<RefCounted> p_opt
 }
 
 int IEOS::rtc_audio_interface_add_notify_audio_input_state(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -374,6 +392,7 @@ int IEOS::rtc_audio_interface_add_notify_audio_input_state(Ref<RefCounted> p_opt
 }
 
 int IEOS::rtc_audio_interface_add_notify_audio_output_state(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -394,6 +413,7 @@ int IEOS::rtc_audio_interface_add_notify_audio_output_state(Ref<RefCounted> p_op
 }
 
 int IEOS::rtc_audio_interface_add_notify_participant_updated(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcAudioInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString room_name = VARIANT_TO_CHARSTRING(p_options->get("room_name"));
 
@@ -415,21 +435,26 @@ int IEOS::rtc_audio_interface_add_notify_participant_updated(Ref<RefCounted> p_o
 }
 
 void IEOS::rtc_audio_interface_remove_notify_audio_before_render(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_RemoveNotifyAudioBeforeRender(s_rtcAudioInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_audio_interface_remove_notify_audio_before_send(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_RemoveNotifyAudioBeforeSend(s_rtcAudioInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_audio_interface_remove_notify_audio_input_state(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_RemoveNotifyAudioInputState(s_rtcAudioInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_audio_interface_remove_notify_audio_output_state(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_RemoveNotifyAudioOutputState(s_rtcAudioInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
 
 void IEOS::rtc_audio_interface_remove_notify_participant_updated(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcAudioInterface);
     EOS_RTCAudio_RemoveNotifyParticipantUpdated(s_rtcAudioInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
