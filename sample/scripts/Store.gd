@@ -1,7 +1,5 @@
 extends Node
 
-var product_user_id = ""
-var epic_account_id = ""
 var display_name = ""
 
 # For testing things that need a second player

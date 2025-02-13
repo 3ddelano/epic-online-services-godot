@@ -115,6 +115,7 @@ func _on_logged_in():
 		var user_info = await HAuth.get_user_info_async()
 		if user_info and user_info.display_name:
 			Store.display_name = user_info.display_name
+			print("User display name: ", Store.display_name)
 
 	_set_login_state(States.Success)
 

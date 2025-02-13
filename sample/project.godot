@@ -25,6 +25,7 @@ HAuth="*res://addons/epic-online-services-godot/heos/hauth.gd"
 HAchievements="*res://addons/epic-online-services-godot/heos/hachievements.gd"
 HFriends="*res://addons/epic-online-services-godot/heos/hfriends.gd"
 HStats="*res://addons/epic-online-services-godot/heos/hstats.gd"
+HLeaderboards="*res://addons/epic-online-services-godot/heos/hleaderboards.gd"
 
 [display]
 

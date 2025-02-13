@@ -14,14 +14,14 @@ func _on_begin_player_session_btn_pressed():
 	var begin_sess_opts = EOS.Metrics.BeginPlayerSessionOptions.new()
 	begin_sess_opts.controller_type = EOS.Metrics.UserControllerType.MouseKeyboard
 
-	if HAuth.epic_account_id != "":
+	if HAuth.epic_account_id:
 		begin_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.Epic
 		begin_sess_opts.account_id = HAuth.epic_account_id
 	else:
 		begin_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.External
 		begin_sess_opts.account_id = HAuth.product_user_id
 
-	if Store.display_name != "":
+	if Store.display_name:
 		begin_sess_opts.display_name = Store.display_name
 	else:
 		begin_sess_opts.display_name = "Unnamed user"
