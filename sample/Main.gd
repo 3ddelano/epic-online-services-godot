@@ -21,19 +21,10 @@ func _ready() -> void:
 	# EOS Setup
 	# -----
 
-	# Initialize the SDK
 	var init_opts = EOS.Platform.InitializeOptions.new()
 	init_opts.product_name = PRODUCT_NAME
 	init_opts.product_version = PRODUCT_VERSION
 
-	var init_res := await HPlatform.initialize_async(init_opts)
-	if not EOS.is_success(init_res):
-		print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
-		return
-	
-	print("Initialized EOS platform")
-
-	# Create platform
 	var create_opts = EOS.Platform.CreateOptions.new()
 	create_opts.product_id = PRODUCT_ID
 	create_opts.sandbox_id = SANDBOX_ID
@@ -43,20 +34,28 @@ func _ready() -> void:
 	create_opts.encryption_key = ENCRYPTION_KEY
 	if OS.get_name() == "Windows":
 		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
-
-	var create_success := await HPlatform.create_platform_async(create_opts)
-	if not create_success:
-		print("Failed to create EOS Platform")
+	
+	# Initialize the SDK
+	var init_res := await HPlatform.initialize_async(init_opts)
+	if not EOS.is_success(init_res):
+		printerr("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
 		return
 	
-	print("Created EOS platform")
+	# Create platform
+	var create_success := await HPlatform.create_platform_async(create_opts)
+	if not create_success:
+		printerr("Failed to create EOS Platform")
+		return
 
 	var sdk_constants := EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
 
+	# See LoginView.gd for the user login flow
+
 
 func get_view_manager():
 	return views
+
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
