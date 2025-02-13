@@ -47,7 +47,7 @@ func get_all_achievements_async() -> Array[HAchievementData]:
 
 	var get_count_opts = EOS.Achievements.GetAchievementDefinitionCountOptions.new()
 	var achievement_count: int = EOS.Achievements.AchievementsInterface.get_achievement_definition_count(get_count_opts)
-	_log.debug("Got %s achievements" % achievement_count)
+	_log.debug("Got all achievements: count=%s" % achievement_count)
 	
 	var achievements: Array[HAchievementData] = []
 	for i in achievement_count:
@@ -87,11 +87,11 @@ func get_player_achievements_async() -> Array[HAchievementData]:
 	
 	var get_count_opts = EOS.Achievements.GetPlayerAchievementCountOptions.new()
 	get_count_opts.user_id = HAuth.product_user_id
-	var achievement_count = EOS.Achievements.AchievementsInterface.get_player_achievement_count(get_count_opts)
-	_log.debug("Got %s player achievements" % achievement_count)
+	var achievements_count = EOS.Achievements.AchievementsInterface.get_player_achievement_count(get_count_opts)
+	_log.debug("Got player achievements: count=%s" % achievements_count)
 
 	var achievements: Array[HAchievementData] = []
-	for i in achievement_count:
+	for i in achievements_count:
 		var copy_opts = EOS.Achievements.CopyPlayerAchievementByIndexOptions.new()
 		copy_opts.achievement_index = i
 		copy_opts.target_user_id = HAuth.product_user_id

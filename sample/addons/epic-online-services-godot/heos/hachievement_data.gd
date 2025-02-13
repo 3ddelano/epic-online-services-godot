@@ -1,6 +1,6 @@
 ## Achievement data from Epic Online Services
 class_name HAchievementData
-extends Dataclass
+extends BaseClass
 
 
 func _init() -> void:

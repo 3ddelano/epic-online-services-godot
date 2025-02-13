@@ -77,6 +77,9 @@ func _input(event: InputEvent) -> void:
 func _on_tab_pressed():
 	print("Tab pressed")
 
+	var status = await HFriends.get_friend_status_async("e5d94c924f204a63bd343b976ae662cd")
+	print("status is : ", status)
+
 	# test_auth_interface()
 	# test_connect_interface()
 	# test_ecom_interface()

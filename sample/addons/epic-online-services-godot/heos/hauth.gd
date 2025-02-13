@@ -255,11 +255,12 @@ func login_anonymous_async(user_display_name = "") -> bool:
 ##   display_name_sanitized: String
 ##   preferred_language: String
 ##   nickname: String
-func get_user_info_async():
-	_log.verbose("Querying user info")
+func get_user_info_async(p_epic_account_id = ""):
+	var target_epic_account_id = p_epic_account_id if p_epic_account_id else epic_account_id
+	_log.verbose("Querying user info: target_epic_account_id=%s" % target_epic_account_id)
 	var query_opts = EOS.UserInfo.QueryUserInfoOptions.new()
 	query_opts.local_user_id = epic_account_id
-	query_opts.target_user_id = epic_account_id
+	query_opts.target_user_id = target_epic_account_id
 	EOS.UserInfo.UserInfoInterface.query_user_info(query_opts)
 
 	var ret: Dictionary = await IEOS.user_info_interface_query_user_info_callback
@@ -269,7 +270,7 @@ func get_user_info_async():
 	
 	var copy_opts = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_opts.local_user_id = epic_account_id
-	copy_opts.target_user_id = epic_account_id
+	copy_opts.target_user_id = target_epic_account_id
 	var copy_ret = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_opts)
 	if not EOS.is_success(copy_ret):
 		_log.error("Failed to copy user info: result_code=%s" % EOS.result_str(copy_ret))

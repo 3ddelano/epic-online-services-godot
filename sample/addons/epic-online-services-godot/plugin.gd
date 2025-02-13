@@ -12,6 +12,7 @@ func _enable_plugin():
 	add_autoload_singleton("HPlatform", "res://addons/epic-online-services-godot/heos/hplatform.gd")
 	add_autoload_singleton("HAuth", "res://addons/epic-online-services-godot/heos/hauth.gd")
 	add_autoload_singleton("HAchievements", "res://addons/epic-online-services-godot/heos/hachievements.gd")
+	add_autoload_singleton("HFriends", "res://addons/epic-online-services-godot/heos/hfriends.gd")
 	add_export_plugin(_export_plugin)
 
 
@@ -21,3 +22,4 @@ func _disable_plugin():
 	remove_autoload_singleton("HPlatform")
 	remove_autoload_singleton("HAuth")
 	remove_autoload_singleton("HAchievements")
+	remove_autoload_singleton("HFriends")
