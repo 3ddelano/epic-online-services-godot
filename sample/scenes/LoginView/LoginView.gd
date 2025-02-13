@@ -1,6 +1,66 @@
 class_name LoginView
 extends CenterContainer
 
+#region Enums
+
+enum States {
+	ChooseMethod,
+	EnterCredentials,
+	Pending,
+	Success,
+	Error
+}
+
+#endregion
+
+
+#region Constants
+
+const LOGIN_TYPES = {
+	DEVELOPER = {
+		type = "DEVELOPER",
+		name = "Developer App",
+		id_help = "Devtool Server URL",
+		token_help = "Credential Name"
+	},
+	DISCORD = {
+		type = "DISCORD",
+		name = "Discord",
+		id_help = "",
+		token_help = "Discord OAuth2 Token"
+	},
+	DEVICE_ID = {
+		type = "DEVICE_ID",
+		name = "Device Id",
+		id_help = "Display Name",
+		token_help = ""
+	},
+	ACCOUNT_PORTAL = {
+		type = "ACCOUNT_PORTAL",
+		name = "Account Portal",
+		id_help = "",
+		token_help = ""
+	},
+	PERSISTENT_AUTH = {
+		type = "PERSISTENT_AUTH",
+		name = "Persistent Auth",
+		id_help = "",
+		token_help = ""
+	}
+}
+
+#endregion
+
+
+#region Private vars
+
+var _state = States.ChooseMethod
+
+#endregion
+
+
+#region Onready vars
+
 @onready var login_type_btn = $HB/Right/ChooseMethod/LoginTypeButton
 @onready var login_btn = $HB/Right/LoginButton
 @onready var back_btn = $HB/Right/BackButton
@@ -12,166 +72,58 @@ extends CenterContainer
 @onready var enter_credentials = $HB/Right/EnterCredentials
 @onready var login_status = $HB/Right/LoginStatus
 
-enum States {
-	ChooseMethod,
-	EnterCredentials,
-	Pending,
-	Success,
-	Error
-}
-
-var _state = States.ChooseMethod
+#endregion
 
 
-var login_types = {
-	DEVELOPER = {
-		name = "Developer App",
-		id_help = "Devtool Server URL",
-		token_help = "Credential Name"
-	},
-	DISCORD = {
-		name = "Discord",
-		id_help = "",
-		token_help = "Discord OAuth2 Token"
-	},
-	DEVICE_ID = {
-		name = "Device Id",
-		id_help = "Display Name",
-		token_help = ""
-	},
-	ACCOUNT_PORTAL = {
-		name = "Account Portal",
-		id_help = "",
-		token_help = ""
-	},
-	PERSISTENT_AUTH = {
-		name = "Persistent Auth",
-		id_help = "",
-		token_help = ""
-	}
-}
-
+#region Built-in methods
 
 func _ready() -> void:
 	# Generate login type dropdown
-	var c = 0
-	for login_type in login_types.keys():
-		login_type_btn.add_item(login_types[login_type].name)
-		login_types[login_type].type = login_type
-		login_type_btn.set_item_metadata(c, login_types[login_type])
-		c += 1
+	var idx = 0
+	for login_type in LOGIN_TYPES.keys():
+		login_type_btn.add_item(LOGIN_TYPES[login_type].name)
+		login_type_btn.set_item_metadata(idx, LOGIN_TYPES[login_type])
+		idx += 1
 
 	login_btn.pressed.connect(_on_login_btn_pressed)
 	back_btn.pressed.connect(_on_back_btn_pressed)
 	retry_login_btn.pressed.connect(_on_retry_login_btn_pressed)
 	logout_btn.pressed.connect(_on_logout_btn_pressed)
 
-	# Auth Interface callbacks
-	IEOS.auth_interface_login_callback.connect(_on_auth_interface_login_callback)
-	IEOS.auth_interface_logout_callback.connect(_on_auth_interface_logout_callback)
-	# Connect Interface callbacks
-	IEOS.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
-	IEOS.connect_interface_login_status_changed.connect(_on_connect_interface_login_status_changed)
-	IEOS.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
+	HAuth.logged_in.connect(_on_logged_in)
+	HAuth.login_error.connect(_on_login_error)
+	HAuth.logged_out.connect(_on_logged_out)
 
+	await HPlatform.platform_created
+	# _login(EOS.Auth.LoginCredentialType.AccountPortal)
+	# _login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
 	# TODO: Remove Autologin (PersistentAuth) for debug purpose
-	if OS.is_debug_build():
-		await Store.platform_create
-		#perform_auth_login(EOS.Auth.LoginCredentialType.AccountPortal)
-		#perform_auth_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
-		perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
+	HAuth.login_persistent_auth_async()
+
+	
+
+#endregion
 
 
-func _on_auth_interface_login_callback(data: Dictionary):
-	print("--- Auth: login_callback: ", EOS.result_str(data))
+#region Private methods
 
-	if data.pending:
-		print("--- Auth: Login Pending...")
+func _on_logged_in():
+	if HAuth.epic_account_id:
+		var user_info = await HAuth.get_user_info_async()
+		if user_info and user_info.display_name:
+			Store.display_name = user_info.display_name
 
-	if data.local_user_id != "":
-		Store.epic_account_id = data.local_user_id
-		print("Epic Account Id: ", Store.epic_account_id)
-
-		var copy_user_auth_token = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), Store.epic_account_id)
-		var token = copy_user_auth_token.token
-
-		# Get user info of logged in user
-		var options = EOS.UserInfo.QueryUserInfoOptions.new()
-		options.local_user_id = Store.epic_account_id
-		options.target_user_id = Store.epic_account_id
-		EOS.UserInfo.UserInfoInterface.query_user_info(options)
-		# Connect the account to get a Product User Id from the Epic Account Id
-		connect_account(EOS.ExternalCredentialType.Epic, token.access_token)
-
-	if data.pin_grant_info != null:
-		var pin_grant_info = data.pin_grant_info
-		Store.get_view("Logs").log_msg(EOS.Logging.LogLevel.Fatal, "Complete logging in by visiting the link before %s seconds [url]%s[/url]" % [pin_grant_info.expires_in, pin_grant_info.verification_uri_complete])
-		OS.shell_open(pin_grant_info.verification_uri_complete)
-
-	if data.continuance_token != null:
-		print("--- Auth: Got continuance_token, use it to link an account")
-		print(data.continuance_token)
-
-	if not (data.pending or data.success):
-		print("--- Auth: Login Failed: ", data)
-		set_login_state(States.Error)
-		set_login_status("Login Error: " + EOS.result_str(data.result_code))
+	set_login_state(States.Success)
 
 
-func _on_auth_interface_logout_callback(data: Dictionary):
-	print("--- Auth: logout_callback: ", EOS.result_str(data))
-	Store.epic_account_id = ""
-	Store.product_user_id = ""
+func _on_logged_out():
+	_set_login_status("Logout successfull")
 	set_login_state(States.ChooseMethod)
-	Store.emit_signal("logout_success")
 
 
-func _on_query_user_info_callback(data: Dictionary):
-	if data.client_data != "login_view":
-		# Not the callback for the LoginView
-		return
-	print("--- LoginView: UserInfo: query_user_info_callback: ", EOS.result_str(data))
-
-	var copy_user_info_options = EOS.UserInfo.CopyUserInfoOptions.new()
-	copy_user_info_options.local_user_id = Store.epic_account_id
-	copy_user_info_options.target_user_id = Store.epic_account_id
-	var user_info_data = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_user_info_options)
-	if user_info_data.result_code == EOS.Result.Success:
-		if user_info_data.user_info.display_name != null:
-			Store.display_name = user_info_data.user_info.display_name
-
-
-func _on_connect_interface_login_status_changed(data: Dictionary):
-	#print("--- Connect: login_status_changed: ", data)
-	pass
-
-
-func _on_connect_interface_login_callback(data: Dictionary):
-	print("--- Connect: login_callback: ", EOS.result_str(data))
-
-	if data.continuance_token:
-		print("--- Connect: Got continuance_token, creating a user...")
-		var ctw = data.continuance_token
-		# Create user
-		var create_user_options = EOS.Connect.CreateUserOptions.new()
-		create_user_options.continuance_token = ctw
-		EOS.Connect.ConnectInterface.create_user(create_user_options)
-		var ret = await IEOS.connect_interface_create_user_callback
-		print("--- Connect: create_user_callback: ", ret)
-
-	if not data.success:
-		print("--- Connect: Login Failed: ", data)
-		set_login_state(States.Error)
-		set_login_status("Login Error: " + EOS.result_str(data.result_code))
-		return
-
-	if data.local_user_id != "":
-		Store.product_user_id = data.local_user_id
-		print("Product User Id: ", Store.product_user_id)
-		set_login_status("Connected account successfully")
-		set_login_state(States.Success)
-
-		Store.emit_signal("login_success")
+func _on_login_error(result_code: EOS.Result):
+	set_login_state(States.Error)
+	_set_login_status("Login Error: " + EOS.result_str(result_code))
 
 
 func _on_retry_login_btn_pressed():
@@ -203,33 +155,24 @@ func _on_login_btn_pressed():
 			# No data entry is required
 			match login_type:
 				"PERSISTENT_AUTH":
-					perform_auth_login(EOS.Auth.LoginCredentialType.PersistentAuth)
+					HAuth.login_persistent_auth_async()
 				"ACCOUNT_PORTAL":
-					perform_auth_login(EOS.Auth.LoginCredentialType.AccountPortal)
+					_login(EOS.Auth.LoginCredentialType.AccountPortal)
 	else:
 		# In EnterCredentials state
 		match login_type:
 			"DEVICE_ID":
-				EOS.Auth.AuthInterface.delete_persistent_auth(EOS.Auth.DeletePersistentAuthOptions.new())
-				await IEOS.auth_interface_delete_persistent_auth_callback
-				var options1 = EOS.Connect.CreateDeviceIdOptions.new()
-				options1.device_model = " ".join(PackedStringArray([OS.get_name(), OS.get_model_name()]))
-				EOS.Connect.ConnectInterface.create_device_id(options1)
-				var res = await IEOS.connect_interface_create_device_id_callback
-				print("--- LoginView: Connect: create_device_id_callback: ", EOS.result_str(res))
-				connect_account(EOS.ExternalCredentialType.DeviceidAccessToken, null, login_id)
+				HAuth.login_anonymous_async(login_id)
 			"DISCORD":
-				connect_account(EOS.ExternalCredentialType.DiscordAccessToken, login_token)
+				_login_game_services(EOS.ExternalCredentialType.DiscordAccessToken, login_token)
 			"DEVELOPER":
-				perform_auth_login(EOS.Auth.LoginCredentialType.Developer, login_id, login_token)
+				_login(EOS.Auth.LoginCredentialType.Developer, login_id, login_token)
 
 
 func _on_logout_btn_pressed():
-	var logout_options = EOS.Auth.LogoutOptions.new()
-	logout_options.local_user_id = Store.epic_account_id
 	login_status.text = "Logout pending..."
 	set_login_state(States.Pending)
-	EOS.Auth.AuthInterface.logout(logout_options)
+	HAuth.logout_async()
 
 
 func set_login_state(new_state: States):
@@ -261,39 +204,36 @@ func set_login_state(new_state: States):
 		logout_btn.visible = true
 
 
-func perform_auth_login(type: int, id = "", token = "", external_type = -1):
+func _login(type: int, id = "", token = "", external_type = -1):
 	login_status.text = "Login pending..."
 	set_login_state(States.Pending)
 
-	var credentials = EOS.Auth.Credentials.new()
-	credentials.type = type
-	credentials.id = id
-	credentials.token = token
-	if external_type != -1:
-		credentials.external_type = external_type
-
 	var login_options = EOS.Auth.LoginOptions.new()
-	login_options.credentials = credentials
+	login_options.credentials = EOS.Auth.Credentials.new()
+	login_options.credentials.type = type
+	login_options.credentials.id = id
+	login_options.credentials.token = token
+	if external_type != -1:
+		login_options.credentials.external_type = external_type
 	login_options.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
-	# login_options.login_flags = EOS.Auth.LoginFlags.NO_USER_INTERFACE
-	login_options.client_data = {"data": "hello", "name": [1, 2, "world"]}
-	EOS.Auth.AuthInterface.login(login_options)
+	login_options.login_flags = EOS.Auth.LoginFlags.NoUserInterface
+	HAuth.login_async(login_options)
 
 
-func connect_account(type: int, token = null, display_name = null):
-	set_login_status("Connecting your account...")
-
-	var credentials = EOS.Connect.Credentials.new()
-	credentials.token = token
-	credentials.type = type
+func _login_game_services(type: int, token = null, display_name = null):
+	_set_login_status("Logging in to Epic Games Services...")
 
 	var login_options = EOS.Connect.LoginOptions.new()
-	login_options.credentials = credentials
+	login_options.credentials = EOS.Connect.Credentials.new()
+	login_options.credentials.type = type
+	login_options.credentials.token = token
 	if display_name:
 		login_options.user_login_info = EOS.Connect.UserLoginInfo.new()
 		login_options.user_login_info.display_name = display_name
-	EOS.Connect.ConnectInterface.login(login_options)
+	HAuth.login_game_services_async(login_options)
 
 
-func set_login_status(new_login_status: String):
+func _set_login_status(new_login_status: String):
 	login_status.text = new_login_status
+
+#endregion

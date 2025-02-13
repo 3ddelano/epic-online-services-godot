@@ -4,20 +4,18 @@ extends VBoxContainer
 @onready var logs_label = %LogsLabel
 
 func _ready() -> void:
-	IEOS.logging_interface_callback.connect(_on_logging_interface_callback)
-	Store.eos_initialized.connect(_on_eos_initialized)
+	HPlatform.log_msg.connect(func(msg: EOS.Logging.LogMessage):
+		log_msg(msg.level, msg.message, msg.category)
+	)
+	HPlatform.platform_initialized.connect(_on_platform_initialized)
 
-func _on_eos_initialized():
+
+func _on_platform_initialized() -> void:
 	# Set logging categories and level
-	var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
-	if not EOS.is_success(res):
-		print("Failed to set log level: ", EOS.result_str(res))
+	HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
 
-func _on_logging_interface_callback(p_msg: Dictionary):
-	var msg = EOS.Logging.LogMessage.from(p_msg) as EOS.Logging.LogMessage
-	log_msg(msg.level, msg.message, msg.category)
 
-func log_msg(level: int, msg: String, category:=""):
+func log_msg(level: int, msg: String, category := ""):
 	var color = "#ffffff"
 	var level_str = "Info"
 	match level:

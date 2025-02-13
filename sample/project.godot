@@ -20,6 +20,8 @@ config/icon="res://logo.png"
 Env="*res://scripts/Env.gd"
 Store="*res://scripts/Store.gd"
 EOSGRuntime="*res://addons/epic-online-services-godot/runtime.gd"
+HPlatform="*res://addons/epic-online-services-godot/heos/hplatform.gd"
+HAuth="*res://addons/epic-online-services-godot/heos/hauth.gd"
 
 [display]
 

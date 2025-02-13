@@ -1,8 +1,5 @@
 extends Node
 
-signal eos_initialized
-signal platform_create
-signal login_success
 signal logout_success
 
 

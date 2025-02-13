@@ -31,21 +31,12 @@ func _ready() -> void:
 	var init_opts = EOS.Platform.InitializeOptions.new()
 	init_opts.product_name = PRODUCT_NAME
 	init_opts.product_version = PRODUCT_VERSION
-	var init_res := EOS.Platform.PlatformInterface.initialize(init_opts)
-	var init_retry_count = 10
-	while not EOS.is_success(init_res) and init_retry_count > 0:
-		init_res = EOS.Platform.PlatformInterface.initialize(init_opts)
-		init_retry_count -= 1
-		await get_tree().create_timer(0.2).timeout
-		if not EOS.is_success(init_res) and init_retry_count > 0:
-			print("Failed to initialize EOS SDK: %s, retrying..." % EOS.result_str(init_res))
 
+	var init_res := await HPlatform.initialize_async(init_opts)
 	if not EOS.is_success(init_res):
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
 		return
 	print("Initialized EOS platform")
-
-	Store.eos_initialized.emit()
 
 	# Create platform
 	var create_opts = EOS.Platform.CreateOptions.new()
@@ -58,31 +49,27 @@ func _ready() -> void:
 	if OS.get_name() == "Windows":
 		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 
-	var create_success: bool = EOS.Platform.PlatformInterface.create(create_opts)
-	var create_retry_count = 10
-	while not create_success && create_retry_count > 0:
-		create_success = EOS.Platform.PlatformInterface.create(create_opts)
-		create_retry_count -= 1
-		await get_tree().create_timer(0.2).timeout
+	var create_success := await HPlatform.create_platform_async(create_opts)
 	if not create_success:
 		print("Failed to create EOS Platform")
 		return
 	print("Created EOS platform")
 
-	var sdk_constants = EOS.Version.VersionInterface.get_constants()
+	var sdk_constants := EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
-	await get_tree().create_timer(0.5).timeout
-	Store.emit_signal("platform_create")
-	# Debug
-	Store.login_success.connect(_on_tab_pressed)
+	
+	# For dev testing
+	HAuth.logged_in_connect.connect(_on_tab_pressed)
+
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_QUOTELEFT: # ` key to toggle Logs
+		if event.keycode == KEY_QUOTELEFT: # Press ` key to toggle Logs
 			Store.get_view("Logs").visible = not Store.get_view("Logs").visible
 		elif event.keycode == KEY_TAB:
-			#if Store.product_user_id:
+			# Press tab key to run dev testing stuff
 			_on_tab_pressed()
+
 
 # Dev testing stuff
 func _on_tab_pressed():
