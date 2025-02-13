@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://gcoi8ld0uvkl"]
+[gd_scene load_steps=18 format=3 uid="uid://gcoi8ld0uvkl"]
 
 [ext_resource type="Theme" uid="uid://dwns7wwoyi1hy" path="res://components/StyledPopupWindow/StyledPopupWindowTheme.tres" id="1_dhxmx"]
 [ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://dsiyt23hnmngd" path="res://scenes/LobbiesView/LobbiesView.tscn" id="13_eyvcp"]
 [ext_resource type="PackedScene" uid="uid://bd06h3ufkhfd7" path="res://scenes/MetricsView/MetricsView.tscn" id="14"]
 [ext_resource type="Script" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
+[ext_resource type="Script" path="res://test.gd" id="16_4rltv"]
 
 [sub_resource type="StyleBoxEmpty" id="5"]
 
@@ -212,3 +213,6 @@ theme_override_constants/separation = 8
 
 [node name="LogsView" parent="MC/ViewManager/VSC" instance=ExtResource("4")]
 layout_mode = 2
+
+[node name="Test" type="Node" parent="."]
+script = ExtResource("16_4rltv")

@@ -253,7 +253,7 @@ func create_lobby(lobby: GameLobby) -> bool:
 
 	# Save lobby data for modification
 	current_lobby = lobby
-	current_lobby.owner_id = Store.product_user_id
+	current_lobby.owner_id = HAuth.product_user_id
 
 	return true
 
@@ -261,7 +261,7 @@ func current_lobby_destroy() -> bool:
 	if not current_lobby.is_valid():
 		return false
 
-	if not current_lobby.is_owner(Store.product_user_id):
+	if not current_lobby.is_owner(HAuth.product_user_id):
 		print("Only lobby owner can destroy lobby")
 		return false
 
@@ -280,7 +280,7 @@ func leave_lobby() -> void:
 
 	# Set this to true to test flow where owner always destroys lobby
 	var owner_always_destroys_lobby = false
-	var is_owner = current_lobby.is_owner(Store.product_user_id)
+	var is_owner = current_lobby.is_owner(HAuth.product_user_id)
 	var destroy_lobby = is_owner and (owner_always_destroys_lobby or current_lobby.members.size() <= 1)
 
 	if destroy_lobby:
@@ -299,7 +299,7 @@ func modify_lobby(lobby: GameLobby) -> bool:
 		print("Unable to modify lobby. Current lobby is invalid")
 		return false
 
-	if not current_lobby.is_owner(Store.product_user_id):
+	if not current_lobby.is_owner(HAuth.product_user_id):
 		print("Unable to modify lobby. Only lobby owner can modify lobby.")
 		return false
 	
@@ -407,7 +407,7 @@ func set_initial_member_attributes():
 		return
 
 	for member in current_lobby.members:
-		if member.product_id == Store.product_user_id:
+		if member.product_id == HAuth.product_user_id:
 			# Check if skin is already set
 			if member.member_attributes.is_empty():
 				var attr = {key = SKIN_ATTRIBUTE_KEY, value = GameLobbyMember.get_skin_string(member.current_skin)}

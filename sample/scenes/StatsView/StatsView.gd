@@ -25,8 +25,8 @@ func _on_query_stats():
 	if not visible: return
 
 	var query_opts = EOS.Stats.QueryStatsOptions.new()
-	query_opts.local_user_id = Store.product_user_id
-	query_opts.target_user_id = Store.product_user_id
+	query_opts.local_user_id = HAuth.product_user_id
+	query_opts.target_user_id = HAuth.product_user_id
 	EOS.Stats.StatsInterface.query_stats(query_opts)
 
 func _on_logged_out():
@@ -46,13 +46,13 @@ func _on_query_stats_callback(data: Dictionary):
 	print("--- Stats: query_stats_callback: ", EOS.result_str(data))
 
 	var count_opts = EOS.Stats.GetStatsCountOptions.new()
-	count_opts.target_user_id = Store.product_user_id
+	count_opts.target_user_id = HAuth.product_user_id
 	var stats_count: int = EOS.Stats.StatsInterface.get_stats_count(count_opts)
 
 	stats = []
 	for i in range(stats_count):
 		var copy_opts = EOS.Stats.CopyStatByIndexOptions.new()
-		copy_opts.target_user_id = Store.product_user_id
+		copy_opts.target_user_id = HAuth.product_user_id
 		copy_opts.stat_index = i
 
 		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_opts)
@@ -65,8 +65,8 @@ func _on_query_stats_callback(data: Dictionary):
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
 	var ingest_opts = EOS.Stats.IngestStatOptions.new()
-	ingest_opts.local_user_id = Store.product_user_id
-	ingest_opts.target_user_id = Store.product_user_id
+	ingest_opts.local_user_id = HAuth.product_user_id
+	ingest_opts.target_user_id = HAuth.product_user_id
 	ingest_opts.stats = [
 		{stat_name = _stat_name, ingest_amount = _ingest_amount},
 	]

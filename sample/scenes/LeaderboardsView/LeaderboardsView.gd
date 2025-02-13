@@ -27,7 +27,7 @@ func _on_query_leaderboard():
 	if not visible: return
 
 	var query_leaderboard_opts = EOS.Leaderboards.QueryLeaderboardDefinitionsOptions.new()
-	query_leaderboard_opts.local_user_id = Store.product_user_id
+	query_leaderboard_opts.local_user_id = HAuth.product_user_id
 	EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_definitions(query_leaderboard_opts)
 
 func _on_logged_out():
@@ -67,7 +67,7 @@ func _update_select_leaderboard_button():
 func _on_view_leaderboard_btn_pressed():
 	var selected_leaderboard_id = select_leaderboard_btn.get_selected_metadata()
 	var query_ranks_opts = EOS.Leaderboards.QueryLeaderboardRanksOptions.new()
-	query_ranks_opts.local_user_id = Store.product_user_id
+	query_ranks_opts.local_user_id = HAuth.product_user_id
 	query_ranks_opts.leaderboard_id = selected_leaderboard_id
 	query_ranks_opts.client_data = selected_leaderboard_id
 	EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_ranks(query_ranks_opts)
@@ -115,7 +115,7 @@ func _rebuild_ui():
 			rows_bbcode += "[cell]%s[/cell]" % record.score
 		if record.user_display_name != null:
 			var display_name = record.user_display_name
-			if record.user_id == Store.product_user_id:
+			if record.user_id == HAuth.product_user_id:
 				display_name += "[b] (you)[/b]"
 			rows_bbcode += "[cell]%s[/cell]" % display_name
 

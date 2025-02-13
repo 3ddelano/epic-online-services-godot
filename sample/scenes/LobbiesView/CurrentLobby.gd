@@ -245,7 +245,7 @@ func _on_rtc_audio_participant_updated(data: Dictionary):
 		return
 
 	mem.rtc_state.is_talking = is_talking
-	if mem.product_id != Store.product_user_id:
+	if mem.product_id != HAuth.product_user_id:
 		mem.rtc_state.is_audio_output_disabled = is_audio_disabled
 	else:
 		mem.rtc_state.is_hard_muted = is_hard_muted

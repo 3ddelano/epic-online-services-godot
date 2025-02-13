@@ -58,7 +58,7 @@ func _on_search_lobby_btn_pressed():
 		print("Invalid lobby search type")
 		return
 
-	lobby_search.find(Store.product_user_id)
+	lobby_search.find(HAuth.product_user_id)
 
 func _on_lobby_search_find_callback(data: Dictionary):
 	print("--- Lobby: lobby_search_find_callback: ", EOS.result_str(data))
