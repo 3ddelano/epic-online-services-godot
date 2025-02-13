@@ -168,7 +168,7 @@ class Connect:
 		func _init():
 			super._init("LogoutOptions")
 
-		var local_user_id: String
+		var local_user_id = EOSGRuntime.local_product_user_id
 
 		var client_data = null
 
@@ -402,7 +402,7 @@ class Auth:
 
 	enum LoginFlags {
 		None = 0,
-		NO_USER_INTERFACE = 1
+		NoUserInterface = 1
 	}
 
 	class Credentials extends BaseClass:
@@ -420,7 +420,7 @@ class Auth:
 
 		var credentials: Credentials
 		var login_flags: LoginFlags = LoginFlags.None
-		var scope_flags: ScopeFlags = -1
+		var scope_flags: ScopeFlags = ScopeFlags.NoFlags
 
 		var client_data = null
 
@@ -455,7 +455,7 @@ class Auth:
 			super._init("LinkAccountOptions")
 
 		var continuance_token: EOSGContinuanceToken
-		var link_account_flags: LinkAccountFlags
+		var link_account_flags: LinkAccountFlags = LinkAccountFlags.NoFlags
 		var local_user_id = EOSGRuntime.local_epic_account_id
 
 		var client_data = null

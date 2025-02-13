@@ -119,7 +119,11 @@ void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
     EOS_Auth_DeletePersistentAuthOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
-    options.RefreshToken = refresh_token.get_data();
+    options.RefreshToken = nullptr;
+
+    if (refresh_token.size() != 0) {
+        options.RefreshToken = refresh_token.get_data();
+    }
     p_options->reference();
 
     EOS_Auth_DeletePersistentAuth(s_authInterface, &options, (void *)*p_options, [](const EOS_Auth_DeletePersistentAuthCallbackInfo *data) {
@@ -203,7 +207,7 @@ void IEOS::auth_interface_query_id_token(Ref<RefCounted> p_options) {
 }
 
 void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
-	ERR_FAIL_NULL(s_authInterface);
+    ERR_FAIL_NULL(s_authInterface);
     Ref<RefCounted> p_id_token = p_options->get("id_token");
     CharString p_account_id = VARIANT_TO_CHARSTRING(p_id_token->get("account_id"));
     CharString p_json_web_token = VARIANT_TO_CHARSTRING(p_id_token->get("json_web_token"));
@@ -242,7 +246,7 @@ void IEOS::auth_interface_verify_id_token(Ref<RefCounted> p_options) {
 }
 
 void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
-	ERR_FAIL_NULL(s_authInterface);
+    ERR_FAIL_NULL(s_authInterface);
     Ref<EOSGContinuanceToken> p_continuance_token = Object::cast_to<EOSGContinuanceToken>(p_options->get("continuance_token"));
     ERR_FAIL_NULL_MSG(p_continuance_token, "Error linking account. LinkAccountOptions.continuance_token is null.");
     ERR_FAIL_NULL_MSG(p_continuance_token->get_internal(), "Error linking account. EOSGContinuanceToken is null.");
@@ -271,7 +275,7 @@ void IEOS::auth_interface_link_account(Ref<RefCounted> p_options) {
 }
 
 void IEOS::auth_interface_verify_user_auth(Ref<RefCounted> p_options) {
-	ERR_FAIL_NULL(s_authInterface);
+    ERR_FAIL_NULL(s_authInterface);
     Ref<RefCounted> p_auth_token = Object::cast_to<RefCounted>(p_options->get("auth_token"));
     CharString p_app = VARIANT_TO_CHARSTRING(p_auth_token->get("app"));
     CharString p_client_id = VARIANT_TO_CHARSTRING(p_auth_token->get("client_id"));
