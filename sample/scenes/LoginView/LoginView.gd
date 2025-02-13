@@ -97,7 +97,10 @@ func _ready() -> void:
 	await HPlatform.platform_created
 	# _login(EOS.Auth.LoginCredentialType.AccountPortal)
 	# _login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
+	
 	# TODO: Remove Autologin (PersistentAuth) for debug purpose
+	_set_login_status("Logging in...")
+	_set_login_state(States.Pending)
 	HAuth.login_persistent_auth_async()
 
 	
@@ -113,25 +116,25 @@ func _on_logged_in():
 		if user_info and user_info.display_name:
 			Store.display_name = user_info.display_name
 
-	set_login_state(States.Success)
+	_set_login_state(States.Success)
 
 
 func _on_logged_out():
 	_set_login_status("Logout successfull")
-	set_login_state(States.ChooseMethod)
+	_set_login_state(States.ChooseMethod)
 
 
 func _on_login_error(result_code: EOS.Result):
-	set_login_state(States.Error)
+	_set_login_state(States.Error)
 	_set_login_status("Login Error: " + EOS.result_str(result_code))
 
 
 func _on_retry_login_btn_pressed():
-	set_login_state(States.ChooseMethod)
+	_set_login_state(States.ChooseMethod)
 
 
 func _on_back_btn_pressed():
-	set_login_state(States.ChooseMethod)
+	_set_login_state(States.ChooseMethod)
 
 
 func _on_login_btn_pressed():
@@ -145,7 +148,7 @@ func _on_login_btn_pressed():
 		if login_type_data.id_help or login_type_data.token_help:
 			# User needs to enter some data
 			enter_credentials.set_helper_texts(login_type_data.id_help, login_type_data.token_help)
-			set_login_state(States.EnterCredentials)
+			_set_login_state(States.EnterCredentials)
 
 			if login_type == "DISCORD":
 				OS.shell_open("https://discord.com/api/oauth2/authorize?client_id=959047632091762719&redirect_uri=http%3A%2F%2Flocalhost%3A53134&response_type=token&scope=identify%20email")
@@ -171,11 +174,11 @@ func _on_login_btn_pressed():
 
 func _on_logout_btn_pressed():
 	login_status.text = "Logout pending..."
-	set_login_state(States.Pending)
+	_set_login_state(States.Pending)
 	HAuth.logout_async()
 
 
-func set_login_state(new_state: States):
+func _set_login_state(new_state: States):
 	_state = new_state
 
 	for child in $HB/Right.get_children():
@@ -206,7 +209,7 @@ func set_login_state(new_state: States):
 
 func _login(type: int, id = "", token = "", external_type = -1):
 	login_status.text = "Login pending..."
-	set_login_state(States.Pending)
+	_set_login_state(States.Pending)
 
 	var login_options = EOS.Auth.LoginOptions.new()
 	login_options.credentials = EOS.Auth.Credentials.new()

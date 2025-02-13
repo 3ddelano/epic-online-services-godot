@@ -90,6 +90,7 @@ func login_async(opts: EOS.Auth.LoginOptions) -> bool:
 			return false
 		
 		if not auto_link_account:
+			_log.error("Auth login failed - External account not connected")
 			_emit_login_auth_error(EOS.Result.InvalidUser)
 			return false
 		
@@ -193,6 +194,7 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 
 ## Login automatically if an Epic refresh token is stored by a previous login with Epic Account Portal
 func login_persistent_auth_async() -> bool:
+	_log.debug("Logging in with persistent auth...")
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.PersistentAuth

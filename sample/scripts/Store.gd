@@ -1,8 +1,5 @@
 extends Node
 
-signal logout_success
-
-
 var product_user_id = ""
 var epic_account_id = ""
 var display_name = ""

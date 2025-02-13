@@ -28,4 +28,4 @@ func from_achievements_array(arr: Array):
 
 
 func _on_achievement_pressed(node: AchievementsListAchievement):
-	emit_signal("achievement_pressed", node)
+	achievement_pressed.emit(node)

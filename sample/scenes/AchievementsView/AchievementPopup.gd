@@ -25,7 +25,7 @@ func _ready() -> void:
 
 func from_achievement_node(node: AchievementsListAchievement):
 	achievement_node = node
-	var data = achievement_node.get_data()
+	var data := achievement_node.get_data()
 
 	id_label.text = data.achievement_id
 	flavor_label.text = data.flavor_text
@@ -36,8 +36,7 @@ func from_achievement_node(node: AchievementsListAchievement):
 			is_visible_label.text = "True"
 	else:
 		is_visible_label.text = "NA"
-
-	if data.unlock_time == EOS.Achievements.UNLOCK_TIME_UNDEFINED:
+	if not data.is_unlocked():
 		is_unlocked_label.text = "No"
 		unlock_btn.disabled = false
 	else:
@@ -48,9 +47,9 @@ func from_achievement_node(node: AchievementsListAchievement):
 	for child in stat_thresholds_vb.get_children():
 		child.queue_free()
 
-	for stat in data.stat_thresholds:
+	for stat in data.stats:
 		var label = Label.new()
-		label.text = "%s : %s" % [stat.name, stat.threshold]
+		label.text = "%s : %s" % [stat.name, stat.threshold_value]
 		stat_thresholds_vb.add_child(label)
 
 	locked_image.fetch_image(data.locked_icon_url)
@@ -66,8 +65,5 @@ func _on_unlock_btn_pressed():
 	var data = achievement_node.get_data()
 
 	unlock_btn.disabled = true
-	var unlock_options = EOS.Achievements.UnlockAchievementsOptions.new()
-	unlock_options.user_id = Store.product_user_id
-	unlock_options.achievement_ids = [data.achievement_id]
-	EOS.Achievements.AchievementsInterface.unlock_achievements(unlock_options)
 	visible = false
+	HAchievements.unlock_achievement_async(data.achievement_id)

@@ -16,7 +16,7 @@ var selected_leaderboard = {
 
 func _ready() -> void:
 	visibility_changed.connect(_on_query_leaderboard)
-	Store.logout_success.connect(_on_logout_success)
+	HAuth.logged_out.connect(_on_logged_out)
 	IEOS.leaderboards_interface_query_leaderboard_definitions_callback.connect(_on_query_leaderboard_definitions_callback)
 	IEOS.leaderboards_interface_query_leaderboard_ranks_callback.connect(_on_query_leaderboard_ranks_callback)
 	view_leaderboard_btn.pressed.connect(_on_view_leaderboard_btn_pressed)
@@ -30,7 +30,7 @@ func _on_query_leaderboard():
 	query_leaderboard_opts.local_user_id = Store.product_user_id
 	EOS.Leaderboards.LeaderboardsInterface.query_leaderboard_definitions(query_leaderboard_opts)
 
-func _on_logout_success():
+func _on_logged_out():
 	leaderboards.clear()
 	_update_select_leaderboard_button()
 	selected_leaderboard.id = ""

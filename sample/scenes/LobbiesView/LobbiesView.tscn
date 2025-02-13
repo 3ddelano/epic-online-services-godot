@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/LobbiesView/LobbiesView.gd" id="1_gvnj5"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_guetp"]
 [ext_resource type="Script" path="res://scenes/LobbiesView/SearchLobby.gd" id="4_pnhqb"]
-[ext_resource type="FontFile" uid="uid://bvjo321fa54x8" path="res://fonts/Roboto-Bold.ttf" id="4_vb7hx"]
+[ext_resource type="FontFile" uid="uid://djdr1hyqtgka6" path="res://fonts/Roboto-Bold.ttf" id="4_vb7hx"]
 [ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="5_bpr7u"]
 [ext_resource type="Script" path="res://scenes/LobbiesView/CurrentLobby.gd" id="5_u3fs3"]
 [ext_resource type="Script" path="res://scenes/LobbiesView/CreateLobbyPopup.gd" id="6_bpgu2"]

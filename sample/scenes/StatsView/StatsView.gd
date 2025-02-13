@@ -13,7 +13,7 @@ var stats = []
 
 func _ready() -> void:
 	visibility_changed.connect(_on_query_stats)
-	Store.logout_success.connect(_on_logout_success)
+	HAuth.logged_out.connect(_on_logged_out)
 	IEOS.stats_interface_query_stats_callback.connect(_on_query_stats_callback)
 	IEOS.stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
 
@@ -29,7 +29,7 @@ func _on_query_stats():
 	query_opts.target_user_id = Store.product_user_id
 	EOS.Stats.StatsInterface.query_stats(query_opts)
 
-func _on_logout_success():
+func _on_logged_out():
 	stats = []
 	_rebuild_ui()
 

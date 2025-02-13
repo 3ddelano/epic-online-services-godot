@@ -1,7 +1,7 @@
 class_name AchievementUnlockNotification
 extends Control
 
-var _data: Dictionary
+var _data: HAchievementData
 
 @onready var id_label = $MC/HB/VB/IdLabel
 @onready var name_label = $MC/HB/VB/NameLabel
@@ -13,7 +13,7 @@ func _ready() -> void:
 	fade_out_timer.timeout.connect(_on_fade_out_timer_timeout)
 
 
-func from_achievement_data(data: Dictionary):
+func from_achievement_data(data: HAchievementData):
 	_data = data
 
 	name_label.text = data.unlocked_display_name

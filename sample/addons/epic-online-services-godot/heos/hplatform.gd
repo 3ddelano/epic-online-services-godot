@@ -75,7 +75,8 @@ func initialize_async(opts: EOS.Platform.InitializeOptions) -> EOS.Result:
 
 ## Set the logging level for the EOS SDK
 func set_eos_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> EOS.Result:
-	_log.verbose("Setting log level: log_category=%s, log_level=%s" % [log_category, log_level])
+	var log_cat_str = EOS.Logging.LogCategory.find_key(log_category)
+	_log.verbose("Setting log level: log_category=%s, log_level=%s" % [log_cat_str, log_level])
 	var res := EOS.Logging.set_log_level(log_category, log_level)
 	if not EOS.is_success(res):
 		_log.error("Failed to set log level: %s" % EOS.result_str(res))

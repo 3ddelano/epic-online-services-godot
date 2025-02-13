@@ -9,7 +9,7 @@ var friends = []
 
 func _ready() -> void:
 	visibility_changed.connect(_query_friends)
-	Store.logout_success.connect(_on_logout_success)
+	HAuth.logged_out.connect(_on_logged_out)
 	IEOS.friends_interface_query_friends_callback.connect(_on_query_friends_callback)
 	IEOS.user_info_interface_query_user_info_callback.connect(_on_query_user_info_callback)
 
@@ -24,7 +24,7 @@ func _query_friends():
 	query_opts.client_data = "friends_list"
 	EOS.Friends.FriendsInterface.query_friends(query_opts)
 
-func _on_logout_success():
+func _on_logged_out():
 	friends = []
 	_rebuild_ui()
 

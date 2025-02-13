@@ -36,6 +36,7 @@ func _ready() -> void:
 	if not EOS.is_success(init_res):
 		print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
 		return
+	
 	print("Initialized EOS platform")
 
 	# Create platform
@@ -53,13 +54,14 @@ func _ready() -> void:
 	if not create_success:
 		print("Failed to create EOS Platform")
 		return
+	
 	print("Created EOS platform")
 
 	var sdk_constants := EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
 	
 	# For dev testing
-	HAuth.logged_in_connect.connect(_on_tab_pressed)
+	HAuth.logged_in.connect(_on_tab_pressed)
 
 
 func _input(event: InputEvent) -> void:
