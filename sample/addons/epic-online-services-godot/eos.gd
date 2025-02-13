@@ -9,10 +9,12 @@ extends RefCounted
 static func get_instance():
 	return IEOS
 
+
 ## Pretty prints the [enum Result] code and its string representation.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func print_result(p_result) -> void:
 	print_rich("[b]EOS_Result[/b]:%s[code](%s)[/code]" % [result_str(p_result), p_result])
+
 
 ## Returns a string representation of the [enum Result] code.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
@@ -22,12 +24,14 @@ static func result_str(p_result) -> String:
 	var idx := Result.values().find(p_result)
 	return Result.keys()[idx]
 
+
 ## Returns whether the operation was completed.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
 static func is_operation_complete(p_result) -> bool:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
 	return IEOS.is_operation_complete(p_result)
+
 
 ## Returns whether the operation was successful.[br]
 ## [code]p_result[/code] is a [enum Result] or a [Dictionary] with a [code]result_code[/code] key
@@ -37,6 +41,7 @@ static func is_success(p_result) -> bool:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
 	return p_result == Result.Success
+
 
 class Achievements:
 	const UNLOCK_TIME_UNDEFINED = -1
@@ -139,6 +144,8 @@ class Achievements:
 
 		static func unlock_achievements(options: UnlockAchievementsOptions) -> void:
 			IEOS.achievements_interface_unlock_achievements(options)
+
+
 
 class Connect:
 	class Credentials extends BaseClass:
@@ -373,6 +380,8 @@ class Connect:
 		static func unlink_account(options: UnlinkAccountOptions) -> void:
 			IEOS.connect_interface_unlink_account(options)
 
+
+
 class Auth:
 	enum ScopeFlags {
 		NoFlags = 0x0,
@@ -570,6 +579,8 @@ class Auth:
 		static func verify_user_auth(options: VerifyUserAuthOptions) -> void:
 			IEOS.auth_interface_verify_user_auth(options)
 
+
+
 class CustomInvites:
 	enum ResquestToJoinResponse {
 		Accepted = 0,
@@ -647,6 +658,8 @@ class CustomInvites:
 		static func reject_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_reject_request_to_join(options)
 
+
+
 class Stats:
 	const STATS_TIME_UNDEFINED = -1
 
@@ -707,6 +720,8 @@ class Stats:
 
 		static func query_stats(options: QueryStatsOptions) -> void:
 			IEOS.stats_interface_query_stats(options)
+
+
 
 class Platform:
 	enum PlatformFlags {
@@ -833,6 +848,8 @@ class Platform:
 
 		static func shutdown() -> Result:
 			return IEOS.platform_interface_shutdown()
+
+
 
 class Ecom:
 	enum ItemType {Durable = 0, Consumable = 1, Other = 2}
@@ -1134,6 +1151,8 @@ class Ecom:
 		static func copy_last_redeemed_entitlement_by_index(options: CopyLastRedeemedEntitlementByIndexOptions) -> Dictionary:
 			return IEOS.ecom_interface_copy_last_redeemed_entitlement_by_index(options)
 
+
+
 class Friends:
 	enum FriendsStatus {NotFriends = 0, InviteSent = 1, InviteReceived = 2, Friends = 3}
 
@@ -1213,6 +1232,8 @@ class Friends:
 
 		static func send_invite(options: SendInviteOptions) -> void:
 			IEOS.friends_interface_send_invite(options)
+
+
 
 class KWS:
 	enum KWSPermissionStatus {Granted = 0, Rejected = 1, Pending = 2}
@@ -1294,6 +1315,8 @@ class KWS:
 
 		static func update_parent_email(options: UpdateParentEmailOptions) -> void:
 			IEOS.kws_interface_update_parent_email(options)
+
+
 
 class Leaderboards:
 	const LEADERBOARD_TIME_UNDEFINED = -1
@@ -1419,6 +1442,8 @@ class Leaderboards:
 
 		static func query_leaderboard_user_scores(options: QueryLeaderboardUserScoresOptions) -> void:
 			IEOS.leaderboards_interface_query_leaderboard_user_scores(options)
+
+
 
 class Lobby:
 	enum LobbyAttributeVisibility {Public = 0, Private = 1}
@@ -1707,6 +1732,8 @@ class Lobby:
 		static func is_rtc_room_connected(options: IsRtcRoomConnectedOptions) -> Dictionary:
 			return IEOS.lobby_interface_is_rtc_room_connected(options)
 
+
+
 class Metrics:
 	enum MetricsAccountIdType {Epic = 0, External = 1}
 
@@ -1736,6 +1763,8 @@ class Metrics:
 
 		static func end_player_session(options: EndPlayerSessionOptions) -> Result:
 			return IEOS.metrics_interface_end_player_session(options)
+
+
 
 class Mods:
 	enum ModEnumerationType {Installed = 0, AllAvailable}
@@ -1790,6 +1819,8 @@ class Mods:
 
 		static func update_mod(options: UpdateModOptions) -> void:
 			IEOS.mods_interface_update_mod(options)
+
+
 
 class P2P:
 	enum ConnectionClosedReason {
@@ -1858,6 +1889,8 @@ class P2P:
 
 		static func set_relay_control(relay_control: RelayControl) -> void:
 			IEOS.p2p_interface_set_relay_control(relay_control)
+
+
 
 class Presence:
 	enum Status {Offline = 0, Online = 1, Away = 2, ExtendedAway = 3, DoNotDisturb = 4}
@@ -1956,6 +1989,8 @@ class Presence:
 		static func set_presence(options: SetPresenceOptions) -> void:
 			IEOS.presence_interface_set_presence(options)
 
+
+
 class Reports:
 	enum PlayerReportsCategory {
 		Invalid = 0,
@@ -1983,6 +2018,8 @@ class Reports:
 	class ReportsInterface:
 		static func send_player_behavior_report(options: SendPlayerBehaviorReportOptions) -> void:
 			IEOS.reports_interface_send_player_behavior_report(options)
+
+
 
 class ProgressionSnapshot:
 	class BeginSnapshotOptions extends BaseClass:
@@ -2036,6 +2073,8 @@ class ProgressionSnapshot:
 
 		static func end_snapshot(options: EndSnapshotOptions) -> void:
 			IEOS.progression_snapshot_interface_end_snapshot(options)
+
+
 
 class UI:
 	const ModifierShift = 16
@@ -2339,6 +2378,8 @@ class UI:
 		static func show_native_profile(options: ShowNativeProfileOptions) -> void:
 			IEOS.ui_interface_show_native_profile(options)
 
+
+
 class UserInfo:
 	class CopyExternalUserInfoByAccountIdOptions extends BaseClass:
 		func _init():
@@ -2459,6 +2500,8 @@ class UserInfo:
 		static func get_local_platform_type(options: GetLocalPlatformTypeOptions = GetLocalPlatformTypeOptions.new()) -> OnlinePlatformType:
 			return IEOS.user_info_interface_get_local_platform_type(options)
 
+
+
 class Logging:
 	enum LogCategory {
 		Core = 0,
@@ -2526,6 +2569,8 @@ class Logging:
 
 	static func set_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> Result:
 		return IEOS.logging_interface_set_log_level(log_category, log_level)
+
+
 
 class TitleStorage:
 	class QueryFileOptions extends BaseClass:
@@ -2605,6 +2650,8 @@ class TitleStorage:
 
 		static func read_file(options: ReadFileOptions) -> Variant:
 			return IEOS.titlestorage_interface_read_file(options)
+
+
 
 class PlayerDataStorage:
 	class QueryFileOptions extends BaseClass:
@@ -2725,6 +2772,8 @@ class PlayerDataStorage:
 		static func write_file(options: WriteFileOptions) -> Variant:
 			return IEOS.playerdatastorage_interface_write_file(options)
 
+
+
 class Sanctions:
 	enum AppealReason {
 		Invalid = 0,
@@ -2783,6 +2832,8 @@ class Sanctions:
 
 		static func create_player_sanction_appeal(options: CreatePlayerSanctionAppealOptions) -> void:
 			IEOS.sanctions_interface_create_player_sanction_appeal(options)
+
+
 
 class Sessions:
 	enum OnlineSessionState {
@@ -3039,8 +3090,9 @@ class Sessions:
 		static func update_session(options: UpdateSessionOptions) -> void:
 			IEOS.sessions_interface_update_session(options)
 
-class RTC:
 
+
+class RTC:
 	enum ParticipantStatus {
 		Joined,
 		Left,
@@ -3151,6 +3203,8 @@ class RTC:
 
 		static func remove_notify_room_statistics_updated(notification_id: int) -> void:
 			IEOS.rtc_interface_remove_notify_room_statistics_updated(notification_id)
+
+
 
 class RTCAudio:
 	enum AudioStatus {
@@ -3431,8 +3485,9 @@ class RTCAudio:
 		static func update_sending_volume(options: UpdateSendingVolumeOptions) -> void:
 			IEOS.rtc_audio_interface_update_sending_volume(options)
 
-class AntiCheatServer:
 
+
+class AntiCheatServer:
 	class BeginSessionOptions extends BaseClass:
 		func _init():
 			super._init("BeginSessionOptions")
@@ -3691,8 +3746,9 @@ class AntiCheatServer:
 		static func log_player_take_damage(options: LogPlayerTakeDamageOptions) -> EOS.Result:
 			return IEOS.anticheat_server_interface_log_player_take_damage(options)
 
-class AntiCheatClient:
 
+
+class AntiCheatClient:
 	class BeginSessionOptions extends BaseClass:
 		func _init():
 			super._init("BeginSessionOptions")
@@ -3791,6 +3847,7 @@ class AntiCheatClient:
 		static func receive_message_from_peer(options: ReceiveMessageFromPeerOptions) -> EOS.Result:
 			return IEOS.anticheat_client_interface_receive_message_from_peer(options)
 
+
 class Version:
 	class VersionInterface:
 		static func get_version() -> String:
@@ -3798,6 +3855,8 @@ class Version:
 
 		static func get_constants() -> Dictionary:
 			return IEOS.version_interface_get_constants()
+
+
 
 enum Result {
 	Success = 0,
@@ -4027,10 +4086,10 @@ enum Result {
 	CustomInvitesInviteFailed = 20000,
 	UserInfoBestDisplayNameIndeterminate = 22000,
 	OnNetworkRequestedDeprecatedCallbackNotSet = 23000,
-	CacheStorage_SizeKBNotMultipleOf16 = 23001,
-	CacheStorage_SizeKBBelowMinimumSize = 23002,
-	CacheStorage_SizeKBExceedsMaximumSize = 23003,
-	CacheStorage_IndexOutOfRangeRange = 23004,
+	CacheStorageSizeKBNotMultipleOf16 = 23001,
+	CacheStorageSizeKBBelowMinimumSize = 23002,
+	CacheStorageSizeKBExceedsMaximumSize = 23003,
+	CacheStorageIndexOutOfRangeRange = 23004,
 	UnexpectedError = 0x7FFFFFFF
 }
 
@@ -4083,15 +4142,6 @@ enum OnlinePlatformType {
 	Nintendo = 2000,
 	XBL = 3000,
 	Steam = 4000
-}
-
-# TODO: remove once OnlinePlatformType is documented in EOS docs
-enum Undocumented_OnlinePlatformType {
-	Unknown = 0,
-	A = 1000,
-	B = 2000,
-	C = 3000,
-	D = 4000,
 }
 
 enum LoginStatus {
