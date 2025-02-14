@@ -187,10 +187,6 @@ jobs:
               run: |
                   Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
-            - name: View artifact files recursive
-              run: |
-                  cd ${{ github.workspace }}/artifact-${{ matrix.identifier }}/ && ls -R
-
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
@@ -282,10 +278,6 @@ jobs:
                   name: ${{ github.event.repository.name }}-ios-${{ github.sha }}
                   path: artifact-ios
 
-            - name: List all artifact folders
-              run: |
-                  ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
-
             - name: Zip 'all' artifact
               run: |
                   cd artifact-all
@@ -316,10 +308,6 @@ jobs:
                   cd artifact-ios
                   zip -9 -r ../${{ github.event.repository.name }}-ios-${{ github.sha }}.zip .
                   cd ..
-
-            - name: List all artifact folders post zipping
-              run: |
-                  ls -la artifact-all artifact-android artifact-macos artifact-linux artifact-windows
 
             - name: Create draft release and upload assets
               uses: softprops/action-gh-release@v2
