@@ -78,19 +78,16 @@ var _state = States.ChooseMethod
 #region Built-in methods
 
 func _ready() -> void:
-	# Generate login type dropdown
-	var idx = 0
-	for login_type in LOGIN_TYPES.keys():
-		login_type_btn.add_item(LOGIN_TYPES[login_type].name)
-		login_type_btn.set_item_metadata(idx, LOGIN_TYPES[login_type])
-		idx += 1
-
+	_populate_login_type_dropdown()
+	
+	enter_credentials.perform_login.connect(_on_login_btn_pressed)
 	login_btn.pressed.connect(_on_login_btn_pressed)
 	back_btn.pressed.connect(_on_back_btn_pressed)
 	retry_login_btn.pressed.connect(_on_retry_login_btn_pressed)
 	logout_btn.pressed.connect(_on_logout_btn_pressed)
 
 	HAuth.logged_in.connect(_on_logged_in)
+	HAuth.display_name_changed.connect(_on_display_name_changed)
 	HAuth.login_error.connect(_on_login_error)
 	HAuth.logged_out.connect(_on_logged_out)
 
@@ -103,21 +100,17 @@ func _ready() -> void:
 	_set_login_state(States.Pending)
 	HAuth.login_persistent_auth_async()
 
-	
-
 #endregion
 
 
 #region Private methods
 
 func _on_logged_in():
-	if HAuth.epic_account_id:
-		var user_info = await HAuth.get_user_info_async()
-		if user_info and user_info.display_name:
-			Store.display_name = user_info.display_name
-			print("User display name: ", Store.display_name)
-
 	_set_login_state(States.Success)
+
+
+func _on_display_name_changed():
+	print("User display name: ", HAuth.display_name)
 
 
 func _on_logged_out():
@@ -239,5 +232,13 @@ func _login_game_services(type: int, token = null, display_name = null):
 
 func _set_login_status(new_login_status: String):
 	login_status.text = new_login_status
+
+
+func _populate_login_type_dropdown():
+	var idx = 0
+	for login_type in LOGIN_TYPES.keys():
+		login_type_btn.add_item(LOGIN_TYPES[login_type].name)
+		login_type_btn.set_item_metadata(idx, LOGIN_TYPES[login_type])
+		idx += 1
 
 #endregion

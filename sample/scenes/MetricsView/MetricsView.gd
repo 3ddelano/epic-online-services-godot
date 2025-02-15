@@ -21,8 +21,8 @@ func _on_begin_player_session_btn_pressed():
 		begin_sess_opts.account_id_type = EOS.Metrics.MetricsAccountIdType.External
 		begin_sess_opts.account_id = HAuth.product_user_id
 
-	if Store.display_name:
-		begin_sess_opts.display_name = Store.display_name
+	if HAuth.display_name:
+		begin_sess_opts.display_name = HAuth.display_name
 	else:
 		begin_sess_opts.display_name = "Unnamed user"
 

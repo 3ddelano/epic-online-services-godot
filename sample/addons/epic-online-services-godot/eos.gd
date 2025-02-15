@@ -148,6 +148,8 @@ class Achievements:
 
 
 class Connect:
+	const CONNECT_TIME_UNDEFINED = -1
+	
 	class Credentials extends BaseClass:
 		func _init():
 			super._init("Credentials")
@@ -1467,17 +1469,19 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbyOptions")
 
-		var allow_invites: bool
 		var bucket_id: String
-		var disable_host_migration: bool
-		var enable_join_by_id: bool
-		var enable_rtc_room: bool
 		var lobby_id: String
-		var local_user_id = EOSGRuntime.local_product_user_id
+		var disable_host_migration: bool
 		var max_lobby_members: int
-		var permission_level: LobbyPermissionLevel
-		var presence_enabled: bool
 		var rejoin_after_kick_requires_invite: bool
+		var crossplay_opt_out: bool
+		var enable_rtc_room: bool
+
+		var allow_invites := true
+		var enable_join_by_id := true
+		var local_user_id := EOSGRuntime.local_product_user_id
+		var permission_level: LobbyPermissionLevel = LobbyPermissionLevel.PublicAdvertised
+		var presence_enabled := true
 
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
 		## A [Dictionary] with keys: [br]

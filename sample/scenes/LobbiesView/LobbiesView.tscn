@@ -178,7 +178,7 @@ columns = 4
 [node name="OwnerName" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("4_vb7hx")
-text = "Owner Name"
+text = "Owner"
 
 [node name="Members" type="Label" parent="VB/SearchLobbyResults/GridContainer"]
 layout_mode = 2

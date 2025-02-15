@@ -12,6 +12,7 @@ void EOSGLobbyModification::_bind_methods() {
     ClassDB::bind_method(D_METHOD("remove_attribute", "key"), &EOSGLobbyModification::remove_attribute);
     ClassDB::bind_method(D_METHOD("add_member_attribute", "key", "value", "visibility"), &EOSGLobbyModification::add_member_attribute);
     ClassDB::bind_method(D_METHOD("remove_member_attribute", "key"), &EOSGLobbyModification::remove_member_attribute);
+	ClassDB::bind_method(D_METHOD("set_allowed_platform_ids", "allowed_platform_ids"), &EOSGLobbyModification::set_allowed_platform_ids);
 }
 
 int EOSGLobbyModification::set_bucket_id(const String &p_bucket_id) {

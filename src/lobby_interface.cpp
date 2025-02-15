@@ -19,6 +19,7 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     options.BucketId = bucket_id.get_data();
     options.bDisableHostMigration = VARIANT_TO_EOS_BOOL(p_options->get("disable_host_migration"));
     options.bEnableRTCRoom = VARIANT_TO_EOS_BOOL(p_options->get("enable_rtc_room"));
+    options.bCrossplayOptOut = VARIANT_TO_EOS_BOOL(p_options->get("crossplay_opt_out"));
 
     Variant local_rtc_options = p_options->get("local_rtc_options");
     if (options.bEnableRTCRoom && local_rtc_options.get_type() != Variant::NIL) {

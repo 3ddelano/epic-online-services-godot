@@ -535,6 +535,9 @@ static Variant eosg_lobby_attribute_data_to_dict(EOS_Lobby_AttributeData *attrib
     ret["value_type"] = static_cast<int>(attributeData->ValueType);
 
     switch (attributeData->ValueType) {
+        case EOS_EAttributeType::EOS_AT_BOOLEAN:
+            ret["value"] = attributeData->Value.AsBool;
+            break;
         case EOS_EAttributeType::EOS_AT_INT64:
             ret["value"] = attributeData->Value.AsInt64;
             break;
@@ -596,6 +599,7 @@ static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant
     }
 
     EOS_Lobby_LocalRTCOptions options;
+	memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBY_LOCALRTCOPTIONS_API_LATEST;
     options.Flags = flags;
     options.bUseManualAudioInput = use_manual_audio_input ? EOS_TRUE : EOS_FALSE;

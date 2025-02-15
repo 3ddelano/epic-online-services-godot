@@ -11,25 +11,28 @@ signal logged_out
 ## Emitted when an error occurs while loggin in
 signal login_error(result_code: EOS.Result)
 
-# Epic Account Services
 ## Related to Epic Account Services
-signal logged_in_auth()
+signal logged_in_auth
 
 ## Related to Epic Account Services
-signal logged_out_auth()
+signal logged_out_auth
 
 ## Related to Epic Account Services
 signal login_auth_error(result_code: EOS.Result)
 
-# Epic Game Services
 ## Related to Epic Game Services
-signal logged_in_connect()
+signal logged_in_connect
 
 ## Related to Epic Game Services
-signal logged_out_connect()
+signal logged_out_connect
 
 ## Related to Epic Game Services
 signal login_connect_error(result_code: EOS.Result)
+
+## Emitted when the display name is changed. Get the display name using HAuth.display_name.
+## When user logs in, this event will be emitted when we receive the user's display name.
+## When user logs out, this event will be emitted as display name will be empty string.
+signal display_name_changed
 
 #endregion
 
@@ -41,6 +44,18 @@ var epic_account_id = ""
 
 ## The product user id of the logged in user (Used for Epic Game Services)
 var product_user_id = ""
+
+## The display name of the logged in user
+var display_name: String
+
+
+## Whether to automatically fetch the external account linked with Epic Game Services (default true)
+var auto_fetch_external_account = true
+
+## The external account linked with Epic Game Services
+## See get_external_account_async for return type
+var external_account_info = {}
+
 
 ## Whether to automatically link an epic account for external identity provider (default true)
 var auto_link_account = true
@@ -156,7 +171,11 @@ func logout_async() -> EOS.Result:
 			_logged_out = true
 			logged_out_auth.emit()
 
+
 	if _logged_out:
+		display_name = ""
+		external_account_info = {}
+		display_name_changed.emit()
 		logged_out.emit()
 
 	return ret
@@ -186,6 +205,8 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 	
 	if product_user_id:
 		_log.info("Logged in with Product User Id: %s" % product_user_id)
+		if auto_fetch_external_account:
+			get_external_account_async(opts.credentials.type)
 
 	logged_in_connect.emit()
 	logged_in.emit()
@@ -243,10 +264,13 @@ func login_anonymous_async(user_display_name = "") -> bool:
 	if user_display_name:
 		login_opts.user_login_info = EOS.Connect.UserLoginInfo.new()
 		login_opts.user_login_info.display_name = user_display_name
+		display_name = user_display_name
+		display_name_changed.emit()
 	
 	return await login_game_services_async(login_opts)
 
 
+## Get the user info from epic account id
 ## Returns a Dictionary with the user info or null.
 ## Following is the data returned:
 ##   user_id: String
@@ -278,6 +302,53 @@ func get_user_info_async(p_epic_account_id = ""):
 
 	return copy_ret.user_info
 
+
+## Get the external user account linked with Epic Game Services
+## Returns a [Dictionary] with the following keys or empty dictionary if error occurred:
+##  display_name: String - external account display name or empty string
+##  account_id: String - external account id
+##  account_id_type: EOS.ExternalAccountType - type of external account
+##  last_login_time: int - unix timestamp when the user last logged in or EOS.Connect.CONNECT_TIME_UNDEFINED
+func get_external_account_async(external_credential_type: EOS.ExternalCredentialType, p_product_user_id = product_user_id) -> Dictionary:
+	_log.debug("Updating display name for external provider: external_credential_type=%s, product_user_id=%s" % [
+		EOS.ExternalAccountType.find_key(external_credential_type),
+		p_product_user_id
+	])
+
+	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
+	opts.product_user_ids = [p_product_user_id]
+	EOS.Connect.ConnectInterface.query_product_user_id_mappings(opts)
+	var ret = await IEOS.connect_interface_query_product_user_id_mappings_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to query product user id mappings: result_code=%s" % EOS.result_str(ret))
+		return {}
+
+	var copy_opts = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
+	copy_opts.account_id_type = external_credential_type
+	var copy_ret = EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(copy_opts)
+	if not EOS.is_success(copy_ret):
+		_log.error("Failed to copy external account: result_code=%s" % EOS.result_str(copy_ret))
+		return {}
+	
+	_log.debug("Got external account info: product_user_id=%s" % p_product_user_id)
+	
+	var acc_info = copy_ret.external_account_info
+	if acc_info:
+		if acc_info.display_name:
+			display_name = acc_info.display_name
+			display_name_changed.emit()
+	else:
+		acc_info = {}
+		_log.error("Failed to get external account info")
+	
+	if p_product_user_id == product_user_id:
+		external_account_info = acc_info
+	
+	return acc_info
+	
+	
+
+
 #endregion
 
 
@@ -308,6 +379,7 @@ func _connect_account_async() -> bool:
 	# Emit signal only if we are not refreshing the login
 	if not epic_account_id:
 		logged_in_auth.emit()
+
 	return await login_game_services_async(login_options)
 
 
@@ -346,7 +418,7 @@ func _create_user_async(continuance_token: EOSGContinuanceToken) -> bool:
 		product_user_id = create_ret.local_user_id
 	
 	return true
-	
+
 
 func _emit_login_auth_error(result_code: EOS.Result):
 	login_auth_error.emit(result_code)
