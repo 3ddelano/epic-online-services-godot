@@ -60,7 +60,7 @@ func _on_search_lobby_btn_pressed():
 	var lobbies = []
 	if search_type == SearchType.Map:
 		lobbies = await HLobbies.search_by_attribute_async({
-			key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.Contains
+			key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.Equal
 		})
 	elif search_type == SearchType.BucketId:
 		lobbies = await HLobbies.search_by_attribute_async({
