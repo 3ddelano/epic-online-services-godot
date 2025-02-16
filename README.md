@@ -2,7 +2,7 @@ Epic Online Services Godot (EOSG)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
-### Easier way to use Epic Online Service in Godot 4.3 (includes demo project)
+### Easiest way to use Epic Online Services in Godot 4.3 (includes demo project)
 
 <img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.4" src="https://img.shields.io/badge/-Epic Online Services 1.16.4-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
@@ -16,7 +16,7 @@ Epic Online Services Godot (EOSG)
   The High Level Epic Online Services provides easy to use methods and signals to interact with EOS recommended for beginners.
 
 - ### GDExtension EOS
-  The GDExtension EOS provides advanced EOS usage not recommended for beginners.
+  The GDExtension EOS provides advanced EOS usage not recommended for beginners. See `EOS` and `IEOS` classes.
 
 
 # High Level Epic Online Services
