@@ -86,7 +86,7 @@ func _ready() -> void:
 func _on_logged_in():
 	print("Logged in successfully: product_user_id=%s" % HAuth.product_user_id)
 
-	# Example of getting leadeboards
+	# Example: Get top records for a leaderboard
 	var records := await HLeaderboards.get_leaderboard_records_async("LEADERBOARD_ID_HERE")
 	print(records)
 
