@@ -79,7 +79,7 @@ func _ready() -> void:
 	# During development use the devauth tool to login
 	HAuth.login_devtool_async("localhost:4545", "CREDENTIAL_NAME_HERE")
 
-	# Only on mobile device (Login with any credentials)
+	# Only on mobile device (Login without any credentials)
 	# await HAuth.login_anonymous_async()
 
 
@@ -151,7 +151,15 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
    <img src="./_media/android_auth_success.jpg">
 
 - iOS
-   <img src="./_media/ios_simulator_run.png">
+   <img src="./_media/ios_simulator_auth_success.png">
+
+
+- Cross platform lobbies
+  
+  - iOS
+    <img src="./_media/ios_simulator_in_lobby.png">
+  - macOS
+    <img src="./_media/mac_in_lobby.png">
 
 
 ## How does it work
