@@ -57,19 +57,23 @@ func _on_search_lobby_btn_pressed():
 		print("Failed to create lobby search")
 		return
 
+	var lobbies = []
 	if search_type == SearchType.Map:
-		lobby_search.set_parameter(LobbiesView.MAP_ATTRIBUTE_KEY, search_string, EOS.ComparisonOp.Equal)
+		lobbies = await HLobbies.search_by_attribute_async({
+			key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.Contains
+		})
 	elif search_type == SearchType.BucketId:
-		lobby_search.set_parameter(EOS.Lobby.SEARCH_BUCKET_ID, search_string, EOS.ComparisonOp.Equal)
+		lobbies = await HLobbies.search_by_attribute_async({
+			key = EOS.Lobby.SEARCH_BUCKET_ID, value = search_string, comparison = EOS.ComparisonOp.Equal
+		})
 	elif search_type == SearchType.LobbyId:
-		lobby_search.set_lobby_id(search_string)
+		lobbies = await HLobbies.search_by_lobby_id_async(search_string)
 	elif search_type == SearchType.UserId:
-		lobby_search.set_target_user_id(search_string)
+		lobbies = await HLobbies.search_by_product_user_id_async(search_string)
 	else:
 		print("Invalid lobby search type")
 		return
 
-	var lobbies: Array[HLobby] = await HLobbies.search_async(lobby_search)
 	if lobbies == null:
 		print("Failed to search for lobbies")
 		return

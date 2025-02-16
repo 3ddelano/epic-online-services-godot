@@ -6,7 +6,7 @@ extends BaseClass
 
 ## Emitted when either lobby data, attribute, members, member data or member attribute is updated
 signal lobby_updated
-
+signal lobby_destroyed
 #endregion
 
 
@@ -65,8 +65,9 @@ func is_valid() -> bool:
 	return lobby_id != ""
 
 
-## Check whether the current user is the lobby owner
-func is_owner(product_user_id: String) -> bool:
+## Check whether a user is the lobby owner
+## By default it will check the current logged in user
+func is_owner(product_user_id = HAuth.product_user_id) -> bool:
 	return owner_product_user_id == product_user_id
 
 
@@ -222,19 +223,51 @@ func update_async() -> bool:
 	
 	_log.debug("Lobby updated successfully: lobby_id=%s" % lobby_id)
 
-	# TODO: Should we init from scratch, what about the HLobbyMember object references
-	print("before update")
-	print(self)
 	await init_from_id(lobby_id)
-	print("after update")
-	print(self)
-
-	# TODO: handle remove attribute
-	# TODO: handle add member attribute
-	# TODO: handle remove member attribute
 
 	return true
 	
+
+## Leave the lobby
+## Returns true if the leave was successful
+func leave_async() -> bool:
+	if not is_valid():
+		return false
+
+	_log.debug("Leaving lobby: lobby_id=%s" % lobby_id)
+	var opts = EOS.Lobby.LeaveLobbyOptions.new()
+	opts.lobby_id = lobby_id
+	EOS.Lobby.LobbyInterface.leave_lobby(opts)
+
+	var ret = await IEOS.lobby_interface_leave_lobby_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to leave lobby: result_code=%s" % EOS.result_str(ret))
+		return false
+	
+	_log.debug("Leave lobby successfull: lobby_id=%s" % lobby_id)
+	return true
+
+
+## Destroy the lobby
+## Returns true if the destroy was successful
+func destroy_async() -> bool:
+	if not is_valid():
+		return false
+
+	_log.debug("Destroying lobby: lobby_id=%s" % lobby_id)
+	var opts = EOS.Lobby.DestroyLobbyOptions.new()
+	opts.lobby_id = lobby_id
+	EOS.Lobby.LobbyInterface.destroy_lobby(opts)
+
+	var ret = await IEOS.lobby_interface_destroy_lobby_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to destroy lobby: result_code=%s" % EOS.result_str(ret))
+		return false
+	
+	_log.debug("Destroy lobby successfull: lobby_id=%s" % lobby_id)
+	lobby_destroyed.emit()
+	return true
+
 #endregion
 
 
@@ -328,6 +361,13 @@ func _on_lobby_member_status_received_callback(data: Dictionary):
 	if data.lobby_id != lobby_id:
 		return
 	_log.verbose("Got lobby member status: lobby_id=%s" % lobby_id)
+
+	var status = data.current_status
+	if status == EOS.Lobby.LobbyMemberStatus.Closed:
+		_log.debug("Lobby was destroyed: lobby_id=%s" % lobby_id)
+		lobby_destroyed.emit()
+		return
+
 	init_from_id(lobby_id)
 	lobby_updated.emit()
 

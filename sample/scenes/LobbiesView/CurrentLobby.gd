@@ -6,6 +6,10 @@ extends VBoxContainer
 @onready var permission_label: LineEdit = $HBoxContainer2/PermissionLabel
 @onready var map_label: LineEdit = $HBoxContainer2/MapLabel
 @onready var members: GridContainer = $Members
+@onready var leave_lobby_btn: Button = %LeaveLobbyBtn
+@onready var destroy_lobby_btn: Button = %DestroyLobbyBtn
+@onready var random_skin_btn: Button = %RandomSkinBtn
+
 
 const GRID_CONTAINER_LABELS_COUNT = 5
 
@@ -13,6 +17,9 @@ var cached_lobby := HLobby.new()
 
 
 func _ready() -> void:
+	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
+	destroy_lobby_btn.pressed.connect(_on_destroy_lobby_btn_pressed)
+	random_skin_btn.pressed.connect(_on_random_skin_btn_pressed)
 	IEOS.rtc_interface_disconnected.connect(func(data: Dictionary):
 		print("--- Lobbies: RTC disconnected: ", data)
 	)
@@ -33,6 +40,9 @@ func _ready() -> void:
 func update(lobby: HLobby):
 	cached_lobby = lobby
 	cached_lobby.lobby_updated.connect(_update)
+	cached_lobby.lobby_destroyed.connect(func ():
+		update(HLobby.new())
+	)
 	_update()
 
 
@@ -42,6 +52,7 @@ func _reset():
 	permission_label.text = "Permission: ?"
 	map_label.text = "Map: ?"
 	_reset_lobby_members()
+	_reset_buttons()
 
 
 func _reset_lobby_members():
@@ -50,6 +61,12 @@ func _reset_lobby_members():
 		var node = members.get_child(idx)
 		node.queue_free()
 		idx -= 1
+
+
+func _reset_buttons():
+	leave_lobby_btn.hide()
+	destroy_lobby_btn.hide()
+	random_skin_btn.hide()
 
 
 func _update():
@@ -88,6 +105,9 @@ func _update():
 
 	# Lobby members
 	_update_lobby_members()
+	
+	# Buttons
+	_update_buttons()
 
 
 func _update_lobby_members():
@@ -150,6 +170,37 @@ func _update_lobby_members():
 		# TODO: add action button to kick, promote, shuffle skin
 		var action_label = Label.new()
 		members.add_child(action_label)
+
+
+func _update_buttons():
+	if not cached_lobby.is_valid():
+		return
+		
+	leave_lobby_btn.show()
+
+	# if cached_lobby.is_owner():
+	destroy_lobby_btn.show()
+
+	random_skin_btn.show()
+
+func _on_leave_lobby_btn_pressed():
+	var success = await cached_lobby.leave_async()
+	if not success:
+		print("failed to leave lobby")
+		return
+	update(HLobby.new())
+
+
+func _on_destroy_lobby_btn_pressed():
+	var success = await cached_lobby.destroy_async()
+	if not success:
+		print("failed to destroy lobby")
+		return
+
+
+func _on_random_skin_btn_pressed():
+	cached_lobby.add_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	await cached_lobby.update_async()
 
 
 # func _on_rtc_audio_participant_updated(data: Dictionary):

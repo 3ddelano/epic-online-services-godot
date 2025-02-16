@@ -1,5 +1,15 @@
 extends Node
 
+
+#region Public vars
+
+## The maximum number of lobbies to return in search calls.
+## Except for search_async
+var max_search_results = 25
+
+#endregion
+
+
 #region Private vars 
 
 var _log = HLog.logger("HLobbies")
@@ -46,7 +56,68 @@ func join_by_id_async(lobby_id: String) -> HLobby:
 	return lobby
 
 
-## Create a new lobby search. Returns [EOSGLobbySearch] or null. Use [search_async] to perform the search.
+## Search for public lobbies that a user is in.
+## Returns [Array] of [HLobby] or null
+func search_by_product_user_id_async(product_user_id: String):
+	_log.debug("Searching for lobbies by product user id: product_user_id=%s" % product_user_id)
+	var opts = EOS.Lobby.CreateLobbySearchOptions.new()
+	opts.max_results = max_search_results
+	
+	var search: EOSGLobbySearch = create_search(opts)
+	if not search:
+		return null
+	
+	search.set_target_user_id(product_user_id)
+
+	return await search_async(search)
+
+
+
+## Search for public lobbies based on an attributes.
+## The input argument can either be a [Dictionary] of an [Array] of [Dictionary].
+## (Note there is an implicit AND operation if multiple search attributes are provided)
+## Each search attribute is a Dictionary having the keys:
+##  key: String - the key of the attribute
+##  value: String - the value of the attribute
+##  comparison: EOS.ComparisonOp - Type of comparison to make (default is EOS.ComparisonOp.Equal)
+## Returns [Array] of [HLobby] or null
+func search_by_attribute_async(attributes):
+	if typeof(attributes) == TYPE_DICTIONARY:
+		attributes = [attributes]
+	_log.debug("Searching for lobbies by attributes: attributes=%s" % attributes)
+	var opts = EOS.Lobby.CreateLobbySearchOptions.new()
+	opts.max_results = max_search_results
+	
+	var search: EOSGLobbySearch = create_search(opts)
+	if not search:
+		return null
+	
+	for attr in attributes:
+		if attr.has("comparison"):
+			search.set_parameter(attr.key, attr.value, attr.comparison)
+		else:
+			search.set_parameter(attr.key, attr.value, EOS.ComparisonOp.Equal)
+
+	return await search_async(search)
+
+
+## Search for lobby by id. At most will return one lobby.
+## Returns [Array] of [HLobby] or null
+func search_by_lobby_id_async(lobby_id: String):
+	_log.debug("Searching for lobbies by lobby id: lobby_id=%s" % lobby_id)
+	var opts = EOS.Lobby.CreateLobbySearchOptions.new()
+	opts.max_results = max_search_results
+	
+	var search: EOSGLobbySearch = create_search(opts)
+	if not search:
+		return null
+	
+	search.set_lobby_id(lobby_id)
+
+	return await search_async(search)
+
+
+## (Advanced) Create a new lobby search. Returns [EOSGLobbySearch] or null. Use [search_async] to perform the search.
 func create_search(opts: EOS.Lobby.CreateLobbySearchOptions):
 	_log.debug("Creating lobby search...")
 	
@@ -58,7 +129,7 @@ func create_search(opts: EOS.Lobby.CreateLobbySearchOptions):
 	return create_ret.lobby_search
 
 
-## Perform the lobby search. Returns [Array] of [HLobby] or null
+## (Advanced) Perform the lobby search. Returns [Array] of [HLobby] or null
 func search_async(lobby_search: EOSGLobbySearch):
 	_log.debug("Searching for lobbies...")
 

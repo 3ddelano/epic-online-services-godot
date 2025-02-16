@@ -85,7 +85,6 @@ theme_override_constants/separation = 16
 
 [node name="CurrentLobby" type="VBoxContainer" parent="VB"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 0
 script = ExtResource("5_u3fs3")
@@ -126,6 +125,31 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "Map: ?"
 editable = false
+
+[node name="MarginContainer" type="MarginContainer" parent="VB/CurrentLobby"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VB/CurrentLobby/MarginContainer"]
+layout_mode = 2
+
+[node name="LeaveLobbyBtn" parent="VB/CurrentLobby/MarginContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Leave"
+
+[node name="DestroyLobbyBtn" parent="VB/CurrentLobby/MarginContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Destroy"
+
+[node name="RandomSkinBtn" parent="VB/CurrentLobby/MarginContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Random skin"
 
 [node name="Label2" type="Label" parent="VB/CurrentLobby"]
 custom_minimum_size = Vector2(0, 48)

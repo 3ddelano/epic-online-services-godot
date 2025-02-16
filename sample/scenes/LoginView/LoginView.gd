@@ -96,9 +96,17 @@ func _ready() -> void:
 	# _login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
 	
 	# TODO: Remove Autologin (PersistentAuth) for debug purpose
-	_set_login_status("Logging in...")
-	_set_login_state(States.Pending)
-	HAuth.login_persistent_auth_async()
+
+	var cli_args = OS.get_cmdline_user_args()
+	if cli_args.size() > 0:
+		var dev_tool_username = cli_args[0]
+		_set_login_status("Logging in with devtool using cli arg...")
+		_set_login_state(States.Pending)
+		_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", dev_tool_username)
+
+	# _set_login_status("Logging in...")
+	# _set_login_state(States.Pending)
+	# HAuth.login_persistent_auth_async()
 
 #endregion
 
