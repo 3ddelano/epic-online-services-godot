@@ -5,11 +5,14 @@ extends BaseClass
 
 #region Signals
 
-## Emitted when either lobby data, attribute, members, member data or member attribute is updated
+## Emitted when anything about the lobby changes. Except when kicked or lobby is destroyed. Connect to kicked_from_lobby for the latter.
 signal lobby_updated
 
-## Emitted when the lobby was destroyed
-signal lobby_destroyed
+## Emitted when the current user is kicked from lobby or the lobby was destroyed
+signal kicked_from_lobby
+
+## Emitted when another member is promoted to the lobby owner. Use get_owner to get the new owner
+signal lobby_owner_changed
 
 #endregion
 
@@ -47,6 +50,7 @@ var allowed_platform_ids: Array
 
 var _log = HLog.logger("HLobby")
 
+var _attributes_to_add = []
 #endregion
 
 
@@ -54,11 +58,6 @@ var _log = HLog.logger("HLobby")
 
 func _init() -> void:
 	super._init("HLobby")
-
-	IEOS.lobby_interface_lobby_update_received_callback.connect(_on_lobby_update_received_callback)
-	IEOS.lobby_interface_lobby_member_update_received_callback.connect(_on_lobby_interface_lobby_member_update_received_callback)
-	IEOS.lobby_interface_lobby_member_status_received_callback.connect(_on_lobby_member_status_received_callback)
-
 #endregion
 
 
@@ -75,7 +74,7 @@ func is_owner(product_user_id = HAuth.product_user_id) -> bool:
 	return owner_product_user_id == product_user_id
 
 
-## Returns [HLobbyMember] or [null]
+## Returns a [HLobbyMember] based on product user id or null
 func get_member_by_product_user_id(product_user_id: String) -> HLobbyMember:
 	for mem in members:
 		if mem.product_user_id == product_user_id:
@@ -83,7 +82,15 @@ func get_member_by_product_user_id(product_user_id: String) -> HLobbyMember:
 	return null
 
 
-## Returns [HLobbyMember] or [null]
+## Returns the current lobby member [HLobbyMember] or null
+func get_current_member() -> HLobbyMember:
+	for mem in members:
+		if mem.product_user_id == HAuth.product_user_id:
+			return mem
+	return null
+
+
+## Returns [HLobbyMember] or null
 func get_owner() -> HLobbyMember:
 	for mem in members:
 		if mem.product_user_id == owner_product_user_id:
@@ -96,53 +103,55 @@ func init_from_id(p_lobby_id: String):
 	_log.debug("Initializing from lobby id: %s" % p_lobby_id)
 	lobby_id = p_lobby_id
 
-	var copy_opts = EOS.Lobby.CopyLobbyDetailsOptions.new()
-	copy_opts.lobby_id = p_lobby_id
-	var copy_ret = EOS.Lobby.LobbyInterface.copy_lobby_details(copy_opts)
+	_copy_lobby_data()
 
-	if not EOS.is_success(copy_ret):
-		_log.error("Failed to copy lobby details: result_code=%s" % EOS.result_str(copy_ret))
-		return
+	IEOS.lobby_interface_lobby_update_received_callback.connect(_on_lobby_update_received_callback)
+	IEOS.lobby_interface_lobby_member_update_received_callback.connect(_on_lobby_interface_lobby_member_update_received_callback)
+	IEOS.lobby_interface_lobby_member_status_received_callback.connect(_on_lobby_member_status_received_callback)
+	IEOS.lobby_interface_rtc_room_connection_changed_callback.connect(_on_lobby_interface_rtc_room_connection_changed_callback)
+	IEOS.lobby_interface_leave_lobby_requested_callback.connect(_on_lobby_interface_leave_lobby_requested_callback)
 
-	var lobby_details = copy_ret.lobby_details
-	_init_from_details(lobby_details)
+	# RTC
+	IEOS.rtc_interface_participant_status_changed.connect(_on_rtc_interface_participant_status_changed)
+	IEOS.rtc_audio_participant_updated.connect(_on_rtc_audio_participant_updated)
 
 
-## Returns [Dictionary] or [null]
+
+## Returns [Dictionary] or empty [Dictionary] if not found.
 func get_attribute(key: String):
 	for attr in attributes:
 		if attr.key == key:
 			return attr
-	return null
+	return {}
 
 
-## Add an attribute to this lobby. Returns the added attribute as [Dictionary]
-func add_attribute(key: String, value: Variant, visibility = EOS.Lobby.LobbyAttributeVisibility.Public) -> Dictionary:
+## Add an attribute to this lobby. Make sure to call update_async to actually update the lobby. Returns true if success.
+func add_attribute(key: String, value: Variant, visibility = EOS.Lobby.LobbyAttributeVisibility.Public) -> bool:
 	var attr = make_attribute(key, value, visibility)
-	attributes.append(attr)
-	return attr
+	_attributes_to_add.append(attr)
+	return true
 
 
-## Get the current user's attribute or null if not found. Returns [Dictionary] or [null]
-func get_member_attribute(key: String):
+## Returns the current user's attribute as [Dictionary] or empty [Dictionary] if not found.
+func get_current_member_attribute(key: String):
 	var member = get_member_by_product_user_id(HAuth.product_user_id)
 	if not member:
-		return null
+		return {}
 	for attr in member.attributes:
 		if attr.key == key:
 			return attr
-	return null
+	return {}
 
 
-## Add an attribute to the current user in the lboby. Returns the added attribute as [Dictionary] or [null] if some error
-func add_member_attribute(key: String, value: Variant, visibility = EOS.Lobby.LobbyAttributeVisibility.Public):
+## Add an attribute to the current user in the lobby. Make sure to call update_async to actually update the lobby. Returns true if success.
+func add_current_member_attribute(key: String, value: Variant, visibility = EOS.Lobby.LobbyAttributeVisibility.Public) -> bool:
 	var member = get_member_by_product_user_id(HAuth.product_user_id)
 	if not member:
-		return null
+		return false
 	
 	var attr = make_attribute(key, value, visibility)
-	member.attributes.append(attr)
-	return attr
+	member._attributes_to_add.append(attr)
+	return true
 
 
 ## Helper function to create an attribute with key, value and visibility
@@ -199,22 +208,26 @@ func update_async() -> bool:
 			_log.error("Failed to set permission level on lobby modification: result_code=%s" % EOS.result_str(set_perm_ret))
 			return false
 
-		# TODO: check diff of attributes
-		for attr in attributes:
+		var new_attrs = attributes.duplicate(true)
+		new_attrs.append_array(_attributes_to_add)
+		for attr in new_attrs:
 			var add_ret = lobby_mod.add_attribute(attr.key, attr.value, attr.visibility)
 			if not EOS.is_success(add_ret):
 				_log.error("Failed to add attribute on lobby modification. Skipping this attribute: result_code=%s, key=%s, value=%s, visibility=%s" % [EOS.result_str(add_ret), attr.key, attr.value, attr.visibility])
+		_attributes_to_add = []
 	
 	else:
 		_log.debug("Updating lobby as user...")
 
-	# TODO: check diff of member attributes
 	var member: HLobbyMember = get_member_by_product_user_id(HAuth.product_user_id)
 	if member:
-		for attr in member.attributes:
+		var mem_attrs = member.attributes.duplicate(true)
+		mem_attrs.append_array(member._attributes_to_add)
+		for attr in mem_attrs:
 			var add_ret = lobby_mod.add_member_attribute(attr.key, attr.value, attr.visibility)
 			if not EOS.is_success(add_ret):
 				_log.error("Failed to add member attribute on lobby modification. Skipping this attribute: result_code=%s, key=%s, value=%s, visibility=%s" % [EOS.result_str(add_ret), attr.key, attr.value, attr.visibility])
+		member._attributes_to_add = []
 
 	var update_opts = EOS.Lobby.UpdateLobbyOptions.new()
 	update_opts.lobby_modification = lobby_mod
@@ -227,7 +240,8 @@ func update_async() -> bool:
 	
 	_log.debug("Lobby updated successfully: lobby_id=%s" % lobby_id)
 
-	await init_from_id(lobby_id)
+	_copy_lobby_data()
+	lobby_updated.emit()
 
 	return true
 	
@@ -248,14 +262,17 @@ func leave_async() -> bool:
 		_log.error("Failed to leave lobby: result_code=%s" % EOS.result_str(ret))
 		return false
 	
-	_log.debug("Leave lobby successfull: lobby_id=%s" % lobby_id)
+	_log.debug("Leave lobby successful: lobby_id=%s" % lobby_id)
 	return true
 
 
-## Destroy the lobby
+## Destroy the lobby. Only the owner can call this.
 ## Returns true if the destroy was successful
 func destroy_async() -> bool:
 	if not is_valid():
+		return false
+	
+	if not is_owner():
 		return false
 
 	_log.debug("Destroying lobby: lobby_id=%s" % lobby_id)
@@ -268,14 +285,51 @@ func destroy_async() -> bool:
 		_log.error("Failed to destroy lobby: result_code=%s" % EOS.result_str(ret))
 		return false
 	
-	_log.debug("Destroy lobby successfull: lobby_id=%s" % lobby_id)
-	lobby_destroyed.emit()
+	_log.debug("Destroy lobby successful: lobby_id=%s" % lobby_id)
+
+	lobby_id = ""
+	kicked_from_lobby.emit()
 	return true
+
+
+## Returns true if the current user can invite another user
+## p_product_user_id: The product user id of the user to invite
+func can_invite(p_product_user_id: String) -> bool:
+	if not is_valid():
+		return false
+	
+	if not get_current_member():
+		return false
+	
+	if (not allow_invites) or (not available_slots) or (members.size() >= max_members):
+		return false
+	
+	# Check if in lobby
+	var mem = get_member_by_product_user_id(p_product_user_id)
+	if mem:
+		return false
+	
+	return true
+
 
 #endregion
 
 
 #region Private methods
+
+
+func _copy_lobby_data():
+	var copy_opts = EOS.Lobby.CopyLobbyDetailsOptions.new()
+	copy_opts.lobby_id = lobby_id
+	var copy_ret = EOS.Lobby.LobbyInterface.copy_lobby_details(copy_opts)
+
+	if not EOS.is_success(copy_ret):
+		_log.error("Failed to copy lobby details: result_code=%s" % EOS.result_str(copy_ret))
+		return
+
+	var lobby_details = copy_ret.lobby_details
+	_init_from_details(lobby_details)
+
 
 func _init_from_details(lobby_details: EOSGLobbyDetails):
 	_log.debug("Initializing from EOSGLobbyDetails")
@@ -287,23 +341,24 @@ func _init_from_details(lobby_details: EOSGLobbyDetails):
 
 	var details: Dictionary = copy_ret.lobby_details
 
-	lobby_id = details.lobby_id
-	owner_product_user_id = details.lobby_owner_user_id
-	permission_level = details.permission_level
-	available_slots = details.available_slots
-	max_members = details.max_members
-	allow_invites = details.allow_invites
-	bucket_id = details.bucket_id
-	allow_host_migration = details.allow_host_migration
-	rtc_room_enabled = details.rtc_room_enabled
-	allow_join_by_id = details.allow_join_by_id
-	rejoin_after_kick_requires_invite = details.rejoin_after_kick_requires_invite
-	presence_enabled = details.presence_enabled
-	allowed_platform_ids = details.allowed_platform_ids
+	_check_diff_and_set(self, "lobby_id", details.lobby_id)
+	_check_diff_and_set(self, "owner_product_user_id", details.lobby_owner_user_id)
+	_check_diff_and_set(self, "permission_level", details.permission_level)
+	_check_diff_and_set(self, "available_slots", details.available_slots)
+	_check_diff_and_set(self, "max_members", details.max_members)
+	_check_diff_and_set(self, "allow_invites", details.allow_invites)
+	_check_diff_and_set(self, "bucket_id", details.bucket_id)
+	_check_diff_and_set(self, "allow_host_migration", details.allow_host_migration)
+	_check_diff_and_set(self, "rtc_room_enabled", details.rtc_room_enabled)
+	_check_diff_and_set(self, "allow_join_by_id", details.allow_join_by_id)
+	_check_diff_and_set(self, "rejoin_after_kick_requires_invite", details.rejoin_after_kick_requires_invite)
+	_check_diff_and_set(self, "presence_enabled", details.presence_enabled)
+	_check_diff_and_set(self, "allowed_platform_ids", details.allowed_platform_ids)
 
 	# Get attributes
 	var attr_count = lobby_details.get_attribute_count()
-	_log.verbose("Got attributes: count=%s" % attr_count)
+	# _log.verbose("Got attributes: count=%s" % attr_count)
+	var orig_attributes = attributes.duplicate(true)
 	attributes = []
 	for attr_idx in attr_count:
 		var copy_attr_ret = lobby_details.copy_attribute_by_index(attr_idx)
@@ -311,45 +366,54 @@ func _init_from_details(lobby_details: EOSGLobbyDetails):
 			_log.error("Failed to copy EOSGLobbyDetails attribute by index: result_code=%s" % EOS.result_str(copy_attr_ret))
 			continue
 		var attr = copy_attr_ret.attribute
-		add_attribute(attr.data.key, attr.data.value, attr.visibility)
+		attr = make_attribute(attr.data.key, attr.data.value, attr.visibility)
+		attributes.append(attr)
+	
+	_check_attr_diff(orig_attributes, attributes, "lobby")
 
 	# Get members
 	var members_count = lobby_details.get_member_count()
-	_log.verbose("Got members: count=%s" % members_count)
-	var old_members = members.duplicate(true)
+	# _log.verbose("Got members: count=%s" % members_count)
+	var old_members = members.duplicate()
+	
 	members = []
-
 	for member_idx in members_count:
 		var member_product_user_id = lobby_details.get_member_by_index(member_idx)
-		var member = HLobbyMember.new()
-		member.product_user_id = member_product_user_id
+		
+		var member = old_members.filter(func(m): return m.product_user_id == member_product_user_id)
+		if member.size() > 0:
+			_log.verbose("Updating existing lobby member")
+			member = member[0]
+		else:
+			_log.verbose("Creating new lobby member")
+			member = HLobbyMember.new(self)
+			member.product_user_id = member_product_user_id
+		
 		members.append(member)
 
 		# Member attributes
 		var mem_attr_count = lobby_details.get_member_attribute_count(member_product_user_id)
-		_log.verbose("Got member attributes: count=%s" % mem_attr_count)
+		# _log.verbose("Got member attributes: count=%s" % mem_attr_count)
+
+		var orig_mem_attr = member.attributes.duplicate(true)
+		member.attributes = []
 		for mem_attr_idx in mem_attr_count:
 			var copy_mem_attr_ret = lobby_details.copy_member_attribute_by_index(member_product_user_id, mem_attr_idx)
 			if not EOS.is_success(copy_mem_attr_ret):
 				_log.error("Failed to copy EOSGLobbyDetails member attribute by index: result_code=%s" % EOS.result_str(copy_mem_attr_ret))
 				continue
 			var attr = copy_mem_attr_ret.attribute
-			member.add_attribute(attr.data.key, attr.data.value, attr.visibility)
-			
-			# Copy RTC status from old members
-			var old_member = old_members.filter(func(m): return m.product_user_id == member.product_user_id)
-			if old_member.size() == 0:
-				continue
-
-			member.rtc_state = old_member[0].rtc_state
-			old_members.erase(old_member[0])
+			member.attributes.append(make_attribute(attr.data.key, attr.data.value, attr.visibility))
+		_check_attr_diff(orig_mem_attr, member.attributes, "member:%s" % member.product_user_id)
+	
+	_subscribe_rtc_events()
 
 
 func _on_lobby_update_received_callback(data: Dictionary):
 	if data.lobby_id != lobby_id:
 		return
 	_log.verbose("Got lobby update: lobby_id=%s" % lobby_id)
-	init_from_id(lobby_id)
+	_copy_lobby_data()
 	lobby_updated.emit()
 
 
@@ -357,22 +421,209 @@ func _on_lobby_interface_lobby_member_update_received_callback(data: Dictionary)
 	if data.lobby_id != lobby_id:
 		return
 	_log.verbose("Got lobby member update: lobby_id=%s" % lobby_id)
-	init_from_id(lobby_id)
+	_copy_lobby_data()
 	lobby_updated.emit()
 
 
 func _on_lobby_member_status_received_callback(data: Dictionary):
 	if data.lobby_id != lobby_id:
 		return
-	_log.verbose("Got lobby member status: lobby_id=%s" % lobby_id)
-
+	var member_id = data.target_user_id
 	var status = data.current_status
-	if status == EOS.Lobby.LobbyMemberStatus.Closed:
-		_log.debug("Lobby was destroyed: lobby_id=%s" % lobby_id)
-		lobby_destroyed.emit()
+
+	_log.verbose("Got lobby member status: member_id=%s, status=%s" % [member_id, EOS.Lobby.LobbyMemberStatus.find_key(status)])
+
+	var update_lobby = true
+	if HAuth.product_user_id == data.target_user_id:
+		if status == EOS.Lobby.LobbyMemberStatus.Closed or status == EOS.Lobby.LobbyMemberStatus.Kicked or status == EOS.Lobby.LobbyMemberStatus.Disconnected:
+			_log.debug("Kicked from lobby: lobby_id=%s" % lobby_id)
+			lobby_id = ""
+			kicked_from_lobby.emit()
+			update_lobby = false
+
+	if update_lobby:
+		_copy_lobby_data()
+		lobby_updated.emit()
+	
+	if status == EOS.Lobby.LobbyMemberStatus.Promoted:
+		_log.debug("Lobby owner changed: lobby_id=%s" % lobby_id)
+		lobby_owner_changed.emit()
+
+
+func _on_lobby_interface_rtc_room_connection_changed_callback(data: Dictionary):
+	if data.lobby_id != lobby_id:
+		return
+	
+	if data.local_user_id != HAuth.product_user_id:
 		return
 
-	init_from_id(lobby_id)
+	var new_rtc_room_connected = data.is_connected
+	var disconnect_reason = data.disconnect_reason
+	_log.debug("Lobby rtc room connection changed: lobby_id=%s, is_connected=%s, disconnect_reason=%s" % [lobby_id, new_rtc_room_connected, EOS.result_str(disconnect_reason)])
+
+	_check_diff_and_set(self, "rtc_room_connected", new_rtc_room_connected)
+
+	var mem = get_current_member()
+	if mem:
+		var did_update = _check_diff_and_set_dict(mem.rtc_state, "is_in_rtc_room", new_rtc_room_connected, "member:" + mem.product_user_id)
+		if not new_rtc_room_connected:
+			did_update = _check_diff_and_set_dict(mem.rtc_state, "is_talking", false, "member:" + mem.product_user_id) or did_update
+		if did_update:
+			mem.rtc_state_updated.emit()
+		
 	lobby_updated.emit()
+
+
+func _on_lobby_interface_leave_lobby_requested_callback(data: Dictionary):
+	if data.lobby_id != lobby_id:
+		return
+
+	_log.debug("Lobby leave requested from UI: lobby_id=%s" % lobby_id)
+	leave_async()
+
+
+func _subscribe_rtc_events():
+	if not is_valid() or not rtc_room_enabled:
+		return
+	
+	var mem = get_member_by_product_user_id(HAuth.product_user_id)
+	if mem == null:
+		return
+	
+	
+	# _log.verbose("Subscribing to lobby rtc events")
+	var did_update = false
+
+	# RTC room name
+	var opts = EOS.Lobby.GetRtcRoomNameOptions.new()
+	opts.lobby_id = lobby_id
+	var ret = EOS.Lobby.LobbyInterface.get_rtc_room_name(opts)
+	if not EOS.is_success(ret):
+		_log.error("Failed to get rtc room name: result_code=%s" % EOS.result_str(ret))
+	else:
+		did_update = _check_diff_and_set(self, "rtc_room_name", ret.rtc_room_name) or did_update
+	
+	# RTC connection status
+	var is_conn_opts = EOS.Lobby.IsRtcRoomConnectedOptions.new()
+	is_conn_opts.lobby_id = lobby_id
+	var is_conn_ret = EOS.Lobby.LobbyInterface.is_rtc_room_connected(is_conn_opts)
+	if not EOS.is_success(is_conn_ret):
+		_log.error("Failed to get rtc room connection status: result_code=%s" % EOS.result_str(is_conn_ret))
+	else:
+		did_update = _check_diff_and_set(self, "rtc_room_connected", is_conn_ret.is_connected) or did_update
+	
+	# RTC room participant status changes
+	var notify_parti_status_opts = EOS.RTC.AddNotifyParticipantStatusChangedOptions.new()
+	notify_parti_status_opts.room_name = rtc_room_name
+	EOS.RTC.RTCInterface.add_notify_participant_status_changed(notify_parti_status_opts)
+	
+	# RTC audio updates
+	var notify_participant_updated_opts = EOS.RTCAudio.AddNotifyParticipantUpdatedOptions.new()
+	notify_participant_updated_opts.room_name = rtc_room_name
+	EOS.RTCAudio.RTCAudioInterface.add_notify_participant_updated(notify_participant_updated_opts)
+	
+	if did_update:
+		# _log.verbose("Lobby rtc values updated: lobby_id=%s, rtc_room_name=%s, rtc_room_connected=%s" % [lobby_id, rtc_room_name, rtc_room_connected])
+		lobby_updated.emit()
+
+
+func _on_rtc_interface_participant_status_changed(data: Dictionary):
+	if data.room_name != rtc_room_name:
+		return
+	
+	var participant_id = data.participant_id
+	var participant_status = data.participant_status
+
+	var mem = get_member_by_product_user_id(participant_id)
+	if not mem:
+		_log.error("Got rtc participant status changed for unknown participant: participant_id=%s" % participant_id)
+		return
+
+	if participant_status == EOS.RTC.ParticipantStatus.Joined:
+		mem.rtc_state.is_in_rtc_room = true
+		mem.rtc_state_updated.emit()
+	elif participant_status == EOS.RTC.ParticipantStatus.Left:
+		mem.rtc_state.is_in_rtc_room = false
+		mem.rtc_state_updated.emit()
+	
+	lobby_updated.emit()
+
+
+func _on_rtc_audio_participant_updated(data: Dictionary):
+	if data.room_name != rtc_room_name:
+		return
+	
+	var participant_puid = data.participant_id
+	var is_talking = data.speaking
+	var is_audio_disabled = data.audio_status != EOS.RTCAudio.AudioStatus.Enabled
+	var is_hard_muted = data.audio_status == EOS.RTCAudio.AudioStatus.AdminDisabled
+	
+	var mem = get_member_by_product_user_id(data.participant_id)
+	if mem == null:
+		_log.error("Got rtc audio participant update for unknown participant: participant_id=%s" % participant_puid)
+		return
+
+	# Update talking status
+	var did_change = _check_diff_and_set_dict(mem.rtc_state, "is_talking", is_talking, "member:" + mem.product_user_id)
+
+	# Update audio output status for other players
+	if mem.product_user_id != HAuth.product_user_id:
+		did_change = _check_diff_and_set_dict(mem.rtc_state, "is_audio_output_disabled", is_audio_disabled, "member:" + mem.product_user_id) or did_change
+	else:
+		# I could have been hard-muted by the lobby owner
+		did_change = _check_diff_and_set_dict(mem.rtc_state, "is_hard_muted", is_hard_muted, "member:" + mem.product_user_id) or did_change
+
+	if did_change:
+		mem.rtc_state_updated.emit()
+		lobby_updated.emit()
+
+
+static func _check_diff_and_set(p_obj: Object, p_key, p_value, p_name = "") -> bool:
+	if p_key in p_obj:
+		var orig = p_obj.get(p_key)
+		p_obj.set(p_key, p_value)
+		if orig != p_value:
+			# print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
+			return true
+
+	return false
+			
+
+
+static func _check_diff_and_set_dict(p_dict: Dictionary, p_key, p_value, p_name = "") -> bool:
+	if p_dict.has(p_key):
+		var orig = p_dict[p_key]
+		p_dict[p_key] = p_value
+		if orig != p_value:
+			# print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
+			return true
+	return false
+
+
+static func _check_attr_diff(orig_attrs: Array, new_attrs: Array, p_name = "") -> void:
+	# TODO: comment when not debugging
+	return
+
+	# Build lookup maps for quick access using each attribute's unique "id"
+	var orig_map: Dictionary = {}
+	for attr in orig_attrs:
+		orig_map[attr.key] = attr
+	
+	var new_map: Dictionary = {}
+	for attr in new_attrs:
+		new_map[attr.key] = attr
+	
+	for id in orig_map.keys():
+		if not new_map.has(id):
+			print_rich("[color=yellow]CHANGED %s[/color]: attr removed: %s = (%s,%s)" % [p_name, id, orig_map[id].value, orig_map[id].visibility])
+		else:
+			var old_attr = orig_map[id]
+			var new_attr = new_map[id]
+			if not (old_attr.value == new_attr.value and old_attr.visibility == new_attr.visibility):
+				print_rich("[color=yellow]CHANGED %s[/color]: attr updated: %s = (%s,%s) -> (%s,%s)" % [p_name, id, old_attr.value, old_attr.visibility, new_attr.value, new_attr.visibility])
+	
+	for id in new_map.keys():
+		if not orig_map.has(id):
+			print_rich("[color=yellow]CHANGED %s[/color]: attr added: %s = (%s,%s)" % [p_name, id, new_map[id].value, new_map[id].visibility])
 
 #endregion

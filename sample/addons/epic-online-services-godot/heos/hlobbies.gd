@@ -38,7 +38,7 @@ func create_lobby_async(opts: EOS.Lobby.CreateLobbyOptions) -> HLobby:
 
 ## Join an existing lobby. Returns [HLobby] or [null]
 func join_by_id_async(lobby_id: String) -> HLobby:
-	_log.debug("Joining lobby: lobby_id=%s" % lobby_id)
+	_log.debug("Joining lobby by id: lobby_id=%s" % lobby_id)
 
 	var opts = EOS.Lobby.JoinLobbyByIdOptions.new()
 	opts.lobby_id = lobby_id

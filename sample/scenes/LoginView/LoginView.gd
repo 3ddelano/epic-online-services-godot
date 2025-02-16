@@ -92,8 +92,8 @@ func _ready() -> void:
 	HAuth.logged_out.connect(_on_logged_out)
 
 	await HPlatform.platform_created
-	# _login(EOS.Auth.LoginCredentialType.AccountPortal)
-	# _login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", "3ddelano")
+	# HAuth.login_account_portal_async()
+	# HAuth.login_devtool_async("localhost:4545", "3ddelano")
 	
 	# TODO: Remove Autologin (PersistentAuth) for debug purpose
 
@@ -102,8 +102,10 @@ func _ready() -> void:
 		var dev_tool_username = cli_args[0]
 		_set_login_status("Logging in with devtool using cli arg...")
 		_set_login_state(States.Pending)
-		_login(EOS.Auth.LoginCredentialType.Developer, "localhost:4545", dev_tool_username)
+		HAuth.login_devtool_async("localhost:4545", dev_tool_username)
 
+
+	# For developement
 	# _set_login_status("Logging in...")
 	# _set_login_state(States.Pending)
 	# HAuth.login_persistent_auth_async()
@@ -122,7 +124,7 @@ func _on_display_name_changed():
 
 
 func _on_logged_out():
-	_set_login_status("Logout successfull")
+	_set_login_status("Logout successful")
 	_set_login_state(States.ChooseMethod)
 
 
@@ -158,12 +160,16 @@ func _on_login_btn_pressed():
 				enter_credentials.set_id_value("localhost:4545")
 		else:
 			# No data entry is required
+			login_status.text = "Logging in..."
+			_set_login_state(States.Pending)
 			match login_type:
 				"PERSISTENT_AUTH":
 					HAuth.login_persistent_auth_async()
 				"ACCOUNT_PORTAL":
-					_login(EOS.Auth.LoginCredentialType.AccountPortal)
+					HAuth.login_account_portal_async()
 	else:
+		login_status.text = "Logging in..."
+		_set_login_state(States.Pending)
 		# In EnterCredentials state
 		match login_type:
 			"DEVICE_ID":
@@ -171,7 +177,7 @@ func _on_login_btn_pressed():
 			"DISCORD":
 				_login_game_services(EOS.ExternalCredentialType.DiscordAccessToken, login_token)
 			"DEVELOPER":
-				_login(EOS.Auth.LoginCredentialType.Developer, login_id, login_token)
+				HAuth.login_devtool_async(login_id, login_token)
 
 
 func _on_logout_btn_pressed():
@@ -207,22 +213,6 @@ func _set_login_state(new_state: States):
 		login_status.text = "Login success!"
 		login_status.visible = true
 		logout_btn.visible = true
-
-
-func _login(type: int, id = "", token = "", external_type = -1):
-	login_status.text = "Login pending..."
-	_set_login_state(States.Pending)
-
-	var login_options = EOS.Auth.LoginOptions.new()
-	login_options.credentials = EOS.Auth.Credentials.new()
-	login_options.credentials.type = type
-	login_options.credentials.id = id
-	login_options.credentials.token = token
-	if external_type != -1:
-		login_options.credentials.external_type = external_type
-	login_options.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
-	login_options.login_flags = EOS.Auth.LoginFlags.NoUserInterface
-	HAuth.login_async(login_options)
 
 
 func _login_game_services(type: int, token = null, display_name = null):

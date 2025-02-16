@@ -63,6 +63,12 @@ var auto_link_account = true
 ## Whether to automatically login to Epic Game Services after logging in to Epic Account Services (default true)
 var auto_connect_account = true
 
+## Default scope flags used when logging in with Epic Account Services
+var auth_login_scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
+
+## Default login flags used when logging in with Epic Account Services
+var auth_login_flags = EOS.Auth.LoginFlags.NoUserInterface
+
 #endregion
 
 
@@ -82,6 +88,31 @@ func _ready() -> void:
 
 
 #region Public methods
+
+
+## Login using the Epic Dev Auth tool
+func login_devtool_async(server_url: String, credential_name: String) -> bool:
+	var opts = EOS.Auth.LoginOptions.new()
+	opts.credentials = EOS.Auth.Credentials.new()
+	opts.credentials.type = EOS.Auth.LoginCredentialType.Developer
+	opts.credentials.id = server_url
+	opts.credentials.token = credential_name
+	opts.scope_flags = auth_login_scope_flags
+	opts.login_flags = auth_login_flags
+
+	return await login_async(opts)
+
+
+## Login using Epic Account Portal
+func login_account_portal_async() -> bool:
+	var opts = EOS.Auth.LoginOptions.new()
+	opts.credentials = EOS.Auth.Credentials.new()
+	opts.credentials.type = EOS.Auth.LoginCredentialType.Developer
+	opts.scope_flags = auth_login_scope_flags
+	opts.login_flags = auth_login_flags
+
+	return await login_async(opts)
+
 
 ## Login using EOS Auth by either using an Identity provider or Epic games Account.
 ## Allows you to use Epic Account Services: Friends, Presence, Social Overlay, ECom, etc.
@@ -271,7 +302,7 @@ func login_anonymous_async(user_display_name = "") -> bool:
 
 
 ## Get the user info from epic account id
-## Returns a Dictionary with the user info or null.
+## Returns a Dictionary with the user info or empty [Dictionary] if error.
 ## Following is the data returned:
 ##   user_id: String
 ##   country: String
@@ -279,7 +310,7 @@ func login_anonymous_async(user_display_name = "") -> bool:
 ##   display_name_sanitized: String
 ##   preferred_language: String
 ##   nickname: String
-func get_user_info_async(p_epic_account_id = ""):
+func get_user_info_async(p_epic_account_id = "") -> Dictionary:
 	var target_epic_account_id = p_epic_account_id if p_epic_account_id else epic_account_id
 	_log.verbose("Querying user info: target_epic_account_id=%s" % target_epic_account_id)
 	var query_opts = EOS.UserInfo.QueryUserInfoOptions.new()
@@ -290,7 +321,7 @@ func get_user_info_async(p_epic_account_id = ""):
 	var ret: Dictionary = await IEOS.user_info_interface_query_user_info_callback
 	if not EOS.is_success(ret):
 		_log.error("Failed to query user info: result_code=%s" % EOS.result_str(ret))
-		return null
+		return {}
 	
 	var copy_opts = EOS.UserInfo.CopyUserInfoOptions.new()
 	copy_opts.local_user_id = epic_account_id
@@ -298,7 +329,7 @@ func get_user_info_async(p_epic_account_id = ""):
 	var copy_ret = EOS.UserInfo.UserInfoInterface.copy_user_info(copy_opts)
 	if not EOS.is_success(copy_ret):
 		_log.error("Failed to copy user info: result_code=%s" % EOS.result_str(copy_ret))
-		return null
+		return {}
 
 	return copy_ret.user_info
 
@@ -347,8 +378,6 @@ func get_external_account_async(external_credential_type: EOS.ExternalCredential
 	return acc_info
 	
 	
-
-
 #endregion
 
 

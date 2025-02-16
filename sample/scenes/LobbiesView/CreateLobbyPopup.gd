@@ -53,8 +53,8 @@ func _on_create_lobby_btn_pressed():
 	lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, LobbiesView.Maps.keys()[_map_option_btn.get_selected_metadata()])
 	lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, HAuth.display_name)
 
-	lobby.add_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
-	lobby.add_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	lobby.add_current_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
+	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
 	
 	await lobby.update_async()
 

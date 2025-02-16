@@ -10,7 +10,7 @@ enum LogLevel {
 	OFF
 }
 
-static var log_level = LogLevel.VERBOSE
+static var log_level = LogLevel.INFO
 
 static func logger(clazz_name: String) -> Logger:
 	return Logger.new(clazz_name)

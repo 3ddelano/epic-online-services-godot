@@ -6,9 +6,11 @@ extends VBoxContainer
 @onready var permission_label: LineEdit = $HBoxContainer2/PermissionLabel
 @onready var map_label: LineEdit = $HBoxContainer2/MapLabel
 @onready var members: GridContainer = $Members
-@onready var leave_lobby_btn: Button = %LeaveLobbyBtn
 @onready var destroy_lobby_btn: Button = %DestroyLobbyBtn
+@onready var random_map_btn: Button = %RandomMapBtn
+@onready var leave_lobby_btn: Button = %LeaveLobbyBtn
 @onready var random_skin_btn: Button = %RandomSkinBtn
+@onready var mute_unmute_btn: Button = %MuteUnmuteBtn
 
 
 const GRID_CONTAINER_LABELS_COUNT = 5
@@ -17,31 +19,34 @@ var cached_lobby := HLobby.new()
 
 
 func _ready() -> void:
-	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
 	destroy_lobby_btn.pressed.connect(_on_destroy_lobby_btn_pressed)
+	random_map_btn.pressed.connect(_on_random_map_btn_pressed)
+	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
 	random_skin_btn.pressed.connect(_on_random_skin_btn_pressed)
-	IEOS.rtc_interface_disconnected.connect(func(data: Dictionary):
-		print("--- Lobbies: RTC disconnected: ", data)
-	)
-	IEOS.rtc_interface_participant_status_changed.connect(func(data: Dictionary):
-		print("--- Lobbies: RTC participant status changed: ", data)
-		# var status_text = "Joined"
-		# if data["participant_status"] == EOS.RTC.ParticipantStatus.Left:
-		# 	status_text = "Left"
-
-		#if cached_lobby.is_valid() and cached_lobby.is_rtc_room_enabled():
-			#if cached_lobby.rtc_room_name == data["room_name"]:
-				# TODO: update the member's status
-				#pass
-	)
-	# IEOS.rtc_audio_participant_updated.connect(_on_rtc_audio_participant_updated)
-
+	mute_unmute_btn.pressed.connect(_on_mute_unmute_btn_pressed)
+	
 
 func update(lobby: HLobby):
 	cached_lobby = lobby
 	cached_lobby.lobby_updated.connect(_update)
-	cached_lobby.lobby_destroyed.connect(func ():
-		update(HLobby.new())
+	cached_lobby.kicked_from_lobby.connect(func ():
+		_reset()
+		hide()
+	)
+	cached_lobby.lobby_owner_changed.connect(func ():
+		if not cached_lobby.is_owner():
+			return
+
+		var mem = cached_lobby.get_owner()
+		if not mem:
+			return
+		
+		var username_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
+		if not username_attr:
+			return
+		
+		lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, username_attr.value)
+		await lobby.update_async()
 	)
 	_update()
 
@@ -64,9 +69,11 @@ func _reset_lobby_members():
 
 
 func _reset_buttons():
-	leave_lobby_btn.hide()
 	destroy_lobby_btn.hide()
+	random_map_btn.hide()
+	leave_lobby_btn.hide()
 	random_skin_btn.hide()
+	mute_unmute_btn.hide()
 
 
 func _update():
@@ -100,7 +107,7 @@ func _update():
 
 	# Lobby Attr: Map
 	var map_attr = cached_lobby.get_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
-	if map_attr != null:
+	if map_attr:
 		map_label.text = "Map: " + map_attr.value
 
 	# Lobby members
@@ -133,34 +140,35 @@ func _update_lobby_members():
 		var skin_label = Label.new()
 		skin_label.text = "?"
 		var skin_attr = mem.get_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
-		if skin_attr != null:
+		if skin_attr:
 			skin_label.text = skin_attr.value
 		members.add_child(skin_label)
-
+		
 		var talking_status = "Unknown"
 		var text_color = Color.DARK_GRAY
-		if not cached_lobby.rtc_room_connected:
-			pass
-		elif not mem.rtc_state.is_in_rtc_room:
-			talking_status = "Disconnected"
-		elif mem.rtc_state.is_hard_muted:
-			talking_status = "Hard Muted"
-			text_color = Color.RED
-		elif mem.rtc_state.is_locally_muted:
-			talking_status = "Muted"
-			text_color = Color.RED
-		elif mem.rtc_state.is_audio_output_disabled:
-			talking_status = "Self muted"
-			text_color = Color.DARK_RED
-		elif mem.rtc_state.is_talking:
-			talking_status = "Talking"
-			text_color = Color.YELLOW
-		elif connected_members < 2:
-			talking_status = "Connected"
-			text_color = Color.WHITE
+		if not cached_lobby.rtc_room_enabled:
+			talking_status = "RTC Disabled"
 		else:
-			talking_status = "Not Talking"
-			text_color = Color.YELLOW
+			if not mem.rtc_state.is_in_rtc_room:
+				talking_status = "Disconnected"
+			elif mem.rtc_state.is_hard_muted:
+				talking_status = "Hard Muted"
+				text_color = Color.RED
+			elif mem.rtc_state.is_locally_muted:
+				talking_status = "Muted"
+				text_color = Color.RED
+			elif mem.rtc_state.is_audio_output_disabled:
+				talking_status = "Self muted"
+				text_color = Color.DARK_RED
+			elif mem.rtc_state.is_talking:
+				talking_status = "Talking"
+				text_color = Color.GREEN
+			elif connected_members < 2:
+				talking_status = "Connected"
+				text_color = Color.WHITE
+			else:
+				talking_status = "Not Talking"
+				text_color = Color.YELLOW
 
 		var talking_node = Label.new()
 		talking_node.text = talking_status
@@ -176,12 +184,16 @@ func _update_buttons():
 	if not cached_lobby.is_valid():
 		return
 		
-	leave_lobby_btn.show()
 
 	if cached_lobby.is_owner():
 		destroy_lobby_btn.show()
+		random_map_btn.show()
 
+	leave_lobby_btn.show()
 	random_skin_btn.show()
+	if cached_lobby.rtc_room_enabled:
+		mute_unmute_btn.show()
+
 
 func _on_leave_lobby_btn_pressed():
 	var success = await cached_lobby.leave_async()
@@ -199,29 +211,21 @@ func _on_destroy_lobby_btn_pressed():
 
 
 func _on_random_skin_btn_pressed():
-	cached_lobby.add_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
 	await cached_lobby.update_async()
 
 
-# func _on_rtc_audio_participant_updated(data: Dictionary):
-# 	print("--- Lobby: RTCAudio: participant_updated: ")
-# 	var is_talking = data.speaking
-# 	var is_audio_disabled = data.audio_status != EOS.RTCAudio.AudioStatus.Enabled
-# 	var is_hard_muted = data.audio_status != EOS.RTCAudio.AudioStatus.AdminDisabled
+func _on_random_map_btn_pressed():
+	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, LobbiesView.Maps.keys().pick_random())
+	await cached_lobby.update_async()
 
-# 	# Update the member in the current lobby
-# 	if cached_lobby.rtc_room_name.is_empty() or cached_lobby.rtc_room_name != data.room_name:
-# 		return
 
-# 	# Find the participant in the lobby members
-# 	var mem = cached_lobby.get_member_by_product_user_id(data.participant_id)
-# 	if mem == null:
-# 		return
-
-# 	mem.rtc_state.is_talking = is_talking
-# 	if mem.product_user_id != HAuth.product_user_id:
-# 		mem.rtc_state.is_audio_output_disabled = is_audio_disabled
-# 	else:
-# 		mem.rtc_state.is_hard_muted = is_hard_muted
-
-# 	_update()
+func _on_mute_unmute_btn_pressed():
+	var mem = cached_lobby.get_current_member()
+	if not mem:
+		print("failed to get member")
+		return
+	
+	var success = await mem.mute_member_async()
+	if not success:
+		print("mute/unmute failed")

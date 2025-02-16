@@ -23,7 +23,7 @@ func update_ui():
 		var owner_name_attr = lobby.get_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY)
 		var owner_label = Label.new()
 		var owner_name = "?"
-		if owner_name_attr != null:
+		if owner_name_attr:
 			owner_name = owner_name_attr.value
 		owner_label.text = "%s(%s)" % [owner_name, lobby.owner_product_user_id]
 		grid.add_child(owner_label)
@@ -35,7 +35,7 @@ func update_ui():
 		var map_attr = lobby.get_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
 		var map_label = Label.new()
 		map_label.text = "?"
-		if map_attr != null:
+		if map_attr:
 			map_label.text = map_attr.value
 		grid.add_child(map_label)
 
@@ -52,8 +52,8 @@ func _on_lobby_join_pressed(lobby_id: String):
 		print("Failed to join lobby")
 		return
 	
-	lobby.add_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
-	lobby.add_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
+	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	lobby.add_current_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
 	lobbies_view.hide_search_results()
 	
 	await lobby.update_async()
