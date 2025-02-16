@@ -341,19 +341,19 @@ func _init_from_details(lobby_details: EOSGLobbyDetails):
 
 	var details: Dictionary = copy_ret.lobby_details
 
-	_check_diff_and_set(self, "lobby_id", details.lobby_id)
-	_check_diff_and_set(self, "owner_product_user_id", details.lobby_owner_user_id)
-	_check_diff_and_set(self, "permission_level", details.permission_level)
-	_check_diff_and_set(self, "available_slots", details.available_slots)
-	_check_diff_and_set(self, "max_members", details.max_members)
-	_check_diff_and_set(self, "allow_invites", details.allow_invites)
-	_check_diff_and_set(self, "bucket_id", details.bucket_id)
-	_check_diff_and_set(self, "allow_host_migration", details.allow_host_migration)
-	_check_diff_and_set(self, "rtc_room_enabled", details.rtc_room_enabled)
-	_check_diff_and_set(self, "allow_join_by_id", details.allow_join_by_id)
-	_check_diff_and_set(self, "rejoin_after_kick_requires_invite", details.rejoin_after_kick_requires_invite)
-	_check_diff_and_set(self, "presence_enabled", details.presence_enabled)
-	_check_diff_and_set(self, "allowed_platform_ids", details.allowed_platform_ids)
+	HLog._check_diff_and_set(self, "lobby_id", details.lobby_id)
+	HLog._check_diff_and_set(self, "owner_product_user_id", details.lobby_owner_user_id)
+	HLog._check_diff_and_set(self, "permission_level", details.permission_level)
+	HLog._check_diff_and_set(self, "available_slots", details.available_slots)
+	HLog._check_diff_and_set(self, "max_members", details.max_members)
+	HLog._check_diff_and_set(self, "allow_invites", details.allow_invites)
+	HLog._check_diff_and_set(self, "bucket_id", details.bucket_id)
+	HLog._check_diff_and_set(self, "allow_host_migration", details.allow_host_migration)
+	HLog._check_diff_and_set(self, "rtc_room_enabled", details.rtc_room_enabled)
+	HLog._check_diff_and_set(self, "allow_join_by_id", details.allow_join_by_id)
+	HLog._check_diff_and_set(self, "rejoin_after_kick_requires_invite", details.rejoin_after_kick_requires_invite)
+	HLog._check_diff_and_set(self, "presence_enabled", details.presence_enabled)
+	HLog._check_diff_and_set(self, "allowed_platform_ids", details.allowed_platform_ids)
 
 	# Get attributes
 	var attr_count = lobby_details.get_attribute_count()
@@ -369,7 +369,7 @@ func _init_from_details(lobby_details: EOSGLobbyDetails):
 		attr = make_attribute(attr.data.key, attr.data.value, attr.visibility)
 		attributes.append(attr)
 	
-	_check_attr_diff(orig_attributes, attributes, "lobby")
+	HLog._check_attr_diff(orig_attributes, attributes, "lobby")
 
 	# Get members
 	var members_count = lobby_details.get_member_count()
@@ -404,13 +404,13 @@ func _init_from_details(lobby_details: EOSGLobbyDetails):
 				continue
 			var attr = copy_mem_attr_ret.attribute
 			member.attributes.append(make_attribute(attr.data.key, attr.data.value, attr.visibility))
-		_check_attr_diff(orig_mem_attr, member.attributes, "member:%s" % member.product_user_id)
+		HLog._check_attr_diff(orig_mem_attr, member.attributes, "member:%s" % member.product_user_id)
 	
 	_subscribe_rtc_events()
 
 
 func _on_lobby_update_received_callback(data: Dictionary):
-	if data.lobby_id != lobby_id:
+	if not is_valid() or data.lobby_id != lobby_id:
 		return
 	_log.verbose("Got lobby update: lobby_id=%s" % lobby_id)
 	_copy_lobby_data()
@@ -418,7 +418,7 @@ func _on_lobby_update_received_callback(data: Dictionary):
 
 
 func _on_lobby_interface_lobby_member_update_received_callback(data: Dictionary):
-	if data.lobby_id != lobby_id:
+	if not is_valid() or data.lobby_id != lobby_id:
 		return
 	_log.verbose("Got lobby member update: lobby_id=%s" % lobby_id)
 	_copy_lobby_data()
@@ -426,7 +426,7 @@ func _on_lobby_interface_lobby_member_update_received_callback(data: Dictionary)
 
 
 func _on_lobby_member_status_received_callback(data: Dictionary):
-	if data.lobby_id != lobby_id:
+	if not is_valid() or data.lobby_id != lobby_id:
 		return
 	var member_id = data.target_user_id
 	var status = data.current_status
@@ -451,7 +451,7 @@ func _on_lobby_member_status_received_callback(data: Dictionary):
 
 
 func _on_lobby_interface_rtc_room_connection_changed_callback(data: Dictionary):
-	if data.lobby_id != lobby_id:
+	if not is_valid() or data.lobby_id != lobby_id:
 		return
 	
 	if data.local_user_id != HAuth.product_user_id:
@@ -461,13 +461,13 @@ func _on_lobby_interface_rtc_room_connection_changed_callback(data: Dictionary):
 	var disconnect_reason = data.disconnect_reason
 	_log.debug("Lobby rtc room connection changed: lobby_id=%s, is_connected=%s, disconnect_reason=%s" % [lobby_id, new_rtc_room_connected, EOS.result_str(disconnect_reason)])
 
-	_check_diff_and_set(self, "rtc_room_connected", new_rtc_room_connected)
+	HLog._check_diff_and_set(self, "rtc_room_connected", new_rtc_room_connected)
 
 	var mem = get_current_member()
 	if mem:
-		var did_update = _check_diff_and_set_dict(mem.rtc_state, "is_in_rtc_room", new_rtc_room_connected, "member:" + mem.product_user_id)
+		var did_update = HLog._check_diff_and_set_dict(mem.rtc_state, "is_in_rtc_room", new_rtc_room_connected, "member:" + mem.product_user_id)
 		if not new_rtc_room_connected:
-			did_update = _check_diff_and_set_dict(mem.rtc_state, "is_talking", false, "member:" + mem.product_user_id) or did_update
+			did_update = HLog._check_diff_and_set_dict(mem.rtc_state, "is_talking", false, "member:" + mem.product_user_id) or did_update
 		if did_update:
 			mem.rtc_state_updated.emit()
 		
@@ -475,7 +475,7 @@ func _on_lobby_interface_rtc_room_connection_changed_callback(data: Dictionary):
 
 
 func _on_lobby_interface_leave_lobby_requested_callback(data: Dictionary):
-	if data.lobby_id != lobby_id:
+	if not is_valid() or data.lobby_id != lobby_id:
 		return
 
 	_log.debug("Lobby leave requested from UI: lobby_id=%s" % lobby_id)
@@ -501,7 +501,7 @@ func _subscribe_rtc_events():
 	if not EOS.is_success(ret):
 		_log.error("Failed to get rtc room name: result_code=%s" % EOS.result_str(ret))
 	else:
-		did_update = _check_diff_and_set(self, "rtc_room_name", ret.rtc_room_name) or did_update
+		did_update = HLog._check_diff_and_set(self, "rtc_room_name", ret.rtc_room_name) or did_update
 	
 	# RTC connection status
 	var is_conn_opts = EOS.Lobby.IsRtcRoomConnectedOptions.new()
@@ -510,7 +510,7 @@ func _subscribe_rtc_events():
 	if not EOS.is_success(is_conn_ret):
 		_log.error("Failed to get rtc room connection status: result_code=%s" % EOS.result_str(is_conn_ret))
 	else:
-		did_update = _check_diff_and_set(self, "rtc_room_connected", is_conn_ret.is_connected) or did_update
+		did_update = HLog._check_diff_and_set(self, "rtc_room_connected", is_conn_ret.is_connected) or did_update
 	
 	# RTC room participant status changes
 	var notify_parti_status_opts = EOS.RTC.AddNotifyParticipantStatusChangedOptions.new()
@@ -528,7 +528,7 @@ func _subscribe_rtc_events():
 
 
 func _on_rtc_interface_participant_status_changed(data: Dictionary):
-	if data.room_name != rtc_room_name:
+	if not is_valid() or data.room_name != rtc_room_name:
 		return
 	
 	var participant_id = data.participant_id
@@ -550,7 +550,7 @@ func _on_rtc_interface_participant_status_changed(data: Dictionary):
 
 
 func _on_rtc_audio_participant_updated(data: Dictionary):
-	if data.room_name != rtc_room_name:
+	if not is_valid() or data.room_name != rtc_room_name:
 		return
 	
 	var participant_puid = data.participant_id
@@ -564,66 +564,18 @@ func _on_rtc_audio_participant_updated(data: Dictionary):
 		return
 
 	# Update talking status
-	var did_change = _check_diff_and_set_dict(mem.rtc_state, "is_talking", is_talking, "member:" + mem.product_user_id)
+	var did_change = HLog._check_diff_and_set_dict(mem.rtc_state, "is_talking", is_talking, "member:" + mem.product_user_id)
 
 	# Update audio output status for other players
 	if mem.product_user_id != HAuth.product_user_id:
-		did_change = _check_diff_and_set_dict(mem.rtc_state, "is_audio_output_disabled", is_audio_disabled, "member:" + mem.product_user_id) or did_change
+		did_change = HLog._check_diff_and_set_dict(mem.rtc_state, "is_audio_output_disabled", is_audio_disabled, "member:" + mem.product_user_id) or did_change
 	else:
 		# I could have been hard-muted by the lobby owner
-		did_change = _check_diff_and_set_dict(mem.rtc_state, "is_hard_muted", is_hard_muted, "member:" + mem.product_user_id) or did_change
+		did_change = HLog._check_diff_and_set_dict(mem.rtc_state, "is_hard_muted", is_hard_muted, "member:" + mem.product_user_id) or did_change
 
 	if did_change:
 		mem.rtc_state_updated.emit()
 		lobby_updated.emit()
 
-
-static func _check_diff_and_set(p_obj: Object, p_key, p_value, p_name = "") -> bool:
-	if p_key in p_obj:
-		var orig = p_obj.get(p_key)
-		p_obj.set(p_key, p_value)
-		if orig != p_value:
-			# print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
-			return true
-
-	return false
-			
-
-
-static func _check_diff_and_set_dict(p_dict: Dictionary, p_key, p_value, p_name = "") -> bool:
-	if p_dict.has(p_key):
-		var orig = p_dict[p_key]
-		p_dict[p_key] = p_value
-		if orig != p_value:
-			# print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
-			return true
-	return false
-
-
-static func _check_attr_diff(orig_attrs: Array, new_attrs: Array, p_name = "") -> void:
-	# TODO: comment when not debugging
-	return
-
-	# Build lookup maps for quick access using each attribute's unique "id"
-	var orig_map: Dictionary = {}
-	for attr in orig_attrs:
-		orig_map[attr.key] = attr
-	
-	var new_map: Dictionary = {}
-	for attr in new_attrs:
-		new_map[attr.key] = attr
-	
-	for id in orig_map.keys():
-		if not new_map.has(id):
-			print_rich("[color=yellow]CHANGED %s[/color]: attr removed: %s = (%s,%s)" % [p_name, id, orig_map[id].value, orig_map[id].visibility])
-		else:
-			var old_attr = orig_map[id]
-			var new_attr = new_map[id]
-			if not (old_attr.value == new_attr.value and old_attr.visibility == new_attr.visibility):
-				print_rich("[color=yellow]CHANGED %s[/color]: attr updated: %s = (%s,%s) -> (%s,%s)" % [p_name, id, old_attr.value, old_attr.visibility, new_attr.value, new_attr.visibility])
-	
-	for id in new_map.keys():
-		if not orig_map.has(id):
-			print_rich("[color=yellow]CHANGED %s[/color]: attr added: %s = (%s,%s)" % [p_name, id, new_map[id].value, new_map[id].visibility])
 
 #endregion

@@ -94,7 +94,7 @@ func mute_member_async() -> bool:
 			_log.error("Failed to update audio sending: result_code=%s" % EOS.result_str(ret))
 			return false
 		
-		var did_update = HLobby._check_diff_and_set_dict(rtc_state, "is_audio_output_disabled", ret.audio_status == EOS.RTCAudio.AudioStatus.Disabled, "member:" + product_user_id)
+		var did_update = HLog._check_diff_and_set_dict(rtc_state, "is_audio_output_disabled", ret.audio_status == EOS.RTCAudio.AudioStatus.Disabled, "member:" + product_user_id)
 		if did_update:
 			rtc_state_updated.emit()
 			_lobby.lobby_updated.emit()
@@ -114,7 +114,7 @@ func mute_member_async() -> bool:
 			_log.error("Failed to update audio receiving: result_code=%s" % EOS.result_str(ret))
 			return false
 		
-		var did_update = HLobby._check_diff_and_set_dict(rtc_state, "is_locally_muted", ret.audio_enabled == false, "member:" + product_user_id)
+		var did_update = HLog._check_diff_and_set_dict(rtc_state, "is_locally_muted", ret.audio_enabled == false, "member:" + product_user_id)
 		if did_update:
 			rtc_state_updated.emit()
 			_lobby.lobby_updated.emit()

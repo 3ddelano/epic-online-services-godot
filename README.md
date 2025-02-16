@@ -30,6 +30,7 @@ Following are the main classes in High Level Epic Online Services. They also hav
 - ### HStats
 - ### HLeaderboards
 - ### HLobbies
+- ### HLog
 
 A basic example of using High Level EOS:
 

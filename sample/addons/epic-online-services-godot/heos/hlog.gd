@@ -31,6 +31,55 @@ static func _log_level_str(level: LogLevel) -> String:
 	return ""
 
 
+static func _check_diff_and_set(p_obj: Object, p_key, p_value, p_name = "") -> bool:
+	if p_key in p_obj:
+		var orig = p_obj.get(p_key)
+		p_obj.set(p_key, p_value)
+		if orig != p_value:
+			if log_level <= LogLevel.VERBOSE:
+				print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
+			return true
+
+	return false
+
+
+static func _check_diff_and_set_dict(p_dict: Dictionary, p_key, p_value, p_name = "") -> bool:
+	if p_dict.has(p_key):
+		var orig = p_dict[p_key]
+		p_dict[p_key] = p_value
+		if orig != p_value:
+			if log_level <= LogLevel.VERBOSE:
+				print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
+			return true
+	return false
+
+
+static func _check_attr_diff(orig_attrs: Array, new_attrs: Array, p_name = "") -> void:
+	if log_level > LogLevel.VERBOSE:
+		return
+
+	var orig_map: Dictionary = {}
+	for attr in orig_attrs:
+		orig_map[attr.key] = attr
+	
+	var new_map: Dictionary = {}
+	for attr in new_attrs:
+		new_map[attr.key] = attr
+	
+	for id in orig_map.keys():
+		if not new_map.has(id):
+			print_rich("[color=yellow]CHANGED %s[/color]: attr removed: %s = (%s,%s)" % [p_name, id, orig_map[id].value, orig_map[id].visibility])
+		else:
+			var old_attr = orig_map[id]
+			var new_attr = new_map[id]
+			if not (old_attr.value == new_attr.value and old_attr.visibility == new_attr.visibility):
+				print_rich("[color=yellow]CHANGED %s[/color]: attr updated: %s = (%s,%s) -> (%s,%s)" % [p_name, id, old_attr.value, old_attr.visibility, new_attr.value, new_attr.visibility])
+	
+	for id in new_map.keys():
+		if not orig_map.has(id):
+			print_rich("[color=yellow]CHANGED %s[/color]: attr added: %s = (%s,%s)" % [p_name, id, new_map[id].value, new_map[id].visibility])
+
+
 class Logger extends RefCounted:
 	var clazz_name: String
 
