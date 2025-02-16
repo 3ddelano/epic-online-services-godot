@@ -12,7 +12,7 @@ func _ready() -> void:
 
 func _on_platform_initialized() -> void:
 	# Set logging categories and level
-	HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
+	HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Verbose)
 
 
 func log_msg(level: int, msg: String, category := ""):

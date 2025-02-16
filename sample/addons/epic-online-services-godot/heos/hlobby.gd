@@ -1,3 +1,4 @@
+## A high-level lobby wrapper for EOSG
 class_name HLobby
 extends BaseClass
 
@@ -6,7 +7,10 @@ extends BaseClass
 
 ## Emitted when either lobby data, attribute, members, member data or member attribute is updated
 signal lobby_updated
+
+## Emitted when the lobby was destroyed
 signal lobby_destroyed
+
 #endregion
 
 

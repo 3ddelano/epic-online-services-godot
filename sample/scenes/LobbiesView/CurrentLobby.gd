@@ -178,8 +178,8 @@ func _update_buttons():
 		
 	leave_lobby_btn.show()
 
-	# if cached_lobby.is_owner():
-	destroy_lobby_btn.show()
+	if cached_lobby.is_owner():
+		destroy_lobby_btn.show()
 
 	random_skin_btn.show()
 

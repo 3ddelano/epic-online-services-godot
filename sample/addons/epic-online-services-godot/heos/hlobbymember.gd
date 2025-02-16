@@ -1,5 +1,7 @@
+## A high-level lobby member wrapper for EOSG
 class_name HLobbyMember
 extends BaseClass
+
 
 #region Public vars
 
