@@ -117,6 +117,17 @@ func search_by_lobby_id_async(lobby_id: String):
 	return await search_async(search)
 
 
+## Search for lobby by bucket id.
+## Returns [Array] of [HLobby] or null
+func search_by_bucket_id_async(bucket_id: String):
+	_log.debug("Searching for lobbies by bucket id: bucket_id=%s" % bucket_id)
+	return await HLobbies.search_by_attribute_async({
+		key = EOS.Lobby.SEARCH_BUCKET_ID,
+		value = bucket_id,
+		comparison = EOS.ComparisonOp.Equal
+	})
+
+
 ## (Advanced) Create a new lobby search. Returns [EOSGLobbySearch] or null. Use [search_async] to perform the search.
 func create_search(opts: EOS.Lobby.CreateLobbySearchOptions):
 	_log.debug("Creating lobby search...")
