@@ -42,12 +42,12 @@ func update_ui():
 		var join_btn = PrimaryButton.instantiate()
 		grid.add_child(join_btn)
 		join_btn.text = "JOIN"
-		join_btn.pressed.connect(_on_lobby_join_pressed.bind(lobby.lobby_id))
+		join_btn.pressed.connect(_on_lobby_join_pressed.bind(lobby))
 
 
-func _on_lobby_join_pressed(lobby_id: String):
+func _on_lobby_join_pressed(p_lobby: HLobby):
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
-	var lobby = await HLobbies.join_by_id_async(lobby_id)
+	var lobby = await HLobbies.join_async(p_lobby)
 	if not lobby:
 		print("Failed to join lobby")
 		return

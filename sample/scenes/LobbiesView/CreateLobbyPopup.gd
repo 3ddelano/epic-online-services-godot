@@ -41,6 +41,9 @@ func _on_create_lobby_btn_pressed():
 	create_opts.enable_rtc_room = _rtc_voice_room_check_box.button_pressed
 	create_opts.permission_level = EOS.Lobby.LobbyPermissionLevel.PublicAdvertised if _public_check_box.button_pressed else EOS.Lobby.LobbyPermissionLevel.InviteOnly
 	create_opts.allow_invites = _allow_invites_check_box.button_pressed
+	create_opts.local_rtc_options = {
+		flags = EOS.RTC.JoinRoomFlags.EnableDataChannel
+	}
 
 	_create_lobby_btn.disabled = true
 	var lobby := await HLobbies.create_lobby_async(create_opts)

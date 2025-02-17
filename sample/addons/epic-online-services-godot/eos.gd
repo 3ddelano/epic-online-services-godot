@@ -3102,6 +3102,11 @@ class RTC:
 		Left,
 	}
 
+	enum JoinRoomFlags {
+		EnableEcho = 0x01,
+		EnableDataChannel = 0x04
+	}
+
 	class AddNotifyDisconnectedOptions extends BaseClass:
 		func _init():
 			super._init("AddNotifyDisconnectedOptions")
@@ -3159,7 +3164,7 @@ class RTC:
 		var client_base_url: String
 		var participant_token: String
 		var participant_id: String
-		var flags: int
+		var flags: int # JoinRoomFlags
 		var manual_audio_input_enabled: bool
 		var manual_audio_output_enabled: bool
 

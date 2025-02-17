@@ -36,17 +36,21 @@ func create_lobby_async(opts: EOS.Lobby.CreateLobbyOptions) -> HLobby:
 	return lobby
 
 
-## Join an existing lobby. Returns [HLobby] or [null]
-func join_by_id_async(lobby_id: String) -> HLobby:
+## Join an existing lobby by id. It should only be used if the lobby has had Join-by-ID enabled.
+## Additionally, Join-by-ID should only be enabled to support native invites on an integrated platform.
+## Returns [HLobby] or [null]
+func join_by_id_async(lobby_id: String, presence_enabled = false, local_rtc_options = null) -> HLobby:
 	_log.debug("Joining lobby by id: lobby_id=%s" % lobby_id)
 
 	var opts = EOS.Lobby.JoinLobbyByIdOptions.new()
 	opts.lobby_id = lobby_id
+	opts.presence_enabled = presence_enabled
+	opts.local_rtc_options = local_rtc_options
 	EOS.Lobby.LobbyInterface.join_lobby_by_id(opts)
 
-	var join_ret = await IEOS.lobby_interface_join_lobby_by_id_callback
-	if not EOS.is_success(join_ret):
-		_log.error("Failed to join lobby: result_code=%s" % EOS.result_str(join_ret))
+	var ret = await IEOS.lobby_interface_join_lobby_by_id_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to join lobby: result_code=%s" % EOS.result_str(ret))
 		return null
 
 	_log.debug("Lobby joined: lobby_id=%s" % lobby_id)
@@ -54,6 +58,31 @@ func join_by_id_async(lobby_id: String) -> HLobby:
 	var lobby = HLobby.new()
 	lobby.init_from_id(lobby_id)
 	return lobby
+
+
+## Join an existing lobby ex one returned from search. 
+## Returns [HLobby] or [null]
+func join_async(lobby: HLobby, presence_enabled = false, local_rtc_options = null):
+	if not lobby:
+		return null
+	_log.debug("Joining lobby ...")
+
+	var opts = EOS.Lobby.JoinLobbyOptions.new()
+	opts.lobby_details = lobby._lobby_details
+	opts.presence_enabled = presence_enabled
+	opts.local_rtc_options = local_rtc_options
+	EOS.Lobby.LobbyInterface.join_lobby(opts)
+
+	var ret = await IEOS.lobby_interface_join_lobby_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to join lobby: result_code=%s" % EOS.result_str(ret))
+		return null
+	
+	_log.debug("Lobby joined: lobby_id=%s" % ret.lobby_id)
+
+	var new_lobby = HLobby.new()
+	new_lobby.init_from_id(ret.lobby_id)
+	return new_lobby
 
 
 ## Search for public lobbies that a user is in.

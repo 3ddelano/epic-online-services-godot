@@ -43,6 +43,7 @@ var allow_join_by_id: bool
 var rejoin_after_kick_requires_invite: bool
 var allowed_platform_ids: Array
 
+var _lobby_details: EOSGLobbyDetails
 #endregion
 
 
@@ -327,13 +328,13 @@ func _copy_lobby_data():
 		_log.error("Failed to copy lobby details: result_code=%s" % EOS.result_str(copy_ret))
 		return
 
-	var lobby_details = copy_ret.lobby_details
-	_init_from_details(lobby_details)
+	_init_from_details(copy_ret.lobby_details)
 
 
 func _init_from_details(lobby_details: EOSGLobbyDetails):
 	_log.debug("Initializing from EOSGLobbyDetails")
 
+	_lobby_details = lobby_details
 	var copy_ret = lobby_details.copy_info()
 	if not EOS.is_success(copy_ret):
 		_log.error("Failed to copy lobby info: result_code=%s" % EOS.result_str(copy_ret))
@@ -489,6 +490,8 @@ func _subscribe_rtc_events():
 	var mem = get_member_by_product_user_id(HAuth.product_user_id)
 	if mem == null:
 		return
+	
+	_log.verbose("Subscribing to rtc events")
 	
 	
 	# _log.verbose("Subscribing to lobby rtc events")
