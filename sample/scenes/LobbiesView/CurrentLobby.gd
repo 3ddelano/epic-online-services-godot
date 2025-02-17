@@ -12,6 +12,7 @@ extends VBoxContainer
 @onready var random_skin_btn: Button = %RandomSkinBtn
 @onready var mute_unmute_btn: Button = %MuteUnmuteBtn
 
+const PRIMARY_BUTTON = preload("res://scenes/UI/PrimaryButton.tscn")
 
 const GRID_CONTAINER_LABELS_COUNT = 5
 
@@ -175,9 +176,16 @@ func _update_lobby_members():
 		talking_node.modulate = text_color
 		members.add_child(talking_node)
 
-		# TODO: add action button to kick, promote, shuffle skin
-		var action_label = Label.new()
-		members.add_child(action_label)
+		var actions_hbox = HBoxContainer.new()
+		
+		if cached_lobby.is_owner() and not mem.is_owner():
+			# Can promote
+			var promote_btn = PRIMARY_BUTTON.instantiate()
+			promote_btn.text = "Promote"
+			promote_btn.pressed.connect(_on_promote_btn_pressed.bind(mem))
+			actions_hbox.add_child(promote_btn)
+			
+		members.add_child(actions_hbox)
 
 
 func _update_buttons():
@@ -229,3 +237,10 @@ func _on_mute_unmute_btn_pressed():
 	var success = await mem.mute_member_async()
 	if not success:
 		print("mute/unmute failed")
+
+
+func _on_promote_btn_pressed(mem: HLobbyMember):
+	var success := await mem.promote_member_async()
+	if not success:
+		print("failed to promote member")
+		return

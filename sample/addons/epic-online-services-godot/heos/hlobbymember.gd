@@ -70,6 +70,11 @@ func is_muted() -> bool:
 		return rtc_state.is_locally_muted
 
 
+## Returns true if this member is the lobby owner
+func is_owner() -> bool:
+	return _lobby.owner_product_user_id == product_user_id
+
+
 ## Mute/Unmute this member.
 ## If the member is the current user, it will mute/unmute the audio output.
 ## If the member is a remote user, it will locally mute/unmute the remote user's audio.
@@ -140,6 +145,28 @@ func kick_member_async() -> bool:
 	
 	_log.debug("Kick member was successful: product_user_id=%s" % product_user_id)
 
+	return true
+
+
+## Promote another member to the lobby owner. Only the lobby owner can promote a member.
+func promote_member_async() -> bool:
+	if not _lobby.is_owner():
+		return false
+	
+	_log.debug("Promoting member: product_user_id=%s" % product_user_id)
+
+	var opts = EOS.Lobby.PromoteMemberOptions.new()
+	opts.lobby_id = _lobby.lobby_id
+	opts.target_user_id = product_user_id
+	EOS.Lobby.LobbyInterface.promote_member(opts)
+
+	var ret = await IEOS.lobby_interface_promote_member_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to promote member: result_code=%s" % EOS.result_str(ret))
+		return false
+	
+	_log.debug("Promote member was successful: product_user_id=%s" % product_user_id)
+	
 	return true
 
 

@@ -4,8 +4,22 @@ extends Node
 #region Public vars
 
 ## The maximum number of lobbies to return in search calls.
-## Except for search_async
+## Except for create_saerch and search_async
 var max_search_results = 25
+
+## Whether to show the lobby in the user's presence
+var presence_enabled = true
+
+## Local RTC options for the lobby
+## (Optional) Set this to a [Dictionary] to override the defaults.[br]
+## A [Dictionary] with keys: [br]
+## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
+## - use_manual_audio_input: [bool],[br]
+## - use_manual_audio_output: [bool],[br]
+## - local_audio_device_input_starts_muted: [bool]
+var local_rtc_options = {
+	flags = EOS.RTC.JoinRoomFlags.EnableDataChannel
+}
 
 #endregion
 
@@ -39,7 +53,7 @@ func create_lobby_async(opts: EOS.Lobby.CreateLobbyOptions) -> HLobby:
 ## Join an existing lobby by id. It should only be used if the lobby has had Join-by-ID enabled.
 ## Additionally, Join-by-ID should only be enabled to support native invites on an integrated platform.
 ## Returns [HLobby] or [null]
-func join_by_id_async(lobby_id: String, presence_enabled = false, local_rtc_options = null) -> HLobby:
+func join_by_id_async(lobby_id: String) -> HLobby:
 	_log.debug("Joining lobby by id: lobby_id=%s" % lobby_id)
 
 	var opts = EOS.Lobby.JoinLobbyByIdOptions.new()
@@ -62,7 +76,7 @@ func join_by_id_async(lobby_id: String, presence_enabled = false, local_rtc_opti
 
 ## Join an existing lobby ex one returned from search. 
 ## Returns [HLobby] or [null]
-func join_async(lobby: HLobby, presence_enabled = false, local_rtc_options = null):
+func join_async(lobby: HLobby):
 	if not lobby:
 		return null
 	_log.debug("Joining lobby ...")
