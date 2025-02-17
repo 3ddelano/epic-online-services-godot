@@ -2,20 +2,21 @@ class_name CreateLobbyPopup
 extends StyledPopupWindow
 
 
-@onready var _bucket_id: LineEdit = $VB/MC/VB/BucketId
-@onready var _map_option_btn: OptionButton = $VB/MC/VB/HBoxContainer/MapOptionBtn
-@onready var _max_players_options_btn: OptionButton = $VB/MC/VB/HBoxContainer/MaxPlayersOptionsBtn
-@onready var _public_check_box: CheckBox = $VB/MC/VB/HFlowContainer/PublicCheckBox
-@onready var _allow_invites_check_box: CheckBox = $VB/MC/VB/HFlowContainer/AllowInvitesCheckBox
-@onready var _presence_check_box: CheckBox = $VB/MC/VB/HFlowContainer/PresenceCheckBox
-@onready var _rtc_voice_room_check_box: CheckBox = $VB/MC/VB/HFlowContainer/RTCVoiceRoomCheckBox
-@onready var _create_lobby_btn: Button = $VB/MC/VB/CreateLobbyBtn
+@onready var _bucket_id: LineEdit = %BucketId
+@onready var _map_option_btn: OptionButton = %MapOptionBtn
+@onready var _max_players_options_btn: OptionButton = %MaxPlayersOptionsBtn
+@onready var _public_check_box: CheckBox = %PublicCheckBox
+@onready var _allow_invites_check_box: CheckBox = %AllowInvitesCheckBox
+@onready var _presence_check_box: CheckBox = %PresenceCheckBox
+@onready var _rtc_voice_room_check_box: CheckBox = %RTCVoiceRoomCheckBox
+@onready var _create_lobby_btn: Button = %CreateLobbyBtn
 
 
 func _ready() -> void:
 	super._ready()
 	_populate_options_btns()
 
+	_bucket_id.text_submitted.connect(func (_text): _on_create_lobby_btn_pressed())
 	_create_lobby_btn.pressed.connect(_on_create_lobby_btn_pressed)
 	_bucket_id.text_changed.connect(_on_bucket_id_text_changed)
 

@@ -1,16 +1,20 @@
 class_name CurrentLobby
 extends VBoxContainer
 
-@onready var id_label: LineEdit = $HBoxContainer/IdLabel
-@onready var owner_label: LineEdit = $HBoxContainer/OwnerLabel
-@onready var permission_label: LineEdit = $HBoxContainer2/PermissionLabel
-@onready var map_label: LineEdit = $HBoxContainer2/MapLabel
-@onready var members: GridContainer = $Members
+@onready var id_label: LineEdit = %IdLabel
+@onready var owner_label: LineEdit = %OwnerLabel
+@onready var permission_label: LineEdit = %PermissionLabel
+@onready var map_label: LineEdit = %MapLabel
+@onready var members: GridContainer = %Members
 @onready var destroy_lobby_btn: Button = %DestroyLobbyBtn
 @onready var random_map_btn: Button = %RandomMapBtn
 @onready var leave_lobby_btn: Button = %LeaveLobbyBtn
 @onready var random_skin_btn: Button = %RandomSkinBtn
 @onready var toggle_mute_btn: Button = %MuteUnmuteBtn
+@onready var chat_history_label: RichTextLabel = %ChatHistoryLabel
+@onready var chat_msg_line_edit: LineEdit = %ChatMsgLineEdit
+@onready var send_chat_btn: Button = %SendChatBtn
+
 
 const PRIMARY_BUTTON = preload("res://scenes/UI/PrimaryButton.tscn")
 
@@ -19,22 +23,29 @@ const GRID_CONTAINER_LABELS_COUNT = 5
 var cached_lobby := HLobby.new()
 
 
+enum RTCDataTypes {
+	CHAT_MSG = 1
+}
+
 func _ready() -> void:
 	destroy_lobby_btn.pressed.connect(_on_destroy_lobby_btn_pressed)
 	random_map_btn.pressed.connect(_on_random_map_btn_pressed)
 	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
 	random_skin_btn.pressed.connect(_on_random_skin_btn_pressed)
 	toggle_mute_btn.pressed.connect(_on_toggle_mute_btn_pressed)
+	chat_msg_line_edit.text_submitted.connect(func (_text): _on_send_chat_btn_pressed())
+	send_chat_btn.pressed.connect(_on_send_chat_btn_pressed)
 	
 
 func update(lobby: HLobby):
 	cached_lobby = lobby
 	cached_lobby.lobby_updated.connect(_update)
-	cached_lobby.kicked_from_lobby.connect(func ():
+	cached_lobby.kicked_from_lobby.connect(func():
 		_reset()
 		hide()
 	)
-	cached_lobby.lobby_owner_changed.connect(func ():
+	cached_lobby.rtc_data_received.connect(_on_rtc_data_received)
+	cached_lobby.lobby_owner_changed.connect(func():
 		if not cached_lobby.is_owner():
 			return
 
@@ -49,6 +60,7 @@ func update(lobby: HLobby):
 		lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, username_attr.value)
 		await lobby.update_async()
 	)
+	chat_history_label.text = ""
 	_update()
 
 
@@ -131,7 +143,9 @@ func _update_lobby_members():
 		var mem_name = "User %d" % randi_range(1000, 9999)
 		if display_name_attr:
 			mem_name = display_name_attr.value
-		name_label.text = "%s(%s)" % [mem_name, mem.product_user_id]
+		if not mem_name:
+			mem_name = "User"
+		name_label.text = "%s" % [mem_name]
 		members.add_child(name_label)
 
 		var is_owner_label = Label.new()
@@ -176,7 +190,8 @@ func _update_lobby_members():
 		talking_node.modulate = text_color
 		members.add_child(talking_node)
 
-		var actions_hbox = HBoxContainer.new()
+		var actions_container = GridContainer.new()
+		actions_container.columns = 2
 		
 		if cached_lobby.is_owner() and not mem.is_self():
 			if not mem.is_owner():
@@ -184,13 +199,13 @@ func _update_lobby_members():
 				var promote_btn = PRIMARY_BUTTON.instantiate()
 				promote_btn.text = "Promote"
 				promote_btn.pressed.connect(_on_promote_btn_pressed.bind(mem))
-				actions_hbox.add_child(promote_btn)
+				actions_container.add_child(promote_btn)
 			
 			# Can kick
 			var kick_btn = PRIMARY_BUTTON.instantiate()
 			kick_btn.text = "Kick"
 			kick_btn.pressed.connect(_on_kick_btn_pressed.bind(mem))
-			actions_hbox.add_child(kick_btn)
+			actions_container.add_child(kick_btn)
 
 			# Can toggle hard-mute
 			var toggle_hardmute_btn = PRIMARY_BUTTON.instantiate()
@@ -199,9 +214,9 @@ func _update_lobby_members():
 			else:
 				toggle_hardmute_btn.text = "Hard-mute"
 			toggle_hardmute_btn.pressed.connect(_on_toggle_hard_mute_btn_pressed.bind(mem))
-			actions_hbox.add_child(toggle_hardmute_btn)
+			actions_container.add_child(toggle_hardmute_btn)
 				
-		members.add_child(actions_hbox)
+		members.add_child(actions_container)
 
 
 func _update_buttons():
@@ -240,14 +255,14 @@ func _on_destroy_lobby_btn_pressed():
 func _on_random_skin_btn_pressed():
 	var skin_attr = cached_lobby.get_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
 	var current_skin = skin_attr.get("value", null)
-	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values(),current_skin))
+	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values(), current_skin))
 	await cached_lobby.update_async()
 
 
 func _on_random_map_btn_pressed():
 	var map_attr = cached_lobby.get_current_member_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
 	var current_map = map_attr.get("value", null)
-	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Maps.values(),current_map))
+	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Maps.keys(), current_map))
 	await cached_lobby.update_async()
 
 
@@ -279,3 +294,46 @@ func _on_toggle_hard_mute_btn_pressed(mem: HLobbyMember):
 	if not success:
 		print("failed to toggle member hard mute")
 		return
+	
+
+func _on_rtc_data_received(raw_data: PackedByteArray):
+	# We know we will get a Variant
+	# because thats what we send
+	var data = bytes_to_var(raw_data)
+	
+	if not (typeof(data) == TYPE_DICTIONARY and data.t):
+		print("Got invalid rtc data")
+		return
+	
+	var msg_type = data.t
+	
+	if msg_type == RTCDataTypes.CHAT_MSG:
+		chat_history_label.call_deferred("set_text", chat_history_label.text + data.u + ": " + data.m + "\n")
+
+
+func _make_chat_message_data(username: String, msg: String):
+	return {
+		t = RTCDataTypes.CHAT_MSG, 
+		u = username,
+		m = msg
+	}
+
+
+func _on_send_chat_btn_pressed():
+	var text = chat_msg_line_edit.text.strip_edges()
+	if not text:
+		return
+	
+	var mem = cached_lobby.get_current_member()
+	var username_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
+	var username = "User"
+	if username_attr and username_attr.value:
+		username = username_attr.value
+	
+	var data = _make_chat_message_data(username, text)
+	var ret := cached_lobby.rtc_send_data(data)
+	if not ret:
+		print("failed to send chat msg")
+		return
+	
+	chat_history_label.text += username + ": " + text + "\n"

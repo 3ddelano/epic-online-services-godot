@@ -44,6 +44,8 @@ var current_lobby: HLobby
 func _ready() -> void:
 	show_create_lobby_btn.pressed.connect(_on_show_create_lobby_btn_pressed)
 	current_lobby = HLobby.new()
+	
+	hide()
 
 	hide_search_results()
 	hide_current_lobby()
