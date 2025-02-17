@@ -3495,6 +3495,79 @@ class RTCAudio:
 			IEOS.rtc_audio_interface_update_sending_volume(options)
 
 
+class RTCData:
+	const MAX_PACKET_SIZE_BYTES = 1170
+
+	enum DataStatus {
+		## Data unsupported
+		Unsupported = 0,
+		## Data enabled
+		Enabled = 1,
+		## Data disabled
+		Disabled = 2
+	}
+	
+	class AddNotifyDataReceivedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyDataReceivedOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class AddNotifyParticipantUpdatedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyParticipantUpdatedOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+	class SendDataOptions extends BaseClass:
+		func _init():
+			super._init("SendDataOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var data: PackedByteArray
+	
+	class UpdateReceivingOptions extends BaseClass:
+		func _init():
+			super._init("UpdateReceivingOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var participant_id: String
+		var data_enabled: bool
+	
+	class UpdateSendingOptions extends BaseClass:
+		func _init():
+			super._init("UpdateSendingOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+		var data_enabled: bool
+
+	class RTCDataInterface:
+		static func add_notify_data_received(options: AddNotifyDataReceivedOptions) -> int:
+			return IEOS.rtc_data_interface_add_notify_data_received(options);
+		
+		static func add_notify_participant_updated(options: AddNotifyParticipantUpdatedOptions) -> int:
+			return IEOS.rtc_data_interface_add_notify_participant_updated(options);
+		
+		static func send_data(options: SendDataOptions) -> EOS.Result:
+			return IEOS.rtc_data_interface_send_data(options);
+		
+		static func remove_notify_data_received(notification_id: int) -> void:
+			IEOS.rtc_data_interface_remove_notify_data_received(notification_id)
+		
+		static func remove_notify_participant_updated(notification_id: int) -> void:
+			IEOS.rtc_data_interface_remove_notify_participant_updated(notification_id)
+		
+		static func update_receiving(options: UpdateReceivingOptions) -> void:
+			IEOS.rtc_data_interface_update_receiving(options);
+		
+		static func update_sending(options: UpdateSendingOptions) -> void:
+			IEOS.rtc_data_interface_update_sending(options);
+
 
 class AntiCheatServer:
 	class BeginSessionOptions extends BaseClass:
@@ -3865,6 +3938,9 @@ class Version:
 		static func get_constants() -> Dictionary:
 			return IEOS.version_interface_get_constants()
 
+
+
+const NotificationIdInvalid = 0
 
 
 enum Result {

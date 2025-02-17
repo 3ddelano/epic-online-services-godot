@@ -195,7 +195,7 @@ int IEOS::rtc_interface_add_notify_room_statistics_updated(Ref<RefCounted> p_opt
     options.ApiVersion = EOS_RTC_ADDNOTIFYROOMSTATISTICSUPDATED_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.RoomName = room_name.get_data();
-
+	
     return static_cast<int>(EOS_RTC_AddNotifyRoomStatisticsUpdated(s_rtcInterface, &options, (void *)*p_options, [](const EOS_RTC_RoomStatisticsUpdatedInfo *data) {
         Dictionary ret;
         ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);

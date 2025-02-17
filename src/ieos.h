@@ -19,6 +19,7 @@
 #include "eos_reports.h"
 #include "eos_rtc.h"
 #include "eos_rtc_audio.h"
+#include "eos_rtc_data.h"
 #include "eos_sanctions.h"
 #include "eos_sdk.h"
 #include "eos_sessions.h"
@@ -70,6 +71,7 @@ protected:
     EOS_HReports s_reportsInterface = nullptr;
     EOS_HRTC s_rtcInterface = nullptr;
     EOS_HRTCAudio s_rtcAudioInterface = nullptr;
+    EOS_HRTCData s_rtcDataInterface = nullptr;
     EOS_HSanctions s_sanctionsInterface = nullptr;
     EOS_HSessions s_sessionsInterface = nullptr;
     EOS_HStats s_statsInterface = nullptr;
@@ -498,6 +500,17 @@ public:
     void rtc_audio_interface_update_receiving_volume(Ref<RefCounted> options);
     void rtc_audio_interface_update_sending(Ref<RefCounted> options);
     void rtc_audio_interface_update_sending_volume(Ref<RefCounted> options);
+
+    // -----
+    // RTCData Interface
+    // -----
+    int rtc_data_interface_add_notify_data_received(Ref<RefCounted> options);
+    int rtc_data_interface_add_notify_participant_updated(Ref<RefCounted> options);
+    int rtc_data_interface_send_data(Ref<RefCounted> options);
+    void rtc_data_interface_remove_notify_data_received(int notification_id);
+    void rtc_data_interface_remove_notify_participant_updated(int notification_id);
+    void rtc_data_interface_update_receiving(Ref<RefCounted> options);
+    void rtc_data_interface_update_sending(Ref<RefCounted> options);
 
     // -----
     // RTC Interface
