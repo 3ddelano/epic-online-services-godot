@@ -2,12 +2,12 @@ class_name HLog
 extends RefCounted
 
 enum LogLevel {
-	VERBOSE = 1,
-	DEBUG,
-	INFO,
-	WARN,
+	OFF,
 	ERROR,
-	OFF
+	WARN,
+	INFO,
+	DEBUG,
+	VERBOSE,
 }
 
 static var log_level = LogLevel.INFO
@@ -36,7 +36,7 @@ static func _check_diff_and_set(p_obj: Object, p_key, p_value, p_name = "") -> b
 		var orig = p_obj.get(p_key)
 		p_obj.set(p_key, p_value)
 		if orig != p_value:
-			if log_level <= LogLevel.VERBOSE:
+			if log_level >= LogLevel.VERBOSE:
 				print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
 			return true
 
@@ -48,14 +48,14 @@ static func _check_diff_and_set_dict(p_dict: Dictionary, p_key, p_value, p_name 
 		var orig = p_dict[p_key]
 		p_dict[p_key] = p_value
 		if orig != p_value:
-			if log_level <= LogLevel.VERBOSE:
+			if log_level >= LogLevel.VERBOSE:
 				print_rich("[color=yellow]CHANGED %s[/color]: %s = %s -> %s" % [p_name, p_key, orig, p_value])
 			return true
 	return false
 
 
 static func _check_attr_diff(orig_attrs: Array, new_attrs: Array, p_name = "") -> void:
-	if log_level > LogLevel.VERBOSE:
+	if log_level < LogLevel.VERBOSE:
 		return
 
 	var orig_map: Dictionary = {}
@@ -102,7 +102,7 @@ class Logger extends RefCounted:
 		_log(LogLevel.ERROR, msg)
 	
 	func _log(level: LogLevel, msg: String) -> void:
-		if level >= HLog.log_level:
+		if level <= HLog.log_level:
 			var timestamp = Time.get_datetime_string_from_system(true, true)
 			print("%s [%s] [%s] %s" % [timestamp, HLog._log_level_str(level), clazz_name, msg])
 	

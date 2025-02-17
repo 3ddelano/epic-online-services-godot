@@ -154,7 +154,7 @@ func login_async(opts: EOS.Auth.LoginOptions) -> bool:
 		epic_account_id = auth_login_ret.selected_account_id
 	
 	if epic_account_id:
-		_log.info("Logged in with Epic Account ID: %s" % epic_account_id)
+		_log.info("Logged into Epic Account Services with Epic Account ID: %s" % epic_account_id)
 	
 	if not auto_connect_account:
 		logged_in_auth.emit()
@@ -235,7 +235,7 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 		product_user_id = login_ret.local_user_id
 	
 	if product_user_id:
-		_log.info("Logged in with Product User Id: %s" % product_user_id)
+		_log.info("Logged into Epic Games Services with Product User Id: %s" % product_user_id)
 		if auto_fetch_external_account:
 			get_external_account_async(opts.credentials.type)
 

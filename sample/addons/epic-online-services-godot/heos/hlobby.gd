@@ -14,6 +14,9 @@ signal kicked_from_lobby
 ## Emitted when another member is promoted to the lobby owner. Use get_owner to get the new owner
 signal lobby_owner_changed
 
+## Emitted when the current user in the lobby receives data through the RTC data channel
+signal rtc_data_received
+
 #endregion
 
 
@@ -43,7 +46,6 @@ var allow_join_by_id: bool
 var rejoin_after_kick_requires_invite: bool
 var allowed_platform_ids: Array
 
-var _lobby_details: EOSGLobbyDetails
 #endregion
 
 
@@ -52,6 +54,15 @@ var _lobby_details: EOSGLobbyDetails
 var _log = HLog.logger("HLobby")
 
 var _attributes_to_add = []
+var _lobby_details: EOSGLobbyDetails
+
+var _connected_to_lobby_events = false
+var _connected_to_rtc_events = false
+var _notif_rtc_parti_status_changed = EOS.NotificationIdInvalid
+var _notif_rtc_audio_parti_updated = EOS.NotificationIdInvalid
+var _notif_rtc_data_parti_updated = EOS.NotificationIdInvalid
+var _notif_rtc_data_data_received = EOS.NotificationIdInvalid
+
 #endregion
 
 
@@ -59,6 +70,7 @@ var _attributes_to_add = []
 
 func _init() -> void:
 	super._init("HLobby")
+
 #endregion
 
 
@@ -106,15 +118,19 @@ func init_from_id(p_lobby_id: String):
 
 	_copy_lobby_data()
 
-	IEOS.lobby_interface_lobby_update_received_callback.connect(_on_lobby_update_received_callback)
-	IEOS.lobby_interface_lobby_member_update_received_callback.connect(_on_lobby_interface_lobby_member_update_received_callback)
-	IEOS.lobby_interface_lobby_member_status_received_callback.connect(_on_lobby_member_status_received_callback)
-	IEOS.lobby_interface_rtc_room_connection_changed_callback.connect(_on_lobby_interface_rtc_room_connection_changed_callback)
-	IEOS.lobby_interface_leave_lobby_requested_callback.connect(_on_lobby_interface_leave_lobby_requested_callback)
+	if is_valid() and get_current_member() and not _connected_to_lobby_events:
+		_connected_to_lobby_events = true
+		IEOS.lobby_interface_lobby_update_received_callback.connect(_on_lobby_update_received_callback)
+		IEOS.lobby_interface_lobby_member_update_received_callback.connect(_on_lobby_interface_lobby_member_update_received_callback)
+		IEOS.lobby_interface_lobby_member_status_received_callback.connect(_on_lobby_member_status_received_callback)
+		IEOS.lobby_interface_rtc_room_connection_changed_callback.connect(_on_lobby_interface_rtc_room_connection_changed_callback)
+		IEOS.lobby_interface_leave_lobby_requested_callback.connect(_on_lobby_interface_leave_lobby_requested_callback)
 
-	# RTC
-	IEOS.rtc_interface_participant_status_changed.connect(_on_rtc_interface_participant_status_changed)
-	IEOS.rtc_audio_participant_updated.connect(_on_rtc_audio_participant_updated)
+		# RTC
+		IEOS.rtc_interface_participant_status_changed.connect(_on_rtc_interface_participant_status_changed)
+		IEOS.rtc_audio_participant_updated.connect(_on_rtc_audio_participant_updated)
+		IEOS.rtc_data_participant_updated.connect(_on_rtc_data_participant_updated)
+		IEOS.rtc_data_data_received.connect(_on_rtc_data_data_received)
 
 
 
@@ -264,6 +280,7 @@ func leave_async() -> bool:
 		return false
 	
 	_log.debug("Leave lobby successful: lobby_id=%s" % lobby_id)
+	_disconnect_from_signals()
 	return true
 
 
@@ -289,6 +306,7 @@ func destroy_async() -> bool:
 	_log.debug("Destroy lobby successful: lobby_id=%s" % lobby_id)
 
 	lobby_id = ""
+	_disconnect_from_signals()
 	kicked_from_lobby.emit()
 	return true
 
@@ -313,11 +331,27 @@ func can_invite(p_product_user_id: String) -> bool:
 	return true
 
 
+## Send data as a Variant to all users in the lobby's RTC data channel.
+## Note: max packet size is [const EOS.RTCData.MAX_PACKET_SIZE_BYTES] bytes
+## This does not encode objects by default. Use rtc_send_data_raw
+## to encode arbitary data.
+func rtc_send_data(data: Variant) -> bool: 
+	return rtc_send_data_raw(var_to_bytes(data))
+
+
+## Send raw bytes as PackedByteArray to all users in the lobby's RTC data channel
+## Note: max packet size is [const EOS.RTCData.MAX_PACKET_SIZE_BYTES] bytes
+func rtc_send_data_raw(data: PackedByteArray) -> bool:
+	var opts = EOS.RTCData.SendDataOptions.new()
+	opts.room_name = rtc_room_name
+	opts.data = data
+	var res = EOS.RTCData.RTCDataInterface.send_data(opts)
+	return EOS.is_success(res)
+
 #endregion
 
 
 #region Private methods
-
 
 func _copy_lobby_data():
 	var copy_opts = EOS.Lobby.CopyLobbyDetailsOptions.new()
@@ -439,6 +473,7 @@ func _on_lobby_member_status_received_callback(data: Dictionary):
 		if status == EOS.Lobby.LobbyMemberStatus.Closed or status == EOS.Lobby.LobbyMemberStatus.Kicked or status == EOS.Lobby.LobbyMemberStatus.Disconnected:
 			_log.debug("Kicked from lobby: lobby_id=%s" % lobby_id)
 			lobby_id = ""
+			_disconnect_from_signals()
 			kicked_from_lobby.emit()
 			update_lobby = false
 
@@ -515,16 +550,31 @@ func _subscribe_rtc_events():
 	else:
 		did_update = HLog._check_diff_and_set(self, "rtc_room_connected", is_conn_ret.is_connected) or did_update
 	
-	# RTC room participant status changes
-	var notify_parti_status_opts = EOS.RTC.AddNotifyParticipantStatusChangedOptions.new()
-	notify_parti_status_opts.room_name = rtc_room_name
-	EOS.RTC.RTCInterface.add_notify_participant_status_changed(notify_parti_status_opts)
+
+	if rtc_room_name and not _connected_to_rtc_events:
+		_connected_to_rtc_events = true
 	
-	# RTC audio updates
-	var notify_participant_updated_opts = EOS.RTCAudio.AddNotifyParticipantUpdatedOptions.new()
-	notify_participant_updated_opts.room_name = rtc_room_name
-	EOS.RTCAudio.RTCAudioInterface.add_notify_participant_updated(notify_participant_updated_opts)
-	
+		# RTC room participant status changes
+		var notify_parti_status_opts = EOS.RTC.AddNotifyParticipantStatusChangedOptions.new()
+		notify_parti_status_opts.room_name = rtc_room_name
+		_notif_rtc_parti_status_changed = EOS.RTC.RTCInterface.add_notify_participant_status_changed(notify_parti_status_opts)
+		
+		# RTC audio updates
+		var notify_audio_parti_updated = EOS.RTCAudio.AddNotifyParticipantUpdatedOptions.new()
+		notify_audio_parti_updated.room_name = rtc_room_name
+		_notif_rtc_audio_parti_updated = EOS.RTCAudio.RTCAudioInterface.add_notify_participant_updated(notify_audio_parti_updated)
+
+
+		# RTC Data participant updated
+		var notify_rtc_data_parti_updated = EOS.RTCData.AddNotifyParticipantUpdatedOptions.new()
+		notify_rtc_data_parti_updated.room_name = rtc_room_name
+		_notif_rtc_data_parti_updated = EOS.RTCData.RTCDataInterface.add_notify_participant_updated(notify_rtc_data_parti_updated)
+
+		# RTC Data data received
+		var notify_data_received_opts = EOS.RTCData.AddNotifyDataReceivedOptions.new()
+		notify_data_received_opts.room_name = rtc_room_name
+		_notif_rtc_data_data_received = EOS.RTCData.RTCDataInterface.add_notify_data_received(notify_data_received_opts)
+		
 	if did_update:
 		# _log.verbose("Lobby rtc values updated: lobby_id=%s, rtc_room_name=%s, rtc_room_connected=%s" % [lobby_id, rtc_room_name, rtc_room_connected])
 		lobby_updated.emit()
@@ -580,5 +630,49 @@ func _on_rtc_audio_participant_updated(data: Dictionary):
 		mem.rtc_state_updated.emit()
 		lobby_updated.emit()
 
+
+func _on_rtc_data_participant_updated(data: Dictionary):
+	if not is_valid() or data.room_name != rtc_room_name:
+		return
+	
+	var participant_puid = data.participant_id
+	var data_status = data.data_status
+
+	_log.debug("Got rtc data participant update: participant_id=%s, data_status=%s" % [participant_puid, EOS.RTCData.DataStatus.find_key(data_status)])
+
+
+func _on_rtc_data_data_received(p_data: Dictionary):
+	if not is_valid() or p_data.room_name != rtc_room_name:
+		return
+	
+	rtc_data_received.emit(p_data.data)
+
+
+func _disconnect_from_signals() -> void:
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_update_received_callback", _on_lobby_interface_lobby_member_update_received_callback)
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_member_update_received_callback", _on_lobby_interface_lobby_member_update_received_callback)
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_member_status_received_callback", _on_lobby_member_status_received_callback)
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_rtc_room_connection_changed_callback", _on_lobby_interface_rtc_room_connection_changed_callback)
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_leave_lobby_requested_callback", _on_lobby_interface_leave_lobby_requested_callback)
+
+	# RTC
+	_disconnect_signal_if_connected(IEOS, "rtc_interface_participant_status_changed", _on_rtc_interface_participant_status_changed)
+	_disconnect_signal_if_connected(IEOS, "rtc_audio_participant_updated", _on_rtc_audio_participant_updated)
+	_disconnect_signal_if_connected(IEOS, "rtc_data_participant_updated", _on_rtc_data_participant_updated)
+	_disconnect_signal_if_connected(IEOS, "rtc_data_data_received", _on_rtc_data_data_received)
+
+	if _notif_rtc_parti_status_changed != EOS.NotificationIdInvalid:
+		EOS.RTC.RTCInterface.remove_notify_participant_status_changed(_notif_rtc_parti_status_changed)
+	if _notif_rtc_audio_parti_updated != EOS.NotificationIdInvalid:
+		EOS.RTCAudio.RTCAudioInterface.remove_notify_participant_updated(_notif_rtc_audio_parti_updated)
+	if _notif_rtc_data_parti_updated != EOS.NotificationIdInvalid:
+		EOS.RTCData.RTCDataInterface.remove_notify_participant_updated(_notif_rtc_data_parti_updated)
+	if _notif_rtc_data_data_received != EOS.NotificationIdInvalid:
+		EOS.RTCData.RTCDataInterface.remove_notify_data_received(_notif_rtc_data_data_received)
+
+
+func _disconnect_signal_if_connected(p_obj, p_signal_name, p_callback):
+	if p_obj.is_connected(p_signal_name, p_callback):
+		p_obj.disconnect(p_signal_name, p_callback)
 
 #endregion
