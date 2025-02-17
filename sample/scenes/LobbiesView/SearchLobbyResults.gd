@@ -52,7 +52,7 @@ func _on_lobby_join_pressed(p_lobby: HLobby):
 		print("Failed to join lobby")
 		return
 	
-	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values()))
 	lobby.add_current_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
 	lobbies_view.hide_search_results()
 	

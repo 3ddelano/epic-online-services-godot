@@ -70,6 +70,11 @@ func is_muted() -> bool:
 		return rtc_state.is_locally_muted
 
 
+## Returns true if this member is hard muted
+func is_hard_muted() -> bool:
+	return rtc_state.is_hard_muted
+
+
 ## Returns true if this member is the lobby owner
 func is_owner() -> bool:
 	return _lobby.owner_product_user_id == product_user_id
@@ -78,7 +83,7 @@ func is_owner() -> bool:
 ## Mute/Unmute this member.
 ## If the member is the current user, it will mute/unmute the audio output.
 ## If the member is a remote user, it will locally mute/unmute the remote user's audio.
-func mute_member_async() -> bool:
+func toggle_mute_member_async() -> bool:
 	var _is_muted = is_muted()
 	var action = "Unmuting" if _is_muted else "Muting"
 
@@ -127,6 +132,32 @@ func mute_member_async() -> bool:
 	return true
 
 
+## Hard mute this member in the lobby, can't speak but can hear other members of the lobby
+func toggle_hard_mute_member_async() -> bool:
+	if not _lobby.is_owner():
+		return false
+	var _is_hard_muted = is_hard_muted()
+	var action = "Un hard-muting" if _is_hard_muted else "Hard-muting"
+	_log.debug("%s member: product_user_id=%s" % [action, product_user_id])
+
+	var opts := EOS.Lobby.HardMuteMemberOptions.new()
+	opts.lobby_id = _lobby.lobby_id
+	opts.target_user_id = product_user_id
+	opts.hard_mute = not _is_hard_muted
+	EOS.Lobby.LobbyInterface.hard_mute_member(opts)
+
+	var ret = await IEOS.lobby_interface_hard_mute_member_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to %s member: result_code=%s" % [action, EOS.result_str(ret)])
+		return false
+	
+	rtc_state.is_hard_muted = not _is_hard_muted
+	rtc_state_updated.emit()
+	_lobby.lobby_updated.emit()
+	
+	return true
+
+
 ## Kick this member from the lobby. Only lobby owner can kick a member.
 func kick_member_async() -> bool:
 	if not _lobby.is_owner():
@@ -135,6 +166,7 @@ func kick_member_async() -> bool:
 	_log.debug("Kicking member: product_user_id=%s" % product_user_id)
 
 	var opts = EOS.Lobby.KickMemberOptions.new()
+	opts.lobby_id = _lobby.lobby_id
 	opts.target_user_id = product_user_id
 
 	EOS.Lobby.LobbyInterface.kick_member(opts)

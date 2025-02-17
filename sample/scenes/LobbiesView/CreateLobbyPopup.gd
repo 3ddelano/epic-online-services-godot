@@ -57,7 +57,7 @@ func _on_create_lobby_btn_pressed():
 	lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, HAuth.display_name)
 
 	lobby.add_current_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
-	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values()))
 	
 	await lobby.update_async()
 

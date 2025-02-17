@@ -10,7 +10,7 @@ extends VBoxContainer
 @onready var random_map_btn: Button = %RandomMapBtn
 @onready var leave_lobby_btn: Button = %LeaveLobbyBtn
 @onready var random_skin_btn: Button = %RandomSkinBtn
-@onready var mute_unmute_btn: Button = %MuteUnmuteBtn
+@onready var toggle_mute_btn: Button = %MuteUnmuteBtn
 
 const PRIMARY_BUTTON = preload("res://scenes/UI/PrimaryButton.tscn")
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 	random_map_btn.pressed.connect(_on_random_map_btn_pressed)
 	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
 	random_skin_btn.pressed.connect(_on_random_skin_btn_pressed)
-	mute_unmute_btn.pressed.connect(_on_mute_unmute_btn_pressed)
+	toggle_mute_btn.pressed.connect(_on_toggle_mute_btn_pressed)
 	
 
 func update(lobby: HLobby):
@@ -74,7 +74,7 @@ func _reset_buttons():
 	random_map_btn.hide()
 	leave_lobby_btn.hide()
 	random_skin_btn.hide()
-	mute_unmute_btn.hide()
+	toggle_mute_btn.hide()
 
 
 func _update():
@@ -178,13 +178,29 @@ func _update_lobby_members():
 
 		var actions_hbox = HBoxContainer.new()
 		
-		if cached_lobby.is_owner() and not mem.is_owner():
-			# Can promote
-			var promote_btn = PRIMARY_BUTTON.instantiate()
-			promote_btn.text = "Promote"
-			promote_btn.pressed.connect(_on_promote_btn_pressed.bind(mem))
-			actions_hbox.add_child(promote_btn)
+		if cached_lobby.is_owner() and not mem.is_self():
+			if not mem.is_owner():
+				# Can promote
+				var promote_btn = PRIMARY_BUTTON.instantiate()
+				promote_btn.text = "Promote"
+				promote_btn.pressed.connect(_on_promote_btn_pressed.bind(mem))
+				actions_hbox.add_child(promote_btn)
 			
+			# Can kick
+			var kick_btn = PRIMARY_BUTTON.instantiate()
+			kick_btn.text = "Kick"
+			kick_btn.pressed.connect(_on_kick_btn_pressed.bind(mem))
+			actions_hbox.add_child(kick_btn)
+
+			# Can toggle hard-mute
+			var toggle_hardmute_btn = PRIMARY_BUTTON.instantiate()
+			if mem.is_hard_muted():
+				toggle_hardmute_btn.text = "Un hard-mute"
+			else:
+				toggle_hardmute_btn.text = "Hard-mute"
+			toggle_hardmute_btn.pressed.connect(_on_toggle_hard_mute_btn_pressed.bind(mem))
+			actions_hbox.add_child(toggle_hardmute_btn)
+				
 		members.add_child(actions_hbox)
 
 
@@ -200,7 +216,10 @@ func _update_buttons():
 	leave_lobby_btn.show()
 	random_skin_btn.show()
 	if cached_lobby.rtc_room_enabled:
-		mute_unmute_btn.show()
+		toggle_mute_btn.show()
+	
+	if cached_lobby and cached_lobby.get_current_member():
+		toggle_mute_btn.text = "Unmute" if cached_lobby.get_current_member().is_muted() else "Mute"
 
 
 func _on_leave_lobby_btn_pressed():
@@ -219,22 +238,26 @@ func _on_destroy_lobby_btn_pressed():
 
 
 func _on_random_skin_btn_pressed():
-	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, LobbiesView.Skins.values().pick_random())
+	var skin_attr = cached_lobby.get_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
+	var current_skin = skin_attr.get("value", null)
+	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values(),current_skin))
 	await cached_lobby.update_async()
 
 
 func _on_random_map_btn_pressed():
-	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, LobbiesView.Maps.keys().pick_random())
+	var map_attr = cached_lobby.get_current_member_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
+	var current_map = map_attr.get("value", null)
+	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Maps.values(),current_map))
 	await cached_lobby.update_async()
 
 
-func _on_mute_unmute_btn_pressed():
+func _on_toggle_mute_btn_pressed():
 	var mem = cached_lobby.get_current_member()
 	if not mem:
 		print("failed to get member")
 		return
 	
-	var success = await mem.mute_member_async()
+	var success := await mem.toggle_mute_member_async()
 	if not success:
 		print("mute/unmute failed")
 
@@ -243,4 +266,16 @@ func _on_promote_btn_pressed(mem: HLobbyMember):
 	var success := await mem.promote_member_async()
 	if not success:
 		print("failed to promote member")
+		return
+
+func _on_kick_btn_pressed(mem: HLobbyMember):
+	var success := await mem.kick_member_async()
+	if not success:
+		print("failed to kick member")
+		return
+
+func _on_toggle_hard_mute_btn_pressed(mem: HLobbyMember):
+	var success := await mem.toggle_hard_mute_member_async()
+	if not success:
+		print("failed to toggle member hard mute")
 		return

@@ -21,3 +21,13 @@ func set_view(view_name: String):
 var network_image_cache = {
 	# url: Texture
 }
+
+
+func get_new_random(arr: Array, cur = null):
+	if arr.size() == 1:
+		return arr[0]
+	
+	var new_elm = arr.pick_random()
+	while cur != null and cur == new_elm:
+		new_elm = arr.pick_random()
+	return new_elm
