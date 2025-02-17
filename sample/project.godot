@@ -20,6 +20,13 @@ config/icon="res://logo.png"
 Env="*res://scripts/Env.gd"
 Store="*res://scripts/Store.gd"
 EOSGRuntime="*res://addons/epic-online-services-godot/runtime.gd"
+HPlatform="*res://addons/epic-online-services-godot/heos/hplatform.gd"
+HAuth="*res://addons/epic-online-services-godot/heos/hauth.gd"
+HAchievements="*res://addons/epic-online-services-godot/heos/hachievements.gd"
+HFriends="*res://addons/epic-online-services-godot/heos/hfriends.gd"
+HStats="*res://addons/epic-online-services-godot/heos/hstats.gd"
+HLeaderboards="*res://addons/epic-online-services-godot/heos/hleaderboards.gd"
+HLobbies="*res://addons/epic-online-services-godot/heos/hlobbies.gd"
 
 [display]
 
@@ -41,6 +48,7 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.121569, 0.121569, 0.121569, 1)
 environment/defaults/default_environment="res://default_env.tres"

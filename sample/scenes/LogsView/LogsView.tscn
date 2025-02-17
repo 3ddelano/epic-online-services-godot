@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" path="res://fonts/roboto-13r.tres" id="1"]
 [ext_resource type="Script" path="res://scenes/LogsView/LogsView.gd" id="2"]
-[ext_resource type="FontFile" uid="uid://bvjo321fa54x8" path="res://fonts/Roboto-Bold.ttf" id="3_xmddo"]
+[ext_resource type="FontFile" uid="uid://djdr1hyqtgka6" path="res://fonts/Roboto-Bold.ttf" id="3_xmddo"]
 
 [sub_resource type="StyleBoxFlat" id="5"]
 bg_color = Color(0.0627451, 0.0627451, 0.0627451, 1)

@@ -13,23 +13,20 @@ var stats = []
 
 func _ready() -> void:
 	visibility_changed.connect(_on_query_stats)
-	Store.logout_success.connect(_on_logout_success)
-	IEOS.stats_interface_query_stats_callback.connect(_on_query_stats_callback)
-	IEOS.stats_interface_ingest_stat_callback.connect(_on_ingest_stat_callback)
+	HAuth.logged_out.connect(_on_logged_out)
 
 	stat_name.text_changed.connect(_on_stat_name_text_changed)
 	ingest_btn.pressed.connect(_on_ingest_btn_pressed)
 	refresh_my_stats_btn.pressed.connect(_on_query_stats)
 
+
 func _on_query_stats():
 	if not visible: return
+	stats = await HStats.get_stats_async()
+	_rebuild_ui()
 
-	var query_opts = EOS.Stats.QueryStatsOptions.new()
-	query_opts.local_user_id = Store.product_user_id
-	query_opts.target_user_id = Store.product_user_id
-	EOS.Stats.StatsInterface.query_stats(query_opts)
 
-func _on_logout_success():
+func _on_logged_out():
 	stats = []
 	_rebuild_ui()
 
@@ -42,45 +39,17 @@ func _on_stat_name_text_changed(new_text: String):
 func _on_ingest_btn_pressed():
 	ingest_stat(stat_name.text, ingest_amount.value)
 
-func _on_query_stats_callback(data: Dictionary):
-	print("--- Stats: query_stats_callback: ", EOS.result_str(data))
-
-	var count_opts = EOS.Stats.GetStatsCountOptions.new()
-	count_opts.target_user_id = Store.product_user_id
-	var stats_count: int = EOS.Stats.StatsInterface.get_stats_count(count_opts)
-
-	stats = []
-	for i in range(stats_count):
-		var copy_opts = EOS.Stats.CopyStatByIndexOptions.new()
-		copy_opts.target_user_id = Store.product_user_id
-		copy_opts.stat_index = i
-
-		var ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_opts)
-		if ret.result_code != EOS.Result.Success:
-			print("--- Stats: copy_stat_by_index: Invalid stat: ", ret)
-		else:
-			stats.append(ret.stat)
-	_rebuild_ui()
 
 func ingest_stat(_stat_name: String, _ingest_amount: int):
 	status_label.text = "Ingesting stat..."
-	var ingest_opts = EOS.Stats.IngestStatOptions.new()
-	ingest_opts.local_user_id = Store.product_user_id
-	ingest_opts.target_user_id = Store.product_user_id
-	ingest_opts.stats = [
-		{stat_name = _stat_name, ingest_amount = _ingest_amount},
-	]
-	EOS.Stats.StatsInterface.ingest_stat(ingest_opts)
-
-func _on_ingest_stat_callback(data: Dictionary):
-	print("--- Stats: ingest_stat_callback: ", EOS.result_str(data))
-
-	if data.result_code != EOS.Result.Success:
-		status_label.text = "Ingesting Failed: " + EOS.result_str(data)
+	var ret := await HStats.ingest_stat_async(_stat_name, _ingest_amount)
+	if not EOS.is_success(ret):
+		status_label.text = "Ingesting Failed: " + EOS.result_str(ret)
 		return
-
+	
 	status_label.text = "Ingesting Success"
 	_on_query_stats()
+	
 
 func _rebuild_ui():
 	var base_bbcode = """[table=4]

@@ -1,91 +1,68 @@
 class_name CurrentLobby
 extends VBoxContainer
 
-@onready var id_label: LineEdit = $HBoxContainer/IdLabel
-@onready var owner_label: LineEdit = $HBoxContainer/OwnerLabel
-@onready var permission_label: LineEdit = $HBoxContainer2/PermissionLabel
-@onready var map_label: LineEdit = $HBoxContainer2/MapLabel
-@onready var members: GridContainer = $Members
+@onready var id_label: LineEdit = %IdLabel
+@onready var owner_label: LineEdit = %OwnerLabel
+@onready var permission_label: LineEdit = %PermissionLabel
+@onready var map_label: LineEdit = %MapLabel
+@onready var members: GridContainer = %Members
+@onready var destroy_lobby_btn: Button = %DestroyLobbyBtn
+@onready var random_map_btn: Button = %RandomMapBtn
+@onready var leave_lobby_btn: Button = %LeaveLobbyBtn
+@onready var random_skin_btn: Button = %RandomSkinBtn
+@onready var toggle_mute_btn: Button = %MuteUnmuteBtn
+@onready var chat_history_label: RichTextLabel = %ChatHistoryLabel
+@onready var chat_msg_line_edit: LineEdit = %ChatMsgLineEdit
+@onready var send_chat_btn: Button = %SendChatBtn
+
+
+const PRIMARY_BUTTON = preload("res://scenes/UI/PrimaryButton.tscn")
 
 const GRID_CONTAINER_LABELS_COUNT = 5
 
-## Handles async querying of values with cache
-class QueryCache:
-	signal query_finished(key, value)
-	
-	var query_fn: Callable
-	var values = {}
-	
-	var _current_queries = {}
-	
-	func _init(p_query_fn: Callable):
-		query_fn = p_query_fn
-	
-	func get_value(key, default=null):
-		if values.has(key):
-			return values[key]
-		
-		_query(key)
-		
-		return default
-	
-	func _query(key):
-		if _current_queries.has(key):
-			return
-		
-		_current_queries[key] = true
-		var value = await query_fn.call(key)
-		values[key] = value
-		_current_queries.erase(key)
-		query_finished.emit(key, value)
+var cached_lobby := HLobby.new()
 
-## Product User Ids to Epic Account Ids
-@onready var account_mappings = QueryCache.new(_query_account_mapping)
 
-## Epic Account Ids to display name
-@onready var display_names = QueryCache.new(_query_display_name)
-
-var cached_lobby := LobbiesView.GameLobby.new()
+enum RTCDataTypes {
+	CHAT_MSG = 1
+}
 
 func _ready() -> void:
-	account_mappings.query_finished.connect(func(key, value):
-		_update()
-	)
-	display_names.query_finished.connect(func(key, value):
-		_update()
-	)
+	destroy_lobby_btn.pressed.connect(_on_destroy_lobby_btn_pressed)
+	random_map_btn.pressed.connect(_on_random_map_btn_pressed)
+	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
+	random_skin_btn.pressed.connect(_on_random_skin_btn_pressed)
+	toggle_mute_btn.pressed.connect(_on_toggle_mute_btn_pressed)
+	chat_msg_line_edit.text_submitted.connect(func (_text): _on_send_chat_btn_pressed())
+	send_chat_btn.pressed.connect(_on_send_chat_btn_pressed)
 	
-	IEOS.rtc_interface_disconnected.connect(func(data: Dictionary):
-		print("--- Lobbies: RTC disconnected: ", data)
-	)
-	IEOS.rtc_interface_participant_status_changed.connect(func(data: Dictionary):
-		print("--- Lobbies: RTC participant status changed: ", data)
 
-		var status_text="Joined"
-		if data["participant_status"] == EOS.RTC.ParticipantStatus.Left:
-			status_text="Left"
-
-		#if cached_lobby.is_valid() and cached_lobby.is_rtc_room_enabled():
-			#if cached_lobby.rtc_room_name == data["room_name"]:
-				# TODO: update the member's status
-				#pass
-	)
-	# IEOS.rtc_audio_participant_updated.connect(_on_rtc_audio_participant_updated)
-
-	if not cached_lobby.is_valid():
-		hide()
-	else:
-		show()
-
-func update(lobby: LobbiesView.GameLobby):
+func update(lobby: HLobby):
 	cached_lobby = lobby
+	cached_lobby.lobby_updated.connect(_update)
+	cached_lobby.kicked_from_lobby.connect(func():
+		_reset()
+		hide()
+	)
+	cached_lobby.rtc_data_received.connect(_on_rtc_data_received)
+	cached_lobby.lobby_owner_changed.connect(func():
+		if not cached_lobby.is_owner():
+			return
+
+		var mem = cached_lobby.get_owner()
+		if not mem:
+			return
+		
+		var username_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
+		if not username_attr:
+			return
+		
+		lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, username_attr.value)
+		await lobby.update_async()
+	)
+	chat_history_label.text = ""
 	_update()
 
-func _reset_lobby_members():
-	var cnt_nodes_to_free = members.get_child_count() - GRID_CONTAINER_LABELS_COUNT
-	for i in range(cnt_nodes_to_free):
-		var node = members.get_child(GRID_CONTAINER_LABELS_COUNT + i)
-		node.queue_free()
 
 func _reset():
 	id_label.text = "Id: ?"
@@ -93,75 +70,45 @@ func _reset():
 	permission_label.text = "Permission: ?"
 	map_label.text = "Map: ?"
 	_reset_lobby_members()
+	_reset_buttons()
 
-func _update_lobby_members():
-	var connected_members = 0
-	for mem in cached_lobby.members:
-		if mem.rtc_state.is_in_rtc_room:
-			connected_members += 1
 
-	for mem in cached_lobby.members:
-		var name_label = Label.new()
-		name_label.text = "%s(%s)" % [mem.display_name, mem.product_id]
-		members.add_child(name_label)
+func _reset_lobby_members():
+	var idx = members.get_child_count() - 1
+	while idx >= GRID_CONTAINER_LABELS_COUNT:
+		var node = members.get_child(idx)
+		node.queue_free()
+		idx -= 1
 
-		var isonwer_label = Label.new()
-		isonwer_label.text = "Owner" if cached_lobby.is_owner(mem.product_id) else "Member"
-		members.add_child(isonwer_label)
 
-		var skin_label = Label.new()
-		skin_label.text = "?"
-		var skin_attr = mem.get_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
-		if skin_attr != null:
-			skin_label.text = skin_attr.data.value
-		members.add_child(skin_label)
+func _reset_buttons():
+	destroy_lobby_btn.hide()
+	random_map_btn.hide()
+	leave_lobby_btn.hide()
+	random_skin_btn.hide()
+	toggle_mute_btn.hide()
 
-		var talking_status = "Unknown"
-		var text_color = Color.DARK_GRAY
-		if not cached_lobby.rtc_room_connected:
-			pass
-		elif not mem.rtc_state.is_in_rtc_room:
-			talking_status = "Disconnected"
-		elif mem.rtc_state.is_hard_muted:
-			talking_status = "Hard Muted"
-			text_color = Color.RED
-		elif mem.rtc_state.is_locally_muted:
-			talking_status = "Muted"
-			text_color = Color.RED
-		elif mem.rtc_state.is_audio_output_disabled:
-			talking_status = "Self muted"
-			text_color = Color.DARK_RED
-		elif mem.rtc_state.is_talking:
-			talking_status = "Talking"
-			text_color = Color.YELLOW
-		elif connected_members < 2:
-			talking_status = "Connected"
-			text_color = Color.WHITE
-		else:
-			talking_status = "Not Talking"
-			text_color = Color.YELLOW
-
-		var talking_node = Label.new()
-		talking_node.text = talking_status
-		talking_node.modulate = text_color
-		members.add_child(talking_node)
-
-		# TODO: add action button to kick, promote, shuffle skin
 
 func _update():
 	_reset()
 
-	if not cached_lobby.is_valid():
-		hide()
-	else:
+	if cached_lobby.is_valid():
 		show()
+	else:
+		hide()
 
-	if cached_lobby.id:
-		id_label.text = "Id: " + cached_lobby.id
+	if cached_lobby.lobby_id:
+		id_label.text = "Id: " + cached_lobby.lobby_id
 	
-	if cached_lobby.owner_id:
-		var owner_name = cached_lobby.get_owner().display_name if cached_lobby.get_owner() else "? "
-		owner_label.text = "Owner: %s(%s)" % [owner_name, cached_lobby.owner_id]
+	if cached_lobby.owner_product_user_id:
+		var lobby_owner := cached_lobby.get_owner()
+		var owner_name_attr = cached_lobby.get_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY)
+		var owner_name = ""
+		if owner_name_attr:
+			owner_name = owner_name_attr.value
+		elif lobby_owner and lobby_owner.display_name:
+			owner_name = lobby_owner.display_name
+		owner_label.text = "Owner: %s(%s)" % [owner_name, cached_lobby.owner_product_user_id]
 
 	# Lobby permission level
 	var perm = "Public"
@@ -172,82 +119,221 @@ func _update():
 	permission_label.text = "Permission: " + perm
 
 	# Lobby Attr: Map
-	var map_attr = cached_lobby.get_attribute("LEVEL")
-	if map_attr != null:
-		map_label.text = "Map: " + map_attr.data.value
+	var map_attr = cached_lobby.get_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
+	if map_attr:
+		map_label.text = "Map: " + map_attr.value
 
 	# Lobby members
-	for mem: LobbiesView.GameLobbyMember in cached_lobby.members:
-		if mem.account_id.is_empty():
-			# Get epic account id from cache
-			mem.account_id = account_mappings.get_value(mem.product_id, "")
+	_update_lobby_members()
+	
+	# Buttons
+	_update_buttons()
 
-		# Try to get display name
-		if not mem.account_id.is_empty() and mem.display_name.is_empty():
-			# Get display name from cached
-			mem.display_name = display_names.get_value(mem.account_id, "")
-		_update_lobby_members()
 
-func _query_account_mapping(puid):
-	var query_opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
-	query_opts.product_user_ids = [puid]
-	EOS.Connect.ConnectInterface.query_product_user_id_mappings(query_opts)
+func _update_lobby_members():
+	var connected_members = 0
+	for mem in cached_lobby.members:
+		if mem.rtc_state.is_in_rtc_room:
+			connected_members += 1
 
-	var query_ret = await IEOS.connect_interface_query_product_user_id_mappings_callback
+	for mem in cached_lobby.members:
+		var name_label = Label.new()
+		
+		var display_name_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
+		var mem_name = "User %d" % randi_range(1000, 9999)
+		if display_name_attr:
+			mem_name = display_name_attr.value
+		if not mem_name:
+			mem_name = "User"
+		name_label.text = "%s" % [mem_name]
+		members.add_child(name_label)
 
-	if not EOS.is_success(query_ret):
-		print("--- Lobby: Connect: query_product_user_id_mappings_callback: error: ", EOS.result_str(query_ret))
-		return ""
+		var is_owner_label = Label.new()
+		is_owner_label.text = "Owner" if cached_lobby.is_owner(mem.product_user_id) else "Member"
+		members.add_child(is_owner_label)
 
-	var get_opts = EOS.Connect.GetProductUserIdMappingOptions.new()
-	get_opts.target_product_user_id = puid
-	get_opts.account_id_type = EOS.ExternalAccountType.Epic
-	var get_ret = EOS.Connect.ConnectInterface.get_product_user_id_mapping(get_opts)
-	if not EOS.is_success(get_ret):
-		print("--- Lobby: Connect: get_product_user_id_mapping: error: ", EOS.result_str(get_ret))
-		return ""
+		var skin_label = Label.new()
+		skin_label.text = "?"
+		var skin_attr = mem.get_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
+		if skin_attr:
+			skin_label.text = skin_attr.value
+		members.add_child(skin_label)
+		
+		var talking_status = "Unknown"
+		var text_color = Color.DARK_GRAY
+		if not cached_lobby.rtc_room_enabled:
+			talking_status = "RTC Disabled"
+		else:
+			if not mem.rtc_state.is_in_rtc_room:
+				talking_status = "Disconnected"
+			elif mem.rtc_state.is_hard_muted:
+				talking_status = "Hard Muted"
+				text_color = Color.RED
+			elif mem.rtc_state.is_locally_muted:
+				talking_status = "Muted"
+				text_color = Color.RED
+			elif mem.rtc_state.is_audio_output_disabled:
+				talking_status = "Self muted"
+				text_color = Color.DARK_RED
+			elif mem.rtc_state.is_talking:
+				talking_status = "Talking"
+				text_color = Color.GREEN
+			elif connected_members < 2:
+				talking_status = "Connected"
+				text_color = Color.WHITE
+			else:
+				talking_status = "Not Talking"
+				text_color = Color.YELLOW
 
-	return get_ret["account_id"]
+		var talking_node = Label.new()
+		talking_node.text = talking_status
+		talking_node.modulate = text_color
+		members.add_child(talking_node)
 
-func _query_display_name(acc_id):
-	var query_opts = EOS.UserInfo.QueryUserInfoOptions.new()
-	query_opts.target_user_id = acc_id
-	EOS.UserInfo.UserInfoInterface.query_user_info(query_opts)
+		var actions_container = GridContainer.new()
+		actions_container.columns = 2
+		
+		if cached_lobby.is_owner() and not mem.is_self():
+			if not mem.is_owner():
+				# Can promote
+				var promote_btn = PRIMARY_BUTTON.instantiate()
+				promote_btn.text = "Promote"
+				promote_btn.pressed.connect(_on_promote_btn_pressed.bind(mem))
+				actions_container.add_child(promote_btn)
+			
+			# Can kick
+			var kick_btn = PRIMARY_BUTTON.instantiate()
+			kick_btn.text = "Kick"
+			kick_btn.pressed.connect(_on_kick_btn_pressed.bind(mem))
+			actions_container.add_child(kick_btn)
 
-	var query_ret = await IEOS.user_info_interface_query_user_info_callback
-	if not EOS.is_success(query_ret):
-		print("--- Lobby: UserInfo: query_user_info_callback: error: ", EOS.result_str(query_ret))
-		return ""
+			# Can toggle hard-mute
+			var toggle_hardmute_btn = PRIMARY_BUTTON.instantiate()
+			if mem.is_hard_muted():
+				toggle_hardmute_btn.text = "Un hard-mute"
+			else:
+				toggle_hardmute_btn.text = "Hard-mute"
+			toggle_hardmute_btn.pressed.connect(_on_toggle_hard_mute_btn_pressed.bind(mem))
+			actions_container.add_child(toggle_hardmute_btn)
+				
+		members.add_child(actions_container)
 
-	var copy_best_name_opts = EOS.UserInfo.CopyBestDisplayNameOptions.new()
-	copy_best_name_opts.target_user_id = acc_id
 
-	var copy_best_name_ret = EOS.UserInfo.UserInfoInterface.copy_best_display_name(copy_best_name_opts)
-	if not EOS.is_success(copy_best_name_ret):
-		print("--- Lobby: UserInfo: copy_best_display_name: error: ", EOS.result_str(copy_best_name_ret))
-		return ""
+func _update_buttons():
+	if not cached_lobby.is_valid():
+		return
+		
 
-	return copy_best_name_ret.best_display_name
+	if cached_lobby.is_owner():
+		destroy_lobby_btn.show()
+		random_map_btn.show()
 
-func _on_rtc_audio_participant_updated(data: Dictionary):
-	print("--- Lobby: RTCAudio: participant_updated: ")
-	var is_talking = data.speaking
-	var is_audio_disabled = data.audio_status != EOS.RTCAudio.AudioStatus.Enabled
-	var is_hard_muted = data.audio_status != EOS.RTCAudio.AudioStatus.AdminDisabled
+	leave_lobby_btn.show()
+	random_skin_btn.show()
+	if cached_lobby.rtc_room_enabled:
+		toggle_mute_btn.show()
+	
+	if cached_lobby and cached_lobby.get_current_member():
+		toggle_mute_btn.text = "Unmute" if cached_lobby.get_current_member().is_muted() else "Mute"
 
-	# Update the member in the current lobby
-	if cached_lobby.rtc_room_name.is_empty() or cached_lobby.rtc_room_name != data.room_name:
+
+func _on_leave_lobby_btn_pressed():
+	var success = await cached_lobby.leave_async()
+	if not success:
+		print("failed to leave lobby")
+		return
+	update(HLobby.new())
+
+
+func _on_destroy_lobby_btn_pressed():
+	var success = await cached_lobby.destroy_async()
+	if not success:
+		print("failed to destroy lobby")
 		return
 
-	# Find the participant in the lobby members
-	var mem = cached_lobby.get_member_by_product_user_id(data.participant_id)
-	if mem == null:
+
+func _on_random_skin_btn_pressed():
+	var skin_attr = cached_lobby.get_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY)
+	var current_skin = skin_attr.get("value", null)
+	cached_lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values(), current_skin))
+	await cached_lobby.update_async()
+
+
+func _on_random_map_btn_pressed():
+	var map_attr = cached_lobby.get_current_member_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
+	var current_map = map_attr.get("value", null)
+	cached_lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Maps.keys(), current_map))
+	await cached_lobby.update_async()
+
+
+func _on_toggle_mute_btn_pressed():
+	var mem = cached_lobby.get_current_member()
+	if not mem:
+		print("failed to get member")
+		return
+	
+	var success := await mem.toggle_mute_member_async()
+	if not success:
+		print("mute/unmute failed")
+
+
+func _on_promote_btn_pressed(mem: HLobbyMember):
+	var success := await mem.promote_member_async()
+	if not success:
+		print("failed to promote member")
 		return
 
-	mem.rtc_state.is_talking = is_talking
-	if mem.product_id != Store.product_user_id:
-		mem.rtc_state.is_audio_output_disabled = is_audio_disabled
-	else:
-		mem.rtc_state.is_hard_muted = is_hard_muted
+func _on_kick_btn_pressed(mem: HLobbyMember):
+	var success := await mem.kick_member_async()
+	if not success:
+		print("failed to kick member")
+		return
 
-	_update()
+func _on_toggle_hard_mute_btn_pressed(mem: HLobbyMember):
+	var success := await mem.toggle_hard_mute_member_async()
+	if not success:
+		print("failed to toggle member hard mute")
+		return
+	
+
+func _on_rtc_data_received(raw_data: PackedByteArray):
+	# We know we will get a Variant
+	# because thats what we send
+	var data = bytes_to_var(raw_data)
+	
+	if not (typeof(data) == TYPE_DICTIONARY and data.t):
+		print("Got invalid rtc data")
+		return
+	
+	var msg_type = data.t
+	
+	if msg_type == RTCDataTypes.CHAT_MSG:
+		chat_history_label.call_deferred("set_text", chat_history_label.text + data.u + ": " + data.m + "\n")
+
+
+func _make_chat_message_data(username: String, msg: String):
+	return {
+		t = RTCDataTypes.CHAT_MSG, 
+		u = username,
+		m = msg
+	}
+
+
+func _on_send_chat_btn_pressed():
+	var text = chat_msg_line_edit.text.strip_edges()
+	if not text:
+		return
+	
+	var mem = cached_lobby.get_current_member()
+	var username_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
+	var username = "User"
+	if username_attr and username_attr.value:
+		username = username_attr.value
+	
+	var data = _make_chat_message_data(username, text)
+	var ret := cached_lobby.rtc_send_data(data)
+	if not ret:
+		print("failed to send chat msg")
+		return
+	
+	chat_history_label.text += username + ": " + text + "\n"

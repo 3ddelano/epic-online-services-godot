@@ -540,6 +540,11 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         });
     }
 
+	// -----
+    // RTCData Interface
+    // -----
+    s_rtcDataInterface = EOS_RTC_GetDataInterface(s_rtcInterface);
+
     // -----
     // TitleStorage Interface
     // -----
@@ -860,8 +865,9 @@ void IEOS::platform_interface_release() {
     s_presenceInterface = nullptr;
     s_progressionSnapshotInterface = nullptr;
     s_reportsInterface = nullptr;
-    s_rtcInterface = nullptr;
     s_rtcAudioInterface = nullptr;
+    s_rtcDataInterface = nullptr;
+    s_rtcInterface = nullptr;
     s_sanctionsInterface = nullptr;
     s_sessionsInterface = nullptr;
     s_statsInterface = nullptr;

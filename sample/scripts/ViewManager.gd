@@ -16,8 +16,8 @@ extends VBoxContainer
 
 func _ready() -> void:
 	_disable_needs_login_btns()
-	Store.login_success.connect(_enable_needs_login_btns)
-	Store.logout_success.connect(_disable_needs_login_btns)
+	HAuth.logged_in.connect(_enable_needs_login_btns)
+	HAuth.logged_out.connect(_disable_needs_login_btns)
 
 	auth_btn.pressed.connect(Callable(self, "set_view").bind("Login"))
 	achievements_btn.pressed.connect(Callable(self, "set_view").bind("Achievements"))

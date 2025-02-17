@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=3 uid="uid://bht0ln2ftshrw"]
 
-[ext_resource type="FontFile" path="res://fonts/roboto-32b.tres" id="1"]
-[ext_resource type="FontFile" path="res://fonts/roboto-16r.tres" id="2"]
+[ext_resource type="FontFile" uid="uid://njn2rf7rj4ph" path="res://fonts/roboto-32b.tres" id="1"]
+[ext_resource type="FontFile" uid="uid://bxcl265jykrk0" path="res://fonts/roboto-16r.tres" id="2"]
 [ext_resource type="Script" path="res://scenes/LoginView/LoginView.gd" id="3"]
-[ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="4"]
+[ext_resource type="FontFile" uid="uid://bghbav6kh0lsl" path="res://fonts/roboto-16b.tres" id="4"]
 [ext_resource type="Script" path="res://scenes/LoginView/EnterCredentials.gd" id="5"]
-[ext_resource type="Texture2D" uid="uid://6vos1pkll5r" path="res://logo.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://e0l4pytsqbp1" path="res://logo.png" id="6"]
 
 [sub_resource type="StyleBoxFlat" id="1"]
 content_margin_top = 3.0
@@ -158,10 +158,10 @@ secret = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("2")
-theme_override_styles/normal = SubResource("1")
+theme_override_styles/focus = SubResource("1")
 theme_override_styles/hover = SubResource("2")
 theme_override_styles/pressed = SubResource("3")
-theme_override_styles/focus = SubResource("1")
+theme_override_styles/normal = SubResource("1")
 text = "Log in"
 
 [node name="BackButton" type="Button" parent="HB/Right"]
@@ -169,10 +169,10 @@ visible = false
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("2")
-theme_override_styles/normal = SubResource("7")
+theme_override_styles/focus = SubResource("7")
 theme_override_styles/hover = SubResource("8")
 theme_override_styles/pressed = SubResource("9")
-theme_override_styles/focus = SubResource("7")
+theme_override_styles/normal = SubResource("7")
 text = "Back"
 
 [node name="LoginStatus" type="Label" parent="HB/Right"]
@@ -185,10 +185,10 @@ visible = false
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("2")
-theme_override_styles/normal = SubResource("7")
+theme_override_styles/focus = SubResource("7")
 theme_override_styles/hover = SubResource("8")
 theme_override_styles/pressed = SubResource("9")
-theme_override_styles/focus = SubResource("7")
+theme_override_styles/normal = SubResource("7")
 text = "Retry"
 
 [node name="LogoutButton" type="Button" parent="HB/Right"]
@@ -196,8 +196,8 @@ visible = false
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("2")
-theme_override_styles/normal = SubResource("11")
+theme_override_styles/focus = SubResource("11")
 theme_override_styles/hover = SubResource("10")
 theme_override_styles/pressed = SubResource("10")
-theme_override_styles/focus = SubResource("11")
+theme_override_styles/normal = SubResource("11")
 text = "Logout"

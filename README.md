@@ -2,18 +2,101 @@ Epic Online Services Godot (EOSG)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
-### Unofficial Epic Online Services wrapper for Godot Engine 4.3 (includes demo project)
+### Easiest way to use Epic Online Services in Godot 4.3 (includes demo project)
 
 <img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.4" src="https://img.shields.io/badge/-Epic Online Services 1.16.4-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
-> Supports Windows x64, Linux x64, Android, MacOS, iOS (iphone/simulator) arm64
+> Supports Windows x64, Linux x64, Android, MacOS, iOS arm64 (iphone/simulator)
 
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply with Epic Games' Design Guidelines, if you plan to release a game make sure you read the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any other steps needed to release a public game like asking for user consent, option to delete user data, website with privacy policy and license, etc.
 
 
-#### The [main](https://github.com/3ddelano/epic-online-services-godot/tree/main) branch is for Godot 4.3
-#### The [godot3-mono](https://github.com/3ddelano/epic-online-services-godot/tree/godot3-mono) branch is for Godot 3 Mono (C#) (un maintained)
+## This plugin has two main systems:
+- ### High Level EOS (Recommended)
+  The High Level Epic Online Services provides easy to use methods and signals to interact with EOS recommended for beginners.
 
+- ### GDExtension EOS
+  The GDExtension EOS provides advanced EOS usage not recommended for beginners. See `EOS` and `IEOS` classes.
+
+
+# High Level Epic Online Services
+
+Following are the main classes in High Level Epic Online Services. They also have documentation in the Godot Editor:
+
+- ### HPlatform
+- ### HAuth
+- ### HAchievements
+- ### HFriends
+- ### HStats
+- ### HLeaderboards
+- ### HLobbies
+- ### HLog
+
+A basic example of using High Level EOS:
+
+```GDScript
+# In main script
+extends Node
+
+func _ready() -> void:
+	var init_opts = EOS.Platform.InitializeOptions.new()
+	init_opts.product_name = "PRODUCT_NAME_HERE"
+	init_opts.product_version = "PRODUCT_VERSION_HERE"
+
+	var create_opts = EOS.Platform.CreateOptions.new()
+	create_opts.product_id = "PRODUCT_ID_HERE"
+	create_opts.sandbox_id = "SANDBOX_ID_HERE"
+	create_opts.deployment_id = "DEPLOYMENT_ID_HERE"
+	create_opts.client_id = "CLIENT_ID_HERE"
+	create_opts.client_secret = "CLIENT_SECRET_HERE"
+	create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
+
+	# Enable Social Overlay on Windows
+	if OS.get_name() == "Windows":
+		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
+
+	# Initialize the SDK
+	var init_res := await HPlatform.initialize_async(init_opts)
+	if not EOS.is_success(init_res):
+		printerr("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
+		return
+	
+	# Create platform
+	var create_success := await HPlatform.create_platform_async(create_opts)
+	if not create_success:
+		printerr("Failed to create EOS Platform")
+		return
+
+	# Setup Logs from EOS
+	HPlatform.log_msg.connect(_on_eos_log_msg)
+	var log_ret := HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Verbose)
+	if not log_ret:
+		printerr("Failed to set logging level")
+		return
+
+	HAuth.logged_in.connect(_on_logged_in)
+
+	# During development use the devauth tool to login
+	HAuth.login_devtool_async("localhost:4545", "CREDENTIAL_NAME_HERE")
+
+	# Only on mobile device (Login without any credentials)
+	# await HAuth.login_anonymous_async()
+
+
+func _on_logged_in():
+	print("Logged in successfully: product_user_id=%s" % HAuth.product_user_id)
+
+	# Example: Get top records for a leaderboard
+	var records := await HLeaderboards.get_leaderboard_records_async("LEADERBOARD_ID_HERE")
+	print(records)
+
+
+func _on_eos_log_msg(msg: EOS.Logging.Message) -> void:
+	print("SDK %s | %s" % [msg.category, msg.message])
+
+```
+
+# GDextension Epic Online Services
 
 ## Features
 
@@ -68,7 +151,15 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
    <img src="./_media/android_auth_success.jpg">
 
 - iOS
-   <img src="./_media/ios_simulator_run.png">
+   <img src="./_media/ios_simulator_auth_success.png">
+
+
+- Cross platform lobbies
+  
+  - iOS
+    <img src="./_media/ios_simulator_in_lobby.png">
+  - macOS
+    <img src="./_media/mac_in_lobby.png">
 
 
 ## How does it work
@@ -85,85 +176,8 @@ This is a regular plugin for `Godot 4.3`. To install the plugin follow the steps
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
 3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.3 (EOSG)` plugin.
 4. Restart the godot editor.
-5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin. Use the below starter script.
-    ```GDScript
-    # In main script
-    extends Node
-
-    func _ready() -> void:
-        # Initialize the SDK
-        var init_opts = EOS.Platform.InitializeOptions.new()
-        init_opts.product_name = "PRODUCT_NAME_HERE"
-        init_opts.product_version = "PRODUCT_VERSION_HERE"
-
-        var init_res := EOS.Platform.PlatformInterface.initialize(init_opts)
-        if not EOS.is_success(init_res):
-            print("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
-            return
-
-        # Create platform
-        var create_opts = EOS.Platform.CreateOptions.new()
-        create_opts.product_id = "PRODUCT_ID_HERE"
-        create_opts.sandbox_id = "SANDBOX_ID_HERE"
-        create_opts.deployment_id = "DEPLOYMENT_ID_HERE"
-        create_opts.client_id = "CLIENT_ID_HERE"
-        create_opts.client_secret = "CLIENT_SECRET_HERE"
-        create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
-
-        # Enable Social Overlay on Windows
-        if OS.get_name() == "Windows":
-            create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
-
-        var create_success := EOS.Platform.PlatformInterface.create(create_opts)
-        if not create_success:
-            print("Failed to create EOS Platform")
-            return
-
-        # Setup Logs from EOS
-        IEOS.logging_interface_callback.connect(_on_logging_interface_callback)
-        var res := EOS.Logging.set_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
-        if res != EOS.Result.Success:
-            print("Failed to set log level: ", EOS.result_str(res))
-
-        _anonymous_login()
-
-
-    func _on_logging_interface_callback(msg) -> void:
-        msg = EOS.Logging.LogMessage.from(msg) as EOS.Logging.LogMessage
-        print("SDK %s | %s" % [msg.category, msg.message])
-
-
-    func _anonymous_login() -> void:
-        # Login using Device ID (no user interaction/credentials required)
-		# Note: Device ID login method is for mobile devices
-		# Note: It may not work on some desktops
-		# Note: Rather for testing using the Dev Auth tool login method
-        var opts = EOS.Connect.CreateDeviceIdOptions.new()
-        opts.device_model = OS.get_name() + " " + OS.get_model_name()
-        EOS.Connect.ConnectInterface.create_device_id(opts)
-        await IEOS.connect_interface_create_device_id_callback
-
-        var credentials = EOS.Connect.Credentials.new()
-        credentials.token = null
-        credentials.type = EOS.ExternalCredentialType.DeviceidAccessToken
-
-		var user_login_info = EOS.Connect.UserLoginInfo.new()
-        user_login_info.display_name = "Anon User"
-
-        var login_opts = EOS.Connect.LoginOptions.new()
-        login_opts.credentials = credentials
-        login_opts.user_login_info = user_login_info
-        IEOS.connect_interface_login_callback.connect(_on_connect_interface_login_callback)
-        EOS.Connect.ConnectInterface.login(login_opts)
-
-    func _on_connect_interface_login_callback(data: Dictionary) -> void:
-        if not data.success:
-            print("Login failed")
-            EOS.print_result(data)
-            return
-
-        print_rich("[b]Login successfull[/b]: local_user_id=", data.local_user_id)
-    ```
+5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin.
+    
 
 
 Development Setup
@@ -245,118 +259,118 @@ Follow the instructions in [Running the service for local development](https://d
 2. Now with reference to the tutorial [Add the EOS SDK to Your Android Studio Project](https://dev.epicgames.com/docs/epic-online-services/platforms/android#4-add-the-eos-sdk-to-your-android-studio-project), perform the following steps.
 
 3. In the `res://android/build/build.gradle` file, add the following lines after the implementations in the `dependencies` section.
-	
-	Before
-	```gradle
-	dependencies {
-    	implementation libraries.kotlinStdLib
-    	implementation libraries.androidxFragment
-		... other code
-	```
+    
+    Before
+    ```gradle
+    dependencies {
+        implementation libraries.kotlinStdLib
+        implementation libraries.androidxFragment
+        ... other code
+    ```
 
-	After
-	```gradle
-	dependencies {
-		implementation libraries.kotlinStdLib
-		implementation libraries.androidxFragment
-		
-		// EOS SDK dependencies
-		implementation 'androidx.appcompat:appcompat:1.5.1'
-		implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-		implementation 'androidx.security:security-crypto:1.0.0'
-		implementation 'androidx.browser:browser:1.4.0'
-		// Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
-		implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
+    After
+    ```gradle
+    dependencies {
+        implementation libraries.kotlinStdLib
+        implementation libraries.androidxFragment
+        
+        // EOS SDK dependencies
+        implementation 'androidx.appcompat:appcompat:1.5.1'
+        implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+        implementation 'androidx.security:security-crypto:1.0.0'
+        implementation 'androidx.browser:browser:1.4.0'
+        // Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
+        implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
 
-		...other code
-	```
+        ...other code
+    ```
 
 4. In the `res://android/build/build.gradle` file, add the following lines after the `defaultConfig` in the `android` section.
-	
-	Before
-	```gradle
-	android {
+    
+    Before
+    ```gradle
+    android {
 
-		... other code
+        ... other code
 
-		defaultConfig {
-			... other code
-		
-			// Feel free to modify the application id to your own.
-			applicationId getExportPackageName()
-			versionCode getExportVersionCode()
-			versionName getExportVersionName()
-			minSdkVersion getExportMinSdkVersion()
-			targetSdkVersion getExportTargetSdkVersion()
+        defaultConfig {
+            ... other code
+        
+            // Feel free to modify the application id to your own.
+            applicationId getExportPackageName()
+            versionCode getExportVersionCode()
+            versionName getExportVersionName()
+            minSdkVersion getExportMinSdkVersion()
+            targetSdkVersion getExportTargetSdkVersion()
 
-			missingDimensionStrategy 'products', 'template'
-		}
+            missingDimensionStrategy 'products', 'template'
+        }
 
-		... other code
-	```
+        ... other code
+    ```
 
-	After
-	```gradle
-	android {
+    After
+    ```gradle
+    android {
 
-		... other code
+        ... other code
 
-		defaultConfig {
-			... other code
-		
-			// Feel free to modify the application id to your own.
-			applicationId getExportPackageName()
-			versionCode getExportVersionCode()
-			versionName getExportVersionName()
-			minSdkVersion getExportMinSdkVersion()
-			targetSdkVersion getExportTargetSdkVersion()
+        defaultConfig {
+            ... other code
+        
+            // Feel free to modify the application id to your own.
+            applicationId getExportPackageName()
+            versionCode getExportVersionCode()
+            versionName getExportVersionName()
+            minSdkVersion getExportMinSdkVersion()
+            targetSdkVersion getExportTargetSdkVersion()
 
-			missingDimensionStrategy 'products', 'template'
+            missingDimensionStrategy 'products', 'template'
 
-			// This is needed by EOS Android SDK
-			String ClientId = "PUT YOUR EOS CLIENT ID HERE"
-			resValue("string", "eos_login_protocol_scheme", "eos." + ClientId.toLowerCase())
-		}
+            // This is needed by EOS Android SDK
+            String ClientId = "PUT YOUR EOS CLIENT ID HERE"
+            resValue("string", "eos_login_protocol_scheme", "eos." + ClientId.toLowerCase())
+        }
 
-		... other code
-	```
+        ... other code
+    ```
 
 5. In the `res://android/build/config.gradle` file, update the `minSdk` to `23` to match with the requirements of the `EOS Android SDK`.
 
-	Before
-	```gradle
-	minSdk             : 21,
-	```
-	After
-	```gradle
-	minSdk             : 23,
-	```
+    Before
+    ```gradle
+    minSdk             : 21,
+    ```
+    After
+    ```gradle
+    minSdk             : 23,
+    ```
 
 6. In the `res://android/build/src/com/godot/game/GodotGame.java` file, update it as follows.
-	```java
-	package com.godot.game;
+    ```java
+    package com.godot.game;
 
-	import com.epicgames.mobile.eossdk.EOSSDK;     // added
-	import org.godotengine.godot.GodotActivity;
+    import com.epicgames.mobile.eossdk.EOSSDK;     // added
+    import org.godotengine.godot.GodotActivity;
 
-	import android.os.Bundle;
+    import android.os.Bundle;
 
-	public class GodotApp extends GodotActivity {
-		static {                                   // added
-			System.loadLibrary("EOSSDK");          // added
-		}                                          // added
-		
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			EOSSDK.init(getActivity());  // added
-			
-			setTheme(R.style.GodotAppMainTheme);
-			super.onCreate(savedInstanceState);
+    public class GodotApp extends GodotActivity {
+        static {                                   // added
+            System.loadLibrary("EOSSDK");          // added
+        }                                          // added
+        
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            EOSSDK.init(getActivity());  // added
+            
+            setTheme(R.style.GodotAppMainTheme);
+            super.onCreate(savedInstanceState);
 
-		}
-	}
+        }
+    }
 
-	```
+    ```
 
 7. Now open your project in the Godot Editor, and goto `Project -> Export` and create a new Android export profile.
 

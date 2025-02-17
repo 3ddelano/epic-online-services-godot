@@ -13,6 +13,7 @@ void EOSGLobbyDetails::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_member_count"), &EOSGLobbyDetails::get_member_count);
     ClassDB::bind_method(D_METHOD("get_member_by_index", "index"), &EOSGLobbyDetails::get_member_by_index);
     ClassDB::bind_method(D_METHOD("get_member_attribute_count", "target_user_id"), &EOSGLobbyDetails::get_member_attribute_count);
+    ClassDB::bind_method(D_METHOD("copy_member_info", "target_user_id"), &EOSGLobbyDetails::copy_member_info);
     ClassDB::bind_method(D_METHOD("copy_member_attribute_by_index", "target_user_id", "index"), &EOSGLobbyDetails::copy_member_attribute_by_index);
     ClassDB::bind_method(D_METHOD("copy_member_attribute_by_key", "target_user_id", "key"), &EOSGLobbyDetails::copy_member_attribute_by_key);
 }
@@ -164,6 +165,6 @@ Dictionary EOSGLobbyDetails::copy_member_info(const String &p_target_user_id) {
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["lobby_details"] = eosg_lobby_details_member_info_to_dict_and_release(outMemberInfo);
+    ret["member_info"] = eosg_lobby_details_member_info_to_dict_and_release(outMemberInfo);
     return ret;
 }

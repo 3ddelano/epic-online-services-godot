@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_1831t"]
-[ext_resource type="PackedScene" path="res://scenes/UI/NetworkImage.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://djhhnis3ksdjk" path="res://scenes/UI/NetworkImage.tscn" id="3"]
 [ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsList.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 [ext_resource type="Script" path="res://scenes/AchievementsView/AchievementPopup.gd" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/AchievementsView/AchievementsListAchievement.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="8_37km7"]
-[ext_resource type="FontFile" uid="uid://bvjo321fa54x8" path="res://fonts/Roboto-Bold.ttf" id="8_75ml2"]
+[ext_resource type="FontFile" uid="uid://djdr1hyqtgka6" path="res://fonts/Roboto-Bold.ttf" id="8_75ml2"]
 
 [sub_resource type="StyleBoxEmpty" id="1"]
 
@@ -77,7 +77,7 @@ script = ExtResource("6")
 
 [node name="VB" parent="AchievementPopup" index="1"]
 offset_right = 568.0
-offset_bottom = 647.0
+offset_bottom = 624.0
 
 [node name="GridContainer" type="GridContainer" parent="AchievementPopup/VB/MC/VB" index="0"]
 layout_mode = 2

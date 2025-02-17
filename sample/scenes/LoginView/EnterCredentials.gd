@@ -1,10 +1,17 @@
 extends VBoxContainer
 
+
+signal perform_login
+
 @onready var id_label = $IdLabel
 @onready var token_label = $TokenLabel
 
 @onready var id_lineedit = $IdLineEdit
 @onready var token_lineedit = $TokenLineEdit
+
+
+func _ready() -> void:
+	token_lineedit.text_submitted.connect(func(_new_text): perform_login.emit())
 
 
 func set_helper_texts(id_help: String, token_help: String):

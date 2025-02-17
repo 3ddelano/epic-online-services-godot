@@ -9,7 +9,7 @@ signal pressed(_self)
 
 @onready var button = $RR/Button
 
-var _data: Dictionary
+var _data: HAchievementData
 
 
 func _ready():
@@ -18,7 +18,7 @@ func _ready():
 	)
 
 
-func from_achievement_data(data: Dictionary):
+func from_achievement_data(data: HAchievementData):
 	_data = data
 
 	id_label.text = data.achievement_id
@@ -28,5 +28,5 @@ func from_achievement_data(data: Dictionary):
 		unlocked_image.fetch_image(data.icon_url)
 
 
-func get_data() -> Dictionary:
+func get_data() -> HAchievementData:
 	return _data

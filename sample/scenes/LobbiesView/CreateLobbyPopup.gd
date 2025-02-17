@@ -2,20 +2,21 @@ class_name CreateLobbyPopup
 extends StyledPopupWindow
 
 
-@onready var _bucket_id: LineEdit = $VB/MC/VB/BucketId
-@onready var _map_option_btn: OptionButton = $VB/MC/VB/HBoxContainer/MapOptionBtn
-@onready var _max_players_options_btn: OptionButton = $VB/MC/VB/HBoxContainer/MaxPlayersOptionsBtn
-@onready var _public_check_box: CheckBox = $VB/MC/VB/HFlowContainer/PublicCheckBox
-@onready var _allow_invites_check_box: CheckBox = $VB/MC/VB/HFlowContainer/AllowInvitesCheckBox
-@onready var _presence_check_box: CheckBox = $VB/MC/VB/HFlowContainer/PresenceCheckBox
-@onready var _rtc_voice_room_check_box: CheckBox = $VB/MC/VB/HFlowContainer/RTCVoiceRoomCheckBox
-@onready var _create_lobby_btn: Button = $VB/MC/VB/CreateLobbyBtn
+@onready var _bucket_id: LineEdit = %BucketId
+@onready var _map_option_btn: OptionButton = %MapOptionBtn
+@onready var _max_players_options_btn: OptionButton = %MaxPlayersOptionsBtn
+@onready var _public_check_box: CheckBox = %PublicCheckBox
+@onready var _allow_invites_check_box: CheckBox = %AllowInvitesCheckBox
+@onready var _presence_check_box: CheckBox = %PresenceCheckBox
+@onready var _rtc_voice_room_check_box: CheckBox = %RTCVoiceRoomCheckBox
+@onready var _create_lobby_btn: Button = %CreateLobbyBtn
 
 
 func _ready() -> void:
 	super._ready()
 	_populate_options_btns()
 
+	_bucket_id.text_submitted.connect(func (_text): _on_create_lobby_btn_pressed())
 	_create_lobby_btn.pressed.connect(_on_create_lobby_btn_pressed)
 	_bucket_id.text_changed.connect(_on_bucket_id_text_changed)
 
@@ -34,21 +35,37 @@ func _populate_options_btns():
 
 
 func _on_create_lobby_btn_pressed():
+	var create_opts := EOS.Lobby.CreateLobbyOptions.new()
+	create_opts.bucket_id = _bucket_id.text.strip_edges()
+	create_opts.max_lobby_members = _max_players_options_btn.get_selected_metadata()
+	create_opts.presence_enabled = _presence_check_box.button_pressed
+	create_opts.enable_rtc_room = _rtc_voice_room_check_box.button_pressed
+	create_opts.permission_level = EOS.Lobby.LobbyPermissionLevel.PublicAdvertised if _public_check_box.button_pressed else EOS.Lobby.LobbyPermissionLevel.InviteOnly
+	create_opts.allow_invites = _allow_invites_check_box.button_pressed
+	create_opts.local_rtc_options = {
+		flags = EOS.RTC.JoinRoomFlags.EnableDataChannel
+	}
+
+	_create_lobby_btn.disabled = true
+	var lobby := await HLobbies.create_lobby_async(create_opts)
+	if not lobby:
+		print("Failed to create lobby!")
+		_create_lobby_btn.disabled = false
+		return
+
+
+	lobby.add_attribute(LobbiesView.MAP_ATTRIBUTE_KEY, LobbiesView.Maps.keys()[_map_option_btn.get_selected_metadata()])
+	lobby.add_attribute(LobbiesView.OWNER_NAME_ATTRIBUTE_KEY, HAuth.display_name)
+
+	lobby.add_current_member_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY, HAuth.display_name)
+	lobby.add_current_member_attribute(LobbiesView.SKIN_ATTRIBUTE_KEY, Store.get_new_random(LobbiesView.Skins.values()))
+	
+	await lobby.update_async()
+
+	
 	var lobbies_view: LobbiesView = Store.get_view("Lobbies")
-	var new_lobby = LobbiesView.GameLobby.new().from_dict({
-		bucket_id = _bucket_id.text.strip_edges(),
-		max_lobby_members = _max_players_options_btn.get_selected_metadata(),
-		presence_enabled = _presence_check_box.button_pressed,
-		enable_rtc_room = _rtc_voice_room_check_box.button_pressed,
-		permission_level = EOS.Lobby.LobbyPermissionLevel.PublicAdvertised if _public_check_box.button_pressed else EOS.Lobby.LobbyPermissionLevel.InviteOnly,
-		allow_invites = _allow_invites_check_box.button_pressed,
-	})
-	new_lobby.attributes.append({
-		key = LobbiesView.MAP_ATTRIBUTE_KEY,
-		value = LobbiesView.Maps.keys()[_map_option_btn.get_selected_metadata()],
-		visibility = EOS.Lobby.LobbyAttributeVisibility.Public
-	})
-	lobbies_view.create_lobby(new_lobby)
+	lobbies_view.set_current_lobby(lobby)
+	_create_lobby_btn.disabled = false
 	hide()
 
 

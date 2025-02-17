@@ -19,6 +19,7 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     options.BucketId = bucket_id.get_data();
     options.bDisableHostMigration = VARIANT_TO_EOS_BOOL(p_options->get("disable_host_migration"));
     options.bEnableRTCRoom = VARIANT_TO_EOS_BOOL(p_options->get("enable_rtc_room"));
+    options.bCrossplayOptOut = VARIANT_TO_EOS_BOOL(p_options->get("crossplay_opt_out"));
 
     Variant local_rtc_options = p_options->get("local_rtc_options");
     if (options.bEnableRTCRoom && local_rtc_options.get_type() != Variant::NIL) {
@@ -30,6 +31,16 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     }
     options.bEnableJoinById = VARIANT_TO_EOS_BOOL(p_options->get("enable_join_by_id"));
     options.bRejoinAfterKickRequiresInvite = VARIANT_TO_EOS_BOOL(p_options->get("rejoin_after_kick_requires_invite"));
+
+	Array allowed_platform_ids = p_options->get("allowed_platform_ids");
+	uint32_t* allowedPlatformIds = nullptr;
+	if (allowed_platform_ids.size() > 0) {
+		for (int i = 0; i < allowed_platform_ids.size(); i++) {
+			allowedPlatformIds[i] = static_cast<uint32_t>(allowed_platform_ids[i]);
+		}
+		options.AllowedPlatformIdsCount = allowed_platform_ids.size();
+		options.AllowedPlatformIds = allowedPlatformIds;
+	}
     p_options->reference();
 
     EOS_Lobby_CreateLobby(s_lobbyInterface, &options, (void *)*p_options, [](const EOS_Lobby_CreateLobbyCallbackInfo *data) {

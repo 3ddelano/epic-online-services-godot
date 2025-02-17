@@ -40,20 +40,20 @@ func _on_get_toggle_friends_key_btn():
 
 func _on_show_friends_btn_pressed():
 	var options = EOS.UI.ShowFriendsOptions.new()
-	options.local_user_id = Store.epic_account_id
+	options.local_user_id = HAuth.epic_account_id
 	EOS.UI.UIInterface.show_friends(options)
 
 func _on_show_block_player_btn_pressed():
 	var opts = EOS.UI.ShowBlockPlayerOptions.new()
-	opts.local_user_id = Store.epic_account_id
-	opts.target_user_id = Store.epic_account_id
+	opts.local_user_id = HAuth.epic_account_id
+	opts.target_user_id = HAuth.epic_account_id
 	EOS.UI.UIInterface.show_block_player(opts)
 	print("--- UI: show_block_player_callback: ", EOS.result_str(await IEOS.ui_interface_show_block_player_callback))
 
 func _on_show_report_player_btn_pressed():
 	var opts = EOS.UI.ShowReportPlayerOptions.new()
-	opts.local_user_id = Store.epic_account_id
-	opts.target_user_id = Store.epic_account_id
+	opts.local_user_id = HAuth.epic_account_id
+	opts.target_user_id = HAuth.epic_account_id
 	EOS.UI.UIInterface.show_report_player(opts)
 	print("--- UI: show_report_player_callback: ", EOS.result_str(await IEOS.ui_interface_show_report_player_callback))
 

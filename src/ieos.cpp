@@ -224,6 +224,13 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(rtc_audio_interface_update_receiving_volume);
     IEOS_BIND_METHOD(rtc_audio_interface_update_sending);
     IEOS_BIND_METHOD(rtc_audio_interface_update_sending_volume);
+    IEOS_BIND_METHOD(rtc_data_interface_add_notify_data_received);
+    IEOS_BIND_METHOD(rtc_data_interface_add_notify_participant_updated);
+    IEOS_BIND_METHOD(rtc_data_interface_send_data);
+    IEOS_BIND_METHOD(rtc_data_interface_remove_notify_data_received);
+    IEOS_BIND_METHOD(rtc_data_interface_remove_notify_participant_updated);
+    IEOS_BIND_METHOD(rtc_data_interface_update_receiving);
+    IEOS_BIND_METHOD(rtc_data_interface_update_sending);
     IEOS_BIND_METHOD(rtc_interface_add_notify_disconnected);
     IEOS_BIND_METHOD(rtc_interface_add_notify_participant_status_changed);
     IEOS_BIND_METHOD(rtc_interface_add_notify_room_statistics_updated);
@@ -461,6 +468,10 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(rtc_audio_interface_update_sending_callback);
     IEOS_BIND_SIGNAL(rtc_audio_interface_update_sending_volume_callback);
     IEOS_BIND_SIGNAL(rtc_audio_participant_updated);
+    IEOS_BIND_SIGNAL(rtc_data_data_received);
+    IEOS_BIND_SIGNAL(rtc_data_participant_updated);
+    IEOS_BIND_SIGNAL(rtc_data_interface_update_receiving_callback);
+    IEOS_BIND_SIGNAL(rtc_data_interface_update_sending_callback);
     IEOS_BIND_SIGNAL(rtc_interface_block_participant_callback);
     IEOS_BIND_SIGNAL(rtc_interface_disconnected);
     IEOS_BIND_SIGNAL(rtc_interface_join_room_callback);
@@ -528,7 +539,7 @@ IEOS::IEOS() {
 IEOS::~IEOS() {
     ERR_FAIL_COND(singleton != this);
     if (s_platformInterface != nullptr) {
-		platform_interface_release();
+        platform_interface_release();
     }
     singleton = nullptr;
 }

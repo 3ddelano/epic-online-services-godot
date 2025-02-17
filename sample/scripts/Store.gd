@@ -1,13 +1,5 @@
 extends Node
 
-signal eos_initialized
-signal platform_create
-signal login_success
-signal logout_success
-
-
-var product_user_id = ""
-var epic_account_id = ""
 var display_name = ""
 
 # For testing things that need a second player
@@ -29,3 +21,13 @@ func set_view(view_name: String):
 var network_image_cache = {
 	# url: Texture
 }
+
+
+func get_new_random(arr: Array, cur = null):
+	if arr.size() == 1:
+		return arr[0]
+	
+	var new_elm = arr.pick_random()
+	while cur != null and cur == new_elm:
+		new_elm = arr.pick_random()
+	return new_elm
