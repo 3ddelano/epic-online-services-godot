@@ -14,20 +14,34 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - identifier: linux-debug
-                      name: 🐧 Linux Debug
+                    - identifier: linux-x86-64-debug
+                      name: 🐧 Linux x86_64 Debug
                       runner: ubuntu-24.04
                       target: template_debug
                       dev_build: yes
                       platform: linux
                       arch: x86_64
-                    - identifier: linux-release
-                      name: 🐧Linux Release
+                    - identifier: linux-x86-64-release
+                      name: 🐧Linux x86_64 Release
                       runner: ubuntu-24.04
                       target: template_release
                       dev_build: no
                       platform: linux
                       arch: x86_64
+                    - identifier: linu-arm64-debug
+                      name: 🐧 Linux arm64 Debug
+                      runner: ubuntu-24.04
+                      target: template_debug
+                      dev_build: yes
+                      platform: linux
+                      arch: arm64
+                    - identifier: linux-arm64-release
+                      name: 🐧Linux arm64 Release
+                      runner: ubuntu-24.04
+                      target: template_release
+                      dev_build: no
+                      platform: linux
+                      arch: arm64
                     - identifier: macos-debug
                       name: 🍎 macOS (universal) Debug
                       runner: macos-latest
