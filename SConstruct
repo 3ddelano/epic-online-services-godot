@@ -100,7 +100,10 @@ if env["platform"] == "windows":
 	env.Append(LIBS=["EOSSDK-Win64-Shipping"])
 
 elif env["platform"] == "linux":
-	env.Append(LIBS=["EOSSDK-Linux-Shipping"])
+	if env["arch"] == "arm64":
+		env.Append(LIBS=["EOSSDK-LinuxArm64-Shipping"])
+	else:
+		env.Append(LIBS=["EOSSDK-Linux-Shipping"])
 
 elif env["platform"] == "macos":
 	env.Append(LIBS=["EOSSDK-Mac-Shipping"])
