@@ -4,7 +4,7 @@ Epic Online Services Godot (EOSG)
 
 ### Easiest way to use Epic Online Services in Godot 4.3 (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.16.4" src="https://img.shields.io/badge/-Epic Online Services 1.16.4-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.17.0" src="https://img.shields.io/badge/-Epic Online Services 1.17.0-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Supports Windows x64, Linux x64, Android, MacOS, iOS arm64 (iphone/simulator)
 
