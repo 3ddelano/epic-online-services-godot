@@ -374,8 +374,10 @@ public:
     void lobby_interface_hard_mute_member(Ref<RefCounted> options);
     void lobby_interface_join_lobby_by_id(Ref<RefCounted> options);
     void lobby_interface_join_lobby(Ref<RefCounted> options);
+    void lobby_interface_join_rtc_room(Ref<RefCounted> options);
     void lobby_interface_kick_member(Ref<RefCounted> options);
     void lobby_interface_leave_lobby(Ref<RefCounted> options);
+    void lobby_interface_leave_rtc_room(Ref<RefCounted> options);
     void lobby_interface_promote_member(Ref<RefCounted> options);
     void lobby_interface_query_invites(Ref<RefCounted> options);
     void lobby_interface_reject_invite(Ref<RefCounted> options);

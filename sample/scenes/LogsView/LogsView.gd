@@ -41,6 +41,8 @@ func log_msg(level: int, msg: String, category := ""):
 
 	var darkened_color = Color(color).darkened(0.2).to_html(true)
 	var to_print = "[color=#%s]%s\t%s\t[/color][color=%s]%s[/color]" % [darkened_color, _category, level_str, color, msg]
+	var to_print_nonrich = "[%s] [%s] %s" % [category, level_str, msg]
 	logs_label.text += to_print + "\n"
 	# Uncomment the below line if you want to see EOS logs in terminal too
-	# print_rich(to_print)
+	print_rich(to_print)
+	# print(to_print_nonrich)

@@ -5,11 +5,13 @@ void IEOS::ecom_interface_checkout(Ref<RefCounted> p_options) {
 	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString override_catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("override_catalog_namespace"));
+	int preferred_orientation = p_options->get("preferred_orientation");
 
     EOS_Ecom_CheckoutOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ECOM_CHECKOUT_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+	options.PreferredOrientation = static_cast<EOS_ECheckoutOrientation>(preferred_orientation);
     if (override_catalog_namespace.length() > 0) {
         options.OverrideCatalogNamespace = override_catalog_namespace.get_data();
     }
@@ -386,11 +388,15 @@ int IEOS::ecom_interface_get_transaction_count(Ref<RefCounted> p_options) {
 void IEOS::ecom_interface_query_entitlements(Ref<RefCounted> p_options) {
 	ERR_FAIL_NULL(s_ecomInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+	CharString override_catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("override_catalog_namespace"));
 
     EOS_Ecom_QueryEntitlementsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ECOM_QUERYENTITLEMENTS_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+	if (override_catalog_namespace.size() > 0){
+		options.OverrideCatalogNamespace = override_catalog_namespace.get_data();
+	}
 
     TypedArray<String> p_entitlement_names = p_options->get("entitlement_names");
     options.EntitlementNameCount = static_cast<uint32_t>(p_entitlement_names.size());

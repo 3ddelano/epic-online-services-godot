@@ -21,6 +21,7 @@ public:
     ~EOSGTitleStorageFileTransferRequest() {
         if (m_internal != nullptr) {
             EOS_TitleStorageFileTransferRequest_Release(m_internal);
+			m_internal = nullptr;
         }
     }
 

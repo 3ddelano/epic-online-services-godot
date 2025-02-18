@@ -71,6 +71,11 @@ var _notif_rtc_data_data_received = EOS.NotificationIdInvalid
 func _init() -> void:
 	super._init("HLobby")
 
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_lobby_details = null
+
 #endregion
 
 

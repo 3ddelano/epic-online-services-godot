@@ -21,6 +21,7 @@ public:
     ~EOSGPlayerDataStorageFileTransferRequest() {
         if (m_internal != nullptr) {
             EOS_PlayerDataStorageFileTransferRequest_Release(m_internal);
+			m_internal = nullptr;
         }
     }
 

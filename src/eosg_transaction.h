@@ -20,6 +20,7 @@ public:
     ~EOSGTransaction() {
         if (m_internal != nullptr) {
             EOS_Ecom_Transaction_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

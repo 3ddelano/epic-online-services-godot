@@ -20,6 +20,7 @@ public:
     ~EOSGActiveSession() {
         if (m_internal != nullptr) {
             EOS_ActiveSession_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

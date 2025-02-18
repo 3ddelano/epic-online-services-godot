@@ -61,4 +61,6 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("Shutting down EOS...")
 		EOS.Platform.PlatformInterface.release()
-		var _res = EOS.Platform.PlatformInterface.shutdown()
+		var res := EOS.Platform.PlatformInterface.shutdown()
+		if not EOS.is_success(res):
+			printerr("Failed to shutdown EOS: ", EOS.result_str(res))

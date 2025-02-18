@@ -25,6 +25,7 @@ public:
     ~EOSGLobbySearch() {
         if (m_internal != nullptr) {
             EOS_LobbySearch_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

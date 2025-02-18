@@ -26,6 +26,7 @@ public:
     ~EOSGLobbyModification() {
         if (m_internal != nullptr) {
             EOS_LobbyModification_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

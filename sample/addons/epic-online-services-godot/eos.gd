@@ -854,9 +854,30 @@ class Platform:
 
 
 class Ecom:
-	enum ItemType {Durable = 0, Consumable = 1, Other = 2}
+	enum ItemType { 
+		## This entitlement is intended to persist.
+		Durable = 0,
+		## This entitlement is intended to be transient and redeemed.
+		Consumable = 1,
+		## This entitlement has a type that is not currently intended for an in-game store.
+		Other = 2
+	}
 
-	enum OwnershipStatus {NotOwned = 0, Owned = 1}
+	enum OwnershipStatus {
+		## The catalog item is not owned by the local user
+		NotOwned = 0,
+		## The catalog item is owned by the local user
+		Owned = 1
+	}
+
+	enum CheckoutOrientation {
+		## Current orientation will be used
+		Default = 0,
+		## Portrait orientation
+		Portrait = 1,
+		## Landscape orientation
+		Landscape = 2
+	}
 
 	class CheckoutOptions extends BaseClass:
 		func _init():
@@ -865,6 +886,7 @@ class Ecom:
 		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entries: Array # Array[Dictionary] {offer_id: String}
 		var override_catalog_namespace: String
+		var preferred_orientation = CheckoutOrientation.Default
 
 	class CopyEntitlementByIdOptions extends BaseClass:
 		func _init():
@@ -1016,6 +1038,7 @@ class Ecom:
 		var local_user_id = EOSGRuntime.local_epic_account_id
 		var entitlement_names: Array # Array[String]
 		var include_redeemed: bool
+		var override_catalog_namespace: String
 
 	class QueryOffersOptions extends BaseClass:
 		func _init():
@@ -1448,7 +1471,7 @@ class Leaderboards:
 
 
 class Lobby:
-	enum LobbyAttributeVisibility {Public = 0, Private = 1}
+	enum LobbyAttributeVisibility { Public = 0, Private = 1}
 
 	enum LobbyMemberStatus {
 		Joined = 0,
@@ -1459,7 +1482,14 @@ class Lobby:
 		Closed = 5
 	}
 
-	enum LobbyPermissionLevel {PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2}
+	enum LobbyPermissionLevel { PublicAdvertised = 0, JoinViaPresence = 1, InviteOnly = 2}
+
+	enum LobbyRTCRoomJoinActionType {
+		## Join RTC Room as soon as user joins the lobby
+		AutomaticJoin = 0,
+		## Do not join RTC Room when joining the lobby. User must manually call Join RTC Room
+		ManualJoin = 1
+	}
 
 	const SEARCH_BUCKET_ID = "bucket"
 	const SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
@@ -1490,6 +1520,7 @@ class Lobby:
 		## - use_manual_audio_output: [bool],[br]
 		## - local_audio_device_input_starts_muted: [bool]
 		var local_rtc_options = null
+		var rtc_room_join_action_type = LobbyRTCRoomJoinActionType.AutomaticJoin
 
 		var client_data = null
 
@@ -1516,6 +1547,7 @@ class Lobby:
 		## - use_manual_audio_output: [bool],[br]
 		## - local_audio_device_input_starts_muted: [bool]
 		var local_rtc_options = null
+		var rtc_room_join_action_type = LobbyRTCRoomJoinActionType.AutomaticJoin
 
 		var client_data = null
 
@@ -1533,6 +1565,7 @@ class Lobby:
 		## - use_manual_audio_output: [bool],[br]
 		## - local_audio_device_input_starts_muted: [bool]
 		var local_rtc_options = null
+		var rtc_room_join_action_type = LobbyRTCRoomJoinActionType.AutomaticJoin
 
 		var client_data = null
 
@@ -1672,6 +1705,28 @@ class Lobby:
 		var local_user_id = EOSGRuntime.local_product_user_id
 		var lobby_id: String
 
+	class JoinRTCRoomOptions extends BaseClass:
+		func _init():
+			super._init("JoinRTCRoomOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var lobby_id: String
+		
+		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
+		## A [Dictionary] with keys: [br]
+		## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
+		## - use_manual_audio_input: [bool],[br]
+		## - use_manual_audio_output: [bool],[br]
+		## - local_audio_device_input_starts_muted: [bool]
+		var local_rtc_options = null
+	
+	class LeaveRTCRoomOptions extends BaseClass:
+		func _init():
+			super._init("LeaveRTCRoomOptions")
+		
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var lobby_id: String
+		
 	class LobbyInterface:
 		static func create_lobby(options: CreateLobbyOptions) -> void:
 			IEOS.lobby_interface_create_lobby(options)

@@ -408,6 +408,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(leaderboards_interface_query_leaderboard_user_scores_callback);
     IEOS_BIND_SIGNAL(lobby_interface_create_lobby_callback);
     IEOS_BIND_SIGNAL(lobby_interface_destroy_lobby_callback);
+    IEOS_BIND_SIGNAL(lobby_interface_join_rtc_room_callback);
+    IEOS_BIND_SIGNAL(lobby_interface_leave_rtc_room_callback);
     IEOS_BIND_SIGNAL(lobby_interface_hard_mute_member_callback);
     IEOS_BIND_SIGNAL(lobby_interface_join_lobby_accepted_callback);
     IEOS_BIND_SIGNAL(lobby_interface_join_lobby_by_id_callback);

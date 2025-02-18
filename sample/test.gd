@@ -2,11 +2,12 @@ extends Node
 
 @onready var IS_ANTICHEAT_SERVER: String = Env.get_var("IS_ANTICHEAT_SERVER", "false")
 
-var anticheat_server_main = AntiCheatServerMain.new()
+var anticheat_server_main: AntiCheatServerMain = null
 
 
 func _ready() -> void:
 	if IS_ANTICHEAT_SERVER != "false":
+		anticheat_server_main = AntiCheatServerMain.new()
 		add_child(anticheat_server_main)
 		return
 
@@ -598,11 +599,12 @@ func test_anticheat_client_interface():
 func _send_msg_to_server(local_user_id: String, jwt: String, mode: int):
 	var peer_id = multiplayer.get_remote_sender_id()
 	print("--- AntiCheatServer: _send_msg_to_server: got rpc: peer: %s, local_user_id: %d" % [peer_id, local_user_id])
-	anticheat_server_main.on_client_message_receive(peer_id, "register", {
-		local_user_id = local_user_id,
-		jwt = jwt,
-		mode = mode
-	})
+	if anticheat_server_main:
+		anticheat_server_main.on_client_message_receive(peer_id, "register", {
+			local_user_id = local_user_id,
+			jwt = jwt,
+			mode = mode
+		})
 
 
 func _get_res_if_sucess(res: Dictionary):

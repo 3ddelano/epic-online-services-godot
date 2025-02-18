@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - main
+            - "*"
         tags:
             - "*"
 jobs:
@@ -14,20 +14,34 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - identifier: linux-debug
-                      name: 🐧 Linux Debug
+                    - identifier: linux-x86-64-debug
+                      name: 🐧 Linux x86_64 Debug
                       runner: ubuntu-24.04
                       target: template_debug
                       dev_build: yes
                       platform: linux
                       arch: x86_64
-                    - identifier: linux-release
-                      name: 🐧Linux Release
+                    - identifier: linux-x86-64-release
+                      name: 🐧Linux x86_64 Release
                       runner: ubuntu-24.04
                       target: template_release
                       dev_build: no
                       platform: linux
                       arch: x86_64
+                    - identifier: linu-arm64-debug
+                      name: 🐧 Linux arm64 Debug
+                      runner: ubuntu-24.04-arm
+                      target: template_debug
+                      dev_build: yes
+                      platform: linux
+                      arch: arm64
+                    - identifier: linux-arm64-release
+                      name: 🐧Linux arm64 Release
+                      runner: ubuntu-24.04-arm
+                      target: template_release
+                      dev_build: no
+                      platform: linux
+                      arch: arm64
                     - identifier: macos-debug
                       name: 🍎 macOS (universal) Debug
                       runner: macos-latest
@@ -120,12 +134,12 @@ jobs:
                   token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
                   repository: 3ddelano/eos-sdk-mirror
                   path: thirdparty/eos-sdk
-                  ref: "193b33ffa0f18bf76afd6949099949273c1f79a6"
+                  ref: "f5bafec19f0be4258134adb93317abe6f51ff7e7"
 
             - name: (Windows) Install mingw64
               if: ${{ matrix.platform == 'windows' }}
               # change to egor-tensin/setup-mingw@v2 once pr #16 is merged
-              uses: e-t-l/setup-mingw@patch-1
+              uses: 3ddelano/setup-mingw@patch-1
 
             - name: (Linux) Install dependencies
               if: ${{ matrix.platform == 'linux' }}

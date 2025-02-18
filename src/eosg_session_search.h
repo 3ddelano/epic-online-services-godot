@@ -25,6 +25,7 @@ public:
     ~EOSGSessionSearch() {
         if (m_internal != nullptr) {
             EOS_SessionSearch_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 
