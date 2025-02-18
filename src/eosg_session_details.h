@@ -21,6 +21,7 @@ public:
     ~EOSGSessionDetails() {
         if (m_internal != nullptr) {
             EOS_SessionDetails_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

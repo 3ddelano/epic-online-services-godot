@@ -5,11 +5,11 @@ extends BaseClass
 
 #region Signals
 
-
 ## Emitted when the member's rtc state changes
 signal rtc_state_updated
 
 #endregion
+
 
 #region Public vars
 

@@ -7,6 +7,7 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString bucket_id = VARIANT_TO_CHARSTRING(p_options->get("bucket_id"));
     CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
+	int rtc_room_join_action_type = p_options->get("rtc_room_join_action_type");
 
     EOS_Lobby_CreateLobbyOptions options;
     memset(&options, 0, sizeof(options));
@@ -20,6 +21,7 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     options.bDisableHostMigration = VARIANT_TO_EOS_BOOL(p_options->get("disable_host_migration"));
     options.bEnableRTCRoom = VARIANT_TO_EOS_BOOL(p_options->get("enable_rtc_room"));
     options.bCrossplayOptOut = VARIANT_TO_EOS_BOOL(p_options->get("crossplay_opt_out"));
+	options.RTCRoomJoinActionType = static_cast<EOS_ELobbyRTCRoomJoinActionType>(rtc_room_join_action_type);
 
     Variant local_rtc_options = p_options->get("local_rtc_options");
     if (options.bEnableRTCRoom && local_rtc_options.get_type() != Variant::NIL) {
@@ -54,6 +56,56 @@ void IEOS::lobby_interface_create_lobby(Ref<RefCounted> p_options) {
     });
 }
 
+void IEOS::lobby_interface_join_rtc_room(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_lobbyInterface);
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
+
+    EOS_Lobby_JoinRTCRoomOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_LOBBY_JOINRTCROOM_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    options.LobbyId = lobby_id.get_data();
+    Variant local_rtc_options = p_options->get("local_rtc_options");
+    if (local_rtc_options.get_type() != Variant::NIL) {
+        EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
+        options.LocalRTCOptions = &localRTCOptions;
+    }
+    p_options->reference();
+
+    EOS_Lobby_JoinRTCRoom(s_lobbyInterface, &options, (void *)*p_options, [](const EOS_Lobby_JoinRTCRoomCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_join_rtc_room_callback", ret);
+    });
+}
+void IEOS::lobby_interface_leave_rtc_room(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL(s_lobbyInterface);
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
+
+    EOS_Lobby_LeaveRTCRoomOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_LOBBY_LEAVERTCROOM_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    options.LobbyId = lobby_id.get_data();
+    p_options->reference();
+
+    EOS_Lobby_LeaveRTCRoom(s_lobbyInterface, &options, (void *)*p_options, [](const EOS_Lobby_LeaveRTCRoomCallbackInfo *data) {
+        Dictionary ret;
+        ret["result_code"] = static_cast<int>(data->ResultCode);
+        Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
+        client_data->unreference();
+        ret["client_data"] = client_data->get("client_data");
+        ret["lobby_id"] = EOSG_GET_STRING(data->LobbyId);
+        IEOS::get_singleton()->emit_signal("lobby_interface_leave_rtc_room_callback", ret);
+    });
+}
+
 void IEOS::lobby_interface_destroy_lobby(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL(s_lobbyInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
@@ -84,12 +136,14 @@ void IEOS::lobby_interface_join_lobby(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL_MSG(p_lobby_details->get_internal(), "Error joining lobby. EOSGLobbyDetails is null.");
 
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+	int rtc_room_join_action_type = p_options->get("rtc_room_join_action_type");
 
     EOS_Lobby_JoinLobbyOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBY_JOINLOBBY_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.bPresenceEnabled = VARIANT_TO_EOS_BOOL(p_options->get("presence_enabled"));
+	options.RTCRoomJoinActionType = static_cast<EOS_ELobbyRTCRoomJoinActionType>(rtc_room_join_action_type);
     Variant local_rtc_options = p_options->get("local_rtc_options");
     if (local_rtc_options.get_type() != Variant::NIL) {
         EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
@@ -113,6 +167,7 @@ void IEOS::lobby_interface_join_lobby_by_id(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL(s_lobbyInterface);
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
+	int rtc_room_join_action_type = p_options->get("rtc_room_join_action_type");
 
     EOS_Lobby_JoinLobbyByIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -120,6 +175,7 @@ void IEOS::lobby_interface_join_lobby_by_id(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.LobbyId = lobby_id.get_data();
     options.bPresenceEnabled = VARIANT_TO_EOS_BOOL(p_options->get("presence_enabled"));
+	options.RTCRoomJoinActionType = static_cast<EOS_ELobbyRTCRoomJoinActionType>(rtc_room_join_action_type);
     Variant local_rtc_options = p_options->get("local_rtc_options");
     if (local_rtc_options.get_type() != Variant::NIL) {
         EOS_Lobby_LocalRTCOptions localRTCOptions = eosg_variant_to_lobby_local_rtc_options(local_rtc_options);
@@ -211,7 +267,7 @@ void IEOS::lobby_interface_update_lobby(Ref<RefCounted> p_options) {
 
 void IEOS::lobby_interface_promote_member(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL(s_lobbyInterface);
-	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
 
@@ -236,7 +292,7 @@ void IEOS::lobby_interface_promote_member(Ref<RefCounted> p_options) {
 
 void IEOS::lobby_interface_kick_member(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL(s_lobbyInterface);
-	CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     CharString target_user_id = VARIANT_TO_CHARSTRING(p_options->get("target_user_id"));
     CharString lobby_id = VARIANT_TO_CHARSTRING(p_options->get("lobby_id"));
 

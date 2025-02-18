@@ -22,6 +22,7 @@ public:
     ~EOSGPresenceModification() {
         if (m_internal != nullptr) {
             EOS_PresenceModification_Release(m_internal);
+			m_internal = nullptr;
         }
     };
 

@@ -3,7 +3,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - main
+            - "*"
         tags:
             - "*"
 jobs:
@@ -120,12 +120,12 @@ jobs:
                   token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
                   repository: 3ddelano/eos-sdk-mirror
                   path: thirdparty/eos-sdk
-                  ref: "193b33ffa0f18bf76afd6949099949273c1f79a6"
+                  ref: "f5bafec19f0be4258134adb93317abe6f51ff7e7"
 
             - name: (Windows) Install mingw64
               if: ${{ matrix.platform == 'windows' }}
               # change to egor-tensin/setup-mingw@v2 once pr #16 is merged
-              uses: e-t-l/setup-mingw@patch-1
+              uses: 3ddelano/setup-mingw@patch-1
 
             - name: (Linux) Install dependencies
               if: ${{ matrix.platform == 'linux' }}
