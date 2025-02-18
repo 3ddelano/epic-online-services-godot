@@ -68,7 +68,7 @@ def on_complete(target, source, env):
 	
 	elif platform == "linux":
 		so_variant = "LinuxArm64" if genv["arch"] == "arm64" else "Linux"
-		copy_file(eos_sdk_folder + f"Bin/libEOSSDK-{so_variant}-Shipping.so", plugin_bin_folder + "/linux/libEOSSDK-{so_variant}-Shipping.so")
+		copy_file(eos_sdk_folder + f"Bin/libEOSSDK-{so_variant}-Shipping.so", plugin_bin_folder + f"/linux/libEOSSDK-{so_variant}-Shipping.so")
 	
 	elif platform == "macos":
 		framework_folder = plugin_bin_folder + f"/macos/{lib_name}.{platform}.{build_target}.framework"
