@@ -17,7 +17,6 @@ var selected_leaderboard = {
 func _ready() -> void:
 	visibility_changed.connect(_on_query_leaderboard)
 	HAuth.logged_out.connect(_on_logged_out)
-	# IEOS.leaderboards_interface_query_leaderboard_ranks_callback.connect(_on_query_leaderboard_ranks_callback)
 	view_leaderboard_btn.pressed.connect(_on_view_leaderboard_btn_pressed)
 
 	_rebuild_ui()

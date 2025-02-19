@@ -49,14 +49,6 @@ func _on_search_lobby_btn_pressed():
 	var search_type = search_lobby_type.get_selected_metadata()
 	var search_string = search_lobby_line_edit.text.strip_edges()
 
-	var create_search_opts = EOS.Lobby.CreateLobbySearchOptions.new()
-	create_search_opts.max_results = 25
-
-	var lobby_search: EOSGLobbySearch = HLobbies.create_search(create_search_opts)
-	if not lobby_search:
-		print("Failed to create lobby search")
-		return
-
 	var lobbies = []
 	if search_type == SearchType.Map:
 		lobbies = await HLobbies.search_by_attribute_async({

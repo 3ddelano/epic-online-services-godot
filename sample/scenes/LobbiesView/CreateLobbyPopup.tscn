@@ -7,6 +7,7 @@
 [node name="CreateLobbyPopup" instance=ExtResource("1_dmoyl")]
 title = "CREATE LOBBY"
 size = Vector2i(356, 245)
+visible = false
 script = ExtResource("2_oyj73")
 
 [node name="VB" parent="." index="1"]
