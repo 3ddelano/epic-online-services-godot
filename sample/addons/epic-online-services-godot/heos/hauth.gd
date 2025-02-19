@@ -270,8 +270,13 @@ func delete_persistent_auth_async(refresh_token = "") -> bool:
 	return true
 
 
-## Login to Epic Game Services without any credentials
-func login_anonymous_async(user_display_name = "") -> bool:
+## Login to Epic Game Services without any credentials.
+## You must provide a user display name.
+func login_anonymous_async(p_user_display_name: String) -> bool:
+	var user_display_name := p_user_display_name.strip_edges()
+	if not p_user_display_name:
+		_log.error("User display name is empty")
+		return false
 	_log.debug("Logging in anonymously...")
 
 	EOS.Connect.ConnectInterface.delete_device_id(EOS.Connect.DeleteDeviceIdOptions.new())
@@ -292,11 +297,10 @@ func login_anonymous_async(user_display_name = "") -> bool:
 	login_opts.credentials = EOS.Connect.Credentials.new()
 	login_opts.credentials.type = EOS.ExternalCredentialType.DeviceidAccessToken
 	login_opts.credentials.token = null
-	if user_display_name:
-		login_opts.user_login_info = EOS.Connect.UserLoginInfo.new()
-		login_opts.user_login_info.display_name = user_display_name
-		display_name = user_display_name
-		display_name_changed.emit()
+	login_opts.user_login_info = EOS.Connect.UserLoginInfo.new()
+	login_opts.user_login_info.display_name = user_display_name
+	display_name = user_display_name
+	display_name_changed.emit()
 	
 	return await login_game_services_async(login_opts)
 
