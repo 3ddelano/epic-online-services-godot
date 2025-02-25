@@ -172,6 +172,19 @@ Installation
 
 This is a regular plugin for `Godot 4.3`. To install the plugin follow the steps below:
 
+#### **Method 1: Install from Asset Library**
+
+1. Asset Library link: [View the plugin on Godot Asset Library](https://godotengine.org/asset-library/asset/2453)
+2. In the Godot editor, navigate to the `AssetLib` tab, and in the search bar type `EOSG`.
+3. Click on the plugin with name `Epic Online Services Godot (EOSG)` by `3ddelano`
+4. In the popup that opens, click the `Download` button.
+5. Once the download is done, click the `Install` button.
+6. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.3 (EOSG)` plugin.
+7. Restart the godot editor.
+8. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin.
+
+#### **Method 2: Install from GitHub**
+
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
 3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.3 (EOSG)` plugin.
