@@ -107,7 +107,7 @@ func login_devtool_async(server_url: String, credential_name: String) -> bool:
 func login_account_portal_async() -> bool:
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
-	opts.credentials.type = EOS.Auth.LoginCredentialType.Developer
+	opts.credentials.type = EOS.Auth.LoginCredentialType.AccountPortal
 	opts.scope_flags = auth_login_scope_flags
 	opts.login_flags = auth_login_flags
 
