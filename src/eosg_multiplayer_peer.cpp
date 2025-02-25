@@ -47,7 +47,7 @@ void EOSGMultiplayerPeer::_bind_methods() {
     ClassDB::bind_method(D_METHOD("deny_all_connection_requests"), &EOSGMultiplayerPeer::deny_all_connection_requests);
     ClassDB::bind_method(D_METHOD("get_active_mode"), &EOSGMultiplayerPeer::get_active_mode);
     ClassDB::bind_method(D_METHOD("get_all_peers"), &EOSGMultiplayerPeer::get_all_peers);
-    ClassDB::bind_method(D_METHOD("get_peer_user_id"), &EOSGMultiplayerPeer::get_peer_user_id);
+    ClassDB::bind_method(D_METHOD("get_peer_user_id", "peer_id"), &EOSGMultiplayerPeer::get_peer_user_id);
     ClassDB::bind_method(D_METHOD("is_polling"), &EOSGMultiplayerPeer::is_polling);
     ClassDB::bind_method(D_METHOD("set_is_polling", "polling"), &EOSGMultiplayerPeer::set_is_polling);
 
