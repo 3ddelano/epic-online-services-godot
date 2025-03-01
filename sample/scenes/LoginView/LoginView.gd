@@ -97,12 +97,12 @@ func _ready() -> void:
 	
 	# TODO: Remove Autologin (PersistentAuth) for debug purpose
 
-	var cli_args = OS.get_cmdline_user_args()
-	if cli_args.size() > 0:
-		var dev_tool_username = cli_args[0]
-		_set_login_status("Logging in with devtool using cli arg...")
-		_set_login_state(States.Pending)
-		HAuth.login_devtool_async("localhost:4545", dev_tool_username)
+	# var cli_args = OS.get_cmdline_user_args()
+	# if cli_args.size() > 0:
+	# 	var dev_tool_username = cli_args[0]
+	# 	_set_login_status("Logging in with devtool using cli arg...")
+	# 	_set_login_state(States.Pending)
+	# 	HAuth.login_devtool_async("localhost:4545", dev_tool_username)
 
 
 	# For developement

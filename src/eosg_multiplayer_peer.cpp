@@ -375,7 +375,7 @@ void EOSGMultiplayerPeer::accept_connection_request(const String &remote_user) {
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = remote_user_id;
     options.SocketId = socket.get_id();
-    EOS_EResult result = IEOS::get_singleton()->p2p_accept_connection(&options);
+    EOS_EResult result = IEOS::get_singleton()->_p2p_accept_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to accept connection request! Invalid parameters.");
 
@@ -402,7 +402,7 @@ void EOSGMultiplayerPeer::deny_connection_request(const String &remote_user) {
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = remote_user_id;
     options.SocketId = socket.get_id();
-    EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
+    EOS_EResult result = IEOS::get_singleton()->_p2p_close_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to deny connection. Invalid parameters.");
 
@@ -885,7 +885,7 @@ Error EOSGMultiplayerPeer::_broadcast(const EOSGPacket &packet, int exclude) {
         }
 
         options.RemoteUserId = E.value;
-        EOS_EResult result = IEOS::get_singleton()->p2p_send_packet(&options);
+        EOS_EResult result = IEOS::get_singleton()->_p2p_send_packet(&options);
 
         ERR_FAIL_COND_V_MSG(result == EOS_EResult::EOS_InvalidParameters, ERR_INVALID_PARAMETER, "Failed to send packet! Invalid parameters.");
         ERR_FAIL_COND_V_MSG(result == EOS_EResult::EOS_LimitExceeded, FAILED, "Failed to send packet! Packet is either too large or outgoing packet queue is full.");
@@ -917,7 +917,7 @@ Error EOSGMultiplayerPeer::_send_to(const EOS_ProductUserId &remote_peer, const 
     options.Reliability = packet.get_reliability();
     options.bDisableAutoAcceptConnection = EOS_FALSE;
 
-    EOS_EResult result = IEOS::get_singleton()->p2p_send_packet(&options);
+    EOS_EResult result = IEOS::get_singleton()->_p2p_send_packet(&options);
 
     ERR_FAIL_COND_V_MSG(result == EOS_EResult::EOS_InvalidParameters, ERR_INVALID_PARAMETER, "Failed to send packet! Invalid parameters.");
     ERR_FAIL_COND_V_MSG(result == EOS_EResult::EOS_LimitExceeded, FAILED, "Failed to send packet! Packet is either too large or outgoing packet queue is full.");
@@ -997,7 +997,7 @@ void EOSGMultiplayerPeer::_disconnect_remote_user(const EOS_ProductUserId &remot
     options.LocalUserId = s_local_user_id;
     options.RemoteUserId = remote_user;
     options.SocketId = socket.get_id();
-    EOS_EResult result = IEOS::get_singleton()->p2p_close_connection(&options);
+    EOS_EResult result = IEOS::get_singleton()->_p2p_close_connection(&options);
 
     ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to close peer connection. Invalid parameters.");
 }
@@ -1197,7 +1197,7 @@ void EOSGMultiplayerPeer::EOSGSocket::close() {
     options.ApiVersion = EOS_P2P_CLOSECONNECTIONS_API_LATEST;
     options.LocalUserId = s_local_user_id;
     options.SocketId = &socket;
-    IEOS::get_singleton()->p2p_close_all_connections(&options);
+    IEOS::get_singleton()->_p2p_close_all_connections(&options);
 }
 
 /****************************************

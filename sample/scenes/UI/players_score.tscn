@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://8kmyoi08gr22"]
+
+[ext_resource type="Script" path="res://scenes/UI/players_score.gd" id="1_k6ifu"]
+
+[node name="PlayersScore" type="Label"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -203.0
+offset_bottom = 56.0
+grow_horizontal = 0
+script = ExtResource("1_k6ifu")

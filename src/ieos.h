@@ -391,29 +391,29 @@ public:
     // Available in Godot functions
     Dictionary p2p_interface_get_packet_queue_info();
     Dictionary p2p_interface_get_port_range();
-    int p2p_interface_get_nat_type();
-    int p2p_interface_get_relay_control();
+    Dictionary p2p_interface_get_nat_type();
+    Dictionary p2p_interface_get_relay_control();
     void p2p_interface_query_nat_type();
-    void p2p_interface_set_packet_queue_size(Ref<RefCounted> options);
-    void p2p_interface_set_port_range(Ref<RefCounted> options);
-    void p2p_interface_set_relay_control(int control);
+    int p2p_interface_set_packet_queue_size(Ref<RefCounted> options);
+    int p2p_interface_set_port_range(Ref<RefCounted> options);
+    int p2p_interface_set_relay_control(int control);
 
     // Not available in Godot. Called by EOSGMultiplayerPeer
-    EOS_EResult p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
-    EOS_EResult p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *options);
-    EOS_EResult p2p_close_all_connections(const EOS_P2P_CloseConnectionsOptions *options);
-    EOS_EResult p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);
-    EOS_EResult p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size);
-    EOS_EResult p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size, uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
-    EOS_EResult p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
-    EOS_NotificationId p2p_add_notify_peer_connection_closed(const EOS_P2P_AddNotifyPeerConnectionClosedOptions *options, EOS_P2P_OnRemoteConnectionClosedCallback callback);
-    EOS_NotificationId p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options, EOS_P2P_OnPeerConnectionEstablishedCallback callback);
-    EOS_NotificationId p2p_add_notify_peer_connection_interrupted(const EOS_P2P_AddNotifyPeerConnectionInterruptedOptions *options, EOS_P2P_OnPeerConnectionInterruptedCallback callback);
-    EOS_NotificationId p2p_add_notify_peer_connection_request(const EOS_P2P_AddNotifyPeerConnectionRequestOptions *options, EOS_P2P_OnIncomingConnectionRequestCallback callback);
-    void p2p_remove_notify_peer_connection_closed(EOS_NotificationId callback_id);
-    void p2p_remove_notify_peer_connection_established(EOS_NotificationId callback_id);
-    void p2p_remove_notify_peer_connection_interrupted(EOS_NotificationId callback_id);
-    void p2p_remove_notify_peer_connection_request(EOS_NotificationId callback_id);
+    EOS_EResult _p2p_accept_connection(const EOS_P2P_AcceptConnectionOptions *options);
+    EOS_EResult _p2p_clear_packet_queue(const EOS_P2P_ClearPacketQueueOptions *options);
+    EOS_EResult _p2p_close_all_connections(const EOS_P2P_CloseConnectionsOptions *options);
+    EOS_EResult _p2p_close_connection(const EOS_P2P_CloseConnectionOptions *options);
+    EOS_EResult _p2p_get_next_packet_size(const EOS_P2P_GetNextReceivedPacketSizeOptions *options, uint32_t *out_size);
+    EOS_EResult _p2p_receive_packet(const EOS_P2P_ReceivePacketOptions *options, void *out_packet_data, uint32_t *out_packet_size, uint8_t *out_channel, EOS_ProductUserId *remote_user, EOS_P2P_SocketId *out_socket);
+    EOS_EResult _p2p_send_packet(const EOS_P2P_SendPacketOptions *options);
+    EOS_NotificationId _p2p_add_notify_peer_connection_closed(const EOS_P2P_AddNotifyPeerConnectionClosedOptions *options, EOS_P2P_OnRemoteConnectionClosedCallback callback);
+    EOS_NotificationId _p2p_add_notify_peer_connection_established(const EOS_P2P_AddNotifyPeerConnectionEstablishedOptions *options, EOS_P2P_OnPeerConnectionEstablishedCallback callback);
+    EOS_NotificationId _p2p_add_notify_peer_connection_interrupted(const EOS_P2P_AddNotifyPeerConnectionInterruptedOptions *options, EOS_P2P_OnPeerConnectionInterruptedCallback callback);
+    EOS_NotificationId _p2p_add_notify_peer_connection_request(const EOS_P2P_AddNotifyPeerConnectionRequestOptions *options, EOS_P2P_OnIncomingConnectionRequestCallback callback);
+    void _p2p_remove_notify_peer_connection_closed(EOS_NotificationId callback_id);
+    void _p2p_remove_notify_peer_connection_established(EOS_NotificationId callback_id);
+    void _p2p_remove_notify_peer_connection_interrupted(EOS_NotificationId callback_id);
+    void _p2p_remove_notify_peer_connection_request(EOS_NotificationId callback_id);
 
     // -----
     // PlayerDataStorage Interface

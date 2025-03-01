@@ -6,6 +6,7 @@ extends VBoxContainer
 @onready var permission_label: LineEdit = %PermissionLabel
 @onready var map_label: LineEdit = %MapLabel
 @onready var members: GridContainer = %Members
+@onready var start_game_btn: Button = %StartGameBtn
 @onready var destroy_lobby_btn: Button = %DestroyLobbyBtn
 @onready var random_map_btn: Button = %RandomMapBtn
 @onready var leave_lobby_btn: Button = %LeaveLobbyBtn
@@ -24,10 +25,12 @@ var cached_lobby := HLobby.new()
 
 
 enum RTCDataTypes {
-	CHAT_MSG = 1
+	CHAT_MSG = 1,
+	JOIN_GAME = 2,
 }
 
 func _ready() -> void:
+	start_game_btn.pressed.connect(_on_start_game_pressed)
 	destroy_lobby_btn.pressed.connect(_on_destroy_lobby_btn_pressed)
 	random_map_btn.pressed.connect(_on_random_map_btn_pressed)
 	leave_lobby_btn.pressed.connect(_on_leave_lobby_btn_pressed)
@@ -39,6 +42,12 @@ func _ready() -> void:
 
 func update(lobby: HLobby):
 	cached_lobby = lobby
+	Store.current_lobby = cached_lobby
+	
+	if cached_lobby.is_valid():
+		if cached_lobby.is_owner():
+			Store.network.create_server()
+	
 	cached_lobby.lobby_updated.connect(_update)
 	cached_lobby.kicked_from_lobby.connect(func():
 		_reset()
@@ -82,6 +91,7 @@ func _reset_lobby_members():
 
 
 func _reset_buttons():
+	start_game_btn.hide()
 	destroy_lobby_btn.hide()
 	random_map_btn.hide()
 	leave_lobby_btn.hide()
@@ -225,6 +235,7 @@ func _update_buttons():
 		
 
 	if cached_lobby.is_owner():
+		start_game_btn.show()
 		destroy_lobby_btn.show()
 		random_map_btn.show()
 
@@ -243,6 +254,23 @@ func _on_leave_lobby_btn_pressed():
 		print("failed to leave lobby")
 		return
 	update(HLobby.new())
+
+
+func _on_start_game_pressed():
+	var map_attr = cached_lobby.get_attribute(LobbiesView.MAP_ATTRIBUTE_KEY)
+	
+	# Update the lobby so it doesnt show in searches
+	cached_lobby.permission_level = EOS.Lobby.LobbyPermissionLevel.InviteOnly
+	await cached_lobby.update_async()
+	
+	Store.network.start_game(LobbiesView.Maps.get(map_attr.value))
+	
+	var data = _make_join_game_data()
+	var ret := cached_lobby.rtc_send_data(data)
+	if not ret:
+		print("failed to send join game msg")
+		return
+
 
 
 func _on_destroy_lobby_btn_pressed():
@@ -308,7 +336,10 @@ func _on_rtc_data_received(raw_data: PackedByteArray):
 	var msg_type = data.t
 	
 	if msg_type == RTCDataTypes.CHAT_MSG:
-		chat_history_label.call_deferred("set_text", chat_history_label.text + data.u + ": " + data.m + "\n")
+		chat_history_label.set_text.call_deferred(chat_history_label.text + data.u + ": " + data.m + "\n")
+	if msg_type == RTCDataTypes.JOIN_GAME:
+		if cached_lobby.is_valid() and not cached_lobby.is_owner():
+			Store.network.join_game.call_deferred(cached_lobby.owner_product_user_id)
 
 
 func _make_chat_message_data(username: String, msg: String):
@@ -316,6 +347,12 @@ func _make_chat_message_data(username: String, msg: String):
 		t = RTCDataTypes.CHAT_MSG, 
 		u = username,
 		m = msg
+	}
+
+
+func _make_join_game_data():
+	return {
+		t = RTCDataTypes.JOIN_GAME, 
 	}
 
 

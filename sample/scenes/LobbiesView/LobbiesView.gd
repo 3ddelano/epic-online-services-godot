@@ -4,13 +4,13 @@ extends VBoxContainer
 
 enum Maps {
 	Margao,
-	Panaji,
-	Canacona,
-	Chandor,
+	#Panaji,
+	#Canacona,
+	#Chandor,
 	Bellandur,
-	Dubai,
+	#Dubai,
 	NewYork,
-	Manhattan
+	#Manhattan
 }
 
 const Skins = {
