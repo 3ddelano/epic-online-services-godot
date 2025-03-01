@@ -53,7 +53,6 @@ func _physics_process(delta: float) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func take_damage(amt: int, owner_peer_id: int):
-	print("taking damange on %s by %s" % [multiplayer.get_unique_id(), owner_peer_id])
 	health = max(0, health - amt)
 	health_changed.emit()
 	if health == 0:

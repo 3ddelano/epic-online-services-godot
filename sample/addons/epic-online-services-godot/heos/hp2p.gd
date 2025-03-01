@@ -54,6 +54,7 @@ func get_port_range() -> Dictionary:
 	return EOS.P2P.P2PInterface.get_port_range()
 
 
+## Set configuration options related to network ports.
 func set_port_range(port: int, max_additional_ports_to_try: int):
 	var opts = EOS.P2P.SetPortRangeOptions.new()
 	opts.port = port

@@ -14,9 +14,6 @@ func _on_players_score_changed():
 	for player in players:
 		var mem = Store.current_lobby.get_member_by_product_user_id(player.puid)
 		if not mem: continue
-		
-		print("player %s has score %s" % [player.peer_id, player.score])
-
 		var display_name_attr = mem.get_attribute(LobbiesView.USERNAME_ATTRIBUTE_KEY)
 		var display_name = "User"
 		if display_name_attr:
