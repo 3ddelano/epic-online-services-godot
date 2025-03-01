@@ -21,6 +21,7 @@ var shoot_cooldown = SHOOT_COOLDOWN
 
 @onready var _gun_container: Node2D = %GunContainer
 @onready var _muzzle: Node2D = %Muzzle
+@onready var _panel: Panel = $Panel
 
 #region Built-in methods
 
@@ -30,6 +31,8 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	Store.player_score_changed.emit()
+	if not is_multiplayer_authority():
+		_panel.self_modulate = Color("#ff0000")
 
 
 func _physics_process(delta: float) -> void:
@@ -41,10 +44,12 @@ func _physics_process(delta: float) -> void:
 	if shoot_cooldown > -0.1:
 		shoot_cooldown -= delta
 	
-	if Input.is_action_pressed(&"shoot") && shoot_cooldown <= 0:
-		shoot_cooldown = SHOOT_COOLDOWN
-		var bname = str(peer_id) + "_" + str(randi_range(1000, 9999))
-		shoot.rpc(peer_id, puid, bname)
+	if not Store.is_mobile:
+		if Input.is_action_pressed(&"shoot") && shoot_cooldown <= 0:
+			_handle_shoot()
+	else:
+		if Store.shoot_joystick.get_deadzoned_vector().length_squared() > 0.1 && shoot_cooldown <= 0:
+			_handle_shoot()
 
 #endregion
 
@@ -82,6 +87,16 @@ func _handle_move():
 
 
 func _handle_gun_rotation():
-	_gun_container.look_at(get_global_mouse_position())
+	if not Store.is_mobile:
+		_gun_container.look_at(get_global_mouse_position())
+	else:
+		print(Store.shoot_joystick.get_deadzoned_vector())
+		_gun_container.look_at(global_position + Store.shoot_joystick.get_deadzoned_vector())
+
+
+func _handle_shoot():
+	shoot_cooldown = SHOOT_COOLDOWN
+	var bname = str(peer_id) + "_" + str(randi_range(1000, 9999))
+	shoot.rpc(peer_id, puid, bname)
 
 #endregion

@@ -17,6 +17,10 @@ var second_product_user_id = "0002620f4b524b099abf1b48db7137a2"
 var _main_node: Control
 var network: MyNetwork
 var current_lobby: HLobby
+var shoot_joystick: TouchScreenJoystick
+
+
+@onready var is_mobile := OS.get_name() in ["iOS", "Android"]
 
 
 func get_view(view_name: String):

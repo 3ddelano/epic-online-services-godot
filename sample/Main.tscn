@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://gcoi8ld0uvkl"]
+[gd_scene load_steps=24 format=3 uid="uid://gcoi8ld0uvkl"]
 
 [ext_resource type="Theme" uid="uid://dwns7wwoyi1hy" path="res://components/StyledPopupWindow/StyledPopupWindowTheme.tres" id="1_dhxmx"]
 [ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://bdlcslag0jdj1" path="res://scenes/UI/nat_type.tscn" id="18_vylep"]
 [ext_resource type="PackedScene" uid="uid://c37wtoikc8pgp" path="res://scenes/UI/ping.tscn" id="19_enhih"]
 [ext_resource type="PackedScene" uid="uid://8kmyoi08gr22" path="res://scenes/UI/players_score.tscn" id="20_i3cca"]
+[ext_resource type="Script" path="res://scenes/UI/touch_screen_joystick.gd" id="21_5h21x"]
+[ext_resource type="Script" path="res://scenes/UI/joysticks.gd" id="21_einjf"]
 
 [sub_resource type="StyleBoxEmpty" id="5"]
 
@@ -41,7 +43,6 @@ anchor_bottom = 1.0
 color = Color(0.121569, 0.121569, 0.121569, 1)
 
 [node name="MC" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -238,3 +239,46 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="PlayersScore" parent="Network/Game/CanvasLayer" instance=ExtResource("20_i3cca")]
+
+[node name="Joysticks" type="Control" parent="Network/Game/CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("21_einjf")
+
+[node name="MoveJoystick" type="Control" parent="Network/Game/CanvasLayer/Joysticks"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 181.0
+offset_top = 390.0
+offset_right = 221.0
+offset_bottom = 430.0
+pivot_offset = Vector2(20, 20)
+script = ExtResource("21_5h21x")
+knob_color = Color(0.560955, 0.560955, 0.560955, 1)
+base_color = Color(0.560784, 0.560784, 0.560784, 1)
+anti_aliased = true
+mode = 1
+use_input_actions = true
+action_left = "move_left"
+action_right = "move_right"
+action_up = "move_up"
+action_down = "move_down"
+
+[node name="ShootJoystick" type="Control" parent="Network/Game/CanvasLayer/Joysticks"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 938.0
+offset_top = 401.0
+offset_right = 978.0
+offset_bottom = 441.0
+pivot_offset = Vector2(20, 20)
+script = ExtResource("21_5h21x")
+knob_color = Color(0.560784, 0.560784, 0.560784, 1)
+base_color = Color(0.560784, 0.560784, 0.560784, 1)
+anti_aliased = true
+mode = 1
