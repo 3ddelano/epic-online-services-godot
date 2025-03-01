@@ -51,9 +51,16 @@ func _on_search_lobby_btn_pressed():
 
 	var lobbies = []
 	if search_type == SearchType.Map:
-		lobbies = await HLobbies.search_by_attribute_async({
-			key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.Equal
-		})
+		if search_string.is_empty():
+			# Search for any map
+			lobbies = await HLobbies.search_by_attribute_async({
+				key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.NotEqual
+			})
+		else:
+			# Search for specific map
+			lobbies = await HLobbies.search_by_attribute_async({
+				key = LobbiesView.MAP_ATTRIBUTE_KEY, value = search_string, comparison = EOS.ComparisonOp.Equal
+			})
 	elif search_type == SearchType.BucketId:
 		lobbies = await HLobbies.search_by_bucket_id_async(search_string)
 	elif search_type == SearchType.LobbyId:
@@ -79,11 +86,8 @@ func _on_clear_search_lobby_btn_pressed():
 	lobbies_view.hide_search_results()
 
 
-func _on_search_lobby_line_edit_text_changed(new_text: String):
-	if new_text.strip_edges() == "":
-		search_lobby_btn.disabled = true
-	else:
-		search_lobby_btn.disabled = false
+func _on_search_lobby_line_edit_text_changed(_new_text: String):
+	search_lobby_btn.disabled = false
 	clear_search_lobby_btn.disabled = false
 
 #endregion
