@@ -41,8 +41,8 @@ func get_relay_control() -> EOS.P2P.RelayControl:
 
 
 ## Set how relay servers are to be used
-func set_relay_control(relay_control: EOS.P2P.RelayControl):
-	EOS.P2P.P2PInterface.set_relay_control(relay_control)
+func set_relay_control(relay_control: EOS.P2P.RelayControl) -> EOS.Result:
+	return EOS.P2P.P2PInterface.set_relay_control(relay_control)
 
 
 ## Get the current chosen port and the amount of other ports to try above the chosen port if the chosen port is unavailable.
@@ -55,11 +55,11 @@ func get_port_range() -> Dictionary:
 
 
 ## Set configuration options related to network ports.
-func set_port_range(port: int, max_additional_ports_to_try: int):
+func set_port_range(port: int, max_additional_ports_to_try: int) -> EOS.Result:
 	var opts = EOS.P2P.SetPortRangeOptions.new()
 	opts.port = port
 	opts.max_additional_ports_to_try = max_additional_ports_to_try
-	EOS.P2P.P2PInterface.set_port_range(opts)
+	return EOS.P2P.P2PInterface.set_port_range(opts)
 
 
 ## Gets the current cached information related to the incoming and outgoing packet queues
@@ -73,4 +73,13 @@ func set_port_range(port: int, max_additional_ports_to_try: int):
 ##   - outgoing_packet_queue_max_size_bytes: int
 func get_packet_queue_info():
 	return EOS.P2P.P2PInterface.get_packet_queue_info()
+
+
+## Sets the maximum packet queue sizes that packets waiting to be sent or received can use.
+func set_packet_queue_size(incoming_packet_queue_max_size_bytes: int, outgoing_packet_queue_max_size_bytes: int) -> EOS.Result:
+	var opts = EOS.P2P.SetPacketQueueSizeOptions.new()
+	opts.incoming_packet_queue_max_size_bytes = incoming_packet_queue_max_size_bytes
+	opts.outgoing_packet_queue_max_size_bytes = outgoing_packet_queue_max_size_bytes
+	return EOS.P2P.P2PInterface.set_packet_queue_size(opts)
+
 #endregion
