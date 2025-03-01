@@ -415,14 +415,14 @@ Export the project from Godot editor for iOS target. You might get a build error
   - ProgressionSnapshot Interface
   - Reports Interface
   - UI Interface
+  - Lobby Interface
+  - RTC Interface
+  - P2P Interface
   - Version Interface
 
 - Completed without sample
   - KWS Interface
-  - Lobby Interface
-  - P2P Interface
   - PlayerDataStorage Interface
-  - RTC Interface
   - Sanctions Interface
   - Sessions Interface
   - TitleStorage Interface
