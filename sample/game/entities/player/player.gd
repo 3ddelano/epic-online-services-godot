@@ -90,7 +90,6 @@ func _handle_gun_rotation():
 	if not Store.is_mobile:
 		_gun_container.look_at(get_global_mouse_position())
 	else:
-		print(Store.shoot_joystick.get_deadzoned_vector())
 		_gun_container.look_at(global_position + Store.shoot_joystick.get_deadzoned_vector())
 
 
