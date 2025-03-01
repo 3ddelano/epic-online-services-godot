@@ -150,6 +150,8 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 - Android
    <img src="./_media/android_auth_success.jpg">
 
+   <img src="./_media/android_p2p_game.jpg">
+
 - iOS
    <img src="./_media/ios_simulator_auth_success.png">
 
