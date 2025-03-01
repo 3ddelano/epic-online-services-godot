@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnt3dorvwuw5y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0hwfu"]
+size = Vector2(32, 32)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvwfc"]
+bg_color = Color(0.0889726, 0.111937, 0.180319, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0498713, 0.0669275, 0.115281, 1)
+border_blend = true
+
+[node name="Wall" type="StaticBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_0hwfu")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kvwfc")

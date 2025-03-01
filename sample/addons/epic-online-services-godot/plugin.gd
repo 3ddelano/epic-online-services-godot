@@ -16,6 +16,7 @@ func _enable_plugin():
 	add_autoload_singleton("HStats", "res://addons/epic-online-services-godot/heos/hstats.gd")
 	add_autoload_singleton("HLeaderboards", "res://addons/epic-online-services-godot/heos/hleaderboards.gd")
 	add_autoload_singleton("HLobbies", "res://addons/epic-online-services-godot/heos/hlobbies.gd")
+	add_autoload_singleton("HP2P", "res://addons/epic-online-services-godot/heos/hp2p.gd")
 	add_export_plugin(_export_plugin)
 
 
@@ -29,3 +30,4 @@ func _disable_plugin():
 	remove_autoload_singleton("HStats")
 	remove_autoload_singleton("HLeaderboards")
 	remove_autoload_singleton("HLobbies")
+	remove_autoload_singleton("HP2P")

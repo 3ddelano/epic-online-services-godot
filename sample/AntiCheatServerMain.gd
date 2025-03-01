@@ -86,7 +86,7 @@ func _begin_session():
 
 	print("--- AntiCheatServer: begin_session: ", EOS.AntiCheatServer.AntiCheatServerInterface.begin_session(begin_sess_opts))
 
-func _verify_id_token(peer_id: int, product_user_id: String, connect_id_jwt: String):
+func _verify_id_token(_peer_id: int, product_user_id: String, connect_id_jwt: String):
 	var id_token = EOS.Connect.IdToken.new()
 	id_token.json_web_token = connect_id_jwt
 	id_token.product_user_id = product_user_id

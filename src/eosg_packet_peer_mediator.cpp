@@ -75,7 +75,7 @@ void EOSGPacketPeerMediator::_on_process_frame() {
     EOS_EResult result = EOS_EResult::EOS_Success;
 
     do {
-        result = IEOS::get_singleton()->p2p_get_next_packet_size(&packet_size_options, &max_packet_size);
+        result = IEOS::get_singleton()->_p2p_get_next_packet_size(&packet_size_options, &max_packet_size);
 
         ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet size! Invalid parameters.");
 
@@ -92,7 +92,7 @@ void EOSGPacketPeerMediator::_on_process_frame() {
             uint8_t channel;
             EOS_P2P_SocketId socket;
             EOS_ProductUserId remote_user;
-            result = IEOS::get_singleton()->p2p_receive_packet(&recieve_packet_options, packet_data.ptrw(), &buffer_size, &channel, &remote_user, &socket);
+            result = IEOS::get_singleton()->_p2p_receive_packet(&recieve_packet_options, packet_data.ptrw(), &buffer_size, &channel, &remote_user, &socket);
             String socket_id_str = socket.SocketName;
 
             ERR_FAIL_COND_MSG(result == EOS_EResult::EOS_InvalidParameters, "Failed to get packet! Invalid parameters.");
@@ -246,10 +246,10 @@ void EOSGPacketPeerMediator::_terminate() {
     main_loop->disconnect("process_frame", process_frame_callback);
 
     //Unregister callbacks
-    IEOS::get_singleton()->p2p_remove_notify_peer_connection_established(connection_established_callback_id);
-    IEOS::get_singleton()->p2p_remove_notify_peer_connection_interrupted(connection_interrupted_callback_id);
-    IEOS::get_singleton()->p2p_remove_notify_peer_connection_closed(connection_closed_callback_id);
-    IEOS::get_singleton()->p2p_remove_notify_peer_connection_request(connection_request_callback_id);
+    IEOS::get_singleton()->_p2p_remove_notify_peer_connection_established(connection_established_callback_id);
+    IEOS::get_singleton()->_p2p_remove_notify_peer_connection_interrupted(connection_interrupted_callback_id);
+    IEOS::get_singleton()->_p2p_remove_notify_peer_connection_closed(connection_closed_callback_id);
+    IEOS::get_singleton()->_p2p_remove_notify_peer_connection_request(connection_request_callback_id);
 
     initialized = false;
 }
@@ -413,7 +413,7 @@ bool EOSGPacketPeerMediator::_add_connection_established_callback() {
     connection_established_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONESTABLISHED_API_LATEST;
     connection_established_options.LocalUserId = local_user_id;
     connection_established_options.SocketId = nullptr;
-    connection_established_callback_id = IEOS::get_singleton()->p2p_add_notify_peer_connection_established(&connection_established_options,
+    connection_established_callback_id = IEOS::get_singleton()->_p2p_add_notify_peer_connection_established(&connection_established_options,
             _on_peer_connection_established);
     ERR_FAIL_COND_V_MSG(connection_established_callback_id == EOS_INVALID_NOTIFICATIONID, false, "Failed to add connection established callback.");
     return true;
@@ -431,7 +431,7 @@ bool EOSGPacketPeerMediator::_add_connection_interrupted_callback() {
     connection_interrupted_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONINTERRUPTED_API_LATEST;
     connection_interrupted_options.LocalUserId = local_user_id;
     connection_interrupted_options.SocketId = nullptr;
-    connection_interrupted_callback_id = IEOS::get_singleton()->p2p_add_notify_peer_connection_interrupted(&connection_interrupted_options,
+    connection_interrupted_callback_id = IEOS::get_singleton()->_p2p_add_notify_peer_connection_interrupted(&connection_interrupted_options,
             _on_peer_connection_interrupted);
     ERR_FAIL_COND_V_MSG(connection_interrupted_callback_id == EOS_INVALID_NOTIFICATIONID, false, "Failed to add connection interrupted callback.");
     return true;
@@ -449,7 +449,7 @@ bool EOSGPacketPeerMediator::_add_connection_closed_callback() {
     connection_closed_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONCLOSED_API_LATEST;
     connection_closed_options.LocalUserId = local_user_id;
     connection_closed_options.SocketId = nullptr;
-    connection_closed_callback_id = IEOS::get_singleton()->p2p_add_notify_peer_connection_closed(&connection_closed_options,
+    connection_closed_callback_id = IEOS::get_singleton()->_p2p_add_notify_peer_connection_closed(&connection_closed_options,
             _on_remote_connection_closed);
     ERR_FAIL_COND_V_MSG(connection_closed_callback_id == EOS_INVALID_NOTIFICATIONID, false, "Failed to add connection closed callback.");
     return true;
@@ -467,7 +467,7 @@ bool EOSGPacketPeerMediator::_add_connection_request_callback() {
     connection_request_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONREQUEST_API_LATEST;
     connection_request_options.LocalUserId = local_user_id;
     connection_request_options.SocketId = nullptr;
-    connection_request_callback_id = IEOS::get_singleton()->p2p_add_notify_peer_connection_request(&connection_request_options,
+    connection_request_callback_id = IEOS::get_singleton()->_p2p_add_notify_peer_connection_request(&connection_request_options,
             _on_incoming_connection_request);
     ERR_FAIL_COND_V_MSG(connection_request_callback_id == EOS_INVALID_NOTIFICATIONID, false, "Failed to add connection request callback.");
     return true;

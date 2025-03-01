@@ -1931,23 +1931,23 @@ class P2P:
 		static func get_port_range() -> Dictionary:
 			return IEOS.p2p_interface_get_port_range()
 
-		static func get_nat_type() -> NATType:
-			return IEOS.p2p_interface_get_nat_type() as NATType
+		static func get_nat_type() -> Dictionary:
+			return IEOS.p2p_interface_get_nat_type()
 
-		static func get_relay_control() -> RelayControl:
-			return IEOS.p2p_interface_get_relay_control() as RelayControl
+		static func get_relay_control() -> Dictionary:
+			return IEOS.p2p_interface_get_relay_control()
 
 		static func query_nat_type() -> void:
 			IEOS.p2p_interface_query_nat_type()
 
-		static func set_packet_queue_size(options: SetPacketQueueSizeOptions) -> void:
-			IEOS.p2p_interface_set_packet_queue_size(options)
+		static func set_packet_queue_size(options: SetPacketQueueSizeOptions) -> EOS.Result:
+			return IEOS.p2p_interface_set_packet_queue_size(options)
 
-		static func set_port_range(options: SetPortRangeOptions) -> void:
-			IEOS.p2p_interface_set_port_range(options)
+		static func set_port_range(options: SetPortRangeOptions) -> EOS.Result:
+			return IEOS.p2p_interface_set_port_range(options)
 
-		static func set_relay_control(relay_control: RelayControl) -> void:
-			IEOS.p2p_interface_set_relay_control(relay_control)
+		static func set_relay_control(relay_control: RelayControl) -> EOS.Result:
+			return IEOS.p2p_interface_set_relay_control(relay_control)
 
 
 

@@ -73,7 +73,6 @@ placeholder_text = "Search string"
 [node name="SearchLobbyBtn" parent="VB/HBoxContainer/PanelContainer/SearchLobby" instance=ExtResource("6_uc41g")]
 unique_name_in_owner = true
 layout_mode = 2
-disabled = true
 text = "Search"
 
 [node name="ClearSearchLobbyBtn" parent="VB/HBoxContainer/PanelContainer/SearchLobby" instance=ExtResource("6_uc41g")]
@@ -155,6 +154,11 @@ theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VB/CurrentLobby/MarginContainer/Columns/LeftColumn/MarginContainer"]
 layout_mode = 2
+
+[node name="StartGameBtn" parent="VB/CurrentLobby/MarginContainer/Columns/LeftColumn/MarginContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start"
 
 [node name="DestroyLobbyBtn" parent="VB/CurrentLobby/MarginContainer/Columns/LeftColumn/MarginContainer/HBoxContainer" instance=ExtResource("6_uc41g")]
 unique_name_in_owner = true

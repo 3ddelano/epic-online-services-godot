@@ -346,7 +346,6 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_peer);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
-    ADD_SIGNAL(MethodInfo("p2p_interface_query_nat_type_callback", PropertyInfo(Variant::INT, "nat_type")));
     IEOS_BIND_SIGNAL(achievements_interface_achievements_unlocked_v2_callback);
     IEOS_BIND_SIGNAL(achievements_interface_query_definitions_callback);
     IEOS_BIND_SIGNAL(achievements_interface_query_player_achievements_callback);
@@ -435,6 +434,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(mods_interface_install_mod_callback);
     IEOS_BIND_SIGNAL(mods_interface_uninstall_mod_callback);
     IEOS_BIND_SIGNAL(mods_interface_update_mod_callback);
+	IEOS_BIND_SIGNAL(p2p_interface_query_nat_type_callback);
     IEOS_BIND_SIGNAL(p2p_interface_incoming_packet_queue_full);
     IEOS_BIND_SIGNAL(playerdatastorage_interface_delete_cache_callback);
     IEOS_BIND_SIGNAL(playerdatastorage_interface_delete_file_callback);

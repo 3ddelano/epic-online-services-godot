@@ -75,11 +75,11 @@ func _on_visibility_changed():
 
 
 func _reset():
-	_bucket_id.text = ""
-	_create_lobby_btn.disabled = true
+	_bucket_id.text = "battle_royale"
+	_create_lobby_btn.disabled = false
 
 	_map_option_btn.select(0)
-	_max_players_options_btn.select(1)
+	_max_players_options_btn.select(3)
 
 
 func _on_bucket_id_text_changed(new_text: String):

@@ -46,11 +46,11 @@ func _ready() -> void:
 	if not create_success:
 		printerr("Failed to create EOS Platform")
 		return
-
 	var sdk_constants := EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
 
 	# See LoginView.gd for the user login flow
+	_parse_cmdline_user_args()
 
 
 func get_view_manager():
@@ -64,3 +64,33 @@ func _notification(what: int) -> void:
 		var res := EOS.Platform.PlatformInterface.shutdown()
 		if not EOS.is_success(res):
 			printerr("Failed to shutdown EOS: ", EOS.result_str(res))
+
+
+func _parse_cmdline_user_args():
+	var args = OS.get_cmdline_user_args()
+
+
+	for arg in args:
+		if arg.begins_with("--devuser="):
+			var login_view = Store.get_view("Login")
+			var username = arg.replace("--devuser=", "")
+			login_view._set_login_status("Logging in with devtool using cli arg...")
+			login_view._set_login_state(LoginView.States.Pending)
+			HAuth.login_devtool_async("localhost:4545", username)
+		
+		if arg.begins_with("--screenpos="):
+			var rows = 2
+			var cols = 2
+
+			var pos := int(arg.replace("--screenpos=", ""))
+			var screen_size = DisplayServer.screen_get_size()
+
+			var scale_x = screen_size.x / cols
+			var scale_y = screen_size.y / rows
+
+			var x = (pos - 1) % cols
+			@warning_ignore("integer_division")
+			var y = (pos - 1) / rows
+
+			get_window().position = Vector2(x * scale_x, y * scale_y)
+			get_window().size = Vector2(screen_size.x / cols, screen_size.y / rows)

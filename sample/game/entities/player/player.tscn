@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://d25l4fa1sffqk"]
+
+[ext_resource type="Script" path="res://game/entities/player/player.gd" id="1_gheds"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yh8w5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0phbn"]
+bg_color = Color(0.594875, 0.0860397, 0.180462, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2p5sl"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gepvl"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("GunContainer:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="Player" type="CharacterBody2D" groups=["GRP_PLAYER"]]
+collision_layer = 2
+script = ExtResource("1_gheds")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_yh8w5")
+
+[node name="GunContainer" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Gun" type="Node2D" parent="GunContainer"]
+position = Vector2(10, 0)
+
+[node name="Panel" type="Panel" parent="GunContainer/Gun"]
+offset_top = -2.0
+offset_right = 6.0
+offset_bottom = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_0phbn")
+
+[node name="Muzzle" type="Node2D" parent="GunContainer/Gun"]
+unique_name_in_owner = true
+position = Vector2(5, 0)
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2p5sl")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_gepvl")

@@ -1,5 +1,13 @@
 extends Node
 
+
+signal player_score_changed
+
+
+const GAME_SOCKET_NAME = "EOSGSAMPLE"
+const GROUP_PLAYER = "GRP_PLAYER"
+const GROUP_MAP = "GRP_MAP"
+
 var display_name = ""
 
 # For testing things that need a second player
@@ -7,6 +15,12 @@ var second_epic_account_id = "e5d94c924f204a63bd343b976ae662cd"
 var second_product_user_id = "0002620f4b524b099abf1b48db7137a2"
 
 var _main_node: Control
+var network: MyNetwork
+var current_lobby: HLobby
+var shoot_joystick: TouchScreenJoystick
+
+
+@onready var is_mobile := OS.get_name() in ["iOS", "Android"]
 
 
 func get_view(view_name: String):
