@@ -70,8 +70,8 @@ func _ready() -> void:
 
 	# Setup Logs from EOS
 	HPlatform.log_msg.connect(_on_eos_log_msg)
-	var log_ret := HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Verbose)
-	if not log_ret:
+	var log_res := HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Verbose)
+	if not EOS.is_success(log_res):
 		printerr("Failed to set logging level")
 		return
 
@@ -92,7 +92,7 @@ func _on_logged_in():
 	print(records)
 
 
-func _on_eos_log_msg(msg: EOS.Logging.Message) -> void:
+func _on_eos_log_msg(msg: EOS.Logging.LogMessage) -> void:
 	print("SDK %s | %s" % [msg.category, msg.message])
 
 ```
