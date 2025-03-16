@@ -40,6 +40,9 @@ A basic example of using High Level EOS:
 extends Node
 
 func _ready() -> void:
+	# Setup HEOS Logs
+	HLog.log_level = HLog.LogLevel.INFO
+
 	var init_opts = EOS.Platform.InitializeOptions.new()
 	init_opts.product_name = "PRODUCT_NAME_HERE"
 	init_opts.product_version = "PRODUCT_VERSION_HERE"
@@ -54,6 +57,7 @@ func _ready() -> void:
 
 	# Enable Social Overlay on Windows
 	if OS.get_name() == "Windows":
+		HAuth.auth_login_flags = EOS.Auth.LoginFlags.None
 		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
 
 	# Initialize the SDK
@@ -70,7 +74,7 @@ func _ready() -> void:
 
 	# Setup Logs from EOS
 	HPlatform.log_msg.connect(_on_eos_log_msg)
-	var log_res := HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Verbose)
+	var log_res := HPlatform.set_eos_log_level(EOS.Logging.LogCategory.AllCategories, EOS.Logging.LogLevel.Info)
 	if not EOS.is_success(log_res):
 		printerr("Failed to set logging level")
 		return
