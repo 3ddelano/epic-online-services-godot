@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://5xrk7nvpwosj"]
 
-[ext_resource type="Script" path="res://scenes/LeaderboardsView/LeaderboardsView.gd" id="1"]
+[ext_resource type="Script" uid="uid://dkhn2a8wdwx21" path="res://scenes/LeaderboardsView/LeaderboardsView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_6kpeu"]
-[ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="3"]
+[ext_resource type="FontFile" uid="uid://bghbav6kh0lsl" path="res://fonts/roboto-16b.tres" id="3"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tgtn6"]

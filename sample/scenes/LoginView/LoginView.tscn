@@ -2,9 +2,9 @@
 
 [ext_resource type="FontFile" uid="uid://njn2rf7rj4ph" path="res://fonts/roboto-32b.tres" id="1"]
 [ext_resource type="FontFile" uid="uid://bxcl265jykrk0" path="res://fonts/roboto-16r.tres" id="2"]
-[ext_resource type="Script" path="res://scenes/LoginView/LoginView.gd" id="3"]
+[ext_resource type="Script" uid="uid://dwpfnhluy8h4e" path="res://scenes/LoginView/LoginView.gd" id="3"]
 [ext_resource type="FontFile" uid="uid://bghbav6kh0lsl" path="res://fonts/roboto-16b.tres" id="4"]
-[ext_resource type="Script" path="res://scenes/LoginView/EnterCredentials.gd" id="5"]
+[ext_resource type="Script" uid="uid://bx0bhh73kw3q7" path="res://scenes/LoginView/EnterCredentials.gd" id="5"]
 [ext_resource type="Texture2D" uid="uid://e0l4pytsqbp1" path="res://logo.png" id="6"]
 
 [sub_resource type="StyleBoxFlat" id="1"]

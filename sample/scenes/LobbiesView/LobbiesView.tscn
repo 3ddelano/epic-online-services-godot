@@ -1,11 +1,11 @@
 [gd_scene load_steps=11 format=3 uid="uid://dsiyt23hnmngd"]
 
-[ext_resource type="Script" path="res://scenes/LobbiesView/LobbiesView.gd" id="1_gvnj5"]
+[ext_resource type="Script" uid="uid://c3mc2b4nqvb5v" path="res://scenes/LobbiesView/LobbiesView.gd" id="1_gvnj5"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_guetp"]
-[ext_resource type="Script" path="res://scenes/LobbiesView/SearchLobby.gd" id="4_pnhqb"]
+[ext_resource type="Script" uid="uid://bjqvw2f6qq5vu" path="res://scenes/LobbiesView/SearchLobby.gd" id="4_pnhqb"]
 [ext_resource type="FontFile" uid="uid://djdr1hyqtgka6" path="res://fonts/Roboto-Bold.ttf" id="4_vb7hx"]
-[ext_resource type="Script" path="res://scenes/LobbiesView/CurrentLobby.gd" id="5_u3fs3"]
-[ext_resource type="Script" path="res://scenes/LobbiesView/SearchLobbyResults.gd" id="6_myvks"]
+[ext_resource type="Script" uid="uid://dscovu6epeb5t" path="res://scenes/LobbiesView/CurrentLobby.gd" id="5_u3fs3"]
+[ext_resource type="Script" uid="uid://c42grjipjn5g0" path="res://scenes/LobbiesView/SearchLobbyResults.gd" id="6_myvks"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="6_uc41g"]
 [ext_resource type="PackedScene" uid="uid://bmxf7kdhjlip6" path="res://scenes/LobbiesView/CreateLobbyPopup.tscn" id="8_a8tgx"]
 

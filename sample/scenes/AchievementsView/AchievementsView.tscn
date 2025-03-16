@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=3 uid="uid://d3hxdkoy73pf1"]
 
-[ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsView.gd" id="1"]
+[ext_resource type="Script" uid="uid://cjhi71075hj1y" path="res://scenes/AchievementsView/AchievementsView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_1831t"]
 [ext_resource type="PackedScene" uid="uid://djhhnis3ksdjk" path="res://scenes/UI/NetworkImage.tscn" id="3"]
-[ext_resource type="Script" path="res://scenes/AchievementsView/AchievementsList.gd" id="4"]
+[ext_resource type="Script" uid="uid://27jk4xa1yfq" path="res://scenes/AchievementsView/AchievementsList.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
-[ext_resource type="Script" path="res://scenes/AchievementsView/AchievementPopup.gd" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/AchievementsView/AchievementsListAchievement.tscn" id="7"]
+[ext_resource type="Script" uid="uid://b8fpdhlcd5vf2" path="res://scenes/AchievementsView/AchievementPopup.gd" id="6"]
+[ext_resource type="PackedScene" uid="uid://blvi28uiveh0a" path="res://scenes/AchievementsView/AchievementsListAchievement.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="8_37km7"]
 [ext_resource type="FontFile" uid="uid://djdr1hyqtgka6" path="res://fonts/Roboto-Bold.ttf" id="8_75ml2"]
 

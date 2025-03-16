@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://t016k2yh382d"]
 
-[ext_resource type="Script" path="res://scenes/FriendsView/FriendsView.gd" id="1"]
+[ext_resource type="Script" uid="uid://dx8eth83tfuvn" path="res://scenes/FriendsView/FriendsView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_5qe5o"]
-[ext_resource type="FontFile" path="res://fonts/roboto-16b.tres" id="3"]
+[ext_resource type="FontFile" uid="uid://bghbav6kh0lsl" path="res://fonts/roboto-16b.tres" id="3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_igci0"]
 

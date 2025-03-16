@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b51w7a6ofuubp"]
 
-[ext_resource type="Script" path="res://scenes/UIView/UIView.gd" id="1"]
+[ext_resource type="Script" uid="uid://dja7fd2sotvig" path="res://scenes/UIView/UIView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_pdqi2"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 

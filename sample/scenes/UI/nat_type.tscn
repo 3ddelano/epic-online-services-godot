@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bdlcslag0jdj1"]
 
-[ext_resource type="Script" path="res://scenes/UI/nat_type.gd" id="1_hma6v"]
+[ext_resource type="Script" uid="uid://ft2lvpnnwl8k" path="res://scenes/UI/nat_type.gd" id="1_hma6v"]
 
 [node name="NatType" type="RichTextLabel"]
 anchors_preset = 3

@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dkprjbptror6n" path="res://components/StyledPopupWindow/StyledPopupWindow.tscn" id="1_dmoyl"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="2_ngx7o"]
-[ext_resource type="Script" path="res://scenes/LobbiesView/CreateLobbyPopup.gd" id="2_oyj73"]
+[ext_resource type="Script" uid="uid://csdajb1e07h18" path="res://scenes/LobbiesView/CreateLobbyPopup.gd" id="2_oyj73"]
 
 [node name="CreateLobbyPopup" instance=ExtResource("1_dmoyl")]
 title = "CREATE LOBBY"

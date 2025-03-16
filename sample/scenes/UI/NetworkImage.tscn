@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://djhhnis3ksdjk"]
 
-[ext_resource type="Script" path="res://scenes/UI/NetworkImage.gd" id="1"]
+[ext_resource type="Script" uid="uid://bxtewm8nybcvn" path="res://scenes/UI/NetworkImage.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://dluvbejagvvak" path="res://scenes/UI/loading-icon.png" id="2"]
 
 [sub_resource type="Animation" id="1"]
@@ -48,8 +48,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2aol3"]
 _data = {
-"RESET": SubResource("1"),
-"rotate": SubResource("2")
+&"RESET": SubResource("1"),
+&"rotate": SubResource("2")
 }
 
 [node name="NetworkImage" type="MarginContainer"]

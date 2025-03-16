@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://8kmyoi08gr22"]
 
-[ext_resource type="Script" path="res://scenes/UI/players_score.gd" id="1_k6ifu"]
+[ext_resource type="Script" uid="uid://co6ig2d1xliiu" path="res://scenes/UI/players_score.gd" id="1_k6ifu"]
 
 [node name="PlayersScore" type="Label"]
 anchors_preset = 1

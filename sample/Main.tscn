@@ -2,8 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://dwns7wwoyi1hy" path="res://components/StyledPopupWindow/StyledPopupWindowTheme.tres" id="1_dhxmx"]
 [ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
-[ext_resource type="Script" path="res://Main.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/ViewManager.gd" id="3_j157n"]
+[ext_resource type="Script" uid="uid://cf8kvjx2nbysy" path="res://Main.gd" id="3"]
+[ext_resource type="Script" uid="uid://b8dbhfvrewi8w" path="res://scripts/ViewManager.gd" id="3_j157n"]
 [ext_resource type="PackedScene" uid="uid://cl2qvlvdhn2iw" path="res://scenes/LogsView/LogsView.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://bht0ln2ftshrw" path="res://scenes/LoginView/LoginView.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="6"]
@@ -14,14 +14,14 @@
 [ext_resource type="PackedScene" uid="uid://b51w7a6ofuubp" path="res://scenes/UIView/UIView.tscn" id="13"]
 [ext_resource type="PackedScene" uid="uid://dsiyt23hnmngd" path="res://scenes/LobbiesView/LobbiesView.tscn" id="13_eyvcp"]
 [ext_resource type="PackedScene" uid="uid://bd06h3ufkhfd7" path="res://scenes/MetricsView/MetricsView.tscn" id="14"]
-[ext_resource type="Script" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
-[ext_resource type="Script" path="res://test.gd" id="16_4rltv"]
-[ext_resource type="Script" path="res://scripts/network.gd" id="17_ailes"]
+[ext_resource type="Script" uid="uid://6tlvlmuarqub" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
+[ext_resource type="Script" uid="uid://bb2nerxdrhped" path="res://test.gd" id="16_4rltv"]
+[ext_resource type="Script" uid="uid://d0vgtesnrato5" path="res://scripts/network.gd" id="17_ailes"]
 [ext_resource type="PackedScene" uid="uid://bdlcslag0jdj1" path="res://scenes/UI/nat_type.tscn" id="18_vylep"]
 [ext_resource type="PackedScene" uid="uid://c37wtoikc8pgp" path="res://scenes/UI/ping.tscn" id="19_enhih"]
 [ext_resource type="PackedScene" uid="uid://8kmyoi08gr22" path="res://scenes/UI/players_score.tscn" id="20_i3cca"]
-[ext_resource type="Script" path="res://scenes/UI/touch_screen_joystick.gd" id="21_5h21x"]
-[ext_resource type="Script" path="res://scenes/UI/joysticks.gd" id="21_einjf"]
+[ext_resource type="Script" uid="uid://cgmpdyovn5vfm" path="res://scenes/UI/touch_screen_joystick.gd" id="21_5h21x"]
+[ext_resource type="Script" uid="uid://dygslh2f7uw40" path="res://scenes/UI/joysticks.gd" id="21_einjf"]
 
 [sub_resource type="StyleBoxEmpty" id="5"]
 
@@ -211,11 +211,11 @@ script = ExtResource("17_ailes")
 [node name="NetworkSpawn" type="Node2D" parent="Network/Game"]
 
 [node name="MapSpawner" type="MultiplayerSpawner" parent="Network/Game"]
-_spawnable_scenes = PackedStringArray("res://game/maps/map_margao.tscn", "res://game/maps/map_bellandur.tscn", "res://game/maps/map_new_york.tscn")
+_spawnable_scenes = PackedStringArray("uid://d25abb5oqolnx", "uid://cq20ci5f675b8", "uid://cutu8g5suwurd")
 spawn_path = NodePath("../NetworkSpawn")
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="Network/Game"]
-_spawnable_scenes = PackedStringArray("res://game/entities/player/player.tscn")
+_spawnable_scenes = PackedStringArray("uid://d25l4fa1sffqk")
 spawn_path = NodePath("../NetworkSpawn")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Network/Game"]

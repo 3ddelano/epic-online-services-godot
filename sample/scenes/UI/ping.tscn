@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c37wtoikc8pgp"]
 
-[ext_resource type="Script" path="res://scenes/UI/ping.gd" id="1_suu5i"]
+[ext_resource type="Script" uid="uid://diilhyvdor4ym" path="res://scenes/UI/ping.gd" id="1_suu5i"]
 
 [node name="Ping" type="Label"]
 offset_right = 104.0

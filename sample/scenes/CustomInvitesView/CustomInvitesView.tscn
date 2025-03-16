@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://d2bkej1dakv6s"]
 
-[ext_resource type="Script" path="res://scenes/CustomInvitesView/CustomInvitesView.gd" id="1"]
+[ext_resource type="Script" uid="uid://ddkxgj5m43swv" path="res://scenes/CustomInvitesView/CustomInvitesView.gd" id="1"]
 [ext_resource type="LabelSettings" uid="uid://dcb771ib3tfno" path="res://styles/ViewTitleLabelSettings.tres" id="2_u46xl"]
 [ext_resource type="PackedScene" uid="uid://t8s6xh1ax7uy" path="res://scenes/UI/PrimaryButton.tscn" id="5"]
 
