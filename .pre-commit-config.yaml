@@ -1,5 +1,0 @@
-repos:
--   repo: https://github.com/ssciwr/clang-format-hook
-    rev: v16.0.2
-    hooks:
-    -   id: clang-format
