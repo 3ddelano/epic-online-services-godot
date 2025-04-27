@@ -1,3 +1,3 @@
-# Intro
+# Introduction
 
 WIP - Work In Progress

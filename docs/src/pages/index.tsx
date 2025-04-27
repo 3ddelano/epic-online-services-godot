@@ -9,7 +9,7 @@ function HeroSection() {
       id="hero"
       className="relative bg-gradient-to-br from-gray-900 via-purple-950 to-blue-950 py-24 sm:py-32"
     >
-      <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080')] opacity-5"></div>
+      <div className="absolute inset-0 hero-image opacity-25"></div>
       <div className="container px-6 relative z-10 grid grid-cols-2 gap-10 items-center">
         <div className="max-w-xl">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-6 text-white leading-tight">
@@ -830,7 +830,7 @@ function NavBar() {
 
         <div className="flex justify-between w-full">
           <div className="flex space-x-4">
-            <a href="docs/intro" className="text-gray-300 hover:text-white">
+            <a href="docs/introduction" className="text-gray-300 hover:text-white">
               Docs
             </a>
             <a href="showcase" className="text-gray-300 hover:text-white">
