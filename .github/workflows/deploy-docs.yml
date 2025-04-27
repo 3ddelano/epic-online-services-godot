@@ -17,10 +17,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: cd docs && yarn install --frozen-lockfile
+        run: cd docs && bun install --lockfile-only
       
       - name: Build website
-        run: cd docs && yarn build
+        run: cd docs && bun run build
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
