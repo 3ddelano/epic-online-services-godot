@@ -17,7 +17,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: cd docs && bun install --lockfile-only
+        run: cd docs && bun install
       
       - name: Build website
         run: cd docs && bun run build
