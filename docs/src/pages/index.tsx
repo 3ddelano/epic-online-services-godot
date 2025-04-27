@@ -10,7 +10,8 @@ function HeroSection() {
       className="relative bg-gradient-to-br from-gray-900 via-purple-950 to-blue-950 py-24 sm:py-32"
     >
       <div className="absolute inset-0 hero-image opacity-25"></div>
-      <div className="container px-6 relative z-10 grid grid-cols-2 gap-10 items-center">
+      <div className="container px-6 relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+        {/* Left col */}
         <div className="max-w-xl">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-6 text-white leading-tight">
             {siteConfig.title}
@@ -27,7 +28,7 @@ function HeroSection() {
                   <path d='m784.071 718.723-4.666 66.864c-.562 8.059-6.972 14.474-15.031 15.052l-160.49 11.451q-.587.043-1.17.042c-7.975 0-14.856-5.853-16.034-13.861l-9.203-62.415H446.525l-9.203 62.415c-1.237 8.4-8.746 14.44-17.204 13.82l-160.49-11.452c-8.059-.578-14.469-6.993-15.03-15.052l-4.667-66.864-135.48-13.062c.062 14.56.249 30.512.249 33.688 0 143.085 181.51 211.86 407.024 212.651h.554c225.514-.79 406.962-69.566 406.962-212.651 0-3.234.195-19.119.262-33.688zM367.367 532.537c0 33.276-26.97 60.246-60.27 60.246-33.285 0-60.271-26.97-60.271-60.246s26.986-60.27 60.27-60.27c33.301 0 60.27 26.994 60.27 60.27M656.64 532.537c0 33.276 26.962 60.246 60.238 60.246 33.309 0 60.27-26.97 60.27-60.246s-26.961-60.27-60.27-60.27c-33.276 0-60.237 26.994-60.237 60.27'></path>
                 </g>
               </svg>
-              Godot 4.3+
+              Godot 4.2+
             </span>
             <span className="bg-gray-500 text-white px-3 py-1.5 rounded-lg flex items-center text-sm font-medium shadow">
               <svg
@@ -158,7 +159,7 @@ function HeroSection() {
           <img
             src="img/eosg-logo.svg"
             alt="Logo"
-            className="w-48 h-48 object-contain rounded-md"
+            className="w-64 h-64 object-contain rounded-md"
           />
         </div>
       </div>

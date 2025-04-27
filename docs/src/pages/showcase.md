@@ -3,7 +3,7 @@
 
 # Showcase
 
-Here is a list of games using the Epic Online Services Godot plugin. If you are using this plugin and want to list your game in this list. Let me know by creating an Issue on the Github Repo ([Click Here](https://github.com/3ddelano/epic-online-services-godot/issues)) with your game URL and which features of the plugin you used.
+Here is a list of games using the Epic Online Services Godot plugin. If you are using this plugin and want to list your game in this list. Create an Issue on the [Github Repo](https://github.com/3ddelano/epic-online-services-godot/issues) with your game URL and which features of the plugin you used, or leave a message in the [Discord server](https://discord.gg/FZY9TqW).
 
 - ### [Kamaeru: A Frog Refuge](https://store.epicgames.com/en-US/p/kamaeru-0c301e)
 

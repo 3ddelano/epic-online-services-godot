@@ -145,7 +145,7 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 [![Epic Online Services Tutorial series](https://img.youtube.com/vi/ENyvF4yVjKg/0.jpg)](https://www.youtube.com/playlist?list=PL5t0hR7ADzun5JYF4e2a2FtZEWYHxK83_)
 
 
-## [Documentation (Coming Soon)](#)
+## [Documentation](http://localhost:3000/epic-online-services-godot/docs/introduction)
 
 ## Screenshots
 
@@ -239,7 +239,7 @@ codesign --entitlements debug-entitlements.plist -f -s - /Applications/Godot.app
 ```
 
 ### How to run the sample project?
-> The sample Godot project is located in the **Sample** folder
+> The sample Godot project is located in the **sample** folder
 
 1. Clone/Download the repo.
 2. Download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest) from the Releases section and replace the existing `/addons/epic-online-services-godot` with the one from the Release (this includes the built shared libraries).

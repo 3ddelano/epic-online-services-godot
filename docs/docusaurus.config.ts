@@ -6,7 +6,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Epic Online Services Godot",
-  tagline: "Easiest way to use Epic Online Services in Godot 4.3+",
+  tagline: "Easiest way to use Epic Online Services in Godot 4.2+",
   favicon: "img/favicon.ico",
 
   url: "https://3ddelano.github.io",
@@ -115,6 +115,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      additionalLanguages: ["gdscript", "gradle", "java"]
     },
   } satisfies Preset.ThemeConfig,
 
