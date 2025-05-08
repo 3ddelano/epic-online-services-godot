@@ -1,6 +1,8 @@
 # Godot logs
 logs/
 
+cache/
+
 sample/android
 sample/android_debug.keystore
 
