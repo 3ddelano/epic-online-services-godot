@@ -1,32 +1,38 @@
 {
-	"files.exclude": {
-		"**/*.obj": true,
-		"**/*.ilk": true,
-		"**/*.exp": true,
-		"**/*.pdb": true,
-		"**/__pycache__": true,
-		"**/*.os": true,
-		"**/*.o": true
-	},
-	"godot_tools.editor_path": "d:\\Projects\\Godot\\Godot_v4.exe",
-	"files.associations": {
-		"*.rmd": "markdown",
-		"utility": "cpp",
-		"sstream": "cpp",
-		"unordered_map": "cpp",
-		"algorithm": "cpp",
-		"chrono": "cpp",
-		"iterator": "cpp",
-		"xhash": "cpp",
-		"xtree": "cpp",
-		"xutility": "cpp",
-		"string": "cpp"
-	},
-	"grammarly.selectors": [
-		{
-			"language": "cpp",
-			"scheme": "file"
-		}
-	],
-	"cmake.ignoreCMakeListsMissing": true
+  "files.exclude": {
+    "**/*.obj": true,
+    "**/*.ilk": true,
+    "**/*.exp": true,
+    "**/*.pdb": true,
+    "**/__pycache__": true,
+    "**/*.os": true,
+    "**/*.o": true
+  },
+  "godot_tools.editor_path": "d:\\Projects\\Godot\\Godot_v4.exe",
+  "files.associations": {
+    "*.rmd": "markdown",
+    "utility": "cpp",
+    "sstream": "cpp",
+    "unordered_map": "cpp",
+    "algorithm": "cpp",
+    "chrono": "cpp",
+    "iterator": "cpp",
+    "xhash": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp",
+    "string": "cpp",
+    "type_traits": "cpp",
+    "deque": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "vector": "cpp",
+    "initializer_list": "cpp"
+  },
+  "grammarly.selectors": [
+    {
+      "language": "cpp",
+      "scheme": "file"
+    }
+  ],
+  "cmake.ignoreCMakeListsMissing": true
 }

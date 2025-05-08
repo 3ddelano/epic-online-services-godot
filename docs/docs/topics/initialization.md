@@ -101,7 +101,7 @@ WaitForExit=0
 NoOperation=0
 ```
 
-In the above `.ini` file, the `APPLICATION_PATH_HERE` can either be the path to your Godot Editor executable (Eg. `Godot_v4.3.0-stable_win64.exe`) when you are in development or the path to the exported game (Eg. `MyAmazingGame.exe`)
+In the above `.ini` file, the `APPLICATION_PATH_HERE` can either be the path to your Godot Editor executable (Eg. `Godot_v4.2.0-stable_win64.exe`) when you are in development or the path to the exported game (Eg. `MyAmazingGame.exe`)
 
 ## Initialization on Android
 

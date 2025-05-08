@@ -2,9 +2,9 @@ Epic Online Services Godot (EOSG)
 =========================================
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
-### Easiest way to use Epic Online Services in Godot 4.3 (includes demo project)
+### Easiest way to use Epic Online Services in Godot 4.2+ (includes demo project)
 
-<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.3-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.17.0" src="https://img.shields.io/badge/-Epic Online Services 1.17.0-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
+<img alt="Godot3" src="https://img.shields.io/badge/-Godot 4.2+-478CBF?style=for-the-badge&logo=godotengine&logoWidth=20&logoColor=white" />&nbsp;&nbsp;&nbsp;<img alt="Epic Online Services 1.17.0" src="https://img.shields.io/badge/-Epic Online Services 1.17.0-313131?style=for-the-badge&logo=epic-games&logoWidth=20&logoColor=white" />
 
 > Supports Windows x64, Linux x64/arm64, Android x64/arm64, MacOS, iOS arm64 (iphone/simulator)
 
@@ -177,7 +177,7 @@ This project uses GDExtension to wrap the `Epic Online Services C SDK` so that i
 Installation
 --------------
 
-This is a regular plugin for `Godot 4.3`. To install the plugin follow the steps below:
+This is a regular plugin for `Godot 4.2+`. To install the plugin follow the steps below:
 
 #### **Method 1: Install from Asset Library**
 
@@ -186,7 +186,7 @@ This is a regular plugin for `Godot 4.3`. To install the plugin follow the steps
 3. Click on the plugin with name `Epic Online Services Godot (EOSG)` by `3ddelano`
 4. In the popup that opens, click the `Download` button.
 5. Once the download is done, click the `Install` button.
-6. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.3 (EOSG)` plugin.
+6. Goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2+ (EOSG)` plugin.
 7. Restart the godot editor.
 8. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin.
 
@@ -194,7 +194,7 @@ This is a regular plugin for `Godot 4.3`. To install the plugin follow the steps
 
 1. Goto the Releases section and download the [latest release](https://github.com/3ddelano/epic-online-services-godot/releases/latest)
 2. Extract the zip file and copy the `addons/epic-online-services-godot` folder into the `res://addons/` folder of your project. If the `res://addons` does not exist, create it.
-3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.3 (EOSG)` plugin.
+3. In the Godot editor, goto `Project->Project Settings->Plugins` and enable the `Epic Online Services Godot 4.2+ (EOSG)` plugin.
 4. Restart the godot editor.
 5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin.
     
@@ -204,7 +204,7 @@ Development Setup
 --------------
 
 #### Pre-requisites
-- Godot Engine 4.3 (Get it here [Godot Engine Download](https://godotengine.org/download/))
+- Godot Engine 4.2+ (Get it here [Godot Engine Download](https://godotengine.org/download/))
 - Epic Online Services C SDK (Download from [Epic Developer Portal](https://dev.epicgames.com/portal/sdk))
 - Make sure you have accepted the Terms and Conditions for [Epic Online Services](https://www.epicgames.com/site/en-US/tos?lang=en-US)
 - A product registered with Epic Games Services (Make one for free [Epic Developer Portal](https://dev.epicgames.com/portal))
@@ -256,7 +256,7 @@ If you want to use the `Account Portal` login option in Epic Online Services, yo
 
 A sample of the generated `.ini` file for the Godot Editor is shown below (during game development):
 ```
-ApplicationPath=Godot_v4.3.0-stable_win64.exe
+ApplicationPath=Godot_v4.2.0-stable_win64.exe
 WorkingDirectory=
 WaitForExit=0
 NoOperation=0
@@ -264,7 +264,7 @@ NoOperation=0
 Follow the instructions in [Running the service for local development](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/Crossplayacrossplatforms/RedistributableInstaller/index.html#runningtheserviceforlocaldevelopment) and:
 - During game development
   
-  Bootstrap the Godot Editor executable (eg. `Godot_v4.3.0-stable_win64.exe`) to test the `Account Portal` login
+  Bootstrap the Godot Editor executable (eg. `Godot_v4.2.0-stable_win64.exe`) to test the `Account Portal` login
 - After exporting the game
   
   Bootstrap the exported game executable (eg. `My Amazing Game.exe`)

@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Epic Online Services Godot 4.3 (EOSG)"
+config/name="Epic Online Services Godot 4.2+ (EOSG)"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="res://logo.png"
@@ -37,7 +37,7 @@ window/dpi/allow_hidpi=false
 
 [dotnet]
 
-project/assembly_name="Epic Online Services Godot 4.3 (EOSG)"
+project/assembly_name="Epic Online Services Godot 4.2+ (EOSG)"
 
 [editor_plugins]
 

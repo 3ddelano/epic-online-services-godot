@@ -32,7 +32,7 @@ If applicable, add screenshots to help explain your problem.
 - Version [e.g. v2.1.5]
 
 **Godot version:**
-- Version [e.g. v4.3]
+- Version [e.g. v4.2]
 
 **Additional context**
 Add any other context about the problem here.

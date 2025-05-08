@@ -126,7 +126,7 @@ jobs:
           repository: godotengine/godot-cpp
           path: godot-cpp
           submodules: recursive
-          ref: "godot-4.3-stable"
+          ref: "godot-4.2-stable"
 
       - name: Checkout private EOS SDK mirror repo
         uses: actions/checkout@v4

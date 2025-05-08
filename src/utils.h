@@ -12,6 +12,7 @@
 #include "eosg_titlestorage_file_transfer_request.h"
 #include "eosg_transaction.h"
 #include "godot_cpp/core/memory.hpp"
+#include "godot_cpp/templates/vector.hpp"
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "ieos.h"
@@ -41,12 +42,11 @@ using namespace godot;
 #define PERSISTENT_CHAR_ARRAY_CREATE(array_name, storage_vector, count) \
     Vector<CharString> storage_vector;                                  \
     storage_vector.resize(count);                                       \
-    const char **array_name = (const char **) memalloc(sizeof(char *) * (count));
+    const char **array_name = (const char **)memalloc(sizeof(char *) * (count));
 
 #define PERSISTENT_CHAR_ARRAY_SET(array_name, storage_vector, index, variant_value) \
     storage_vector.write[index] = VARIANT_TO_CHARSTRING(variant_value);             \
     array_name[index] = storage_vector[index].get_data();
-
 
 String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId);
 
@@ -599,7 +599,7 @@ static EOS_Lobby_LocalRTCOptions eosg_variant_to_lobby_local_rtc_options(Variant
     }
 
     EOS_Lobby_LocalRTCOptions options;
-	memset(&options, 0, sizeof(options));
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LOBBY_LOCALRTCOPTIONS_API_LATEST;
     options.Flags = flags;
     options.bUseManualAudioInput = use_manual_audio_input ? EOS_TRUE : EOS_FALSE;
