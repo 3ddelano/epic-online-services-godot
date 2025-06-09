@@ -299,6 +299,7 @@ Follow the instructions in [Running the service for local development](https://d
         implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
         implementation 'androidx.security:security-crypto:1.0.0'
         implementation 'androidx.browser:browser:1.4.0'
+        implementation 'androidx.webkit:webkit:1.7.0'
         // Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
         implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
 
