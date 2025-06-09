@@ -134,7 +134,7 @@ jobs:
           token: "${{secrets.EOS_SDK_MIRROR_PAT}}"
           repository: 3ddelano/eos-sdk-mirror
           path: thirdparty/eos-sdk
-          ref: "f5bafec19f0be4258134adb93317abe6f51ff7e7"
+          ref: "635f31459080ed0a2cca6462707016da5a0a13eb"
 
       - name: (Windows) Install mingw64
         if: ${{ matrix.platform == 'windows' }}
