@@ -250,8 +250,8 @@ func login_persistent_auth_async() -> bool:
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.PersistentAuth
-	opts.scope_flags = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.ScopeFlags.Presence | EOS.Auth.ScopeFlags.FriendsList
-	opts.login_flags = EOS.Auth.LoginFlags.NoUserInterface
+	opts.scope_flags = auth_login_scope_flags
+	opts.login_flags = auth_login_flags
 
 	return await login_async(opts)
 
