@@ -17,7 +17,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_QUOTELEFT: # Press ` key to toggle Logs
+		if event.keycode == KEY_QUOTELEFT: # Press ` (backtick) key to toggle Logs
 			Store.get_view("Logs").visible = not Store.get_view("Logs").visible
 		elif event.keycode == KEY_TAB:
 			# Press tab key to run dev testing stuff

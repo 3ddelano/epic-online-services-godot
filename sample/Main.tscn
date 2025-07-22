@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://gcoi8ld0uvkl"]
+[gd_scene load_steps=25 format=3 uid="uid://gcoi8ld0uvkl"]
 
 [ext_resource type="Theme" uid="uid://dwns7wwoyi1hy" path="res://components/StyledPopupWindow/StyledPopupWindowTheme.tres" id="1_dhxmx"]
 [ext_resource type="PackedScene" uid="uid://d3hxdkoy73pf1" path="res://scenes/AchievementsView/AchievementsView.tscn" id="2"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://6tlvlmuarqub" path="res://scenes/NotificationsView/NotificationsView.gd" id="14_v0jrb"]
 [ext_resource type="Script" uid="uid://bb2nerxdrhped" path="res://test.gd" id="16_4rltv"]
 [ext_resource type="Script" uid="uid://d0vgtesnrato5" path="res://scripts/network.gd" id="17_ailes"]
+[ext_resource type="Script" uid="uid://k3lb65sounwm" path="res://test_manual_audio_output.gd" id="17_bg4s2"]
 [ext_resource type="PackedScene" uid="uid://bdlcslag0jdj1" path="res://scenes/UI/nat_type.tscn" id="18_vylep"]
 [ext_resource type="PackedScene" uid="uid://c37wtoikc8pgp" path="res://scenes/UI/ping.tscn" id="19_enhih"]
 [ext_resource type="PackedScene" uid="uid://8kmyoi08gr22" path="res://scenes/UI/players_score.tscn" id="20_i3cca"]
@@ -202,6 +203,9 @@ layout_mode = 2
 
 [node name="Test" type="Node" parent="."]
 script = ExtResource("16_4rltv")
+
+[node name="ManualAudioOutput" type="Node" parent="Test"]
+script = ExtResource("17_bg4s2")
 
 [node name="Network" type="Node2D" parent="."]
 script = ExtResource("17_ailes")

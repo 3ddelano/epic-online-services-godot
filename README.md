@@ -420,7 +420,7 @@ Export the project from Godot editor for iOS target. You might get a build error
   - ProgressionSnapshot Interface
   - Reports Interface
   - UI Interface
-  - Lobby Interface
+  - Lobby Interface (Also sample for manual audio input/output)
   - RTC Interface
   - P2P Interface
   - Version Interface
