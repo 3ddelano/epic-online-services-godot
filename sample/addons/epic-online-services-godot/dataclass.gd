@@ -22,6 +22,10 @@ const __DEFAULT_OPTIONS__ = {
 	"print_exclude": []
 }
 
+const __TYPE_STRING_CAPITAL = ["TYPE_NIL", "TYPE_BOOL", "TYPE_INT", "TYPE_FLOAT", "TYPE_STRING", "TYPE_VECTOR2", "TYPE_VECTOR2I", "TYPE_RECT2", "TYPE_RECT2I", "TYPE_VECTOR3", "TYPE_VECTOR3I", "TYPE_TRANSFORM2D", "TYPE_VECTOR4", "TYPE_VECTOR4I", "TYPE_PLANE", "TYPE_QUATERNION", "TYPE_AABB", "TYPE_BASIS", "TYPE_TRANSFORM3D", "TYPE_PROJECTION", "TYPE_COLOR", "TYPE_STRING_NAME", "TYPE_NODE_PATH", "TYPE_RID", "TYPE_OBJECT", "TYPE_CALLABLE", "TYPE_SIGNAL", "TYPE_DICTIONARY", "TYPE_ARRAY", "TYPE_PACKED_BYTE_ARRAY", "TYPE_PACKED_INT32_ARRAY", "TYPE_PACKED_INT64_ARRAY", "TYPE_PACKED_FLOAT32_ARRAY", "TYPE_PACKED_FLOAT64_ARRAY", "TYPE_PACKED_STRING_ARRAY", "TYPE_PACKED_VECTOR2_ARRAY", "TYPE_PACKED_VECTOR3_ARRAY", "TYPE_PACKED_COLOR_ARRAY", "TYPE_MAX"]
+
+const __TYPE_STRING_NORMAL = ["Nil", "Bool", "Int", "Float", "String", "Vector2", "Vector2i", "Rect2", "Rect2i", "Vector3", "Vector3i", "Transform2D", "Vector4", "Vector4i", "Plane", "Quaternion", "AABB", "Basis", "Transform3D", "Projection", "Color", "StringName", "NodePath", "Rid", "Object", "Callable", "Signal", "Dictionary", "Array", "PackedByteArray", "PackedInt32Array", "PackedInt64Array", "PackedFloat32Array", "PackedFloat64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "PackedColorArray", "Max"]
+
 
 func from_dict(p_dict: Dictionary):
 	for key in p_dict:
@@ -36,7 +40,7 @@ func from_dict(p_dict: Dictionary):
 			(not typeof_expected in [TYPE_INT, TYPE_FLOAT]) and
 			(not typeof_received in [TYPE_INT, TYPE_FLOAT])
 		):
-			printerr("Dataclass:from_dict: Warning: Key \"%s\" has type %s but expected type %s in dataclass \"%s\"" % [key, __type_to_string(typeof_received) , __type_to_string(typeof_expected), __name__])
+			printerr("Dataclass:from_dict: Warning: Key \"%s\" has type %s but expected type %s in dataclass \"%s\"" % [key, __type_to_string(typeof_received), __type_to_string(typeof_expected), __name__])
 		set(key, p_dict[key])
 
 	return self
@@ -85,12 +89,12 @@ func __get_props() -> Array:
 
 func __type_to_string(p_type: int, p_capital = true) -> String:
 	if p_capital:
-		return ["TYPE_NIL", "TYPE_BOOL", "TYPE_INT", "TYPE_FLOAT", "TYPE_STRING", "TYPE_VECTOR2", "TYPE_VECTOR2I", "TYPE_RECT2", "TYPE_RECT2I", "TYPE_VECTOR3", "TYPE_VECTOR3I", "TYPE_TRANSFORM2D", "TYPE_VECTOR4", "TYPE_VECTOR4I", "TYPE_PLANE", "TYPE_QUATERNION", "TYPE_AABB", "TYPE_BASIS", "TYPE_TRANSFORM3D", "TYPE_PROJECTION", "TYPE_COLOR", "TYPE_STRING_NAME", "TYPE_NODE_PATH", "TYPE_RID", "TYPE_OBJECT", "TYPE_CALLABLE", "TYPE_SIGNAL", "TYPE_DICTIONARY", "TYPE_ARRAY", "TYPE_PACKED_BYTE_ARRAY", "TYPE_PACKED_INT32_ARRAY", "TYPE_PACKED_INT64_ARRAY", "TYPE_PACKED_FLOAT32_ARRAY", "TYPE_PACKED_FLOAT64_ARRAY", "TYPE_PACKED_STRING_ARRAY", "TYPE_PACKED_VECTOR2_ARRAY", "TYPE_PACKED_VECTOR3_ARRAY", "TYPE_PACKED_COLOR_ARRAY", "TYPE_MAX" ][p_type]
+		return __TYPE_STRING_CAPITAL[p_type]
 
-	return ["Nil", "Bool", "Int", "Float", "String", "Vector2", "Vector2i", "Rect2", "Rect2i", "Vector3", "Vector3i", "Transform2D", "Vector4", "Vector4i", "Plane", "Quaternion", "AABB", "Basis", "Transform3D", "Projection", "Color", "StringName", "NodePath", "Rid", "Object", "Callable", "Signal", "Dictionary", "Array", "PackedByteArray", "PackedInt32Array", "PackedInt64Array", "PackedFloat32Array", "PackedFloat64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "PackedColorArray", "Max"][p_type]
+	return __TYPE_STRING_NORMAL[p_type]
 
 
-func __variant_to_string(value, indent_level = 0) -> String:
+func __variant_to_string(value, indent_level = 0, visited_objects = []) -> String:
 	var type = typeof(value)
 
 	var newline = ""
@@ -107,14 +111,41 @@ func __variant_to_string(value, indent_level = 0) -> String:
 		TYPE_NIL, TYPE_INT, TYPE_FLOAT, TYPE_BOOL:
 			return str(value)
 		TYPE_QUATERNION, TYPE_VECTOR2, TYPE_RECT2, TYPE_VECTOR3, TYPE_TRANSFORM2D, TYPE_BASIS:
-			return "%s%s"  % [__type_to_string(type, false), value]
+			return "%s%s" % [__type_to_string(type, false), value]
 		TYPE_RID:
 			return "RID(%s)" % value.get_id()
 		TYPE_OBJECT:
 			if value == null:
 				return "Object(null)"
 			elif (not value is Script) and value.has_meta("is_dataclass") and value.get_meta("is_dataclass"):
-				return str(value).indent(tab.repeat(indent_level)).trim_prefix(tab.repeat(indent_level))
+				# Check for circular reference to prevent infinite recursion
+				if value in visited_objects:
+					return "%s(<circular reference>)" % value.__name__
+
+				# Create new visited_objects array with current object added
+				visited_objects.append(value)
+				
+				# Manually construct the string representation to avoid calling _to_string()
+				var all_props = value.__get_props()
+				var props = PackedStringArray()
+				
+				for prop in all_props:
+					if prop.name in value.__options__.print_exclude:
+						continue
+					var prop_value = value.get(prop.name)
+					var prop_type = typeof(prop_value)
+					if prop_value != null or value.__options__.include_null_in_print:
+						props.append("%s = %s" % [prop.name, __variant_to_string(prop_value, indent_level + 1, visited_objects)])
+
+				var separator = ", "
+				var prop_newline = ""
+				var prop_newline_end = ""
+				if value.__options__.print_newline:
+					prop_newline = "\n\t"
+					prop_newline_end = "\n"
+				
+				var result = value.__name__ + "(" + prop_newline + (separator + prop_newline).join(props) + prop_newline_end + ")"
+				return result.indent(tab.repeat(indent_level)).trim_prefix(tab.repeat(indent_level))
 
 			return str(value)
 		TYPE_DICTIONARY:
@@ -122,7 +153,7 @@ func __variant_to_string(value, indent_level = 0) -> String:
 			if keys.size() == 0: return "{}"
 			var dict_string = PackedStringArray()
 			for key in keys:
-				dict_string.append("%s: %s" % [key, __variant_to_string(value[key], 0)])
+				dict_string.append("%s: %s" % [key, __variant_to_string(value[key], 0, visited_objects)])
 
 			dict_string = "{" + newline + dict_join.join(dict_string).indent(tab) + newline + "}"
 
@@ -130,13 +161,15 @@ func __variant_to_string(value, indent_level = 0) -> String:
 		TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_STRING_ARRAY, TYPE_PACKED_VECTOR2_ARRAY, TYPE_PACKED_VECTOR3_ARRAY, TYPE_PACKED_COLOR_ARRAY:
 			var ret = PackedStringArray()
 			for elm in value:
-				ret.append(__variant_to_string(elm, 1))
+				ret.append(__variant_to_string(elm, 1, visited_objects))
 			ret = "[" + ", ".join(ret) + "]"
 			if type == TYPE_ARRAY: return ret
 
 			return __type_to_string(type, false) + "(" + ret + ")"
+		TYPE_COLOR:
+			return "%s%s" % [__type_to_string(type, false), value]
 		_:
-			return "%s(%s)"  % [__type_to_string(type, false), value]
+			return "%s(%s)" % [__type_to_string(type, false), value]
 
 
 func _to_string() -> String:
@@ -149,7 +182,7 @@ func _to_string() -> String:
 		var value = get(prop.name)
 		var type = typeof(value)
 		if value != null or __options__.include_null_in_print:
-			props.append("%s = %s" % [prop.name, __variant_to_string(value, 1)])
+			props.append("%s = %s" % [prop.name, __variant_to_string(value, 1, [self])])
 
 	var separator = ", "
 	var newline = ""
