@@ -28,7 +28,7 @@ jobs:
             dev_build: no
             platform: linux
             arch: x86_64
-          - identifier: linu-arm64-debug
+          - identifier: linux-arm64-debug
             name: 🐧 Linux arm64 Debug
             runner: ubuntu-24.04-arm
             target: template_debug
