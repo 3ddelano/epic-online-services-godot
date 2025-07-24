@@ -113,6 +113,8 @@ elif env["platform"] == "ios":
 		raise Exception("Only arm64 is supported on iOS.")
 	copy_folder(eos_sdk_folder + "Bin/IOS/EOSSDK.xcframework", plugin_bin_folder + "/ios/EOSSDK.xcframework")
 	
+	env.Append(ENV={'IPHONEOS_DEPLOYMENT_TARGET': '15.0'})
+
 	env.Append(LINKFLAGS=[
 		"-F", plugin_bin_folder + f"/ios/EOSSDK.xcframework/ios-arm64{"-simulator" if env["ios_simulator"] else ""}",
 		'-framework', 'AuthenticationServices',

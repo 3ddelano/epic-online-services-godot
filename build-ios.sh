@@ -12,45 +12,54 @@ if [ "$2" = "dev_build=y" ] || [ "$2" = "dev_build=Y" ] || [ "$2" = "dev_build=y
 	dev_build_ext=".dev"
 fi
 
+
+echo "Config: dev_build=${dev_build}, build=${build}"
+
+
 if [ "$build" = "yes" ]; then
-	echo "Building for iOS targets"
-    # Debug builds
+    echo "\nBuilding for iOS simulator template_debug target"
     scons arch=arm64 ios_simulator=yes platform=ios target=template_debug dev_build=${dev_build}
+
+    echo "\nBuilding for iOS device template_debug target"
     scons arch=arm64 ios_simulator=no platform=ios target=template_debug dev_build=${dev_build}
 
-    # Release builds
+    echo "\nBuilding for iOS simulator template_release target"
     scons arch=arm64 ios_simulator=yes platform=ios target=template_release dev_build=no
+    
+    echo "\nBuilding for iOS device template_release target"
     scons arch=arm64 ios_simulator=no platform=ios target=template_release dev_build=no
 fi
 
 eosg_ios_bin_dir=./sample/addons/epic-online-services-godot/bin/ios
 godotcpp_bin_dir=./godot-cpp/bin
 
-# Delete existing libgodot-cpp xcframework if any
+echo "\nDeleting existing libgodot-cpp xcframework(s) if any"
 rm -rf ${eosg_ios_bin_dir}/libgodot-cpp.ios.template*
 
-# Create libgodot-cpp xcframework
+echo "\nCreating libgodot-cpp xcframework for template_debug"
 xcodebuild -create-xcframework \
 -library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug${dev_build_ext}.arm64.a \
 -library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_debug${dev_build_ext}.arm64.simulator.a \
 -output ${eosg_ios_bin_dir}/libgodot-cpp.ios.template_debug.xcframework
 
+echo "\nCreating libgodot-cpp xcframework for template_release"
 xcodebuild -create-xcframework \
 -library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_release.arm64.a \
 -library ${godotcpp_bin_dir}/libgodot-cpp.ios.template_release.arm64.simulator.a \
 -output ${eosg_ios_bin_dir}/libgodot-cpp.ios.template_release.xcframework
 
-# Create libeosg xcframework
+echo "\nCreating libeosg xcframework for template_debug"
 xcodebuild -create-xcframework \
 -library ${eosg_ios_bin_dir}/libeosg.ios.template_debug${dev_build_ext}.arm64.dylib \
 -library ${eosg_ios_bin_dir}/libeosg.ios.template_debug${dev_build_ext}.arm64.simulator.dylib \
 -output ${eosg_ios_bin_dir}/libeosg.ios.template_debug.xcframework
 
+echo "\nCreating libeosg xcframework for template_release"
 xcodebuild -create-xcframework \
 -library ${eosg_ios_bin_dir}/libeosg.ios.template_release.arm64.dylib \
 -library ${eosg_ios_bin_dir}/libeosg.ios.template_release.arm64.simulator.dylib \
 -output ${eosg_ios_bin_dir}/libeosg.ios.template_release.xcframework
 
 
-# Delete all .dylib from eosg ios bin dir
+echo "\nDeleting all .dylib files from eosg ios bin dir"
 rm -rf ${eosg_ios_bin_dir}/*.dylib
