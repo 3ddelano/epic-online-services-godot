@@ -51,7 +51,7 @@ var max_silence_frames = 10  # Stop recording after this many silent chunks
 
 func _ready():
 	# Uncomment the below line to run this sample
-	_run()
+	#_run()
 	pass
 
 
