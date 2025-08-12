@@ -116,15 +116,22 @@ func login_account_portal_async() -> bool:
 	return await login_async(opts)
 
 
-## Login using credentials provided by the Epic Games Launcher
+## Login using credentials provided by the Epic Games Launcher[br]
+## To test this locally provide the cli argument -AUTH_PASSWORD=<exchange_code> when running your game like [code]godot4 . -AUTH_PASSWORD=1234[/code][br]
+## You can generate an exchange code by using the DevAuthTool and accessing the following link on a browser: [code]http://localhost:<PORT>/<credential_name>/exchange_code[/code]
 func login_launcher_async() -> bool:
 	_log.debug("Logging in using Epic Games Launcher...")
 	var cli_opts = _get_command_line_options()
+	var auth_password = cli_opts.get("AUTH_PASSWORD", "")
+
+	if "" == auth_password:
+		_log.error("Missing -AUTH_PASSWORD=<exchange_code> cli argument. Please see usage docs.")
+		return false
 
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.ExchangeCode
-	opts.credentials.token = cli_opts.get("AUTH_PASSWORD", "")
+	opts.credentials.token = auth_password
 	opts.scope_flags = auth_login_scope_flags
 	opts.login_flags = auth_login_flags
 
