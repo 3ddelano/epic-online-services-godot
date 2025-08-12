@@ -92,6 +92,7 @@ func _ready() -> void:
 
 ## Login using the Epic Dev Auth tool
 func login_devtool_async(server_url: String, credential_name: String) -> bool:
+	_log.debug("Logging in using Epic Dev Auth tool...")
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.Developer
@@ -105,6 +106,7 @@ func login_devtool_async(server_url: String, credential_name: String) -> bool:
 
 ## Login using Epic Account Portal
 func login_account_portal_async() -> bool:
+	_log.debug("Logging in using Epic Account Portal...")
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.AccountPortal
@@ -116,12 +118,13 @@ func login_account_portal_async() -> bool:
 
 ## Login using credentials provided by the Epic Games Launcher
 func login_launcher_async() -> bool:
-	var cmdOptions = _get_command_line_options()
+	_log.debug("Logging in using Epic Games Launcher...")
+	var cli_opts = _get_command_line_options()
 
 	var opts = EOS.Auth.LoginOptions.new()
 	opts.credentials = EOS.Auth.Credentials.new()
 	opts.credentials.type = EOS.Auth.LoginCredentialType.ExchangeCode
-	opts.credentials.token = cmdOptions.get("AUTH_PASSWORD", "")
+	opts.credentials.token = cli_opts.get("AUTH_PASSWORD", "")
 	opts.scope_flags = auth_login_scope_flags
 	opts.login_flags = auth_login_flags
 
@@ -132,7 +135,7 @@ func login_launcher_async() -> bool:
 ## Allows you to use Epic Account Services: Friends, Presence, Social Overlay, ECom, etc.
 ## This is the recommended way of logging in as you get many additional features compared to [login_game_services_async]
 func login_async(opts: EOS.Auth.LoginOptions) -> bool:
-	_log.debug("Logging into Epic Account Services (AuthInterface)")
+	_log.debug("Logging into Epic Account Services (AuthInterface)...")
 	EOS.Auth.AuthInterface.login(opts)
 
 	var auth_login_ret: Dictionary = await IEOS.auth_interface_login_callback
@@ -180,7 +183,7 @@ func login_async(opts: EOS.Auth.LoginOptions) -> bool:
 
 ## Logout from EOS Auth and or EOS Connect
 func logout_async() -> EOS.Result:
-	_log.verbose("Logging out from EOS")
+	_log.verbose("Logging out from EOS...")
 	var ret := EOS.Result.InvalidAuth
 	var _logged_out = false
 
@@ -228,7 +231,7 @@ func logout_async() -> EOS.Result:
 
 ## Login with EOS Connect by using external credentials
 func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
-	_log.debug("Logging into Epic Game Services (ConnectInterface)")
+	_log.debug("Logging into Epic Game Services (ConnectInterface)...")
 	EOS.Connect.ConnectInterface.login(opts)
 
 	var login_ret: Dictionary = await IEOS.connect_interface_login_callback
@@ -272,6 +275,7 @@ func login_persistent_auth_async() -> bool:
 
 ## Delete the internally stored Epic refresh token
 func delete_persistent_auth_async(refresh_token = "") -> bool:
+	_log.debug("Deleting persistent auth...")
 	var opts = EOS.Auth.DeletePersistentAuthOptions.new()
 	opts.refresh_token = refresh_token
 	EOS.Auth.AuthInterface.delete_persistent_auth(opts)
@@ -476,12 +480,12 @@ func _emit_login_connect_error(result_code: EOS.Result):
 	login_connect_error.emit(result_code)
 	login_error.emit(result_code)
 
+
 func _get_command_line_options():
 	var options = {}
 	var args = OS.get_cmdline_args()
 	for arg in args:
-		arg = arg.trim_prefix("--")
-		arg = arg.trim_prefix("-")
+		arg = arg.trim_prefix("--").trim_prefix("-")
 		var kvp = arg.split("=")
 		if len(kvp) > 1:
 			options[kvp[0]] = kvp[1]
