@@ -114,6 +114,20 @@ func login_account_portal_async() -> bool:
 	return await login_async(opts)
 
 
+## Login using credentials provided by the Epic Games Launcher
+func login_launcher_async() -> bool:
+	var cmdOptions = _get_command_line_options()
+
+	var opts = EOS.Auth.LoginOptions.new()
+	opts.credentials = EOS.Auth.Credentials.new()
+	opts.credentials.type = EOS.Auth.LoginCredentialType.ExchangeCode
+	opts.credentials.token = cmdOptions.get("AUTH_PASSWORD", "")
+	opts.scope_flags = auth_login_scope_flags
+	opts.login_flags = auth_login_flags
+
+	return await login_async(opts)
+
+
 ## Login using EOS Auth by either using an Identity provider or Epic games Account.
 ## Allows you to use Epic Account Services: Friends, Presence, Social Overlay, ECom, etc.
 ## This is the recommended way of logging in as you get many additional features compared to [login_game_services_async]
@@ -461,5 +475,16 @@ func _emit_login_auth_error(result_code: EOS.Result):
 func _emit_login_connect_error(result_code: EOS.Result):
 	login_connect_error.emit(result_code)
 	login_error.emit(result_code)
+
+func _get_command_line_options():
+	var options = {}
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		arg = arg.trim_prefix("--")
+		arg = arg.trim_prefix("-")
+		var kvp = arg.split("=")
+		if len(kvp) > 1:
+			options[kvp[0]] = kvp[1]
+	return options
 
 #endregion
