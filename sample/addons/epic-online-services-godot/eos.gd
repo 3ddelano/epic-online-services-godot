@@ -4318,8 +4318,8 @@ enum ComparisonOp {
 }
 
 enum LogicalCombineOp {
-    And = 0,
-    Or = 1
+	And = 0,
+	Or = 1
 }
 
 enum AntiCheatCommonClientType {

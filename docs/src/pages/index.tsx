@@ -111,7 +111,7 @@ function HeroSection() {
                   </g>
                 </g>
               </svg>
-              EOS SDK 1.17.0
+              EOS SDK 1.17.1.3
             </span>
           </div>
 

@@ -20,4 +20,8 @@ vc140.pdb
 
 temp/
 
+.idea/
+
+compile_commands.json
+
 epic-online-services-godot-addon.zip
