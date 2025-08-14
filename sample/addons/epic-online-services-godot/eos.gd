@@ -2595,6 +2595,7 @@ class Logging:
 		Rtc = 29,
 		RTCAdmin = 30,
 		CustomInvites = 31,
+		Http = 41,
 		AllCategories = 0x7fffffff
 	}
 
@@ -4206,6 +4207,8 @@ enum Result {
 	ReconnectionTimegateExpired = 13005,
 	ShutdownInvoked = 13006,
 	UserIsInBlocklist = 13007,
+	AllocationFailed = 13009,
+	VoiceModerationModeMismatch = 13010,
 	ProgressionSnapshotSnapshotIdUnavailable = 14000,
 	ParentEmailMissing = 15000,
 	UserGraduated = 15001,
@@ -4309,7 +4312,14 @@ enum ComparisonOp {
 	NotAnyOf = 8,
 	OneOf = 9,
 	NotOneOf = 10,
-	Contains = 11
+	Contains = 11,
+	RegexMatch = 12,
+	Size = 13
+}
+
+enum LogicalCombineOp {
+    And = 0,
+    Or = 1
 }
 
 enum AntiCheatCommonClientType {
