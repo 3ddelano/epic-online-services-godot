@@ -3,6 +3,7 @@
 import os
 import re
 
+
 # Function to extract function names from the EOS C SDK header files
 def extract_function_names(sdk_path):
     function_declarations = {}
@@ -16,8 +17,9 @@ def extract_function_names(sdk_path):
                     matches = pattern.findall(content)
                     for match in matches:
                         function_declarations[match] = os.path.join(root, file)
-    
+
     return function_declarations
+
 
 # Function to search for function names in the src folder
 def find_function_calls(src_path, function_names):
@@ -33,24 +35,25 @@ def find_function_calls(src_path, function_names):
                     for match in matches:
                         if match in function_usage:
                             function_usage[match].append(os.path.join(root, file))
-    
+
     return function_usage
 
+
 def main():
-    sdk_path = 'thirdparty\eos-sdk\SDK'  # Replace with the actual path to the EOS C SDK folder
+    sdk_path = 'thirdparty/eos-sdk/SDK'  # Replace with the actual path to the EOS C SDK folder
     src_path = 'src'  # Replace with the actual path to the src folder
 
     whitelist = ['EOS_Achievements_CopyAchievementDefinitionByIndex',
-              'EOS_Achievements_CopyAchievementDefinitionByAchievementId',
-              'EOS_Achievements_GetUnlockedAchievementCount',
-              'EOS_Achievements_CopyUnlockedAchievementByIndex',
-              'EOS_Achievements_CopyUnlockedAchievementByAchievementId',
-              'EOS_Achievements_AddNotifyAchievementsUnlocked',
-              'EOS_AntiCheatClient_PollStatus',
-              'EOS_ByteArray_ToString',
-			  'EOS_EpicAccountId_IsValid',
-			  'EOS_ProductUserId_IsValid',
-              ]
+                 'EOS_Achievements_CopyAchievementDefinitionByAchievementId',
+                 'EOS_Achievements_GetUnlockedAchievementCount',
+                 'EOS_Achievements_CopyUnlockedAchievementByIndex',
+                 'EOS_Achievements_CopyUnlockedAchievementByAchievementId',
+                 'EOS_Achievements_AddNotifyAchievementsUnlocked',
+                 'EOS_AntiCheatClient_PollStatus',
+                 'EOS_ByteArray_ToString',
+                 'EOS_EpicAccountId_IsValid',
+                 'EOS_ProductUserId_IsValid',
+                 ]
 
     # Step 1: Extract function names from SDK header files
     function_declarations = extract_function_names(sdk_path)
@@ -67,11 +70,12 @@ def main():
         if files: continue
         if function in whitelist: continue
         if "RemoveNotify" in function: continue
-        
+
         uncalled_count += 1
         print(f"{function} : {function_declarations[function]}")
 
     print(f"\nTotal number of SDK functions not called by the plugin: {uncalled_count}")
+
 
 if __name__ == "__main__":
     main()
