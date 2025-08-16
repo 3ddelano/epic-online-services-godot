@@ -1,6 +1,6 @@
 extends Control
 
-@onready var PRODUCT_NAME: String = Env.get_var("PRODUCT_NAME") # Paste your own
+@onready var PRODUCT_NAME: String = Env.get_var("PRODUCT_NAME") # Paste your own instead of Env.get_var
 @onready var PRODUCT_VERSION: String = Env.get_var("PRODUCT_VERSION") # Paste your own
 @onready var PRODUCT_ID: String = Env.get_var("PRODUCT_ID") # Paste your own
 @onready var SANDBOX_ID: String = Env.get_var("SANDBOX_ID") # Paste your own
@@ -20,32 +20,22 @@ func _ready() -> void:
 	# -----
 	# EOS Setup
 	# -----
-
-	var init_opts = EOS.Platform.InitializeOptions.new()
-	init_opts.product_name = PRODUCT_NAME
-	init_opts.product_version = PRODUCT_VERSION
-
-	var create_opts = EOS.Platform.CreateOptions.new()
-	create_opts.product_id = PRODUCT_ID
-	create_opts.sandbox_id = SANDBOX_ID
-	create_opts.deployment_id = DEPLOYMENT_ID
-	create_opts.client_id = CLIENT_ID
-	create_opts.client_secret = CLIENT_SECRET
-	create_opts.encryption_key = ENCRYPTION_KEY
-	if OS.get_name() == "Windows":
-		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
+	var credentials = HCredentials.new()
+	credentials.product_name = PRODUCT_NAME
+	credentials.product_version = PRODUCT_VERSION
+	credentials.product_id = PRODUCT_ID
+	credentials.sandbox_id = SANDBOX_ID
+	credentials.deployment_id = DEPLOYMENT_ID
+	credentials.client_id = CLIENT_ID
+	credentials.client_secret = CLIENT_SECRET
+	credentials.encryption_key = ENCRYPTION_KEY
 	
-	# Initialize the SDK
-	var init_res := await HPlatform.initialize_async(init_opts)
-	if not EOS.is_success(init_res):
-		printerr("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
+	print("Setting up EOS...")
+	var setup_success := await HPlatform.setup_eos_async(credentials)
+	if not setup_success:
+		printerr("Failed to setup EOS. See logs for error details")
 		return
 	
-	# Create platform
-	var create_success := await HPlatform.create_platform_async(create_opts)
-	if not create_success:
-		printerr("Failed to create EOS Platform")
-		return
 	var sdk_constants := EOS.Version.VersionInterface.get_constants()
 	print("EOS SDK Version: %s (%s)" % [EOS.Version.VersionInterface.get_version(), sdk_constants.copyright_string])
 

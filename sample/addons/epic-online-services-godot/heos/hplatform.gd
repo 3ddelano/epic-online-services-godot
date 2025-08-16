@@ -30,6 +30,28 @@ const CREATE_RETRY_DElAY_SEC = 0.2
 #endregion
 
 
+#region Public vars
+
+## Absolute path to the folder that is going to be used for caching temporary data
+var cache_directory := ProjectSettings.globalize_path("user://eosg-cache")
+## Platform creation flags. This is a bitwise (union) of [enum EOS.Platform.PlatformFlags]
+var flags: int = 0
+## Set to true if its a dedicated game server
+var is_server: bool
+## Override country code for the logged-in user
+var override_country_code: String
+## Override local code for the logged-in user
+var override_locale_code: String
+## Budget, measured in milliseconds, for EOS_Platform_Tick to do its work. Set it according to your desired FPS.
+var tick_budget_in_milliseconds: int
+## Number of seconds for a task to wait for the network to become available before timing out with an EOS_TimedOut error
+var task_network_timeout_seconds = null # float
+## Configures RTC behavior upon entering to any background application statuses See [enum EOS.Platform.RTCBackgroundMode]
+var rtc_options_background_mode = null
+
+#endregion
+
+
 #region Private vars 
 
 var _log = HLog.logger("HPlatform")
@@ -46,6 +68,59 @@ func _ready() -> void:
 
 
 #region Public methods
+
+
+## Easy setup for EOS. Returns true if EOS setup is success.
+func setup_eos_async(p_creds: HCredentials) -> bool:
+	_log.debug("Setting up EOS")
+	
+	if not p_creds.product_name:
+		_log.error("HCredentials.product_name cannot be empty")
+		return false
+	
+	var init_opts = EOS.Platform.InitializeOptions.new()
+	init_opts.product_name = p_creds.product_name
+	init_opts.product_version = p_creds.product_version
+	
+	var init_ret := await initialize_async(init_opts)
+	if not EOS.is_success(init_ret):
+		return false
+
+	var create_opts = EOS.Platform.CreateOptions.new()
+	create_opts.product_id = p_creds.product_id
+	create_opts.sandbox_id = p_creds.sandbox_id
+	create_opts.deployment_id = p_creds.deployment_id
+	create_opts.client_id = p_creds.client_id
+	create_opts.client_secret = p_creds.client_secret
+	create_opts.encryption_key = p_creds.encryption_key
+	
+	create_opts.cache_directory = cache_directory
+	if not flags:
+		_log.debug("Using default flags for creating platform")
+		if OS.get_name() == "Windows":
+			create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
+	else:
+		create_opts.flags = flags
+	create_opts.is_server = is_server
+	create_opts.override_country_code = override_country_code
+	create_opts.override_locale_code = override_locale_code
+	if not tick_budget_in_milliseconds:
+		var max_fps = max(Engine.get_max_fps()*1.0, 60.0)
+		var budget_ms = floori((0.3 * 1000) / max_fps)
+		budget_ms = max(budget_ms, 2) # at least 2ms
+		_log.debug("Using default tick_budget_in_milliseconds as %s" % budget_ms)
+		create_opts.tick_budget_in_milliseconds = budget_ms
+	else:
+		create_opts.tick_budget_in_milliseconds = tick_budget_in_milliseconds
+	create_opts.task_network_timeout_seconds = task_network_timeout_seconds
+	create_opts.rtc_options.background_mode = rtc_options_background_mode
+	
+	var is_success := await create_platform_async(create_opts)
+	if not is_success:
+		return false
+	
+	return true
+
 
 ## Initialize the EOS SDK
 func initialize_async(opts: EOS.Platform.InitializeOptions) -> EOS.Result:

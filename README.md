@@ -12,7 +12,8 @@ Epic Online Services Godot (EOSG)
 > Disclaimer: This project is NOT affiliated with Epic Games Inc or Godot Engine. It doesn't endorse Epic Online
 > Services. This project and sample Godot scenes are provided solely for educational purposes and may or may not comply
 > with Epic Games' Design Guidelines, if you plan to release a game make sure you read
-> the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and any
+> the [Guidelines](https://dev.epicgames.com/docs/services/en-US/EpicAccountServices/DesignGuidelines/index.html) and
+> any
 > other steps needed to release a public game like asking for user consent, option to delete user data, website with
 > privacy policy and license, etc.
 
@@ -49,34 +50,21 @@ func _ready() -> void:
 	# Setup HEOS Logs
 	HLog.log_level = HLog.LogLevel.INFO
 
-	var init_opts = EOS.Platform.InitializeOptions.new()
-	init_opts.product_name = "PRODUCT_NAME_HERE"
-	init_opts.product_version = "PRODUCT_VERSION_HERE"
-
-	var create_opts = EOS.Platform.CreateOptions.new()
+	var credentials = HCredentials.new()
+	create_opts.product_name = "PRODUCT_NAME_NAME"
+	create_opts.product_version = "PRODUCT_VERSION_HERE"
 	create_opts.product_id = "PRODUCT_ID_HERE"
 	create_opts.sandbox_id = "SANDBOX_ID_HERE"
 	create_opts.deployment_id = "DEPLOYMENT_ID_HERE"
 	create_opts.client_id = "CLIENT_ID_HERE"
 	create_opts.client_secret = "CLIENT_SECRET_HERE"
-	create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
-
-	# Enable Social Overlay on Windows
-	if OS.get_name() == "Windows":
-		HAuth.auth_login_flags = EOS.Auth.LoginFlags.None
-		create_opts.flags = EOS.Platform.PlatformFlags.WindowsEnableOverlayOpengl
-
-	# Initialize the SDK
-	var init_res := await HPlatform.initialize_async(init_opts)
-	if not EOS.is_success(init_res):
-		printerr("Failed to initialize EOS SDK: ", EOS.result_str(init_res))
-		return
+	# optional 
+	#create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
 	
-	# Create platform
-	var create_success := await HPlatform.create_platform_async(create_opts)
-	if not create_success:
-		printerr("Failed to create EOS Platform")
-		return
+	var setup_success := await HPlatform.setup_eos_async(credentials)
+	if not setup_success:
+	    printerr("Failed to setup EOS. See logs for more details")
+	    return
 
 	# Setup Logs from EOS
 	HPlatform.log_msg.connect(_on_eos_log_msg)
@@ -90,7 +78,7 @@ func _ready() -> void:
 	# During development use the devauth tool to login
 	HAuth.login_devtool_async("localhost:4545", "CREDENTIAL_NAME_HERE")
 
-	# Only on mobile device (Login without any credentials)
+	# Or login without any credentials
 	# await HAuth.login_anonymous_async()
 
 
