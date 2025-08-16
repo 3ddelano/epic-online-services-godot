@@ -34,6 +34,7 @@ void IEOS::custom_invites_interface_send_custom_invite(Ref<RefCounted> p_options
     EOS_CustomInvites_SendCustomInviteOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CUSTOMINVITES_SENDCUSTOMINVITE_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.TargetUserIds = targetUserIds;
     options.TargetUserIdsCount = target_user_ids_count;
     p_options->reference();
