@@ -51,15 +51,15 @@ func _ready() -> void:
 	HLog.log_level = HLog.LogLevel.INFO
 
 	var credentials = HCredentials.new()
-	create_opts.product_name = "PRODUCT_NAME_NAME"
-	create_opts.product_version = "PRODUCT_VERSION_HERE"
-	create_opts.product_id = "PRODUCT_ID_HERE"
-	create_opts.sandbox_id = "SANDBOX_ID_HERE"
-	create_opts.deployment_id = "DEPLOYMENT_ID_HERE"
-	create_opts.client_id = "CLIENT_ID_HERE"
-	create_opts.client_secret = "CLIENT_SECRET_HERE"
+	credentials.product_name = "PRODUCT_NAME_NAME"
+	credentials.product_version = "PRODUCT_VERSION_HERE"
+	credentials.product_id = "PRODUCT_ID_HERE"
+	credentials.sandbox_id = "SANDBOX_ID_HERE"
+	credentials.deployment_id = "DEPLOYMENT_ID_HERE"
+	credentials.client_id = "CLIENT_ID_HERE"
+	credentials.client_secret = "CLIENT_SECRET_HERE"
 	# optional 
-	#create_opts.encryption_key = "ENCRYPTION_KEY_HERE"
+	#credentials.encryption_key = "ENCRYPTION_KEY_HERE"
 	
 	var setup_success := await HPlatform.setup_eos_async(credentials)
 	if not setup_success:
@@ -118,7 +118,7 @@ func _on_eos_log_msg(msg: EOS.Logging.LogMessage) -> void:
 ## Simple P2P Example
 
 A simple demo showcasing P2P multiplayer using Epic Online
-Services: [Click Here](https://github.com/LowFire/EOSGP2PInterfaceTestGame)
+Services: [Click Here](https://github.com/3ddelano/EOSGP2PInterfaceTestGame)
 
 ## Support Development
 
