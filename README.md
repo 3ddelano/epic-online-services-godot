@@ -26,6 +26,16 @@ Epic Online Services Godot (EOSG)
 - ### GDExtension EOS
   The GDExtension EOS provides advanced EOS usage not recommended for beginners. See `EOS` and `IEOS` classes.
 
+
+## [🚀 Check out out GDAI MCP from the creator of EOSG](https://gdaimcp.com?ref=eosg-readme)
+<a href="https://gdaimcp.com?ref=eosg-readme">
+<img src="https://gdaimcp.com/images/og/gdai-mcp.png" width="400" />
+</a>
+Supercharge your Godot 4.2+ workflow with GDAI MCP – the ultimate Godot MCP server that lets AI tools like Claude, Cursor, Windsurf, VSCode and more automate scene creation, node editing, reading godot errors, creating scripts, debugging, and more. Vibe code like never before! Takes screenshots automatically to understand the editor and running game and supports Windows, macOS, and Linux.
+
+### 🔗 **[https://gdaimcp.com](https://gdaimcp.com?ref=eosg-readme)**
+
+
 # High Level Epic Online Services
 
 Following are the main classes in High Level Epic Online Services. They also have documentation in the Godot Editor:
