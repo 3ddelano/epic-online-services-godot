@@ -1,3 +1,4 @@
+# Good article about the EOS login flows: https://eoshelp.epicgames.com/s/article/What-is-the-correct-login-flow-for-a-game-that-supports-crossplay
 extends Node
 
 #region Signals
@@ -34,6 +35,11 @@ signal login_connect_error(result_code: EOS.Result)
 ## When user logs out, this event will be emitted as display name will be empty string.
 signal display_name_changed
 
+## Emitted when the external account info is changed.
+## When user logs in, this event will be emitted when we receive the user's external account info.
+## When user logs out, this event will be emitted as external account info will be empty.
+signal external_account_info_changed
+
 #endregion
 
 
@@ -53,7 +59,7 @@ var display_name: String
 var auto_fetch_external_account = true
 
 ## The external account linked with Epic Game Services
-## See get_external_account_async for return type
+## See get_external_account_by_type_async for return type
 var external_account_info = {}
 
 
@@ -231,6 +237,7 @@ func logout_async() -> EOS.Result:
 		display_name = ""
 		external_account_info = {}
 		display_name_changed.emit()
+		external_account_info_changed.emit()
 		logged_out.emit()
 
 	return ret
@@ -261,7 +268,7 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 	if product_user_id:
 		_log.info("Logged into Epic Games Services with Product User Id: %s" % product_user_id)
 		if auto_fetch_external_account:
-			get_external_account_async(opts.credentials.type)
+			get_product_user_info_async()
 
 	logged_in_connect.emit()
 	logged_in.emit()
@@ -365,15 +372,13 @@ func get_user_info_async(p_epic_account_id = "") -> Dictionary:
 
 ## Get the external user account linked with Epic Game Services
 ## Returns a [Dictionary] with the following keys or empty dictionary if error occurred:
+##  product_user_id: String - the product user ID of the external account
 ##  display_name: String - external account display name or empty string
 ##  account_id: String - external account id
 ##  account_id_type: EOS.ExternalAccountType - type of external account
 ##  last_login_time: int - unix timestamp when the user last logged in or EOS.Connect.CONNECT_TIME_UNDEFINED
-func get_external_account_async(external_credential_type: EOS.ExternalCredentialType, p_product_user_id = product_user_id) -> Dictionary:
-	_log.debug("Updating display name for external provider: external_credential_type=%s, product_user_id=%s" % [
-		EOS.ExternalAccountType.find_key(external_credential_type),
-		p_product_user_id
-	])
+func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAccountType, p_product_user_id = product_user_id) -> Dictionary:
+	_log.debug("Getting external account by type: external_account_type=%s product_user_id=%s" % [p_external_account_type, p_product_user_id])
 
 	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
 	opts.product_user_ids = [p_product_user_id]
@@ -384,7 +389,8 @@ func get_external_account_async(external_credential_type: EOS.ExternalCredential
 		return {}
 
 	var copy_opts = EOS.Connect.CopyProductUserExternalAccountByAccountTypeOptions.new()
-	copy_opts.account_id_type = external_credential_type
+	copy_opts.account_id_type = p_external_account_type
+	copy_opts.target_user_id = p_product_user_id
 	var copy_ret = EOS.Connect.ConnectInterface.copy_product_user_external_account_by_account_type(copy_opts)
 	if not EOS.is_success(copy_ret):
 		_log.error("Failed to copy external account: result_code=%s" % EOS.result_str(copy_ret))
@@ -393,20 +399,46 @@ func get_external_account_async(external_credential_type: EOS.ExternalCredential
 	_log.debug("Got external account info: product_user_id=%s" % p_product_user_id)
 	
 	var acc_info = copy_ret.external_account_info
-	if acc_info:
-		if acc_info.display_name:
-			display_name = acc_info.display_name
-			display_name_changed.emit()
-	else:
+	if not acc_info:
 		acc_info = {}
 		_log.error("Failed to get external account info")
 	
-	if p_product_user_id == product_user_id:
-		external_account_info = acc_info
-	
 	return acc_info
+
+
+func get_product_user_info_async(p_product_user_id = product_user_id):
+	_log.debug("Getting product user info: product_user_id=%s" % p_product_user_id)
+
+	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
+	opts.product_user_ids = [p_product_user_id]
+	EOS.Connect.ConnectInterface.query_product_user_id_mappings(opts)
+	var ret = await IEOS.connect_interface_query_product_user_id_mappings_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to query product user id mappings: result_code=%s" % EOS.result_str(ret))
+		return {}
+
+	var copy_opts = EOS.Connect.CopyProductUserInfoOptions.new()
+	copy_opts.target_user_id = p_product_user_id
+	var copy_ret = EOS.Connect.ConnectInterface.copy_product_user_info(copy_opts)
+	if not EOS.is_success(copy_ret):
+		_log.error("Failed to copy product user info: result_code=%s" % EOS.result_str(copy_ret))
+		return {}
 	
-	
+	_log.debug("Got product user info: product_user_id=%s" % p_product_user_id)
+
+	var ext_acc = copy_ret.external_account_info
+	if not ext_acc:
+		_log.error("Failed to get external account info")
+	if ext_acc and ext_acc.product_user_id == product_user_id:
+		external_account_info = ext_acc
+		external_account_info_changed.emit()
+
+		if ext_acc.display_name:
+			display_name = ext_acc.display_name
+			display_name_changed.emit()
+
+	return ext_acc
+
 #endregion
 
 
