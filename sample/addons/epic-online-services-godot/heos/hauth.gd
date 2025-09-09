@@ -371,14 +371,14 @@ func get_user_info_async(p_epic_account_id := epic_account_id) -> Dictionary:
 	return copy_ret.user_info
 
 
-## Get the external user account linked with Epic Game Services
+## Get the external user account linked with Epic Game Services[br]
 ## Returns a [Dictionary] with the following keys or empty dictionary if error occurred:
 ## [codeblock]
-## product_user_id: String - the product user ID of the external account[br]
-## display_name: String - external account display name or empty string[br]
-## account_id: String - external account id[br]
-## account_id_type: EOS.ExternalAccountType - type of external account[br]
-## last_login_time: int - unix timestamp when the user last logged in or EOS.Connect.CONNECT_TIME_UNDEFINED
+## product_user_id: String - the product user ID of the external account
+## display_name: String - external account display name or empty string
+## account_id: String - external account id
+## account_id_type: EOS.ExternalAccountType - type of external account
+## last_login_time: int - unix timestamp when the user last logged in or -1
 ## [/codeblock]
 func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAccountType, p_product_user_id := product_user_id) -> Dictionary:
 	_log.debug("Getting external account by type: external_account_type=%s product_user_id=%s" % [p_external_account_type, p_product_user_id])
@@ -409,7 +409,41 @@ func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAcc
 	return acc_info
 
 
-## Get the external account linked with Epic Game Services that the user most recently logged in with.
+## Get all external accounts linked with Epic Games Services[br]
+## Returns a [Dictionary] with same keys as [method get_external_account_by_type_async][br]
+func get_external_accounts_async(p_product_user_id := product_user_id) -> Array:
+	_log.debug("Getting all external accounts: product_user_id=%s" % p_product_user_id)
+
+	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
+	opts.product_user_ids = [p_product_user_id]
+	EOS.Connect.ConnectInterface.query_product_user_id_mappings(opts)
+	var ret = await IEOS.connect_interface_query_product_user_id_mappings_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to query product user id mappings: result_code=%s" % EOS.result_str(ret))
+		return []
+
+
+	var count_opts = EOS.Connect.GetProductUserExternalAccountCountOptions.new()
+	count_opts.target_user_id = p_product_user_id
+	var count = EOS.Connect.ConnectInterface.get_product_user_external_account_count(count_opts)
+
+	var ext_accs = []
+	for i in range(count):
+		var copy_opts = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
+		copy_opts.target_user_id = p_product_user_id
+		copy_opts.external_account_info_index = i
+
+		var copy_ret = EOS.Connect.ConnectInterface.copy_product_user_external_account_by_index(copy_opts)
+		if not EOS.is_success(copy_ret):
+			_log.error("Failed to copy external account: result_code=%s, index=%s" % [EOS.result_str(copy_ret), i])
+			continue
+		if copy_ret.external_account_info:
+			ext_accs.append(copy_ret.external_account_info)
+
+	return ext_accs
+
+
+## Get the external account linked with Epic Game Services that the user most recently logged in with.[br]
 ## Returns a [Dictionary] with same keys as [method get_external_account_by_type_async]
 func get_product_user_info_async(p_product_user_id := product_user_id):
 	_log.debug("Getting product user info: product_user_id=%s" % p_product_user_id)
