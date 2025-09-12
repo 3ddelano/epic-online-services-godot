@@ -3,19 +3,19 @@ extends Node
 
 #region Public vars
 
-## The maximum number of lobbies to return in search calls.
-## Except for create_saerch and search_async
+## The maximum number of lobbies to return in search calls.[br]
+## Except for [method create_search] and [method search_async]
 var max_search_results = 25
 
 ## Whether to show the lobby in the user's presence
 var presence_enabled = true
 
-## Local RTC options for the lobby
-## (Optional) Set this to a [Dictionary] to override the defaults.[br]
-## A [Dictionary] with keys: [br]
-## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags],[br]
-## - use_manual_audio_input: [bool],[br]
-## - use_manual_audio_output: [bool],[br]
+## Local RTC options for the lobby[br]
+## (Optional) You can override any of the below keys.[br]
+## A [Dictionary] with keys:[br]
+## - flags: A bitwise-or union of [enum EOS.RTC.JoinRoomFlags][br]
+## - use_manual_audio_input: [bool][br]
+## - use_manual_audio_output: [bool][br]
 ## - local_audio_device_input_starts_muted: [bool]
 var local_rtc_options = {
 	flags = EOS.RTC.JoinRoomFlags.EnableDataChannel
@@ -74,7 +74,7 @@ func join_by_id_async(lobby_id: String) -> HLobby:
 	return lobby
 
 
-## Join an existing lobby ex one returned from search. 
+## Join an existing lobby e.g. one returned from search. 
 ## Returns [HLobby] or [null]
 func join_async(lobby: HLobby):
 	if not lobby:
@@ -116,18 +116,18 @@ func search_by_product_user_id_async(product_user_id: String):
 
 
 
-## Search for public lobbies based on an attributes.
-## The input argument can either be a [Dictionary] of an [Array] of [Dictionary].
-## (Note there is an implicit AND operation if multiple search attributes are provided)
-## Each search attribute is a Dictionary having the keys:
-##  key: String - the key of the attribute
-##  value: String - the value of the attribute
-##  comparison: EOS.ComparisonOp - Type of comparison to make (default is EOS.ComparisonOp.Equal)
+## Search for public lobbies based on attributes.[br]
+## The input argument can either be a [Dictionary] or an [Array] of [Dictionary].[br]
+## (Note there is an implicit AND operation if multiple search attributes are provided)[br]
+## Each search attribute is a Dictionary having the keys:[br]
+## - key: [String] - the key of the attribute[br]
+## - value: [String] - the value of the attribute[br]
+## - comparison: [enum EOS.ComparisonOp] - Type of comparison to make (default is EOS.ComparisonOp.Equal)[br]
 ## Returns [Array] of [HLobby] or null
 func search_by_attribute_async(attributes):
 	if typeof(attributes) == TYPE_DICTIONARY:
 		attributes = [attributes]
-	_log.debug("Searching for lobbies by attributes: attributes=%s" % attributes)
+	_log.debug("Searching for lobbies by attributes: attributes=%s" % str(attributes))
 	var opts = EOS.Lobby.CreateLobbySearchOptions.new()
 	opts.max_results = max_search_results
 	

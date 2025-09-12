@@ -137,7 +137,7 @@ func unlock_achievement_async(achievement_id: String) -> bool:
 
 
 func unlock_achievements_async(achievement_ids: Array) -> bool:
-	_log.debug("Unlocking multiple achievement(s): achievement_ids=%s" % achievement_ids)
+	_log.debug("Unlocking multiple achievement(s): achievement_ids=%s" % str(achievement_ids))
 	
 	var opts = EOS.Achievements.UnlockAchievementsOptions.new()
 	opts.user_id = HAuth.product_user_id
