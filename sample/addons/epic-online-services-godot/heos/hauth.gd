@@ -75,7 +75,7 @@ var auth_login_scope_flags: int = EOS.Auth.ScopeFlags.BasicProfile | EOS.Auth.Sc
 
 ## Default login flags used when logging in with Epic Account Services.[br]
 ## Flags from [enum EOS.Auth.LoginFlags]
-var auth_login_flags: int = EOS.Auth.LoginFlags.NoUserInterface
+var auth_login_flags: int = EOS.Auth.LoginFlags.None
 
 #endregion
 
