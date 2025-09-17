@@ -176,7 +176,9 @@ func _on_rtc_audio_audio_before_render(data: Dictionary):
 		
 		# Convert the frame data to audio samples
 		var frames = buffer_data["frames"]
+		@warning_ignore("unused_variable")
 		var sample_rate = buffer_data["sample_rate"]
+		@warning_ignore("unused_variable")
 		var channels = buffer_data["channels"]
 		
 		# Create PackedVector2Array for audio data (required by AudioStreamGeneratorPlayback)
@@ -247,6 +249,7 @@ func process_audio_chunk(audio_data: PackedVector2Array):
 	var frames_16bit = convert_to_16bit(mono_samples)
 		
 	# Create voice data dictionary
+	@warning_ignore("unused_variable")
 	var voice_data = {
 		"buffer": {
 			"frames_count": frames_16bit.size(),
@@ -286,7 +289,7 @@ func has_voice_activity(samples: PackedFloat32Array) -> bool:
 	return rms > voice_threshold
 
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed(&"push_to_talk"):
 		start_voice_recording()
 	if Input.is_action_just_released(&"push_to_talk"):

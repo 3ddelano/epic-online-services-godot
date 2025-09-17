@@ -325,6 +325,7 @@ func draw_debug() -> void:
 	
 	draw_line(Vector2.ZERO, knob_position, lerped_color, 3.0, true)
 	draw_string_outline(SystemFont.new(), string_pos, length_string, HORIZONTAL_ALIGNMENT_CENTER, -1.0, 18, 10, Color.BLACK)
+	@warning_ignore("narrowing_conversion")
 	draw_string(SystemFont.new(), string_pos, length_string, HORIZONTAL_ALIGNMENT_CENTER, -1.0, 18, lerped_color, get_weight())
 
 
