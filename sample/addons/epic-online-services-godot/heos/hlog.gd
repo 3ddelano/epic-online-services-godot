@@ -1,3 +1,6 @@
+## Used for logging by HEOS classes
+##
+## See also [EOS.Logging] for EOS SDK logging
 class_name HLog
 extends RefCounted
 
@@ -10,10 +13,13 @@ enum LogLevel {
 	VERBOSE,
 }
 
+## Current log level
 static var log_level = LogLevel.INFO
 
-static func logger(clazz_name: String) -> Logger:
-	return Logger.new(clazz_name)
+
+## Returns a new logger for the given class name
+static func logger(clazz_name: String) -> HEOSLogger:
+	return HEOSLogger.new(clazz_name)
 
 
 static func _log_level_str(level: LogLevel) -> String:
@@ -80,7 +86,8 @@ static func _check_attr_diff(orig_attrs: Array, new_attrs: Array, p_name = "") -
 			print_rich("[color=yellow]CHANGED %s[/color]: attr added: %s = (%s,%s)" % [p_name, id, new_map[id].value, new_map[id].visibility])
 
 
-class Logger extends RefCounted:
+## Used internally by HEOS classes for logging
+class HEOSLogger extends RefCounted:
 	var clazz_name: String
 
 	func _init(p_clazz_name) -> void:
