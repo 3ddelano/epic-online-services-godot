@@ -14,6 +14,8 @@ extends Control
 
 
 func _ready() -> void:
+	if _check_for_dedicated_server_sample():
+		return
 	print("Ready!")
 	Store._main_node = self
 
@@ -54,6 +56,52 @@ func _notification(what: int) -> void:
 		var res := EOS.Platform.PlatformInterface.shutdown()
 		if not EOS.is_success(res):
 			printerr("Failed to shutdown EOS: ", EOS.result_str(res))
+
+
+func _check_for_dedicated_server_sample() -> bool:
+	# Ignore this method
+	# This is for the sample project to dynamically load the
+	# dedicated server example when certain cli flags are passed
+	
+	var args = OS.get_cmdline_user_args()
+	for arg in args:
+		if arg.begins_with("--screenpos="):
+			var rows = 2
+			var cols = 2
+
+			var pos := int(arg.replace("--screenpos=", ""))
+			var screen_size = DisplayServer.screen_get_size()
+
+			var scale_x = screen_size.x / cols
+			var scale_y = screen_size.y / rows
+
+			var x = (pos - 1) % cols
+			@warning_ignore("integer_division")
+			var y = (pos - 1) / rows
+
+			get_window().position = Vector2(x * scale_x, y * scale_y)
+			get_window().size = Vector2(screen_size.x / cols, screen_size.y / rows)
+	
+	if "--eosg-dedicated-server-example" in args:
+		if "--eosg-server" in args:
+			_load_dedicated_server_script()
+			return true
+		if "--eosg-client" in args:
+			_load_dedicated_client_script()
+			return true
+	return false
+
+
+func _load_dedicated_server_script():
+	var SCENE := load("res://dedicated_server_example/server_main.tscn") as PackedScene
+	var server = SCENE.instantiate()
+	add_child(server)
+
+
+func _load_dedicated_client_script():
+	var SCENE := load("res://dedicated_server_example/client_main.tscn") as PackedScene
+	var client = SCENE.instantiate()
+	add_child(client)
 
 
 func _parse_cmdline_user_args():
