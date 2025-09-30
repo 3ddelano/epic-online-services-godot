@@ -15,15 +15,15 @@ void EOSGSessionModification::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &EOSGSessionModification::set_permission_level);
 }
 
-int EOSGSessionModification::add_attribute(const String &p_key, Variant p_value, int p_visibility) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+int EOSGSessionModification::add_attribute(const String &p_key, Variant p_value, int p_advertisement_type) {
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_Sessions_AttributeData sessionAttribute;
     memset(&sessionAttribute, 0, sizeof(sessionAttribute));
     sessionAttribute.ApiVersion = EOS_SESSIONS_ATTRIBUTEDATA_API_LATEST;
     sessionAttribute.Key = key.get_data();
-	CharString value;
+    CharString value;
 
     if (p_value.get_type() == Variant::Type::BOOL) {
         sessionAttribute.ValueType = EOS_ESessionAttributeType::EOS_AT_BOOLEAN;
@@ -44,13 +44,13 @@ int EOSGSessionModification::add_attribute(const String &p_key, Variant p_value,
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_ADDATTRIBUTE_API_LATEST;
     options.SessionAttribute = &sessionAttribute;
-    options.AdvertisementType = static_cast<EOS_ESessionAttributeAdvertisementType>(p_visibility);
+    options.AdvertisementType = static_cast<EOS_ESessionAttributeAdvertisementType>(p_advertisement_type);
 
     return static_cast<int>(EOS_SessionModification_AddAttribute(m_internal, &options));
 }
 
 int EOSGSessionModification::remove_attribute(const String &p_key) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString key = p_key.utf8();
 
     EOS_SessionModification_RemoveAttributeOptions options;
@@ -62,7 +62,7 @@ int EOSGSessionModification::remove_attribute(const String &p_key) {
 }
 
 int EOSGSessionModification::set_allowed_platform_ids(const TypedArray<int> &p_platform_ids) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionModification_SetAllowedPlatformIdsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_SETALLOWEDPLATFORMIDS_API_LATEST;
@@ -78,7 +78,7 @@ int EOSGSessionModification::set_allowed_platform_ids(const TypedArray<int> &p_p
 }
 
 int EOSGSessionModification::set_bucket_id(const String &p_bucket_id) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString bucket_id = p_bucket_id.utf8();
     EOS_SessionModification_SetBucketIdOptions options;
     memset(&options, 0, sizeof(options));
@@ -89,7 +89,7 @@ int EOSGSessionModification::set_bucket_id(const String &p_bucket_id) {
 }
 
 int EOSGSessionModification::set_host_address(const String &p_host_address) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     CharString host_address = p_host_address.utf8();
     EOS_SessionModification_SetHostAddressOptions options;
     memset(&options, 0, sizeof(options));
@@ -100,7 +100,7 @@ int EOSGSessionModification::set_host_address(const String &p_host_address) {
 }
 
 int EOSGSessionModification::set_invites_allowed(bool p_invites_allowed) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionModification_SetInvitesAllowedOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_SETINVITESALLOWED_API_LATEST;
@@ -110,7 +110,7 @@ int EOSGSessionModification::set_invites_allowed(bool p_invites_allowed) {
 }
 
 int EOSGSessionModification::set_max_players(int p_max_players) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionModification_SetMaxPlayersOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_SETMAXPLAYERS_API_LATEST;
@@ -120,7 +120,7 @@ int EOSGSessionModification::set_max_players(int p_max_players) {
 }
 
 int EOSGSessionModification::set_join_in_progress_allowed(bool p_join_in_progress_allowed) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionModification_SetJoinInProgressAllowedOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_SETJOININPROGRESSALLOWED_API_LATEST;
@@ -130,7 +130,7 @@ int EOSGSessionModification::set_join_in_progress_allowed(bool p_join_in_progres
 }
 
 int EOSGSessionModification::set_permission_level(int p_permission_level) {
-	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     EOS_SessionModification_SetPermissionLevelOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_SESSIONMODIFICATION_SETPERMISSIONLEVEL_API_LATEST;
