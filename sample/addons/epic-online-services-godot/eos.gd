@@ -1670,7 +1670,7 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbySearchOptions")
 
-		var max_results = 10
+		var max_results := 10
 
 	class CopyLobbyDetailsByInviteIdOptions extends BaseClass:
 		func _init():
@@ -2964,7 +2964,7 @@ class Sessions:
 		func _init():
 			super._init("CreateSessionSearchOptions")
 
-		var max_search_results = 10
+		var max_search_results := 10
 
 	class GetInviteIdByIndexOptions extends BaseClass:
 		func _init():

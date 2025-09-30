@@ -79,7 +79,7 @@ func join_by_id_async(lobby_id: String) -> HLobby:
 func join_async(lobby: HLobby):
 	if not lobby:
 		return null
-	_log.debug("Joining lobby ...")
+	_log.debug("Joining lobby...")
 
 	var opts = EOS.Lobby.JoinLobbyOptions.new()
 	opts.lobby_details = lobby._lobby_details

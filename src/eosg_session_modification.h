@@ -21,11 +21,11 @@ public:
     int set_max_players(int max_players);
     int set_permission_level(int permission_level);
 
-    EOSGSessionModification(){};
+    EOSGSessionModification() {};
     ~EOSGSessionModification() {
         if (m_internal != nullptr) {
             EOS_SessionModification_Release(m_internal);
-			m_internal = nullptr;
+            m_internal = nullptr;
         }
     };
 

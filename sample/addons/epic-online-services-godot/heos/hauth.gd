@@ -268,7 +268,7 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 		product_user_id = login_ret.local_user_id
 	
 	if product_user_id:
-		_log.info("Logged into Epic Games Services with Product User Id: %s" % product_user_id)
+		_log.info("Logged into Epic Games Services with Product User ID: %s" % product_user_id)
 		if auto_fetch_external_account and EOS.ExternalCredentialType.DeviceidAccessToken != opts.credentials.type:
 			get_product_user_info_async()
 

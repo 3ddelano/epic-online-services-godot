@@ -58,8 +58,8 @@ static EOS_EpicAccountId eosg_string_to_epic_account_id(const char *p_account_id
 String eosg_product_user_id_to_string(EOS_ProductUserId localUserId);
 
 static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
-    EOS_ProductUserId accountId = EOS_ProductUserId_FromString(p_account_id);
-    return accountId;
+    EOS_ProductUserId productUserId = EOS_ProductUserId_FromString(p_account_id);
+    return productUserId;
 }
 
 static Variant eosg_auth_pin_grant_info_to_dict(const EOS_Auth_PinGrantInfo *pinGrantInfo) {

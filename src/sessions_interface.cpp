@@ -89,7 +89,9 @@ Dictionary IEOS::sessions_interface_create_session_modification(Ref<RefCounted> 
     options.SessionName = session_name.get_data();
     options.BucketId = bucket_id.get_data();
     options.MaxPlayers = static_cast<uint32_t>(max_players);
-    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    if (local_user_id.length() > 0) {
+        options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+    }
     options.bPresenceEnabled = presence_enabled ? EOS_TRUE : EOS_FALSE;
     options.SessionId = session_id.get_data();
     options.bSanctionsEnabled = sanctions_enabled ? EOS_TRUE : EOS_FALSE;
