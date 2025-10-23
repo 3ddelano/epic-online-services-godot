@@ -308,6 +308,10 @@ and:
 
 ## Exporting for Android
 
+Use a community created [Android Export Plugin](https://github.com/uno1982/EOSG-android-exporter)
+
+Or follow the steps below to manually export for Android.
+
 ### Pre-requisites
 
 1. Setup the `Android Build Template` in your Godot project by following the
