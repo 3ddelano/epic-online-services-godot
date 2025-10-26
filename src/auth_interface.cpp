@@ -284,7 +284,7 @@ void IEOS::auth_interface_verify_user_auth(Ref<RefCounted> p_options) {
     CharString p_refresh_token = VARIANT_TO_CHARSTRING(p_auth_token->get("refresh_token"));
     CharString p_refresh_expires_at = VARIANT_TO_CHARSTRING(p_auth_token->get("refresh_expires_at"));
     CharString p_account_id = VARIANT_TO_CHARSTRING(p_auth_token->get("account_id"));
-    int p_auth_type = p_options->get("auth_type");
+    int p_auth_type = p_auth_token->get("auth_type");
     EOS_EpicAccountId accountId = eosg_string_to_epic_account_id(p_account_id.get_data());
 
     EOS_Auth_Token authToken;
