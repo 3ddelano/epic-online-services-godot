@@ -22,7 +22,7 @@ using namespace godot;
 #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
 #define VARIANT_TO_EOS_BOOL(var) \
     ((var.get_type() == Variant::BOOL) ? ((var.operator bool()) ? EOS_TRUE : EOS_FALSE) : EOS_FALSE)
-#define EOSG_GET_STRING(str) ((str == nullptr) ? String("") : String(str))
+#define EOSG_GET_STRING(str) ((str == nullptr) ? String("") : String::utf8(str))
 #define EOSG_GET_BOOL(eosBool) ((eosBool == EOS_TRUE) ? true : false)
 
 #ifdef _MSC_VER // Check if using Microsoft Visual Studio
