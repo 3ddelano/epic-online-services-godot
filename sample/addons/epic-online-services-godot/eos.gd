@@ -3369,7 +3369,12 @@ class RTCAudio:
 		func _init():
 			super._init("SendAudioOptions")
 
-		# TODO: update once send_audio is implemented
+		var local_user_id: String = HAuth.product_user_id
+		var room_name: String
+		var frames: PackedInt32Array
+		var sample_rate = 48000
+		var channels = 1
+		
 
 	class QueryInputDevicesInformationOptions extends BaseClass:
 		func _init():
@@ -4096,15 +4101,15 @@ enum Result {
 	PresenceRichTextLengthInvalid = 3007,
 	PresenceStatusInvalid = 3008,
 	PresenceRichTextNotSupported = 3009,
-    PresenceTemplateNotSupported = 3010,
-    PresenceTemplateIdInvalid = 3011,
-    PresenceTemplateTypeInvalid = 3012,
-    PresenceTemplateKeyInvalid = 3013,
-    PresenceTemplateValueInvalid = 3014,
-    PresenceTemplateNotFound = 3015,
-    PresenceTemplateInvalidVariableInput = 3016,
-    PresenceTemplateLocalizationServerError = 3017,
-    PresenceTemplateUnknownError = 3018,
+	PresenceTemplateNotSupported = 3010,
+	PresenceTemplateIdInvalid = 3011,
+	PresenceTemplateTypeInvalid = 3012,
+	PresenceTemplateKeyInvalid = 3013,
+	PresenceTemplateValueInvalid = 3014,
+	PresenceTemplateNotFound = 3015,
+	PresenceTemplateInvalidVariableInput = 3016,
+	PresenceTemplateLocalizationServerError = 3017,
+	PresenceTemplateUnknownError = 3018,
 	EcomEntitlementStale = 4000,
 	EcomCatalogOfferStale = 4001,
 	EcomCatalogItemStale = 4002,
@@ -4221,7 +4226,7 @@ enum Result {
 	AllocationFailed = 13009,
 	VoiceModerationModeMismatch = 13010,
 	EmptyRecord = 13011,
-    RoomOptionsMismatch = 13012,
+	RoomOptionsMismatch = 13012,
 	ProgressionSnapshotSnapshotIdUnavailable = 14000,
 	ParentEmailMissing = 15000,
 	UserGraduated = 15001,

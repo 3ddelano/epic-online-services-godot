@@ -36,17 +36,17 @@ var _audio_effect_capture: AudioEffectCapture
 var _audio_bus_index: int
 const SAMPLE_RATE = 48000
 const CHANNELS = 1
-const CHUNK_DURATION_MS = 10  # 10 milliseconds
-const FRAMES_PER_CHUNK = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000.0)  # 480 frames
+const CHUNK_DURATION_MS = 10 # 10 milliseconds
+const FRAMES_PER_CHUNK = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000.0) # 480 frames
 
 # Recording state
 var is_recording = false
 var audio_buffer = PackedFloat32Array()
 
 # Voice activity detection (optional)
-var voice_threshold = 0.01  # Adjust based on your needs
+var voice_threshold = 0.01 # Adjust based on your needs
 var silence_frames = 0
-var max_silence_frames = 10  # Stop recording after this many silent chunks
+var max_silence_frames = 10 # Stop recording after this many silent chunks
 
 
 func _ready():
@@ -248,19 +248,17 @@ func process_audio_chunk(audio_data: PackedVector2Array):
 	# Convert to 16-bit integer format
 	var frames_16bit = convert_to_16bit(mono_samples)
 		
-	# Create voice data dictionary
-	@warning_ignore("unused_variable")
-	var voice_data = {
-		"buffer": {
-			"frames_count": frames_16bit.size(),
-			"frames": frames_16bit,
-			"sample_rate": SAMPLE_RATE,
-			"channels": CHANNELS
-		}
-	}
-	
 	# Broadcast the voice data
-	# _log("sending voice data", voice_data)
+	var send_opts = EOS.RTCAudio.SendAudioOptions.new()
+	send_opts.room_name = _rtc_room_name
+	send_opts.frames = PackedInt32Array(frames_16bit)
+	
+	var send_res = EOS.RTCAudio.RTCAudioInterface.send_audio(send_opts)
+	if not EOS.is_success(send_res):
+		_log("Failed to send audio data code=", EOS.result_str(send_res))
+		return
+	else:
+		_log("Send audio success")
 
 
 func convert_to_16bit(float_samples: PackedFloat32Array) -> Array:

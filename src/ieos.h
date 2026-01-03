@@ -485,7 +485,7 @@ public:
     int rtc_audio_interface_add_notify_participant_updated(Ref<RefCounted> options);
     int rtc_audio_interface_get_input_devices_count(Ref<RefCounted> options);
     int rtc_audio_interface_get_output_devices_count(Ref<RefCounted> options);
-    int rtc_audio_interface_send_audio(Ref<RefCounted> options);
+    int rtc_audio_interface_send_audio(const Ref<RefCounted> &options);
     void rtc_audio_interface_query_input_devices_information(Ref<RefCounted> options);
     void rtc_audio_interface_query_output_devices_information(Ref<RefCounted> options);
     void rtc_audio_interface_register_platform_user(Ref<RefCounted> options);
