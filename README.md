@@ -474,6 +474,7 @@ device and iOS arm64 simulator.
     - UI Interface
     - Lobby Interface (Also sample for manual audio input/output)
     - RTC Interface
+    - RTCAudio Interface
     - P2P Interface
     - Version Interface
 
