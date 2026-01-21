@@ -2,6 +2,7 @@
 logs/
 
 cache/
+.cache/
 
 sample/android
 sample/android_debug.keystore

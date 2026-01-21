@@ -465,7 +465,7 @@ void IEOS::ecom_interface_query_ownership(Ref<RefCounted> p_options) {
     options.CatalogItemIdCount = static_cast<uint32_t>(p_catalog_item_ids.size());
     EOS_Ecom_CatalogItemId *catalog_item_ids = nullptr;
     if (options.CatalogItemIdCount > 0) {
-        EOS_Ecom_CatalogItemId *catalog_item_ids = (EOS_Ecom_CatalogItemId *)memalloc(sizeof(EOS_Ecom_CatalogItemId) * p_catalog_item_ids.size());
+        catalog_item_ids = (EOS_Ecom_CatalogItemId *)memalloc(sizeof(EOS_Ecom_CatalogItemId) * p_catalog_item_ids.size());
         for (int i = 0; i < options.CatalogItemIdCount; i++) {
             catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
         }
