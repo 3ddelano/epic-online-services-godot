@@ -18,6 +18,8 @@ func _ready() -> void:
 		return
 	print("Ready!")
 	Store._main_node = self
+	
+	HLog.log_level = HLog.LogLevel.INFO
 
 	# -----
 	# EOS Setup

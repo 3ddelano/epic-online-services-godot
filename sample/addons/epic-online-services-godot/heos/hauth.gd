@@ -83,7 +83,7 @@ var auth_login_flags: int = EOS.Auth.LoginFlags.None
 #region Private vars 
 
 var _log = HLog.logger("HAuth")
-
+var _last_connect_login_opts: EOS.Connect.LoginOptions
 #endregion
 
 
@@ -248,6 +248,7 @@ func logout_async() -> EOS.Result:
 ## Login with EOS Connect by using external credentials
 func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 	_log.debug("Logging into Epic Game Services (ConnectInterface)...")
+	_last_connect_login_opts = opts
 	EOS.Connect.ConnectInterface.login(opts)
 
 	var login_ret: Dictionary = await IEOS.connect_interface_login_callback
@@ -490,6 +491,11 @@ func _on_connect_interface_auth_expiration(data: Dictionary):
 
 func _connect_account_async() -> bool:
 	_log.debug("Connecting account to Epic Game Services...")
+	
+	if _last_connect_login_opts:
+		var opts = _last_connect_login_opts
+		if opts and opts.credentials and EOS.ExternalCredentialType.DeviceidAccessToken == opts.credentials.type:
+			return await login_game_services_async(opts)
 
 	# Copy the user auth token
 	var auth_token_ret = EOS.Auth.AuthInterface.copy_user_auth_token(EOS.Auth.CopyUserAuthTokenOptions.new(), epic_account_id)
