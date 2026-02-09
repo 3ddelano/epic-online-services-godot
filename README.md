@@ -1,5 +1,5 @@
-Epic Online Services Godot (EOSG)
-=========================================
+# Epic Online Services Godot (EOSG)
+
 <img alt="Project Logo" src="./_media/logo.png" height="150">
 
 ### Easiest way to use Epic Online Services in Godot 4.2+ (includes demo project)
@@ -20,6 +20,7 @@ Epic Online Services Godot (EOSG)
 ## This plugin has two main systems:
 
 - ### High Level EOS (Recommended)
+
   The High Level Epic Online Services provides easy to use methods and signals to interact with EOS recommended for
   beginners.
 
@@ -72,9 +73,9 @@ func _ready() -> void:
 	credentials.deployment_id = "DEPLOYMENT_ID_HERE"
 	credentials.client_id = "CLIENT_ID_HERE"
 	credentials.client_secret = "CLIENT_SECRET_HERE"
-	# optional 
+	# optional
 	#credentials.encryption_key = "ENCRYPTION_KEY_HERE"
-	
+
 	var setup_success := await HPlatform.setup_eos_async(credentials)
 	if not setup_success:
 	    printerr("Failed to setup EOS. See logs for more details")
@@ -167,13 +168,11 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 - iOS
   <img src="./_media/ios_simulator_auth_success.png">
 
-
 - Cross platform lobbies
-
-    - iOS
-      <img src="./_media/ios_simulator_in_lobby.png">
-    - macOS
-      <img src="./_media/mac_in_lobby.png">
+  - iOS
+    <img src="./_media/ios_simulator_in_lobby.png">
+  - macOS
+    <img src="./_media/mac_in_lobby.png">
 
 ## How does it work
 
@@ -181,9 +180,7 @@ This project uses GDExtension to wrap the `Epic Online Services C SDK` so that i
 GDScript, C#, etc with similar class hierarchy and static type support. It makes use of signals for sending events like
 user login, logout, achievement unlock, etc.
 
-
-Installation
---------------
+## Installation
 
 This is a regular plugin for `Godot 4.2+`. To install the plugin follow the steps below:
 
@@ -209,8 +206,7 @@ This is a regular plugin for `Godot 4.2+`. To install the plugin follow the step
 4. Restart the godot editor.
 5. You can now use the plugin. Head to the [Documentation](#) for more information on how to use the plugin.
 
-Development Setup
---------------
+## Development Setup
 
 #### Pre-requisites
 
@@ -225,25 +221,33 @@ To develop this plugin, follow the below steps:
 
 1. Download/clone the repository.
 
-2. Extract the `EOS C SDK` zip downloaded from Epic Games, rename it to `eos-sdk` and paste it in the `thirdparty/`
+1. Run the command:
+  ```bash
+  git submodule update --init --recursive
+  ```
+
+1. Extract the `EOS C SDK` zip downloaded from Epic Games, rename it to `eos-sdk` and paste it in the `thirdparty/`
    folder. Refer to the below folder structure.
 
    <img src="./_media/eos_folder_structure.png">
 
-3. Build the GDExtension plugin in debug mode (With debug symbols)
+1. Build the GDExtension plugin in debug mode (With debug symbols)
+
    ```shell
    # In root folder
    scons platform=<platform> target=template_debug dev_build=yes
    ```
+
    Eg. `scons platform=windows target=template_debug dev_build=yes`
 
-4. Build the GDExtension plugin for release (Optimized)
+1. Build the GDExtension plugin for release (Optimized)
+
    ```shell
    # In root folder
    scons platform=windows target=template_release
    ```
 
-5. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample
+1. The built GDExtension library will be in the `res://addons/epic-online-services-godot/bin/` folder of the sample
    project.
 
 ## Debugging GDExtension on MacOS
@@ -303,6 +307,7 @@ and:
 - During game development
 
   Bootstrap the Godot Editor executable (eg. `Godot_v4.2.0-stable_win64.exe`) to test the `Account Portal` login
+
 - After exporting the game
 
   Bootstrap the exported game executable (eg. `My Amazing Game.exe`)
@@ -327,119 +332,127 @@ Or follow the steps below to manually export for Android.
    `dependencies` section.
 
    Before
-    ```gradle
-    dependencies {
-        implementation libraries.kotlinStdLib
-        implementation libraries.androidxFragment
-        ... other code
-    ```
+
+   ```gradle
+   dependencies {
+       implementation libraries.kotlinStdLib
+       implementation libraries.androidxFragment
+       ... other code
+   ```
 
    After
-    ```gradle
-    dependencies {
-        implementation libraries.kotlinStdLib
-        implementation libraries.androidxFragment
-        
-        // EOS SDK dependencies
-        implementation 'androidx.appcompat:appcompat:1.5.1'
-        implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-        implementation 'androidx.security:security-crypto:1.0.0'
-        implementation 'androidx.browser:browser:1.4.0'
-        implementation 'androidx.webkit:webkit:1.7.0'
-        // Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
-        implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
 
-        ...other code
-    ```
+   ```gradle
+   dependencies {
+       implementation libraries.kotlinStdLib
+       implementation libraries.androidxFragment
+
+       // EOS SDK dependencies
+       implementation 'androidx.appcompat:appcompat:1.5.1'
+       implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+       implementation 'androidx.security:security-crypto:1.0.0'
+       implementation 'androidx.browser:browser:1.4.0'
+       implementation 'androidx.webkit:webkit:1.7.0'
+       // Update the path so that it points to eossdk-StaticSTDC-release.aar provided in addons/epic-online-services-godot/bin/android/
+       implementation files('../../addons/epic-online-services-godot/bin/android/eossdk-StaticSTDC-release.aar')
+
+       ...other code
+   ```
 
 4. In the `res://android/build/build.gradle` file, add the following lines after the `defaultConfig` in the `android`
    section.
 
    Before
-    ```gradle
-    android {
 
-        ... other code
+   ```gradle
+   android {
 
-        defaultConfig {
-            ... other code
-        
-            // Feel free to modify the application id to your own.
-            applicationId getExportPackageName()
-            versionCode getExportVersionCode()
-            versionName getExportVersionName()
-            minSdkVersion getExportMinSdkVersion()
-            targetSdkVersion getExportTargetSdkVersion()
+       ... other code
 
-            missingDimensionStrategy 'products', 'template'
-        }
+       defaultConfig {
+           ... other code
 
-        ... other code
-    ```
+           // Feel free to modify the application id to your own.
+           applicationId getExportPackageName()
+           versionCode getExportVersionCode()
+           versionName getExportVersionName()
+           minSdkVersion getExportMinSdkVersion()
+           targetSdkVersion getExportTargetSdkVersion()
+
+           missingDimensionStrategy 'products', 'template'
+       }
+
+       ... other code
+   ```
 
    After
-    ```gradle
-    android {
 
-        ... other code
+   ```gradle
+   android {
 
-        defaultConfig {
-            ... other code
-        
-            // Feel free to modify the application id to your own.
-            applicationId getExportPackageName()
-            versionCode getExportVersionCode()
-            versionName getExportVersionName()
-            minSdkVersion getExportMinSdkVersion()
-            targetSdkVersion getExportTargetSdkVersion()
+       ... other code
 
-            missingDimensionStrategy 'products', 'template'
+       defaultConfig {
+           ... other code
 
-            // This is needed by EOS Android SDK
-            String ClientId = "PUT YOUR EOS CLIENT ID HERE"
-            resValue("string", "eos_login_protocol_scheme", "eos." + ClientId.toLowerCase())
-        }
+           // Feel free to modify the application id to your own.
+           applicationId getExportPackageName()
+           versionCode getExportVersionCode()
+           versionName getExportVersionName()
+           minSdkVersion getExportMinSdkVersion()
+           targetSdkVersion getExportTargetSdkVersion()
 
-        ... other code
-    ```
+           missingDimensionStrategy 'products', 'template'
+
+           // This is needed by EOS Android SDK
+           String ClientId = "PUT YOUR EOS CLIENT ID HERE"
+           resValue("string", "eos_login_protocol_scheme", "eos." + ClientId.toLowerCase())
+       }
+
+       ... other code
+   ```
 
 5. In the `res://android/build/config.gradle` file, update the `minSdk` to `23` to match with the requirements of the
    `EOS Android SDK`.
 
    Before
-    ```gradle
-    minSdk             : 21,
-    ```
+
+   ```gradle
+   minSdk             : 21,
+   ```
+
    After
-    ```gradle
-    minSdk             : 23,
-    ```
+
+   ```gradle
+   minSdk             : 23,
+   ```
 
 6. In the `res://android/build/src/com/godot/game/GodotGame.java` file, update it as follows.
-    ```java
-    package com.godot.game;
 
-    import com.epicgames.mobile.eossdk.EOSSDK;     // added
-    import org.godotengine.godot.GodotActivity;
+   ```java
+   package com.godot.game;
 
-    import android.os.Bundle;
+   import com.epicgames.mobile.eossdk.EOSSDK;     // added
+   import org.godotengine.godot.GodotActivity;
 
-    public class GodotApp extends GodotActivity {
-        static {                                   // added
-            System.loadLibrary("EOSSDK");          // added
-        }                                          // added
-        
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            EOSSDK.init(getActivity());  // added
-            
-            setTheme(R.style.GodotAppMainTheme);
-            super.onCreate(savedInstanceState);
+   import android.os.Bundle;
 
-        }
-    }
+   public class GodotApp extends GodotActivity {
+       static {                                   // added
+           System.loadLibrary("EOSSDK");          // added
+       }                                          // added
 
-    ```
+       @Override
+       public void onCreate(Bundle savedInstanceState) {
+           EOSSDK.init(getActivity());  // added
+
+           setTheme(R.style.GodotAppMainTheme);
+           super.onCreate(savedInstanceState);
+
+       }
+   }
+
+   ```
 
 7. Now open your project in the Godot Editor, and goto `Project -> Export` and create a new Android export profile.
 
@@ -458,35 +471,35 @@ device and iOS arm64 simulator.
 ## Current Project Status
 
 - Completed with sample
-    - Auth Interface
-    - Achievements Interface
-    - Connect Interface
-    - CustomInvites Interface
-    - Friends Interface
-    - Stats Interface
-    - UserInfo Interface
-    - Leaderboards Interface
-    - Metrics Interface
-    - Mods Interface
-    - Presence Interface
-    - ProgressionSnapshot Interface
-    - Reports Interface
-    - UI Interface
-    - Lobby Interface (Also sample for manual audio input/output)
-    - RTC Interface
-    - RTCAudio Interface
-    - P2P Interface
-    - Version Interface
+  - Auth Interface
+  - Achievements Interface
+  - Connect Interface
+  - CustomInvites Interface
+  - Friends Interface
+  - Stats Interface
+  - UserInfo Interface
+  - Leaderboards Interface
+  - Metrics Interface
+  - Mods Interface
+  - Presence Interface
+  - ProgressionSnapshot Interface
+  - Reports Interface
+  - UI Interface
+  - Lobby Interface (Also sample for manual audio input/output)
+  - RTC Interface
+  - RTCAudio Interface
+  - P2P Interface
+  - Version Interface
 
 - Completed without sample
-    - KWS Interface
-    - PlayerDataStorage Interface
-    - Sanctions Interface
-    - Sessions Interface
-    - TitleStorage Interface
-    - Ecom Interface
-    - AntiCheatServer Interface
-    - AntiCheatClient Interface
+  - KWS Interface
+  - PlayerDataStorage Interface
+  - Sanctions Interface
+  - Sessions Interface
+  - TitleStorage Interface
+  - Ecom Interface
+  - AntiCheatServer Interface
+  - AntiCheatClient Interface
 
 - Not completed
-    - Integrated Platform Interface
+  - Integrated Platform Interface
