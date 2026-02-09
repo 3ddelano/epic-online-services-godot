@@ -100,6 +100,7 @@ if env["platform"] == "windows":
 	env.Append(LIBS=["EOSSDK-Win64-Shipping"])
 
 elif env["platform"] == "linux":
+	env.Append(LINKFLAGS=["-static-libgcc", "-static-libstdc++"])
 	if env["arch"] == "arm64":
 		env.Append(LIBS=["EOSSDK-LinuxArm64-Shipping"])
 	else:
