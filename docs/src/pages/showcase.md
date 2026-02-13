@@ -27,3 +27,15 @@ Here is a list of games using the Epic Online Services Godot plugin. If you are 
   ![Kitchen Together Logo](/img/showcase/kitchen-together-logo.webp)
 
   > Features Used: Voice Chat, P2P, Lobby
+
+<br></br>
+
+- ### Hamsteria
+  
+  Hamsteria is a short (~1-2 hours) difficult two player co-op game where you're each a hamster in attached wheels. You can only spin your individual wheel forwards or backwards. There is no jump button, and there is no turn action. To escape, you must work together.
+
+  Links: [Itch.io](https://2wheelerdev.itch.io/hamsteria)
+  
+  ![Hamsteria Logo](/img/showcase/hamsteria-logo.webp)
+
+  > Features Used: P2P, Lobby
