@@ -15,7 +15,7 @@ const config: Config = {
   // GitHub pages deployment config
   organizationName: "3ddelano",
   projectName: "epic-online-services-godot",
-  deploymentBranch: 'gh-pages',
+  deploymentBranch: "gh-pages",
 
   trailingSlash: false,
 
@@ -34,7 +34,7 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           editUrl:
-            'https://github.com/3ddelano/epic-online-services-godot/tree/main/docs',
+            "https://github.com/3ddelano/epic-online-services-godot/tree/main/docs",
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -93,7 +93,7 @@ const config: Config = {
             {
               label: "Discord",
               href: "https://discord.gg/FZY9TqW",
-            }
+            },
           ],
         },
         {
@@ -115,11 +115,11 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ["gdscript", "gradle", "java"]
+      additionalLanguages: ["gdscript", "gradle", "java"],
     },
   } satisfies Preset.ThemeConfig,
 
-  plugins: [["./src/plugins/tailwind-config.ts", {}]],
+  plugins: ["./src/plugins/tailwind-config.ts"],
 };
 
 export default config;

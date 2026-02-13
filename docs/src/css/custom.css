@@ -1,6 +1,5 @@
-@layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme) important;
-@import 'tailwindcss/utilities.css' layer(utilities) important;
+@import "tailwindcss";
+
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 :root {
@@ -57,6 +56,22 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
+  
+  /* Override Docusaurus link color variables */
+  --ifm-link-color: white;
+  --ifm-link-hover-color: #60a5fa;
+  --ifm-link-decoration: none;
+  --ifm-link-hover-decoration: none;
+}
+
+/* Override Docusaurus link colors in navbar */
+.navbar a:not(.button-secondary) {
+  color: white !important;
+}
+
+.navbar a:not(.button-secondary):hover,
+.navbar a:not(.button-secondary):active {
+  color: #60a5fa !important;
 }
 
 /* Button system */
