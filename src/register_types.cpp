@@ -59,8 +59,12 @@ void uninitialize_eosg_module(ModuleInitializationLevel p_level) {
 
     Engine::get_singleton()->unregister_singleton("EOSGPacketPeerMediator");
     Engine::get_singleton()->unregister_singleton("IEOS");
-    memdelete(_mediator);
-    memdelete(_ieos);
+
+    // NOTE: do not manually memdelete these singleton instances here.
+    // They are Object-based and will be cleaned up by Godot's object lifecycle.
+    // Manual deletion during extension unload can trigger shutdown crashes.
+    _mediator = nullptr;
+    _ieos = nullptr;
 }
 
 extern "C" {
