@@ -47,8 +47,8 @@ public:
     }
 };
 
-class EOSGPacketPeerMediator : public RefCounted {
-    GDCLASS(EOSGPacketPeerMediator, RefCounted)
+class EOSGPacketPeerMediator : public Object {
+    GDCLASS(EOSGPacketPeerMediator, Object)
 
 private:
     static EOSGPacketPeerMediator *singleton;

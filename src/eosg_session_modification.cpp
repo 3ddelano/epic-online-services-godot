@@ -74,7 +74,9 @@ int EOSGSessionModification::set_allowed_platform_ids(const TypedArray<int> &p_p
     }
     options.AllowedPlatformIds = platform_ids_array;
 
-    return static_cast<int>(EOS_SessionModification_SetAllowedPlatformIds(m_internal, &options));
+    int result = static_cast<int>(EOS_SessionModification_SetAllowedPlatformIds(m_internal, &options));
+    memfree(platform_ids_array);
+    return result;
 }
 
 int EOSGSessionModification::set_bucket_id(const String &p_bucket_id) {

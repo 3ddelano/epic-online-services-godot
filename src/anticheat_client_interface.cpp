@@ -39,14 +39,11 @@ int IEOS::anticheat_client_interface_receive_message_from_server(Ref<RefCounted>
     ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
     PackedByteArray p_data = p_options->get("data");
 
-    void *data = memalloc(p_data.size());
-    std::memcpy(data, p_data.ptr(), p_data.size());
-
     EOS_AntiCheatClient_ReceiveMessageFromServerOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_RECEIVEMESSAGEFROMSERVER_API_LATEST;
     options.DataLengthBytes = static_cast<uint32_t>(p_data.size());
-    options.Data = data;
+    options.Data = p_data.ptr();
 
     return static_cast<int>(EOS_AntiCheatClient_ReceiveMessageFromServer(s_antiCheatClientInterface, &options));
 }
@@ -78,30 +75,32 @@ Dictionary IEOS::anticheat_client_interface_protect_message(Ref<RefCounted> p_op
     ERR_FAIL_NULL_V(s_antiCheatClientInterface, {});
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
-    void *data = memalloc(data_length_bytes);
-    std::memcpy(data, p_data.ptr(), data_length_bytes);
     int out_buffer_size_bytes = p_options->get("out_buffer_size_bytes");
 
     EOS_AntiCheatClient_ProtectMessageOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_PROTECTMESSAGE_API_LATEST;
     options.DataLengthBytes = static_cast<uint32_t>(data_length_bytes);
-    options.Data = data;
+    options.Data = p_data.ptr();
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = (void *)memalloc(out_buffer_size_bytes + 1);
+    void *outBuffer = memalloc(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatClient_ProtectMessage(s_antiCheatClientInterface, &options, &outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatClient_ProtectMessage(s_antiCheatClientInterface, &options, outBuffer, &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
-        ret["out_buffer"] = outBuffer;
+        PackedByteArray buffer;
+        buffer.resize(outBytesWritten);
+        memcpy(buffer.ptrw(), outBuffer, outBytesWritten);
+        ret["out_buffer"] = buffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
+    memfree(outBuffer);
     return ret;
 }
 
@@ -109,31 +108,32 @@ Dictionary IEOS::anticheat_client_interface_unprotect_message(Ref<RefCounted> p_
     ERR_FAIL_NULL_V(s_antiCheatClientInterface, {});
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
-    void *data = memalloc(data_length_bytes);
-    std::memcpy(data, p_data.ptr(), data_length_bytes);
-
     int out_buffer_size_bytes = p_options->get("out_buffer_size_bytes");
 
     EOS_AntiCheatClient_UnprotectMessageOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_UNPROTECTMESSAGE_API_LATEST;
     options.DataLengthBytes = static_cast<uint32_t>(data_length_bytes);
-    options.Data = data;
+    options.Data = p_data.ptr();
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = (void *)memalloc(out_buffer_size_bytes + 1);
+    void *outBuffer = memalloc(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatClient_UnprotectMessage(s_antiCheatClientInterface, &options, &outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatClient_UnprotectMessage(s_antiCheatClientInterface, &options, outBuffer, &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
-        ret["out_buffer"] = outBuffer;
+        PackedByteArray buffer;
+        buffer.resize(outBytesWritten);
+        memcpy(buffer.ptrw(), outBuffer, outBytesWritten);
+        ret["out_buffer"] = buffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
+    memfree(outBuffer);
     return ret;
 }
 
@@ -178,14 +178,11 @@ int IEOS::anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> p
     CharString p_peer_handle = VARIANT_TO_CHARSTRING(p_options->get("peer_handle"));
     PackedByteArray p_data = p_options->get("data");
 
-    void *data = memalloc(p_data.size());
-    std::memcpy(data, p_data.ptr(), p_data.size());
-
     EOS_AntiCheatClient_ReceiveMessageFromPeerOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_RECEIVEMESSAGEFROMPEER_API_LATEST;
     options.DataLengthBytes = static_cast<uint32_t>(p_data.size());
-    options.Data = data;
+    options.Data = p_data.ptr();
     options.PeerHandle = _anticheat_player_id_to_handle(p_peer_handle);
 
     return static_cast<int>(EOS_AntiCheatClient_ReceiveMessageFromPeer(s_antiCheatClientInterface, &options));

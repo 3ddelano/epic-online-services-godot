@@ -543,6 +543,12 @@ IEOS::~IEOS() {
     if (s_platformInterface != nullptr) {
         platform_interface_release();
     }
+
+    for (auto const &[key, val] : anticheat_client_map) {
+        memfree(val);
+    }
+    anticheat_client_map.clear();
+
     singleton = nullptr;
 }
 

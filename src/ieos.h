@@ -44,8 +44,8 @@
 
 namespace godot {
 
-class IEOS : public RefCounted {
-    GDCLASS(IEOS, RefCounted)
+class IEOS : public Object {
+    GDCLASS(IEOS, Object)
 
     static IEOS *singleton;
 
@@ -574,7 +574,7 @@ public:
         std::string player_id = p_player_id.get_data();
 
         if (anticheat_client_map.count(player_id) == 0) {
-            anticheat_client_map[player_id] = malloc(1);
+            anticheat_client_map[player_id] = memalloc(1);
         }
         return anticheat_client_map[player_id];
     }

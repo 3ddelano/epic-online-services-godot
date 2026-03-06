@@ -48,7 +48,20 @@ void IEOS::mods_interface_install_mod(Ref<RefCounted> p_options) {
     Dictionary p_mod = p_options->get("mod");
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
-    EOS_Mod_Identifier mod = eosg_dict_to_mods_mod_identifier(p_mod);
+    CharString mod_namespace_id = VARIANT_TO_CHARSTRING(p_mod["namespace_id"]);
+    CharString mod_item_id = VARIANT_TO_CHARSTRING(p_mod["item_id"]);
+    CharString mod_artifact_id = VARIANT_TO_CHARSTRING(p_mod["artifact_id"]);
+    CharString mod_title = VARIANT_TO_CHARSTRING(p_mod["title"]);
+    CharString mod_version = VARIANT_TO_CHARSTRING(p_mod["version"]);
+
+    EOS_Mod_Identifier mod;
+    memset(&mod, 0, sizeof(mod));
+    mod.ApiVersion = EOS_MOD_IDENTIFIER_API_LATEST;
+    mod.NamespaceId = mod_namespace_id.get_data();
+    mod.ItemId = mod_item_id.get_data();
+    mod.ArtifactId = mod_artifact_id.get_data();
+    mod.Title = mod_title.get_data();
+    mod.Version = mod_version.get_data();
 
     EOS_Mods_InstallModOptions options;
     memset(&options, 0, sizeof(options));
@@ -75,7 +88,20 @@ void IEOS::mods_interface_uninstall_mod(Ref<RefCounted> p_options) {
     Dictionary p_mod = p_options->get("mod");
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
-    EOS_Mod_Identifier mod = eosg_dict_to_mods_mod_identifier(p_mod);
+    CharString mod_namespace_id = VARIANT_TO_CHARSTRING(p_mod["namespace_id"]);
+    CharString mod_item_id = VARIANT_TO_CHARSTRING(p_mod["item_id"]);
+    CharString mod_artifact_id = VARIANT_TO_CHARSTRING(p_mod["artifact_id"]);
+    CharString mod_title = VARIANT_TO_CHARSTRING(p_mod["title"]);
+    CharString mod_version = VARIANT_TO_CHARSTRING(p_mod["version"]);
+
+    EOS_Mod_Identifier mod;
+    memset(&mod, 0, sizeof(mod));
+    mod.ApiVersion = EOS_MOD_IDENTIFIER_API_LATEST;
+    mod.NamespaceId = mod_namespace_id.get_data();
+    mod.ItemId = mod_item_id.get_data();
+    mod.ArtifactId = mod_artifact_id.get_data();
+    mod.Title = mod_title.get_data();
+    mod.Version = mod_version.get_data();
 
     EOS_Mods_UninstallModOptions options;
     memset(&options, 0, sizeof(options));
@@ -101,7 +127,20 @@ void IEOS::mods_interface_update_mod(Ref<RefCounted> p_options) {
     Dictionary p_mod = p_options->get("mod");
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
 
-    EOS_Mod_Identifier mod = eosg_dict_to_mods_mod_identifier(p_mod);
+    CharString mod_namespace_id = VARIANT_TO_CHARSTRING(p_mod["namespace_id"]);
+    CharString mod_item_id = VARIANT_TO_CHARSTRING(p_mod["item_id"]);
+    CharString mod_artifact_id = VARIANT_TO_CHARSTRING(p_mod["artifact_id"]);
+    CharString mod_title = VARIANT_TO_CHARSTRING(p_mod["title"]);
+    CharString mod_version = VARIANT_TO_CHARSTRING(p_mod["version"]);
+
+    EOS_Mod_Identifier mod;
+    memset(&mod, 0, sizeof(mod));
+    mod.ApiVersion = EOS_MOD_IDENTIFIER_API_LATEST;
+    mod.NamespaceId = mod_namespace_id.get_data();
+    mod.ItemId = mod_item_id.get_data();
+    mod.ArtifactId = mod_artifact_id.get_data();
+    mod.Title = mod_title.get_data();
+    mod.Version = mod_version.get_data();
 
     EOS_Mods_UpdateModOptions options;
     memset(&options, 0, sizeof(options));

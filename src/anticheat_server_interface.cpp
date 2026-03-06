@@ -381,30 +381,62 @@ int IEOS::anticheat_server_interface_log_player_tick(Ref<RefCounted> p_options) 
     int p_player_movement_state = p_options->get("player_movement_state");
     Vector3 p_player_view_position = p_options->get("player_view_position");
 
+    EOS_AntiCheatCommon_Vec3f player_position;
+    player_position.x = p_player_position.x;
+    player_position.y = p_player_position.y;
+    player_position.z = p_player_position.z;
+
+    EOS_AntiCheatCommon_Quat player_view_rotation;
+    player_view_rotation.x = p_player_view_rotation.x;
+    player_view_rotation.y = p_player_view_rotation.y;
+    player_view_rotation.z = p_player_view_rotation.z;
+    player_view_rotation.w = p_player_view_rotation.w;
+
+    EOS_AntiCheatCommon_Vec3f player_view_position;
+    player_view_position.x = p_player_view_position.x;
+    player_view_position.y = p_player_view_position.y;
+    player_view_position.z = p_player_view_position.z;
+
     EOS_AntiCheatCommon_LogPlayerTickOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCOMMON_LOGPLAYERTICK_API_LATEST;
     options.PlayerHandle = _anticheat_player_id_to_handle(p_player_handle);
-    options.PlayerPosition->x = p_player_position.x;
-    options.PlayerPosition->y = p_player_position.y;
-    options.PlayerPosition->z = p_player_position.z;
-    options.PlayerViewRotation->x = p_player_view_rotation.x;
-    options.PlayerViewRotation->y = p_player_view_rotation.y;
-    options.PlayerViewRotation->z = p_player_view_rotation.z;
-    options.PlayerViewRotation->w = p_player_view_rotation.w;
+    options.PlayerPosition = &player_position;
+    options.PlayerViewRotation = &player_view_rotation;
     options.bIsPlayerViewZoomed = VARIANT_TO_EOS_BOOL(p_options->get("is_player_view_zoomed"));
     options.PlayerHealth = p_player_health;
     options.PlayerMovementState = static_cast<EOS_EAntiCheatCommonPlayerMovementState>(p_player_movement_state);
-    options.PlayerViewPosition->x = p_player_view_position.x;
-    options.PlayerViewPosition->y = p_player_view_position.y;
-    options.PlayerViewPosition->z = p_player_view_position.z;
+    options.PlayerViewPosition = &player_view_position;
 
     return static_cast<int>(EOS_AntiCheatServer_LogPlayerTick(s_antiCheatServerInterface, &options));
 }
 
 int IEOS::anticheat_server_interface_log_player_use_weapon(Ref<RefCounted> p_options) {
 	ERR_FAIL_NULL_V(s_antiCheatServerInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
-    EOS_AntiCheatCommon_LogPlayerUseWeaponData use_weapon_data = eosg_refcounted_to_anticheat_log_player_use_weapon_data(p_options);
+    Variant p_player_handle = p_options->get("player_handle");
+    Vector3 p_player_position = p_options->get("player_position");
+    Quaternion p_player_view_rotation = p_options->get("player_view_rotation");
+    CharString p_weapon_name = VARIANT_TO_CHARSTRING(p_options->get("weapon_name"));
+
+    EOS_AntiCheatCommon_Vec3f player_position;
+    player_position.x = p_player_position.x;
+    player_position.y = p_player_position.y;
+    player_position.z = p_player_position.z;
+
+    EOS_AntiCheatCommon_Quat player_view_rotation;
+    player_view_rotation.x = p_player_view_rotation.x;
+    player_view_rotation.y = p_player_view_rotation.y;
+    player_view_rotation.z = p_player_view_rotation.z;
+    player_view_rotation.w = p_player_view_rotation.w;
+
+    EOS_AntiCheatCommon_LogPlayerUseWeaponData use_weapon_data;
+    memset(&use_weapon_data, 0, sizeof(use_weapon_data));
+    use_weapon_data.PlayerHandle = (void *)p_player_handle;
+    use_weapon_data.PlayerPosition = &player_position;
+    use_weapon_data.PlayerViewRotation = &player_view_rotation;
+    use_weapon_data.bIsPlayerViewZoomed = VARIANT_TO_EOS_BOOL(p_options->get("is_player_view_zoomed"));
+    use_weapon_data.bIsMeleeAttack = VARIANT_TO_EOS_BOOL(p_options->get("is_melee_attack"));
+    use_weapon_data.WeaponName = p_weapon_name.get_data();
 
     EOS_AntiCheatCommon_LogPlayerUseWeaponOptions options;
     memset(&options, 0, sizeof(options));
@@ -452,26 +484,72 @@ int IEOS::anticheat_server_interface_log_player_take_damage(Ref<RefCounted> p_op
     Vector3 p_attacker_player_view_position = p_options->get("attacker_player_view_position");
 
     Ref<RefCounted> use_weapon_data_options = p_options->get("player_use_weapon_data");
-    EOS_AntiCheatCommon_LogPlayerUseWeaponData use_weapon_data = eosg_refcounted_to_anticheat_log_player_use_weapon_data(use_weapon_data_options);
+    Variant uw_player_handle = use_weapon_data_options->get("player_handle");
+    Vector3 uw_player_position = use_weapon_data_options->get("player_position");
+    Quaternion uw_player_view_rotation = use_weapon_data_options->get("player_view_rotation");
+    CharString uw_weapon_name = VARIANT_TO_CHARSTRING(use_weapon_data_options->get("weapon_name"));
+
+    EOS_AntiCheatCommon_Vec3f uw_v_player_position;
+    uw_v_player_position.x = uw_player_position.x;
+    uw_v_player_position.y = uw_player_position.y;
+    uw_v_player_position.z = uw_player_position.z;
+
+    EOS_AntiCheatCommon_Quat uw_q_player_view_rotation;
+    uw_q_player_view_rotation.x = uw_player_view_rotation.x;
+    uw_q_player_view_rotation.y = uw_player_view_rotation.y;
+    uw_q_player_view_rotation.z = uw_player_view_rotation.z;
+    uw_q_player_view_rotation.w = uw_player_view_rotation.w;
+
+    EOS_AntiCheatCommon_LogPlayerUseWeaponData use_weapon_data;
+    memset(&use_weapon_data, 0, sizeof(use_weapon_data));
+    use_weapon_data.PlayerHandle = (void *)uw_player_handle;
+    use_weapon_data.PlayerPosition = &uw_v_player_position;
+    use_weapon_data.PlayerViewRotation = &uw_q_player_view_rotation;
+    use_weapon_data.bIsPlayerViewZoomed = VARIANT_TO_EOS_BOOL(use_weapon_data_options->get("is_player_view_zoomed"));
+    use_weapon_data.bIsMeleeAttack = VARIANT_TO_EOS_BOOL(use_weapon_data_options->get("is_melee_attack"));
+    use_weapon_data.WeaponName = uw_weapon_name.get_data();
+
+    EOS_AntiCheatCommon_Vec3f victim_position;
+    victim_position.x = p_victim_player_position.x;
+    victim_position.y = p_victim_player_position.y;
+    victim_position.z = p_victim_player_position.z;
+
+    EOS_AntiCheatCommon_Quat victim_view_rotation;
+    victim_view_rotation.x = p_victim_player_view_rotation.x;
+    victim_view_rotation.y = p_victim_player_view_rotation.y;
+    victim_view_rotation.z = p_victim_player_view_rotation.z;
+    victim_view_rotation.w = p_victim_player_view_rotation.w;
+
+    EOS_AntiCheatCommon_Vec3f attacker_position;
+    attacker_position.x = p_attacker_player_position.x;
+    attacker_position.y = p_attacker_player_position.y;
+    attacker_position.z = p_attacker_player_position.z;
+
+    EOS_AntiCheatCommon_Quat attacker_view_rotation;
+    attacker_view_rotation.x = p_attacker_player_view_rotation.x;
+    attacker_view_rotation.y = p_attacker_player_view_rotation.y;
+    attacker_view_rotation.z = p_attacker_player_view_rotation.z;
+    attacker_view_rotation.w = p_attacker_player_view_rotation.w;
+
+    EOS_AntiCheatCommon_Vec3f damage_position_v;
+    damage_position_v.x = p_damage_position.x;
+    damage_position_v.y = p_damage_position.y;
+    damage_position_v.z = p_damage_position.z;
+
+    EOS_AntiCheatCommon_Vec3f attacker_view_position_v;
+    attacker_view_position_v.x = p_attacker_player_view_position.x;
+    attacker_view_position_v.y = p_attacker_player_view_position.y;
+    attacker_view_position_v.z = p_attacker_player_view_position.z;
 
     EOS_AntiCheatCommon_LogPlayerTakeDamageOptions options;
+    memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCOMMON_LOGPLAYERTAKEDAMAGE_API_LATEST;
     options.VictimPlayerHandle = _anticheat_player_id_to_handle(p_victim_player_handle);
-    options.VictimPlayerPosition->x = p_victim_player_position.x;
-    options.VictimPlayerPosition->y = p_victim_player_position.y;
-    options.VictimPlayerPosition->z = p_victim_player_position.z;
-    options.VictimPlayerViewRotation->x = p_victim_player_view_rotation.x;
-    options.VictimPlayerViewRotation->y = p_victim_player_view_rotation.y;
-    options.VictimPlayerViewRotation->z = p_victim_player_view_rotation.z;
-    options.VictimPlayerViewRotation->w = p_victim_player_view_rotation.w;
+    options.VictimPlayerPosition = &victim_position;
+    options.VictimPlayerViewRotation = &victim_view_rotation;
     options.AttackerPlayerHandle = _anticheat_player_id_to_handle(p_attacker_player_handle);
-    options.AttackerPlayerPosition->x = p_attacker_player_position.x;
-    options.AttackerPlayerPosition->y = p_attacker_player_position.y;
-    options.AttackerPlayerPosition->z = p_attacker_player_position.z;
-    options.AttackerPlayerViewRotation->x = p_attacker_player_view_rotation.x;
-    options.AttackerPlayerViewRotation->y = p_attacker_player_view_rotation.y;
-    options.AttackerPlayerViewRotation->z = p_attacker_player_view_rotation.z;
-    options.AttackerPlayerViewRotation->w = p_attacker_player_view_rotation.w;
+    options.AttackerPlayerPosition = &attacker_position;
+    options.AttackerPlayerViewRotation = &attacker_view_rotation;
     options.bIsHitscanAttack = VARIANT_TO_EOS_BOOL(p_options->get("is_hitscan_attack"));
     options.bHasLineOfSight = VARIANT_TO_EOS_BOOL(p_options->get("has_line_of_sight"));
     options.bIsCriticalHit = VARIANT_TO_EOS_BOOL(p_options->get("is_critical_hit"));
@@ -482,12 +560,8 @@ int IEOS::anticheat_server_interface_log_player_take_damage(Ref<RefCounted> p_op
     options.DamageResult = static_cast<EOS_EAntiCheatCommonPlayerTakeDamageResult>(p_damage_result);
     options.PlayerUseWeaponData = &use_weapon_data;
     options.TimeSincePlayerUseWeaponMs = static_cast<uint32_t>(p_time_since_player_use_weapon_ms);
-    options.DamagePosition->x = p_damage_position.x;
-    options.DamagePosition->y = p_damage_position.y;
-    options.DamagePosition->z = p_damage_position.z;
-    options.AttackerPlayerViewPosition->x = p_attacker_player_view_position.x;
-    options.AttackerPlayerViewPosition->y = p_attacker_player_view_position.y;
-    options.AttackerPlayerViewPosition->z = p_attacker_player_view_position.z;
+    options.DamagePosition = &damage_position_v;
+    options.AttackerPlayerViewPosition = &attacker_view_position_v;
 
     return static_cast<int>(EOS_AntiCheatServer_LogPlayerTakeDamage(s_antiCheatServerInterface, &options));
 }
