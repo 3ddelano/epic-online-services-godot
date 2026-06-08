@@ -219,3 +219,25 @@ void IEOS::rtc_interface_remove_notify_room_statistics_updated(int p_notificatio
 	ERR_FAIL_NULL(s_rtcInterface);
     EOS_RTC_RemoveNotifyRoomStatisticsUpdated(s_rtcInterface, static_cast<EOS_NotificationId>(p_notification_id));
 }
+
+int IEOS::rtc_interface_add_notify_room_before_join(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_rtcInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+
+    EOS_RTC_AddNotifyRoomBeforeJoinOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_RTC_ADDNOTIFYROOMBEFOREJOIN_API_LATEST;
+    options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
+
+    return static_cast<int>(EOS_RTC_AddNotifyRoomBeforeJoin(s_rtcInterface, &options, (void *)*p_options, [](const EOS_RTC_RoomBeforeJoinCallbackInfo *data) {
+        Dictionary ret;
+        ret["local_user_id"] = eosg_product_user_id_to_string(data->LocalUserId);
+        ret["room_name"] = EOSG_GET_STRING(data->RoomName);
+        IEOS::get_singleton()->emit_signal("rtc_interface_room_before_join", ret);
+    }));
+}
+
+void IEOS::rtc_interface_remove_notify_room_before_join(int p_notification_id) {
+    ERR_FAIL_NULL(s_rtcInterface);
+    EOS_RTC_RemoveNotifyRoomBeforeJoin(s_rtcInterface, static_cast<EOS_NotificationId>(p_notification_id));
+}

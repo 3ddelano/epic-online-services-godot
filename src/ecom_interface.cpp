@@ -562,6 +562,8 @@ void IEOS::ecom_interface_redeem_entitlements(Ref<RefCounted> p_options) {
         ret["client_data"] = client_data->get("client_data");
         ret["local_user_id"] = eosg_epic_account_id_to_string(data->LocalUserId);
         ret["redeemed_entitlement_ids_count"] = data->RedeemedEntitlementIdsCount;
+        ret["previously_redeemed_entitlement_ids_count"] = data->PreviouslyRedeemedEntitlementIdsCount;
+        ret["invalid_entitlement_ids_count"] = data->InvalidEntitlementIdsCount;
         IEOS::get_singleton()->emit_signal("ecom_interface_redeem_entitlements_callback", ret);
     });
 }
@@ -678,4 +680,44 @@ void IEOS::ecom_interface_query_ownership_by_sandbox_ids(Ref<RefCounted> p_optio
 
         IEOS::get_singleton()->emit_signal("ecom_interface_query_ownership_by_sandbox_ids_callback", ret);
     });
+}
+
+Dictionary IEOS::ecom_interface_get_last_redeem_entitlements_result_count(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_ecomInterface, {});
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    int result_type = p_options->get("result_type");
+
+    EOS_Ecom_GetLastRedeemEntitlementsResultCountOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ECOM_GETLASTREDEEMENTITLEMENTSRESULTCOUNT_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+    options.ResultType = static_cast<EOS_ERedeemEntitlementsResultListType>(result_type);
+
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(EOS_EResult::EOS_Success);
+    ret["count"] = static_cast<int>(EOS_Ecom_GetLastRedeemEntitlementsResultCount(s_ecomInterface, &options));
+    return ret;
+}
+
+Dictionary IEOS::ecom_interface_copy_last_redeem_entitlements_result_by_index(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_ecomInterface, {});
+    CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
+    int result_type = p_options->get("result_type");
+    int entitlement_index = p_options->get("entitlement_index");
+
+    EOS_Ecom_CopyLastRedeemEntitlementsResultByIndexOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ECOM_COPYLASTREDEEMENTITLEMENTSRESULTBYINDEX_API_LATEST;
+    options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
+    options.ResultType = static_cast<EOS_ERedeemEntitlementsResultListType>(result_type);
+    options.EntitlementIndex = static_cast<uint32_t>(entitlement_index);
+
+    char *outEntitlementId = (char *)memalloc(EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1);
+    int32_t outEntitlementIdLength = EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1;
+    EOS_EResult res = EOS_Ecom_CopyLastRedeemEntitlementsResultByIndex(s_ecomInterface, &options, outEntitlementId, &outEntitlementIdLength);
+
+    Dictionary ret;
+    ret["result_code"] = static_cast<int>(res);
+    ret["entitlement_id"] = EOSG_GET_STRING(outEntitlementId);
+    return ret;
 }

@@ -1,1 +1,1 @@
-scons dev_build=yes && godot45 --path sample
+scons dev_build=yes && godot46 --path sample

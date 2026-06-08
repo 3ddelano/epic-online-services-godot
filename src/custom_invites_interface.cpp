@@ -150,3 +150,13 @@ void IEOS::custom_invites_interface_reject_request_to_join(Ref<RefCounted> p_opt
         IEOS::get_singleton()->emit_signal("custom_invites_interface_reject_request_to_join_callback", ret);
     });
 }
+
+int IEOS::custom_invites_interface_disable_request_to_join(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_customInvitesInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
+
+    EOS_CustomInvites_DisableRequestToJoinOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_CUSTOMINVITES_DISABLEREQUESTTOJOIN_API_LATEST;
+
+    return static_cast<int>(EOS_CustomInvites_DisableRequestToJoin(s_customInvitesInterface, &options));
+}

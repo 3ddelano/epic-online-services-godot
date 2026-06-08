@@ -62,6 +62,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(custom_invites_interface_send_custom_invite);
     IEOS_BIND_METHOD(custom_invites_interface_send_request_to_join);
     IEOS_BIND_METHOD(custom_invites_interface_set_custom_invite);
+    IEOS_BIND_METHOD(custom_invites_interface_disable_request_to_join);
     IEOS_BIND_METHOD(ecom_interface_checkout);
     IEOS_BIND_METHOD(ecom_interface_copy_entitlement_by_id);
     IEOS_BIND_METHOD(ecom_interface_copy_entitlement_by_index);
@@ -81,6 +82,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(ecom_interface_get_item_image_info_count);
     IEOS_BIND_METHOD(ecom_interface_get_item_release_count);
     IEOS_BIND_METHOD(ecom_interface_get_last_redeemed_entitlements_count);
+    IEOS_BIND_METHOD(ecom_interface_get_last_redeem_entitlements_result_count);
+    IEOS_BIND_METHOD(ecom_interface_copy_last_redeem_entitlements_result_by_index);
     IEOS_BIND_METHOD(ecom_interface_get_offer_count);
     IEOS_BIND_METHOD(ecom_interface_get_offer_image_info_count);
     IEOS_BIND_METHOD(ecom_interface_get_offer_item_count);
@@ -242,6 +245,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(rtc_interface_remove_notify_room_statistics_updated);
     IEOS_BIND_METHOD(rtc_interface_set_room_setting);
     IEOS_BIND_METHOD(rtc_interface_set_setting);
+    IEOS_BIND_METHOD(rtc_interface_add_notify_room_before_join);
+    IEOS_BIND_METHOD(rtc_interface_remove_notify_room_before_join);
     IEOS_BIND_METHOD(sanctions_interface_copy_player_sanction_by_index);
     IEOS_BIND_METHOD(sanctions_interface_get_player_sanction_count);
     IEOS_BIND_METHOD(sanctions_interface_query_active_player_sanctions);
@@ -298,6 +303,9 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(ui_interface_show_block_player);
     IEOS_BIND_METHOD(ui_interface_show_friends);
     IEOS_BIND_METHOD(ui_interface_show_native_profile);
+    IEOS_BIND_METHOD(ui_interface_configure_on_screen_keyboard);
+    IEOS_BIND_METHOD(ui_interface_add_notify_on_screen_keyboard_requested);
+    IEOS_BIND_METHOD(ui_interface_remove_notify_on_screen_keyboard_requested);
     IEOS_BIND_METHOD(ui_interface_show_report_player);
     IEOS_BIND_METHOD(user_info_interface_copy_best_display_name);
     IEOS_BIND_METHOD(user_info_interface_copy_best_display_name_with_platform);
@@ -344,6 +352,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(anticheat_client_interface_register_peer);
     IEOS_BIND_METHOD(anticheat_client_interface_unregister_peer);
     IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_peer);
+    IEOS_BIND_METHOD(anticheat_client_interface_get_module_build_id);
+    IEOS_BIND_METHOD(anticheat_client_interface_reserved02);
 
     ADD_SIGNAL(MethodInfo("logging_interface_callback", PropertyInfo(Variant::DICTIONARY, "log_message")));
     IEOS_BIND_SIGNAL(achievements_interface_achievements_unlocked_v2_callback);
@@ -480,6 +490,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(rtc_interface_leave_room_callback);
     IEOS_BIND_SIGNAL(rtc_interface_participant_status_changed);
     IEOS_BIND_SIGNAL(rtc_interface_room_statistics_updated);
+    IEOS_BIND_SIGNAL(rtc_interface_room_before_join);
     IEOS_BIND_SIGNAL(sanctions_interface_query_active_player_sanctions_callback);
     IEOS_BIND_SIGNAL(sanctions_interface_create_player_sanction_appeal_callback);
     IEOS_BIND_SIGNAL(session_search_find_callback);
@@ -514,6 +525,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(ui_interface_show_friends_callback);
     IEOS_BIND_SIGNAL(ui_interface_show_native_profile_callback);
     IEOS_BIND_SIGNAL(ui_interface_show_report_player_callback);
+    IEOS_BIND_SIGNAL(ui_interface_on_screen_keyboard_requested);
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_by_display_name_callback);
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_by_external_account_callback);
     IEOS_BIND_SIGNAL(user_info_interface_query_user_info_callback);

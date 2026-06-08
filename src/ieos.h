@@ -192,6 +192,7 @@ public:
     void custom_invites_interface_reject_request_to_join(Ref<RefCounted> options);
     void custom_invites_interface_send_custom_invite(Ref<RefCounted> options);
     void custom_invites_interface_send_request_to_join(Ref<RefCounted> options);
+    int custom_invites_interface_disable_request_to_join(Ref<RefCounted> options);
 
     // -----
     // Stats Interface
@@ -256,6 +257,8 @@ public:
     Dictionary ecom_interface_copy_item_image_info_by_index(Ref<RefCounted> options);
     Dictionary ecom_interface_copy_item_release_by_index(Ref<RefCounted> options);
     Dictionary ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefCounted> options);
+    Dictionary ecom_interface_get_last_redeem_entitlements_result_count(Ref<RefCounted> options);
+    Dictionary ecom_interface_copy_last_redeem_entitlements_result_by_index(Ref<RefCounted> options);
     Dictionary ecom_interface_copy_offer_by_id(Ref<RefCounted> options);
     Dictionary ecom_interface_copy_offer_by_index(Ref<RefCounted> options);
     Dictionary ecom_interface_copy_offer_image_info_by_index(Ref<RefCounted> options);
@@ -302,6 +305,9 @@ public:
     void ui_interface_show_block_player(Ref<RefCounted> options);
     void ui_interface_show_friends(Ref<RefCounted> options);
     void ui_interface_show_native_profile(Ref<RefCounted> options);
+    int ui_interface_configure_on_screen_keyboard(Ref<RefCounted> options);
+    int ui_interface_add_notify_on_screen_keyboard_requested(Ref<RefCounted> options);
+    void ui_interface_remove_notify_on_screen_keyboard_requested(int notification_id);
     void ui_interface_show_report_player(Ref<RefCounted> options);
 
     // -----
@@ -529,6 +535,8 @@ public:
     void rtc_interface_remove_notify_disconnected(int notification_id);
     void rtc_interface_remove_notify_participant_status_changed(int notification_id);
     void rtc_interface_remove_notify_room_statistics_updated(int notification_id);
+    int rtc_interface_add_notify_room_before_join(Ref<RefCounted> options);
+    void rtc_interface_remove_notify_room_before_join(int notification_id);
 
     // -----
     // AntiCheatServer Interface
@@ -569,6 +577,8 @@ public:
     int anticheat_client_interface_register_peer(Ref<RefCounted> options);
     int anticheat_client_interface_unregister_peer(Ref<RefCounted> options);
     int anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> options);
+    int anticheat_client_interface_get_module_build_id(Ref<RefCounted> options);
+    int anticheat_client_interface_reserved02(Ref<RefCounted> options);
 
     void *_anticheat_player_id_to_handle(CharString p_player_id) {
         std::string player_id = p_player_id.get_data();

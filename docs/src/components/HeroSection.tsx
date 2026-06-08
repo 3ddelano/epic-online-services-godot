@@ -3,7 +3,7 @@ import { GodotIcon, EpicIcon } from "../components/Icons";
 
 const VERSIONS = [
   { label: "Godot", value: "4.2+", icon: GodotIcon },
-  { label: "EOS SDK", value: "1.18.1.2", icon: EpicIcon },
+  { label: "EOS SDK", value: "1.19.1.2", icon: EpicIcon },
 ];
 
 const PLATFORMS = [

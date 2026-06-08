@@ -641,6 +641,15 @@ class CustomInvites:
 
 		var client_data = null
 
+	class DisableRequestToJoinOptions extends BaseClass:
+		func _init():
+			super._init("DisableRequestToJoinOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var target_user_id: String
+
+		var client_data = null
+
 	class CustomInvitesInterface:
 		static func set_custom_invite(options: SetCustomInviteOptions) -> Result:
 			return IEOS.custom_invites_interface_set_custom_invite(options)
@@ -659,6 +668,9 @@ class CustomInvites:
 
 		static func reject_request_to_join(options: SendRequestToJoinOptions) -> void:
 			IEOS.custom_invites_interface_reject_request_to_join(options)
+
+		static func disable_request_to_join(options: DisableRequestToJoinOptions) -> Result:
+			return IEOS.custom_invites_interface_disable_request_to_join(options)
 
 
 
@@ -736,6 +748,7 @@ class Platform:
 		WindowsEnableOverlayD3D10 = 0x00020,
 		WindowsEnableOverlayOpengl = 0x00040,
 		ConsoleEnableOverlayAutomaticUnloading = 0x00080,
+		EnableOverlayDebugLogging = 0x00100,
 	}
 
 	enum ApplicationStatus {
@@ -1078,6 +1091,26 @@ class Ecom:
 
 		var client_data = null
 
+	enum RedeemEntitlementsResultListType {
+		PreviouslyRedeemed = 0,
+		InvalidOnly = 1,
+		All = 2
+	}
+
+	class GetLastRedeemEntitlementsResultCountOptions extends BaseClass:
+		func _init():
+			super._init("GetLastRedeemEntitlementsResultCountOptions")
+
+		var local_user_id = EOSGRuntime.local_epic_account_id
+
+	class CopyLastRedeemEntitlementsResultByIndexOptions extends BaseClass:
+		func _init():
+			super._init("CopyLastRedeemEntitlementsResultByIndexOptions")
+
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var result_list_type: int = RedeemEntitlementsResultListType.All
+		var entitlement_result_index: int
+
 	class GetLastRedeemedEntitlementsCountOptions extends BaseClass:
 		func _init():
 			super._init("GetLastRedeemedEntitlementsCountOptions")
@@ -1175,6 +1208,12 @@ class Ecom:
 
 		static func copy_last_redeemed_entitlement_by_index(options: CopyLastRedeemedEntitlementByIndexOptions) -> Dictionary:
 			return IEOS.ecom_interface_copy_last_redeemed_entitlement_by_index(options)
+
+		static func get_last_redeem_entitlements_result_count(options: GetLastRedeemEntitlementsResultCountOptions) -> Dictionary:
+			return IEOS.ecom_interface_get_last_redeem_entitlements_result_count(options)
+
+		static func copy_last_redeem_entitlements_result_by_index(options: CopyLastRedeemEntitlementsResultByIndexOptions) -> Dictionary:
+			return IEOS.ecom_interface_copy_last_redeem_entitlements_result_by_index(options)
 
 
 
@@ -2382,6 +2421,31 @@ class UI:
 		var local_user_id = EOSGRuntime.local_epic_account_id
 		var target_user_id: String
 
+	enum OnScreenKeyboardType {
+		Default = 0,
+		Password = 1,
+	}
+
+	enum OnScreenKeyboardDisplayReason {
+		Requested = 0,
+		Forced = 1,
+	}
+
+	class ConfigureOnScreenKeyboardOptions extends BaseClass:
+		func _init():
+			super._init("ConfigureOnScreenKeyboardOptions")
+
+		var local_user_id = EOSGRuntime.local_epic_account_id
+		var keyboard_type: int = OnScreenKeyboardType.Default
+
+		var client_data = null
+
+	class AddNotifyOnScreenKeyboardRequestedOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyOnScreenKeyboardRequestedOptions")
+
+		var local_user_id = EOSGRuntime.local_epic_account_id
+
 	class UIInterface:
 		static func acknowledge_event_id(options: AcknowledgeEventIdOptions) -> Result:
 			return IEOS.ui_interface_acknowledge_event_id(options)
@@ -2437,6 +2501,14 @@ class UI:
 		static func show_native_profile(options: ShowNativeProfileOptions) -> void:
 			IEOS.ui_interface_show_native_profile(options)
 
+		static func configure_on_screen_keyboard(options: ConfigureOnScreenKeyboardOptions) -> Result:
+			return IEOS.ui_interface_configure_on_screen_keyboard(options)
+
+		static func add_notify_on_screen_keyboard_requested(options: AddNotifyOnScreenKeyboardRequestedOptions) -> int:
+			return IEOS.ui_interface_add_notify_on_screen_keyboard_requested(options)
+
+		static func remove_notify_on_screen_keyboard_requested(notification_id: int) -> void:
+			IEOS.ui_interface_remove_notify_on_screen_keyboard_requested(notification_id)
 
 
 class UserInfo:
@@ -3235,6 +3307,15 @@ class RTC:
 
 		var client_data = null
 
+	class AddNotifyRoomBeforeJoinOptions extends BaseClass:
+		func _init():
+			super._init("AddNotifyRoomBeforeJoinOptions")
+
+		var local_user_id = EOSGRuntime.local_product_user_id
+		var room_name: String
+
+		var client_data = null
+
 	class RTCInterface:
 		static func add_notify_disconnected(options: AddNotifyDisconnectedOptions) -> int:
 			return IEOS.rtc_interface_add_notify_disconnected(options)
@@ -3269,6 +3350,11 @@ class RTC:
 		static func remove_notify_room_statistics_updated(notification_id: int) -> void:
 			IEOS.rtc_interface_remove_notify_room_statistics_updated(notification_id)
 
+		static func add_notify_room_before_join(options: AddNotifyRoomBeforeJoinOptions) -> int:
+			return IEOS.rtc_interface_add_notify_room_before_join(options)
+
+		static func remove_notify_room_before_join(notification_id: int) -> void:
+			IEOS.rtc_interface_remove_notify_room_before_join(notification_id)
 
 
 class RTCAudio:
@@ -3959,6 +4045,18 @@ class AntiCheatClient:
 		var peer_handle: String
 		var data: PackedByteArray
 
+	class GetModuleBuildIdOptions extends BaseClass:
+		func _init():
+			super._init("GetModuleBuildIdOptions")
+
+	class Reserved02Options extends BaseClass:
+		func _init():
+			super._init("Reserved02Options")
+
+		var reserved1: int
+		var reserved2: int
+		var reserved3: int
+
 	class AntiCheatClientInterface:
 		static func begin_session(options: BeginSessionOptions) -> EOS.Result:
 			return IEOS.anticheat_client_interface_begin_session(options)
@@ -3989,6 +4087,12 @@ class AntiCheatClient:
 
 		static func receive_message_from_peer(options: ReceiveMessageFromPeerOptions) -> EOS.Result:
 			return IEOS.anticheat_client_interface_receive_message_from_peer(options)
+
+		static func get_module_build_id(options: GetModuleBuildIdOptions) -> int:
+			return IEOS.anticheat_client_interface_get_module_build_id(options)
+
+		static func reserved02(options: Reserved02Options) -> int:
+			return IEOS.anticheat_client_interface_reserved02(options)
 
 
 class Version:
@@ -4047,6 +4151,7 @@ enum Result {
 	ApplicationSuspended = 40,
 	NetworkDisconnected = 41,
 	InsufficientOutputBuffer = 42,
+	ClientPolicyMissingAction = 43,
 	AuthAccountLocked = 1001,
 	AuthAccountLockedForUpdate = 1002,
 	AuthInvalidRefreshToken = 1003,
@@ -4116,6 +4221,7 @@ enum Result {
 	EcomCatalogOfferPriceInvalid = 4003,
 	EcomCheckoutLoadError = 4004,
 	EcomPurchaseProcessing = 4005,
+	EcomCatalogOfferInvalid = 4006,
 	SessionsSessionInProgress = 5000,
 	SessionsTooManyPlayers = 5001,
 	SessionsNoPermission = 5002,

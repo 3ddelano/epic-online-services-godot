@@ -187,3 +187,29 @@ int IEOS::anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> p
 
     return static_cast<int>(EOS_AntiCheatClient_ReceiveMessageFromPeer(s_antiCheatClientInterface, &options));
 }
+
+int IEOS::anticheat_client_interface_get_module_build_id(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
+
+    EOS_AntiCheatClient_GetModuleBuildIdOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ANTICHEATCLIENT_GETMODULEBUILDID_API_LATEST;
+
+    uint32_t outModuleBuildId = 0;
+    EOS_EResult res = EOS_AntiCheatClient_GetModuleBuildId(s_antiCheatClientInterface, &options, &outModuleBuildId);
+
+    return static_cast<int>(outModuleBuildId);
+}
+
+int IEOS::anticheat_client_interface_reserved02(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
+
+    EOS_AntiCheatClient_Reserved02Options options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_ANTICHEATCLIENT_RESERVED02_API_LATEST;
+    options.Reserved1 = static_cast<int64_t>(p_options->get("reserved1"));
+    options.Reserved2 = static_cast<uint32_t>(static_cast<int>(p_options->get("reserved2")));
+    options.Reserved3 = static_cast<uint32_t>(static_cast<int>(p_options->get("reserved3")));
+
+    return static_cast<int>(EOS_AntiCheatClient_Reserved02(s_antiCheatClientInterface, &options));
+}

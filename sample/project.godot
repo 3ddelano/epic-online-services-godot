@@ -16,11 +16,12 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="Epic Online Services Godot 4.2+ (EOSG)"
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.5")
+config/features=PackedStringArray("4.6")
 config/icon="res://logo.png"
 
 [audio]
 
+buses/default_bus_layout="uid://dfiyvl4a8dbhr"
 driver/enable_input=true
 driver/mix_rate=48000
 

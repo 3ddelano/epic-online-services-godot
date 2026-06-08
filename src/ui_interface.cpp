@@ -274,3 +274,36 @@ void IEOS::ui_interface_show_native_profile(Ref<RefCounted> p_options) {
         IEOS::get_singleton()->emit_signal("ui_interface_show_native_profile_callback", ret);
     });
 }
+
+int IEOS::ui_interface_configure_on_screen_keyboard(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
+    int behavior = p_options->get("behavior");
+    bool is_device_checks_enabled = p_options->get("is_device_checks_enabled");
+
+    EOS_UI_ConfigureOnScreenKeyboardOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_UI_CONFIGUREONSCREENKEYBOARD_API_LATEST;
+    options.Behavior = static_cast<EOS_UI_EOnScreenKeyboardBehavior>(behavior);
+    options.bIsDeviceChecksEnabled = is_device_checks_enabled ? EOS_TRUE : EOS_FALSE;
+
+    return static_cast<int>(EOS_UI_ConfigureOnScreenKeyboard(s_uiInterface, &options));
+}
+
+int IEOS::ui_interface_add_notify_on_screen_keyboard_requested(Ref<RefCounted> p_options) {
+    ERR_FAIL_NULL_V(s_uiInterface, static_cast<int>(EOS_INVALID_NOTIFICATIONID));
+
+    EOS_UI_AddNotifyOnScreenKeyboardRequestedOptions options;
+    memset(&options, 0, sizeof(options));
+    options.ApiVersion = EOS_UI_ADDNOTIFYONSCREENKEYBOARDREQUESTED_API_LATEST;
+
+    return static_cast<int>(EOS_UI_AddNotifyOnScreenKeyboardRequested(s_uiInterface, &options, (void *)*p_options, [](const EOS_UI_OnScreenKeyboardRequestedCallbackInfo *data) {
+        Dictionary ret;
+        ret["type"] = static_cast<int>(data->Type);
+        IEOS::get_singleton()->emit_signal("ui_interface_on_screen_keyboard_requested", ret);
+    }));
+}
+
+void IEOS::ui_interface_remove_notify_on_screen_keyboard_requested(int p_notification_id) {
+    ERR_FAIL_NULL(s_uiInterface);
+    EOS_UI_RemoveNotifyOnScreenKeyboardRequested(s_uiInterface, static_cast<EOS_NotificationId>(p_notification_id));
+}
