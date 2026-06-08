@@ -5,13 +5,13 @@ using namespace godot;
 
 void EOSGSessionSearch::_bind_methods() {
     ClassDB::bind_method(D_METHOD("copy_search_result_by_index", "index"), &EOSGSessionSearch::copy_search_result_by_index);
+    ClassDB::bind_method(D_METHOD("find", "local_user_id"), &EOSGSessionSearch::find);
     ClassDB::bind_method(D_METHOD("get_search_result_count"), &EOSGSessionSearch::get_search_result_count);
     ClassDB::bind_method(D_METHOD("remove_parameter", "key", "comparison_op"), &EOSGSessionSearch::remove_parameter);
     ClassDB::bind_method(D_METHOD("set_max_results", "max_results"), &EOSGSessionSearch::set_max_results);
     ClassDB::bind_method(D_METHOD("set_parameter", "key", "value", "comparison_op"), &EOSGSessionSearch::set_parameter);
     ClassDB::bind_method(D_METHOD("set_session_id", "session_id"), &EOSGSessionSearch::set_session_id);
     ClassDB::bind_method(D_METHOD("set_target_user_id", "target_user_id"), &EOSGSessionSearch::set_target_user_id);
-    ClassDB::bind_method(D_METHOD("find", "local_user_id"), &EOSGSessionSearch::find);
 }
 
 Dictionary EOSGSessionSearch::copy_search_result_by_index(int p_index) {

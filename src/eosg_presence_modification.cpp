@@ -5,11 +5,11 @@
 using namespace godot;
 
 void EOSGPresenceModification::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_status", "new_status"), &EOSGPresenceModification::set_status);
-    ClassDB::bind_method(D_METHOD("set_raw_rich_text", "new_raw_rich_text"), &EOSGPresenceModification::set_raw_rich_text);
-    ClassDB::bind_method(D_METHOD("set_data", "new_data"), &EOSGPresenceModification::set_data);
     ClassDB::bind_method(D_METHOD("delete_data", "keys"), &EOSGPresenceModification::delete_data);
+    ClassDB::bind_method(D_METHOD("set_data", "new_data"), &EOSGPresenceModification::set_data);
     ClassDB::bind_method(D_METHOD("set_join_info", "new_join_info"), &EOSGPresenceModification::set_join_info);
+    ClassDB::bind_method(D_METHOD("set_raw_rich_text", "new_raw_rich_text"), &EOSGPresenceModification::set_raw_rich_text);
+    ClassDB::bind_method(D_METHOD("set_status", "new_status"), &EOSGPresenceModification::set_status);
 }
 
 int EOSGPresenceModification::set_status(int new_status) {

@@ -5,9 +5,9 @@
 using namespace godot;
 
 void EOSGTransaction::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_id"), &EOSGTransaction::get_id);
-    ClassDB::bind_method(D_METHOD("get_entitlement_count"), &EOSGTransaction::get_entitlement_count);
     ClassDB::bind_method(D_METHOD("copy_entitlement_by_index", "entitlement_index"), &EOSGTransaction::copy_entitlement_by_index);
+    ClassDB::bind_method(D_METHOD("get_entitlement_count"), &EOSGTransaction::get_entitlement_count);
+    ClassDB::bind_method(D_METHOD("get_id"), &EOSGTransaction::get_id);
 };
 
 String EOSGTransaction::get_id() {

@@ -20,10 +20,10 @@ public:
     Dictionary copy_member_attribute_by_key(const String &target_user_id, const String &key);
     Dictionary copy_member_info(const String &target_user_id);
     int get_attribute_count();
-    int get_member_attribute_count(const String &target_user_id);
-    int get_member_count();
     String get_lobby_owner();
+    int get_member_attribute_count(const String &target_user_id);
     String get_member_by_index(int index);
+    int get_member_count();
 
     EOSGLobbyDetails(){};
     ~EOSGLobbyDetails() {

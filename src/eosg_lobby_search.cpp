@@ -5,14 +5,14 @@
 using namespace godot;
 
 void EOSGLobbySearch::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("find", "local_user_id"), &EOSGLobbySearch::find);
-    ClassDB::bind_method(D_METHOD("set_lobby_id", "lobby_id"), &EOSGLobbySearch::set_lobby_id);
-    ClassDB::bind_method(D_METHOD("set_target_user_id", "target_user_id"), &EOSGLobbySearch::set_target_user_id);
-    ClassDB::bind_method(D_METHOD("set_parameter", "key", "value", "comparison_op"), &EOSGLobbySearch::set_parameter);
-    ClassDB::bind_method(D_METHOD("remove_parameter", "key", "comparison_op"), &EOSGLobbySearch::remove_parameter);
-    ClassDB::bind_method(D_METHOD("set_max_results", "max_results"), &EOSGLobbySearch::set_max_results);
-    ClassDB::bind_method(D_METHOD("get_search_result_count"), &EOSGLobbySearch::get_search_result_count);
     ClassDB::bind_method(D_METHOD("copy_search_result_by_index", "index"), &EOSGLobbySearch::copy_search_result_by_index);
+    ClassDB::bind_method(D_METHOD("find", "local_user_id"), &EOSGLobbySearch::find);
+    ClassDB::bind_method(D_METHOD("get_search_result_count"), &EOSGLobbySearch::get_search_result_count);
+    ClassDB::bind_method(D_METHOD("remove_parameter", "key", "comparison_op"), &EOSGLobbySearch::remove_parameter);
+    ClassDB::bind_method(D_METHOD("set_lobby_id", "lobby_id"), &EOSGLobbySearch::set_lobby_id);
+    ClassDB::bind_method(D_METHOD("set_max_results", "max_results"), &EOSGLobbySearch::set_max_results);
+    ClassDB::bind_method(D_METHOD("set_parameter", "key", "value", "comparison_op"), &EOSGLobbySearch::set_parameter);
+    ClassDB::bind_method(D_METHOD("set_target_user_id", "target_user_id"), &EOSGLobbySearch::set_target_user_id);
 }
 
 void EOSGLobbySearch::find(const String &p_local_user_id) {

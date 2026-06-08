@@ -5,17 +5,17 @@
 using namespace godot;
 
 void EOSGLobbyDetails::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_lobby_owner"), &EOSGLobbyDetails::get_lobby_owner);
-    ClassDB::bind_method(D_METHOD("copy_info"), &EOSGLobbyDetails::copy_info);
-    ClassDB::bind_method(D_METHOD("get_attribute_count"), &EOSGLobbyDetails::get_attribute_count);
     ClassDB::bind_method(D_METHOD("copy_attribute_by_index", "index"), &EOSGLobbyDetails::copy_attribute_by_index);
     ClassDB::bind_method(D_METHOD("copy_attribute_by_key", "key"), &EOSGLobbyDetails::copy_attribute_by_key);
-    ClassDB::bind_method(D_METHOD("get_member_count"), &EOSGLobbyDetails::get_member_count);
-    ClassDB::bind_method(D_METHOD("get_member_by_index", "index"), &EOSGLobbyDetails::get_member_by_index);
-    ClassDB::bind_method(D_METHOD("get_member_attribute_count", "target_user_id"), &EOSGLobbyDetails::get_member_attribute_count);
-    ClassDB::bind_method(D_METHOD("copy_member_info", "target_user_id"), &EOSGLobbyDetails::copy_member_info);
+    ClassDB::bind_method(D_METHOD("copy_info"), &EOSGLobbyDetails::copy_info);
     ClassDB::bind_method(D_METHOD("copy_member_attribute_by_index", "target_user_id", "index"), &EOSGLobbyDetails::copy_member_attribute_by_index);
     ClassDB::bind_method(D_METHOD("copy_member_attribute_by_key", "target_user_id", "key"), &EOSGLobbyDetails::copy_member_attribute_by_key);
+    ClassDB::bind_method(D_METHOD("copy_member_info", "target_user_id"), &EOSGLobbyDetails::copy_member_info);
+    ClassDB::bind_method(D_METHOD("get_attribute_count"), &EOSGLobbyDetails::get_attribute_count);
+    ClassDB::bind_method(D_METHOD("get_lobby_owner"), &EOSGLobbyDetails::get_lobby_owner);
+    ClassDB::bind_method(D_METHOD("get_member_attribute_count", "target_user_id"), &EOSGLobbyDetails::get_member_attribute_count);
+    ClassDB::bind_method(D_METHOD("get_member_by_index", "index"), &EOSGLobbyDetails::get_member_by_index);
+    ClassDB::bind_method(D_METHOD("get_member_count"), &EOSGLobbyDetails::get_member_count);
 }
 
 String EOSGLobbyDetails::get_lobby_owner() {

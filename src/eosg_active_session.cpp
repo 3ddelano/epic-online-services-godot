@@ -5,8 +5,8 @@ using namespace godot;
 
 void EOSGActiveSession::_bind_methods() {
     ClassDB::bind_method(D_METHOD("copy_info"), &EOSGActiveSession::copy_info);
-    ClassDB::bind_method(D_METHOD("get_registered_player_count"), &EOSGActiveSession::get_registered_player_count);
     ClassDB::bind_method(D_METHOD("get_registered_player_by_index", "player_index"), &EOSGActiveSession::get_registered_player_by_index);
+    ClassDB::bind_method(D_METHOD("get_registered_player_count"), &EOSGActiveSession::get_registered_player_count);
 }
 
 Dictionary EOSGActiveSession::copy_info() {

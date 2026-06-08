@@ -13,8 +13,8 @@ private:
 
 public:
     Dictionary copy_info();
-    int get_registered_player_count();
     String get_registered_player_by_index(int index);
+    int get_registered_player_count();
 
     EOSGActiveSession(){};
     ~EOSGActiveSession() {

@@ -10,8 +10,8 @@ void EOSGSessionModification::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_bucket_id", "bucket_id"), &EOSGSessionModification::set_bucket_id);
     ClassDB::bind_method(D_METHOD("set_host_address", "host_address"), &EOSGSessionModification::set_host_address);
     ClassDB::bind_method(D_METHOD("set_invites_allowed", "invites_allowed"), &EOSGSessionModification::set_invites_allowed);
-    ClassDB::bind_method(D_METHOD("set_max_players", "max_players"), &EOSGSessionModification::set_max_players);
     ClassDB::bind_method(D_METHOD("set_join_in_progress_allowed", "join_in_progress_allowed"), &EOSGSessionModification::set_join_in_progress_allowed);
+    ClassDB::bind_method(D_METHOD("set_max_players", "max_players"), &EOSGSessionModification::set_max_players);
     ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &EOSGSessionModification::set_permission_level);
 }
 

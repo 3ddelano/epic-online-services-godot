@@ -13,13 +13,13 @@ private:
 
 public:
     Dictionary copy_search_result_by_index(int index);
+    void find(const String &local_user_id);
     int get_search_result_count();
     int remove_parameter(const String &key, int comparison_op);
     int set_max_results(int max_results);
     int set_parameter(const String &key, Variant value, int comparison_op);
     int set_session_id(const String &session_id);
     int set_target_user_id(const String &target_user_id);
-    void find(const String &local_user_id);
 
     EOSGSessionSearch(){};
     ~EOSGSessionSearch() {

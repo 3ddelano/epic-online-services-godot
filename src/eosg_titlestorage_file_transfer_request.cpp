@@ -5,9 +5,9 @@
 using namespace godot;
 
 void EOSGTitleStorageFileTransferRequest::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("cancel_request"), &EOSGTitleStorageFileTransferRequest::cancel_request);
     ClassDB::bind_method(D_METHOD("get_file_request_state"), &EOSGTitleStorageFileTransferRequest::get_file_request_state);
     ClassDB::bind_method(D_METHOD("get_filename"), &EOSGTitleStorageFileTransferRequest::get_filename);
-    ClassDB::bind_method(D_METHOD("cancel_request"), &EOSGTitleStorageFileTransferRequest::cancel_request);
 
     ADD_SIGNAL(MethodInfo("file_transfer_progress_callback", PropertyInfo(Variant::DICTIONARY, "callback_data")));
 }

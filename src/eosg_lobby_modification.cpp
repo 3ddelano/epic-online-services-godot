@@ -4,15 +4,15 @@
 using namespace godot;
 
 void EOSGLobbyModification::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_bucket_id", "bucket_id"), &EOSGLobbyModification::set_bucket_id);
-    ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &EOSGLobbyModification::set_permission_level);
-    ClassDB::bind_method(D_METHOD("set_max_members", "max_members"), &EOSGLobbyModification::set_max_members);
-    ClassDB::bind_method(D_METHOD("set_invites_allowed", "invites_allowed"), &EOSGLobbyModification::set_invites_allowed);
     ClassDB::bind_method(D_METHOD("add_attribute", "key", "value", "visibility"), &EOSGLobbyModification::add_attribute);
-    ClassDB::bind_method(D_METHOD("remove_attribute", "key"), &EOSGLobbyModification::remove_attribute);
     ClassDB::bind_method(D_METHOD("add_member_attribute", "key", "value", "visibility"), &EOSGLobbyModification::add_member_attribute);
+    ClassDB::bind_method(D_METHOD("remove_attribute", "key"), &EOSGLobbyModification::remove_attribute);
     ClassDB::bind_method(D_METHOD("remove_member_attribute", "key"), &EOSGLobbyModification::remove_member_attribute);
 	ClassDB::bind_method(D_METHOD("set_allowed_platform_ids", "allowed_platform_ids"), &EOSGLobbyModification::set_allowed_platform_ids);
+    ClassDB::bind_method(D_METHOD("set_bucket_id", "bucket_id"), &EOSGLobbyModification::set_bucket_id);
+    ClassDB::bind_method(D_METHOD("set_invites_allowed", "invites_allowed"), &EOSGLobbyModification::set_invites_allowed);
+    ClassDB::bind_method(D_METHOD("set_max_members", "max_members"), &EOSGLobbyModification::set_max_members);
+    ClassDB::bind_method(D_METHOD("set_permission_level", "permission_level"), &EOSGLobbyModification::set_permission_level);
 }
 
 int EOSGLobbyModification::set_bucket_id(const String &p_bucket_id) {
