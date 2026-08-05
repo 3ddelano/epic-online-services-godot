@@ -132,6 +132,8 @@ elif env["platform"] == "android":
 	
 	env.Append(LIBPATH=[eos_sdk_folder + "Bin/Android/static-stdc++/libs/" + eos_android_arch + "/"]) 
 	env.Append(LIBS=["EOSSDK"])
+	# Google Play requires 16 KB page-size support (default since NDK r28; explicit for safety)
+	env.Append(LINKFLAGS=["-Wl,-z,max-page-size=16384", "-Wl,-z,common-page-size=16384"])
 
 
 if env["platform"] == "macos":

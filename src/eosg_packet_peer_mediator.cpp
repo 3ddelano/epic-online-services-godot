@@ -284,7 +284,7 @@ bool EOSGPacketPeerMediator::next_packet_is_peer_id_packet(const String &socket_
     ERR_FAIL_COND_V_MSG(!socket_packet_queues.has(socket_id), false, "Failed to check next packet. Socket \"%s\" does not exist.");
     if (socket_packet_queues[socket_id].size() == 0)
         return false;
-    PacketData packet = socket_packet_queues[socket_id][0];
+    PacketData packet = socket_packet_queues[socket_id].front()->get();
     uint8_t event = packet.get_data()->ptrw()[0];
     if (event == 1)
         return true;

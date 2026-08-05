@@ -126,7 +126,7 @@ jobs:
           repository: godotengine/godot-cpp
           path: godot-cpp
           submodules: recursive
-          ref: "godot-4.2-stable"
+          ref: "godot-4.5-stable"
 
       - name: Checkout private EOS SDK mirror repo
         uses: actions/checkout@v4
@@ -151,7 +151,7 @@ jobs:
         if: ${{ matrix.platform == 'android' }}
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r23c
+          ndk-version: r28
           link-to-sdk: true
 
       - name: Setup build cache

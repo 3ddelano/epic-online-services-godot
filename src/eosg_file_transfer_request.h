@@ -9,9 +9,9 @@ class EOSGFileTransferRequest : public RefCounted {
 
 private:
     static void _bind_methods() {
-        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_file_request_state);
-        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_filename);
-        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, cancel_request);
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_file_request_state, 0);
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, get_filename, 0);
+        BIND_VIRTUAL_METHOD(EOSGFileTransferRequest, cancel_request, 0);
     };
 
 public:
