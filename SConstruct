@@ -1,8 +1,19 @@
 #!/usr/bin/env python
+import json
 import os
 import shutil
 
 env = SConscript("godot-cpp/SConstruct")
+
+# Expose the godot-cpp API version to the C++ sources, so they can stay
+# compatible with both godot-cpp 4.2 (all platforms) and >= 4.4 (Android,
+# where 16 KB page support requires a newer godot-cpp - see issue #70).
+with open("godot-cpp/gdextension/extension_api.json") as _api_file:
+	_api_header = json.load(_api_file)["header"]
+env.Append(CPPDEFINES=[
+	("GODOT_CPP_VERSION_MAJOR", _api_header["version_major"]),
+	("GODOT_CPP_VERSION_MINOR", _api_header["version_minor"]),
+])
 lib_name = "libeosg"
 plugin_bin_folder = "sample/addons/epic-online-services-godot/bin"
 
