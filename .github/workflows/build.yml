@@ -78,6 +78,7 @@ jobs:
             dev_build: yes
             platform: android
             arch: arm64
+            godot_cpp_ref: "godot-4.5-stable"
           - identifier: android-arm64-release
             name: 🤖 Android arm64 Release
             runner: ubuntu-24.04
@@ -85,6 +86,7 @@ jobs:
             dev_build: no
             platform: android
             arch: arm64
+            godot_cpp_ref: "godot-4.5-stable"
           - identifier: android-x86_64-debug
             name: 🤖 Android x86_64 Debug
             runner: ubuntu-24.04
@@ -92,6 +94,7 @@ jobs:
             dev_build: yes
             platform: android
             arch: x86_64
+            godot_cpp_ref: "godot-4.5-stable"
           - identifier: android-x86_64-release
             name: 🤖 Android x86_64 Release
             runner: ubuntu-24.04
@@ -99,6 +102,7 @@ jobs:
             dev_build: no
             platform: android
             arch: x86_64
+            godot_cpp_ref: "godot-4.5-stable"
           - identifier: ios-arm64-all
             name: 🍏 iOS (arm64) All
             runner: macos-latest
@@ -127,7 +131,7 @@ jobs:
           repository: godotengine/godot-cpp
           path: godot-cpp
           submodules: recursive
-          ref: "godot-4.2-stable"
+          ref: ${{ matrix.godot_cpp_ref || 'godot-4.2-stable' }}
 
       - name: Checkout private EOS SDK mirror repo
         uses: actions/checkout@v4
@@ -152,7 +156,7 @@ jobs:
         if: ${{ matrix.platform == 'android' }}
         uses: nttld/setup-ndk@v1
         with:
-          ndk-version: r23c
+          ndk-version: r28
           link-to-sdk: true
 
       - name: Setup build cache
