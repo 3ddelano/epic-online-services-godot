@@ -121,7 +121,7 @@ void IEOS::auth_interface_delete_persistent_auth(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
     options.RefreshToken = nullptr;
 
-    if (refresh_token.size() != 0) {
+    if (refresh_token.length() != 0) {
         options.RefreshToken = refresh_token.get_data();
     }
     p_options->reference();
