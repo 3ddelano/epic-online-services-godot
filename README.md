@@ -153,7 +153,11 @@ Join the Discord server for discussing suggestions or bugs: [3ddelano Cafe](http
 
 [![Epic Online Services Tutorial series](https://img.youtube.com/vi/ENyvF4yVjKg/0.jpg)](https://www.youtube.com/playlist?list=PL5t0hR7ADzun5JYF4e2a2FtZEWYHxK83_)
 
-## [Documentation](https://3ddelano-epic-online-services-godot.mintlify.app/introduction)
+## [Website](https://3ddelano.github.io/epic-online-services-godot/)
+
+## [Docs](https://3ddelano.github.io/epic-online-services-godot/docs/introduction)
+
+## [AI Generated Docs](https://3ddelano-epic-online-services-godot.mintlify.app/introduction)
 
 ## Screenshots
 
