@@ -56,3 +56,8 @@ These are offline loading/initialization checks, not online login, anti-cheat
 service, or multiplayer sessions. The compiler regression covers the changed
 call sites. Use the 4.2-built binary for the 4.2–4.7 engine matrix; use the
 API-4.7-built binary only with Godot 4.7.
+
+## Session update retry regression (#31)
+
+See [session_retry/README.md](session_retry/README.md) for the deterministic
+Godot integration test and reproduction instructions.
