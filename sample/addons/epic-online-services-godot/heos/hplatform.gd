@@ -18,14 +18,14 @@ signal log_msg(msg: EOS.Logging.LogMessage)
 #region Constants
 
 ## Number of times to retry initializing the EOS SDK
-const INITIALIZE_RETRY_COUNT = 10
+const INITIALIZE_RETRY_COUNT: int = 10
 ## Delay between retries initializing the EOS SDK in seconds
-const INITIALIZE_RETRY_DElAY_SEC = 0.2
+const INITIALIZE_RETRY_DElAY_SEC: float = 0.2
 
 ## Number of times to retry creating the EOS platform
-const CREATE_RETRY_COUNT = 10
+const CREATE_RETRY_COUNT: int = 10
 ## Delay between retries creating the EOS platform in seconds
-const CREATE_RETRY_DElAY_SEC = 0.2
+const CREATE_RETRY_DElAY_SEC: float = 0.2
 
 #endregion
 
@@ -33,7 +33,7 @@ const CREATE_RETRY_DElAY_SEC = 0.2
 #region Public vars
 
 ## Absolute path to the folder that is going to be used for caching temporary data
-var cache_directory := ProjectSettings.globalize_path("user://eosg-cache")
+var cache_directory: String = ProjectSettings.globalize_path("user://eosg-cache")
 ## Platform creation flags. This is a bitwise (union) of [enum EOS.Platform.PlatformFlags]
 var flags: int = 0
 ## Set to true if its a dedicated game server
@@ -82,7 +82,7 @@ func setup_eos_async(p_creds: HCredentials) -> bool:
 	init_opts.product_name = p_creds.product_name
 	init_opts.product_version = p_creds.product_version
 	
-	var init_ret := await initialize_async(init_opts)
+	var init_ret: EOS.Result = await initialize_async(init_opts)
 	if not EOS.is_success(init_ret):
 		return false
 
@@ -115,7 +115,7 @@ func setup_eos_async(p_creds: HCredentials) -> bool:
 	create_opts.task_network_timeout_seconds = task_network_timeout_seconds
 	create_opts.rtc_options.background_mode = rtc_options_background_mode
 	
-	var is_success := await create_platform_async(create_opts)
+	var is_success: bool = await create_platform_async(create_opts)
 	if not is_success:
 		return false
 	
@@ -125,7 +125,7 @@ func setup_eos_async(p_creds: HCredentials) -> bool:
 ## Initialize the EOS SDK
 func initialize_async(opts: EOS.Platform.InitializeOptions) -> EOS.Result:
 	_log.debug("Initializing EOS SDK")
-	var res := EOS.Platform.PlatformInterface.initialize(opts)
+	var res: EOS.Result = EOS.Platform.PlatformInterface.initialize(opts)
 	
 	var retry_count = INITIALIZE_RETRY_COUNT
 	while not EOS.is_success(res) and retry_count > 0:
@@ -152,7 +152,7 @@ func initialize_async(opts: EOS.Platform.InitializeOptions) -> EOS.Result:
 func set_eos_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Logging.LogLevel) -> EOS.Result:
 	var log_cat_str = EOS.Logging.LogCategory.find_key(log_category)
 	_log.verbose("Setting log level: log_category=%s, log_level=%s" % [log_cat_str, log_level])
-	var res := EOS.Logging.set_log_level(log_category, log_level)
+	var res: EOS.Result = EOS.Logging.set_log_level(log_category, log_level)
 	if not EOS.is_success(res):
 		_log.error("Failed to set log level: %s" % EOS.result_str(res))
 	
@@ -162,7 +162,7 @@ func set_eos_log_level(log_category: EOS.Logging.LogCategory, log_level: EOS.Log
 ## Create the EOS Platform
 func create_platform_async(opts: EOS.Platform.CreateOptions) -> bool:
 	_log.debug("Creating EOS Platform")
-	var res := EOS.Platform.PlatformInterface.create(opts)
+	var res: bool = EOS.Platform.PlatformInterface.create(opts)
 	
 	var retry_count = CREATE_RETRY_COUNT
 	while not EOS.is_success(res) and retry_count > 0:

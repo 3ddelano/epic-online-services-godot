@@ -50,7 +50,7 @@ func get_leaderboard_definitions_async() -> Array:
 	_log.debug("Got leaderboards: count=%s" % count)
 
 	var leaderboards = []
-	for i in count:
+	for i: int in count:
 		var copy_opts = EOS.Leaderboards.CopyLeaderboardDefinitionByIndexOptions.new()
 		copy_opts.leaderboard_index = i
 

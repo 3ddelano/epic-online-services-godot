@@ -21,7 +21,7 @@ static func print_result(p_result) -> void:
 static func result_str(p_result) -> String:
 	if typeof(p_result) == TYPE_DICTIONARY:
 		p_result = p_result["result_code"]
-	var idx := Result.values().find(p_result)
+	var idx: int = Result.values().find(p_result)
 	return Result.keys()[idx]
 
 
@@ -44,7 +44,7 @@ static func is_success(p_result) -> bool:
 
 
 class Achievements:
-	const UNLOCK_TIME_UNDEFINED = -1
+	const UNLOCK_TIME_UNDEFINED: int = -1
 
 	class CopyAchievementDefinitionV2ByAchievementIdOptions extends BaseClass:
 		func _init():
@@ -148,7 +148,7 @@ class Achievements:
 
 
 class Connect:
-	const CONNECT_TIME_UNDEFINED = -1
+	const CONNECT_TIME_UNDEFINED: int = -1
 	
 	class Credentials extends BaseClass:
 		func _init():
@@ -675,7 +675,7 @@ class CustomInvites:
 
 
 class Stats:
-	const STATS_TIME_UNDEFINED = -1
+	const STATS_TIME_UNDEFINED: int = -1
 
 	class CopyStatByIndexOptions extends BaseClass:
 		func _init():
@@ -813,7 +813,7 @@ class Platform:
 		var tick_budget_in_milliseconds: int
 		var task_network_timeout_seconds = null # float
 
-		var rtc_options := RTCOptions.new()
+		var rtc_options: RTCOptions = RTCOptions.new()
 
 	class PlatformInterface:
 		static func create(options: CreateOptions) -> bool:
@@ -1383,7 +1383,7 @@ class KWS:
 
 
 class Leaderboards:
-	const LEADERBOARD_TIME_UNDEFINED = -1
+	const LEADERBOARD_TIME_UNDEFINED: int = -1
 
 	enum LeaderboardAggregation {Min = 0, Max = 1, Sum = 2, Latest = 3}
 
@@ -1530,9 +1530,9 @@ class Lobby:
 		ManualJoin = 1
 	}
 
-	const SEARCH_BUCKET_ID = "bucket"
-	const SEARCH_MINCURRENT_MEMBERS = "mincurrentmembers"
-	const SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
+	const SEARCH_BUCKET_ID: String = "bucket"
+	const SEARCH_MINCURRENT_MEMBERS: String = "mincurrentmembers"
+	const SEARCH_MINSLOTSAVAILABLE: String = "minslotsavailable"
 
 	class CreateLobbyOptions extends BaseClass:
 		func _init():
@@ -1546,11 +1546,11 @@ class Lobby:
 		var crossplay_opt_out: bool
 		var enable_rtc_room: bool
 
-		var allow_invites := true
-		var enable_join_by_id := true
+		var allow_invites: bool = true
+		var enable_join_by_id: bool = true
 		var local_user_id: String = EOSGRuntime.local_product_user_id
 		var permission_level: LobbyPermissionLevel = LobbyPermissionLevel.PublicAdvertised
-		var presence_enabled := true
+		var presence_enabled: bool = true
 
 		## (Optional) Allows the local application to set local audio options for the RTC Room if it is enabled. Set this to a [Dictionary] to override the defaults.[br]
 		## A [Dictionary] with keys: [br]
@@ -1709,7 +1709,7 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbySearchOptions")
 
-		var max_results := 10
+		var max_results: int = 10
 
 	class CopyLobbyDetailsByInviteIdOptions extends BaseClass:
 		func _init():
@@ -2175,14 +2175,14 @@ class ProgressionSnapshot:
 
 
 class UI:
-	const ModifierShift = 16
-	const KeyTypeMask = (1 << ModifierShift) - 1
-	const ModifierMask = ~KeyTypeMask
-	const Shift = 1 << ModifierShift
-	const Control_ = 2 << ModifierShift
-	const Alt = 4 << ModifierShift
-	const Meta = 8 << ModifierShift
-	const ValidModifierMask = Shift | Control_ | Alt | Meta
+	const ModifierShift: int = 16
+	const KeyTypeMask: int = (1 << ModifierShift) - 1
+	const ModifierMask: int = ~KeyTypeMask
+	const Shift: int = 1 << ModifierShift
+	const Control_: int = 2 << ModifierShift
+	const Alt: int = 4 << ModifierShift
+	const Meta: int = 8 << ModifierShift
+	const ValidModifierMask: int = Shift | Control_ | Alt | Meta
 
 	enum NotificationLocation {TopLeft, TopRight, BottomLeft, BottomRight}
 
@@ -2990,10 +2990,10 @@ class Sessions:
 		InviteOnly
 	}
 
-	const SEARCH_BUCKET_ID = "bucket"
-	const SEARCH_EMPTY_SERVERS_ONLY = "emptyonly"
-	const SEARCH_NONEMPTY_SERVERS_ONLY = "nonemptyonly"
-	const SEARCH_MINSLOTSAVAILABLE = "minslotsavailable"
+	const SEARCH_BUCKET_ID: String = "bucket"
+	const SEARCH_EMPTY_SERVERS_ONLY: String = "emptyonly"
+	const SEARCH_NONEMPTY_SERVERS_ONLY: String = "nonemptyonly"
+	const SEARCH_MINSLOTSAVAILABLE: String = "minslotsavailable"
 
 	class CopyActiveSessionDetailsOptions extends BaseClass:
 		func _init():
@@ -3036,7 +3036,7 @@ class Sessions:
 		func _init():
 			super._init("CreateSessionSearchOptions")
 
-		var max_search_results := 10
+		var max_search_results: int = 10
 
 	class GetInviteIdByIndexOptions extends BaseClass:
 		func _init():
@@ -3584,19 +3584,19 @@ class RTCAudio:
 		static func add_notify_participant_updated(options: AddNotifyParticipantUpdatedOptions) -> int:
 			return IEOS.rtc_audio_interface_add_notify_participant_updated(options)
 
-		static func get_input_devices_count(options := GetInputDevicesCountOptions.new()) -> int:
+		static func get_input_devices_count(options: GetInputDevicesCountOptions = GetInputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_input_devices_count(options)
 
-		static func get_output_devices_count(options := GetOutputDevicesCountOptions.new()) -> int:
+		static func get_output_devices_count(options: GetOutputDevicesCountOptions = GetOutputDevicesCountOptions.new()) -> int:
 			return IEOS.rtc_audio_interface_get_output_devices_count(options)
 
 		static func send_audio(options: SendAudioOptions) -> int:
 			return IEOS.rtc_audio_interface_send_audio(options)
 
-		static func query_input_devices_information(options := QueryInputDevicesInformationOptions.new()) -> void:
+		static func query_input_devices_information(options: QueryInputDevicesInformationOptions = QueryInputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_input_devices_information(options)
 
-		static func query_output_devices_information(options := QueryOutputDevicesInformationOptions.new()) -> void:
+		static func query_output_devices_information(options: QueryOutputDevicesInformationOptions = QueryOutputDevicesInformationOptions.new()) -> void:
 			IEOS.rtc_audio_interface_query_output_devices_information(options)
 
 		static func register_platform_user(options: RegisterPlatformUserOptions) -> void:
@@ -3643,7 +3643,7 @@ class RTCAudio:
 
 
 class RTCData:
-	const MAX_PACKET_SIZE_BYTES = 1170
+	const MAX_PACKET_SIZE_BYTES: int = 1170
 
 	enum DataStatus {
 		## Data unsupported
@@ -3721,7 +3721,7 @@ class AntiCheatServer:
 		func _init():
 			super._init("BeginSessionOptions")
 
-		var register_timeout_seconds := 60
+		var register_timeout_seconds: int = 60
 		var server_name: String
 		var local_user_id: String
 		var enable_gameplay_data: bool
@@ -4105,7 +4105,7 @@ class Version:
 
 
 
-const NotificationIdInvalid = 0
+const NotificationIdInvalid: int = 0
 
 
 enum Result {

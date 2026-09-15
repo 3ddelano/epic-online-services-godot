@@ -94,7 +94,7 @@ func toggle_mute_member_async() -> bool:
 		# Toggle our mute/unmute status
 		_log.debug("%s ourself" % action)
 		
-		var opts := EOS.RTCAudio.UpdateSendingOptions.new()
+		var opts: EOS.RTCAudio.UpdateSendingOptions = EOS.RTCAudio.UpdateSendingOptions.new()
 		opts.room_name = _lobby.rtc_room_name
 		opts.audio_status = EOS.RTCAudio.AudioStatus.Enabled if _is_muted else EOS.RTCAudio.AudioStatus.Disabled
 		
@@ -113,7 +113,7 @@ func toggle_mute_member_async() -> bool:
 	else:
 		_log.debug("%s member: product_user_id=%s" % [action, product_user_id])
 		# Locally mute the remote user's audio
-		var opts := EOS.RTCAudio.UpdateReceivingOptions.new()
+		var opts: EOS.RTCAudio.UpdateReceivingOptions = EOS.RTCAudio.UpdateReceivingOptions.new()
 		opts.room_name = _lobby.rtc_room_name
 		opts.participant_id = product_user_id
 		opts.audio_enabled = _is_muted
@@ -140,7 +140,7 @@ func toggle_hard_mute_member_async() -> bool:
 	var action = "Un hard-muting" if _is_hard_muted else "Hard-muting"
 	_log.debug("%s member: product_user_id=%s" % [action, product_user_id])
 
-	var opts := EOS.Lobby.HardMuteMemberOptions.new()
+	var opts: EOS.Lobby.HardMuteMemberOptions = EOS.Lobby.HardMuteMemberOptions.new()
 	opts.lobby_id = _lobby.lobby_id
 	opts.target_user_id = product_user_id
 	opts.hard_mute = not _is_hard_muted

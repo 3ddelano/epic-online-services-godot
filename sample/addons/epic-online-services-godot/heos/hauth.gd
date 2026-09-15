@@ -46,28 +46,28 @@ signal external_account_info_changed
 #region Public vars
 
 ## The epic account id of the logged in user (Used for Epic Account Services)
-var epic_account_id := ""
+var epic_account_id: String = ""
 
 ## The product user id of the logged in user (Used for Epic Game Services)
-var product_user_id := ""
+var product_user_id: String = ""
 
 ## The display name of the logged in user
 var display_name: String
 
 
 ## Whether to automatically fetch the external account linked with Epic Game Services (default true)
-var auto_fetch_external_account := true
+var auto_fetch_external_account: bool = true
 
 ## The external account linked with Epic Game Services
 ## See [method get_external_account_by_type_async] for return type
-var external_account_info := {}
+var external_account_info: Dictionary = {}
 
 
 ## Whether to automatically link an epic account for external identity provider (default true)
-var auto_link_account := true
+var auto_link_account: bool = true
 
 ## Whether to automatically login to Epic Game Services after logging in to Epic Account Services (default true)
-var auto_connect_account := true
+var auto_connect_account: bool = true
 
 ## Default scope flags used when logging in with Epic Account Services[br]
 ## Flags from [enum EOS.Auth.ScopeFlags]
@@ -199,7 +199,7 @@ func login_async(opts: EOS.Auth.LoginOptions) -> bool:
 ## Logout from EOS Auth and or EOS Connect
 func logout_async() -> EOS.Result:
 	_log.verbose("Logging out from EOS...")
-	var ret := EOS.Result.InvalidAuth
+	var ret: EOS.Result = EOS.Result.InvalidAuth
 	var _logged_out = false
 
 	if product_user_id:
@@ -256,7 +256,7 @@ func login_game_services_async(opts: EOS.Connect.LoginOptions) -> bool:
 	
 	if login_res == EOS.Result.InvalidUser:
 		_log.debug("Epic Game Services user not found. Proceeding to create user...")
-		var create_success := await _create_user_async(login_ret.continuance_token)
+		var create_success: bool = await _create_user_async(login_ret.continuance_token)
 		if not create_success:
 			return false
 	
@@ -291,7 +291,7 @@ func login_persistent_auth_async() -> bool:
 
 
 ## Delete the internally stored Epic refresh token
-func delete_persistent_auth_async(refresh_token := "") -> bool:
+func delete_persistent_auth_async(refresh_token: String = "") -> bool:
 	_log.debug("Deleting persistent auth...")
 	var opts = EOS.Auth.DeletePersistentAuthOptions.new()
 	opts.refresh_token = refresh_token
@@ -308,7 +308,7 @@ func delete_persistent_auth_async(refresh_token := "") -> bool:
 ## Login to Epic Game Services without any credentials.
 ## You must provide a user display name.
 func login_anonymous_async(p_user_display_name: String) -> bool:
-	var user_display_name := p_user_display_name.strip_edges()
+	var user_display_name: String = p_user_display_name.strip_edges()
 	if not p_user_display_name:
 		_log.error("User display name is empty")
 		return false
@@ -349,7 +349,7 @@ func login_anonymous_async(p_user_display_name: String) -> bool:
 ## preferred_language: String
 ## nickname: String
 ## [/codeblock]
-func get_user_info_async(p_epic_account_id := epic_account_id) -> Dictionary:
+func get_user_info_async(p_epic_account_id: String = epic_account_id) -> Dictionary:
 	_log.verbose("Querying user info: epic_account_id=%s" % p_epic_account_id)
 	var query_opts = EOS.UserInfo.QueryUserInfoOptions.new()
 	query_opts.local_user_id = epic_account_id
@@ -381,7 +381,7 @@ func get_user_info_async(p_epic_account_id := epic_account_id) -> Dictionary:
 ## account_id_type: EOS.ExternalAccountType - type of external account
 ## last_login_time: int - unix timestamp when the user last logged in or -1
 ## [/codeblock]
-func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAccountType, p_product_user_id := product_user_id) -> Dictionary:
+func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAccountType, p_product_user_id: String = product_user_id) -> Dictionary:
 	_log.debug("Getting external account by type: external_account_type=%s product_user_id=%s" % [p_external_account_type, p_product_user_id])
 
 	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
@@ -412,7 +412,7 @@ func get_external_account_by_type_async(p_external_account_type: EOS.ExternalAcc
 
 ## Get all external accounts linked with Epic Games Services[br]
 ## Returns a [Dictionary] with same keys as [method get_external_account_by_type_async][br]
-func get_external_accounts_async(p_product_user_id := product_user_id) -> Array:
+func get_external_accounts_async(p_product_user_id: String = product_user_id) -> Array:
 	_log.debug("Getting all external accounts: product_user_id=%s" % p_product_user_id)
 
 	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()
@@ -429,7 +429,7 @@ func get_external_accounts_async(p_product_user_id := product_user_id) -> Array:
 	var count = EOS.Connect.ConnectInterface.get_product_user_external_account_count(count_opts)
 
 	var ext_accs = []
-	for i in range(count):
+	for i: int in range(count):
 		var copy_opts = EOS.Connect.CopyProductUserExternalAccountByIndexOptions.new()
 		copy_opts.target_user_id = p_product_user_id
 		copy_opts.external_account_info_index = i
@@ -446,7 +446,7 @@ func get_external_accounts_async(p_product_user_id := product_user_id) -> Array:
 
 ## Get the external account linked with Epic Game Services that the user most recently logged in with.[br]
 ## Returns a [Dictionary] with same keys as [method get_external_account_by_type_async]
-func get_product_user_info_async(p_product_user_id := product_user_id):
+func get_product_user_info_async(p_product_user_id: String = product_user_id):
 	_log.debug("Getting product user info: product_user_id=%s" % p_product_user_id)
 
 	var opts = EOS.Connect.QueryProductUserIdMappingsOptions.new()

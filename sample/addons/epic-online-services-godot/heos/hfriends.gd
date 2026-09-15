@@ -45,7 +45,7 @@ func get_friends_async() -> Array:
 	var friends_count: int = EOS.Friends.FriendsInterface.get_friends_count(get_count_opts)
 
 	var user_infos = []
-	for i in friends_count:
+	for i: int in friends_count:
 		var opts = EOS.Friends.GetFriendAtIndexOptions.new()
 		opts.index = i
 

@@ -47,7 +47,7 @@ func get_stats_async() -> Array:
 	_log.debug("Got stats: count=%s" % stats_count)
 
 	var stats = []
-	for i in range(stats_count):
+	for i: int in range(stats_count):
 		var copy_opts = EOS.Stats.CopyStatByIndexOptions.new()
 		copy_opts.stat_index = i
 		var copy_ret = EOS.Stats.StatsInterface.copy_stat_by_index(copy_opts)
