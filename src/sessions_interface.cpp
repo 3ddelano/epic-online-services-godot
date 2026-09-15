@@ -449,7 +449,11 @@ void IEOS::sessions_interface_update_session(Ref<RefCounted> p_options) {
         Dictionary ret;
         ret["result_code"] = static_cast<int>(data->ResultCode);
         Ref<RefCounted> client_data = reinterpret_cast<RefCounted *>(data->ClientData);
-        client_data->unreference();
+        // EOS may invoke this callback again after a non-final result (e.g. EOS_OperationWillRetry).
+        // Keep the operation's reference until the final callback; the local Ref protects signal delivery.
+        if (EOS_EResult_IsOperationComplete(data->ResultCode)) {
+            client_data->unreference();
+        }
         ret["client_data"] = client_data->get("client_data");
         ret["session_name"] = EOSG_GET_STRING(data->SessionName);
         ret["session_id"] = EOSG_GET_STRING(data->SessionId);
