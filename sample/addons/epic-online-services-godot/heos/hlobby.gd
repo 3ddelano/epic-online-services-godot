@@ -94,7 +94,7 @@ func is_owner(product_user_id = HAuth.product_user_id) -> bool:
 
 ## Returns a [HLobbyMember] based on product user id or null
 func get_member_by_product_user_id(product_user_id: String) -> HLobbyMember:
-	for mem in members:
+	for mem: HLobbyMember in members:
 		if mem.product_user_id == product_user_id:
 			return mem
 	return null
@@ -102,7 +102,7 @@ func get_member_by_product_user_id(product_user_id: String) -> HLobbyMember:
 
 ## Returns the current lobby member [HLobbyMember] or null
 func get_current_member() -> HLobbyMember:
-	for mem in members:
+	for mem: HLobbyMember in members:
 		if mem.product_user_id == HAuth.product_user_id:
 			return mem
 	return null
@@ -110,7 +110,7 @@ func get_current_member() -> HLobbyMember:
 
 ## Returns [HLobbyMember] or null
 func get_owner() -> HLobbyMember:
-	for mem in members:
+	for mem: HLobbyMember in members:
 		if mem.product_user_id == owner_product_user_id:
 			return mem
 	return null

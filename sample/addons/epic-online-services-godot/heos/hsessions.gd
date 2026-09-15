@@ -34,7 +34,7 @@ func create_session(opts: EOS.Sessions.CreateSessionModificationOptions) -> EOSG
 func update_session_async(p_session: EOSGSessionModification) -> bool:
 	_log.debug("Updating session...")
 	
-	var opts := EOS.Sessions.UpdateSessionOptions.new()
+	var opts: EOS.Sessions.UpdateSessionOptions = EOS.Sessions.UpdateSessionOptions.new()
 	opts.session_modification = p_session
 	EOS.Sessions.SessionsInterface.update_session(opts)
 	var ret = await IEOS.sessions_interface_update_session_callback
@@ -89,7 +89,7 @@ func search_by_attribute_async(attributes):
 	var opts = EOS.Sessions.CreateSessionSearchOptions.new()
 	opts.max_search_results = max_search_results
 	
-	var search := create_search(opts)
+	var search: EOSGSessionSearch = create_search(opts)
 	if not search:
 		return null
 	

@@ -34,10 +34,10 @@ var flavor_text: String
 var is_hidden: bool
 
 ## Progress towards completing this achievement (as a percentage).
-var progress := 0.0
+var progress: float = 0.0
 
 ## Either [EOS.Achievements.UNLOCK_TIME_UNDEFINED] if not unlocked or the unix timestamp of when the achievement was unlocked by the user
-var unlock_time := EOS.Achievements.UNLOCK_TIME_UNDEFINED
+var unlock_time: int = EOS.Achievements.UNLOCK_TIME_UNDEFINED
 
 ## Array of [Dictionary] having keys: name:String, current_value:int, threshold_value:int.
 var stats = []
@@ -71,7 +71,7 @@ func get_icon_url() -> String:
 
 func update_stat(p_stat: Dictionary) -> void:
 	var found = false
-	for i in stats.size():
+	for i: int in stats.size():
 		var stat = stats[i]
 		if stat.name == p_stat.name:
 			stats[i] = p_stat

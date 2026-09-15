@@ -50,7 +50,7 @@ func get_all_achievements_async() -> Array[HAchievementData]:
 	_log.debug("Got all achievements: count=%s" % achievement_count)
 	
 	var achievements: Array[HAchievementData] = []
-	for i in achievement_count:
+	for i: int in achievement_count:
 		var copy_opts = EOS.Achievements.CopyAchievementDefinitionV2ByIndexOptions.new()
 		copy_opts.achievement_index = i
 
@@ -104,7 +104,7 @@ func get_player_achievements_async() -> Array[HAchievementData]:
 		var achievement_data = copy_ret.player_achievement
 
 		var cached_achievement = null
-		for achievement in _achievements:
+		for achievement: HAchievementData in _achievements:
 			if achievement.achievement_id == achievement_data.achievement_id:
 				cached_achievement = achievement
 		var data: HAchievementData = HAchievementData.new() if cached_achievement == null else cached_achievement
