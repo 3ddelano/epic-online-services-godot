@@ -185,7 +185,7 @@ private:
             memset(socket.SocketName, 0, sizeof(socket.SocketName));
             ERR_FAIL_COND_MSG(!_socket_id_is_valid(socket_name), "Failed to create socket. Socket id is not valid.\nNOTE: Socket id cannot be empty, must only have alpha-numeric characters, and must not be longer than 32 characters");
             socket.ApiVersion = EOS_P2P_SOCKETID_API_LATEST;
-            STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
+            STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8().get_data(), socket_name.length());
         }
     };
 

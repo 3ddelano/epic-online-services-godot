@@ -14,7 +14,7 @@ int IEOS::anticheat_server_interface_begin_session(Ref<RefCounted> p_options) {
     options.ServerName = p_server_name.get_data();
     options.bEnableGameplayData = VARIANT_TO_EOS_BOOL(p_options->get("enable_gameplay_data"));
     if (p_local_user_id.size() > 1) {
-        options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+        options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id.get_data());
     }
 
     return static_cast<int>(EOS_AntiCheatServer_BeginSession(s_antiCheatServerInterface, &options));
@@ -44,7 +44,7 @@ int IEOS::anticheat_server_interface_register_client(Ref<RefCounted> p_options) 
     options.ClientType = static_cast<EOS_EAntiCheatCommonClientType>(p_client_type);
     options.ClientPlatform = static_cast<EOS_EAntiCheatCommonClientPlatform>(p_client_platform);
     options.IpAddress = p_ip_address.get_data();
-    options.UserId = eosg_string_to_product_user_id(p_user_id);
+    options.UserId = eosg_string_to_product_user_id(p_user_id.get_data());
 
     return static_cast<int>(EOS_AntiCheatServer_RegisterClient(s_antiCheatServerInterface, &options));
 }
