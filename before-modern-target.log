@@ -1,0 +1,29 @@
+scons: Reading SConscript files ...
+Auto-detected 12 CPU cores available for build parallelism. Using 11 cores by default. You can override it with the -j argument.
+Building for architecture universal on platform macos
+scons: done reading SConscript files.
+scons: Building targets ...
+Generating godot-cpp/gen/include/gdextension_interface.h ...
+Built-in type config: float_64
+Compiling shared src/anticheat_server_interface.cpp ...
+src/anticheat_server_interface.cpp:17:31: error: no matching function for call to 'eosg_string_to_product_user_id'
+   17 |         options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_server_interface.cpp:47:22: error: no matching function for call to 'eosg_string_to_product_user_id'
+   47 |     options.UserId = eosg_string_to_product_user_id(p_user_id);
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_server_interface.cpp:258:43: warning: object backing the pointer 'params[i].ParamValue.String' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  258 |             params[i].ParamValue.String = VARIANT_TO_CHARSTRING(param).get_data();
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning and 2 errors generated.
+scons: *** [src/anticheat_server_interface.os] Error 1
+scons: building terminated because of errors.

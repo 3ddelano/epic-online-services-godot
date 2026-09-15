@@ -1,0 +1,15 @@
+2026-09-15 12:26:40.298 Godot[9783:21743979] [UE4] Shutdown handler: initialize.
+Godot Engine v4.2.stable.official.46dc27791 - https://godotengine.org
+[1;33mWARNING:[0;93m Project setting "rendering/limits/global_shader_variables/buffer_size" exceeds maximum uniform buffer size of: 16384
+[0;90m     at: MaterialStorage (drivers/gles3/storage/material_storage.cpp:1114)[0m
+OpenGL API OpenGL ES 3.0.0 (ANGLE 2.1.21969 git hash: 9528449a8930) - Compatibility - Using Device: Google Inc. (Apple) - ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Version 26.5.1 (Build 25F80))
+ 
+Engine: 4.2-stable (official)
+PASS: IEOS native singleton loaded
+PASS: P2P mediator registered
+PASS: Multiplayer peer registered
+PASS: Native multiplayer peer starts disconnected
+PASS: EOS SDK initialize returns EOS_Success (0)
+PASS: EOS SDK shutdown returns EOS_Success (0)
+SMOKE_RESULT=PASS
+2026-09-15 12:27:01.175 Godot[9783:21743979] [UE4] Shutdown handler: cleanup.

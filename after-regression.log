@@ -1,0 +1,49 @@
+scons: Reading SConscript files ...
+Building for architecture universal on platform macos
+scons: done reading SConscript files.
+scons: Building targets ...
+Compiling shared src/anticheat_client_interface.cpp ...
+Compiling shared src/anticheat_server_interface.cpp ...
+src/anticheat_server_interface.cpp:258:43: warning: object backing the pointer 'params[i].ParamValue.String' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  258 |             params[i].ParamValue.String = VARIANT_TO_CHARSTRING(param).get_data();
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+src/anticheat_server_interface.cpp:258:43: warning: object backing the pointer 'params[i].ParamValue.String' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  258 |             params[i].ParamValue.String = VARIANT_TO_CHARSTRING(param).get_data();
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+Compiling shared src/eosg_multiplayer_peer.cpp ...
+src/eosg_multiplayer_peer.cpp:490:56: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  490 |     ERR_FAIL_COND_V_MSG(target_peer != 0 && !peers.has(ABS(target_peer)), ERR_INVALID_PARAMETER, vformat("Invalid target peer: %d", target_peer));
+      |                                                        ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+src/eosg_multiplayer_peer.cpp:532:27: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  532 |             int exclude = ABS(target_peer);
+      |                           ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+2 warnings generated.
+src/eosg_multiplayer_peer.cpp:490:56: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  490 |     ERR_FAIL_COND_V_MSG(target_peer != 0 && !peers.has(ABS(target_peer)), ERR_INVALID_PARAMETER, vformat("Invalid target peer: %d", target_peer));
+      |                                                        ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+src/eosg_multiplayer_peer.cpp:532:27: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  532 |             int exclude = ABS(target_peer);
+      |                           ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+2 warnings generated.
+Compiling shared src/eosg_packet_peer_mediator.cpp ...
+scons: done building targets.

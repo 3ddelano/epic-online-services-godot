@@ -1,0 +1,74 @@
+[
+  {
+    "engine": "godot42",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot42.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot43",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot43.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot44",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot44.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot45.2",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot45.2.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot46.2",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot46.2.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot46.3",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot46.3.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot47",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot47.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  },
+  {
+    "engine": "godot4mono",
+    "command": [
+      "python3",
+      "tests/run_runtime_smoke.py",
+      "/Applications/godot4mono.app/Contents/MacOS/Godot"
+    ],
+    "exit_code": 0
+  }
+]

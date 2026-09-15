@@ -1,0 +1,9 @@
+scons: Reading SConscript files ...
+Auto-detected 12 CPU cores available for build parallelism. Using 11 cores by default. You can override it with the -j argument.
+Building for architecture universal on platform macos
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `godot-cpp/bin/libgodot-cpp.macos.template_debug.dev.universal.a' is up to date.
+on_complete(["complete"], ["sample/addons/epic-online-services-godot/bin/macos/libeosg.macos.template_debug.framework/libeosg.macos.template_debug"])
+Updating libEOSSDK-Mac-Shipping.dylib path in sample/addons/epic-online-services-godot/bin/macos/libeosg.macos.template_debug.framework/libeosg.macos.template_debug
+scons: done building targets.

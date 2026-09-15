@@ -1,0 +1,12 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Engine: 4.7-stable (official)
+PASS: IEOS native singleton loaded
+PASS: P2P mediator registered
+PASS: Multiplayer peer registered
+PASS: Native multiplayer peer starts disconnected
+PASS: EOS SDK initialize returns EOS_Success (0)
+PASS: EOS SDK shutdown returns EOS_Success (0)
+SMOKE_RESULT=PASS
+2026-09-15 12:18:52.196 Godot[3007:21710370] [UE4] Shutdown handler: initialize.
+2026-09-15 12:18:52.442 Godot[3007:21710370] [UE4] Shutdown handler: cleanup.

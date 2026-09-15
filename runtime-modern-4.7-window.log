@@ -1,0 +1,13 @@
+2026-09-15 12:19:16.994 Godot[3284:21711507] [UE4] Shutdown handler: initialize.
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M3 Pro
+
+Engine: 4.7-stable (official)
+PASS: IEOS native singleton loaded
+PASS: P2P mediator registered
+PASS: Multiplayer peer registered
+PASS: Native multiplayer peer starts disconnected
+PASS: EOS SDK initialize returns EOS_Success (0)
+PASS: EOS SDK shutdown returns EOS_Success (0)
+SMOKE_RESULT=PASS
+2026-09-15 12:20:01.272 Godot[3284:21711507] [UE4] Shutdown handler: cleanup.

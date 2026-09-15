@@ -1,0 +1,23 @@
+scons: Reading SConscript files ...
+Building for architecture universal on platform macos
+scons: done reading SConscript files.
+scons: Building targets ...
+Compiling shared src/anticheat_client_interface.cpp ...
+src/anticheat_client_interface.cpp:13:27: error: no matching function for call to 'eosg_string_to_product_user_id'
+   13 |     options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_client_interface.cpp:33:29: error: assigning to 'const char *' from incompatible type 'CharString' (aka 'CharStringT<char>')
+   33 |     options.PathToBinFile = ProjectSettings::get_singleton()->globalize_path(p_path_to_bin_file.get_data()).utf8();
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_client_interface.cpp:159:33: error: no matching function for call to 'eosg_string_to_product_user_id'
+  159 |     options.PeerProductUserId = eosg_string_to_product_user_id(p_peer_product_user_id);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+3 errors generated.
+scons: *** [src/anticheat_client_interface.os] Error 1
+scons: building terminated because of errors.

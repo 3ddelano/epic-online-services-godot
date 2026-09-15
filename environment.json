@@ -1,0 +1,29 @@
+{
+  "baseline_eosg": "d1bbabe953bd8076ee2341623aacd3e17de57c05",
+  "pr_base": "fa31106",
+  "pinned_godot_cpp": "54136ee8357c5140a3775c54f08db5f7deda2058",
+  "modern_godot_cpp": "6cceaf6a5f8b0d78ac5d71c139fd7fabba43b918",
+  "upstream_conversion_removal": "867efda3c9786b8d3a86e97bbfc1bc8a3e83750c",
+  "modern_api_version": "4.7",
+  "modern_build_setup": "Local godot-cpp/gdextension/extension_api.json symlink to extension_api-4-7.json; api_version=4.7",
+  "eos_sdk": "1.19.1",
+  "build_architecture": "macos universal (x86_64 + arm64)",
+  "runtime_architecture": "arm64",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.1\nBuildVersion:\t\t25F80",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "scons": "SCons by Steven Knight et al.:\n\tSCons: v4.9.1.39a12f34d532ab2493e78a7b73aeab2250852790, Thu, 27 Mar 2025 11:44:24 -0700, by bdbaddog on M1Dog2021\n\tSCons path: ['/opt/homebrew/Cellar/scons/4.9.1/libexec/lib/python3.13/site-packages/SCons']\nCopyright (c) 2001 - 2025 The SCons Foundation",
+  "engines": {
+    "/Applications/godot42.app/Contents/MacOS/Godot": "4.2.stable.official.46dc27791",
+    "/Applications/godot43.app/Contents/MacOS/Godot": "4.3.stable.official.77dcf97d8",
+    "/Applications/godot44.app/Contents/MacOS/Godot": "4.4.stable.official.4c311cbee",
+    "/Applications/godot45.2.app/Contents/MacOS/Godot": "4.5.2.stable.official.6ce3de25a",
+    "/Applications/godot46.2.app/Contents/MacOS/Godot": "4.6.2.stable.official.71f334935",
+    "/Applications/godot46.3.app/Contents/MacOS/Godot": "4.6.3.stable.official.7d41c59c4",
+    "/Applications/godot47.app/Contents/MacOS/Godot": "4.7.stable.official.5b4e0cb0f",
+    "/Applications/godot4mono.app/Contents/MacOS/Godot": "4.6.3.stable.mono.official.7d41c59c4"
+  },
+  "modern_binary_sha256": "b59134ca693e37e0d8311969974294656047207bea4ea2d7effab4bc512ff8fd",
+  "pinned_binary_sha256": "5aa2e9f79479891f741d509af1b4440233087bba5988b85f48bd0a723108134e",
+  "binary_architectures": "x86_64 arm64",
+  "fix_commit": "8cb38e7c159e06a3de2412dd5c3ea6841c497990"
+}

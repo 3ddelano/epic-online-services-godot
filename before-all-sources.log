@@ -1,0 +1,306 @@
+$ scons dev_build=yes api_version=4.7 -j8 -k src/achievements_interface.os src/anticheat_client_interface.os src/anticheat_server_interface.os src/auth_interface.os src/connect_interface.os src/custom_invites_interface.os src/ecom_interface.os src/eosg_active_session.os src/eosg_lobby_details.os src/eosg_lobby_modification.os src/eosg_lobby_search.os src/eosg_multiplayer_peer.os src/eosg_packet_peer_mediator.os src/eosg_playerdatastorage_file_transfer_request.os src/eosg_presence_modification.os src/eosg_session_details.os src/eosg_session_modification.os src/eosg_session_search.os src/eosg_titlestorage_file_transfer_request.os src/eosg_transaction.os src/friends_interface.os src/ieos.os src/kws_interface.os src/leaderboards_interface.os src/lobby_interface.os src/logging_interface.os src/metrics_interface.os src/mods_interface.os src/p2p_interface.os src/platform_interface.os src/playerdatastorage_interface.os src/presence_interface.os src/progression_snapshot_interface.os src/register_types.os src/reports_interface.os src/rtc_audio_interface.os src/rtc_data_interface.os src/rtc_interface.os src/sanctions_interface.os src/sessions_interface.os src/stats_interface.os src/titlestorage_interface.os src/ui_interface.os src/user_info_interface.os src/utils.os src/version_interface.os
+scons: Reading SConscript files ...
+Building for architecture universal on platform macos
+scons: done reading SConscript files.
+scons: Building targets ...
+Compiling shared src/achievements_interface.cpp ...
+Compiling shared src/anticheat_client_interface.cpp ...
+Compiling shared src/anticheat_server_interface.cpp ...
+Compiling shared src/auth_interface.cpp ...
+Compiling shared src/connect_interface.cpp ...
+Compiling shared src/custom_invites_interface.cpp ...
+Compiling shared src/ecom_interface.cpp ...
+Compiling shared src/eosg_active_session.cpp ...
+src/anticheat_client_interface.cpp:13:27: error: no matching function for call to 'eosg_string_to_product_user_id'
+   13 |     options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_client_interface.cpp:33:29: error: assigning to 'const char *' from incompatible type 'CharString' (aka 'CharStringT<char>')
+   33 |     options.PathToBinFile = ProjectSettings::get_singleton()->globalize_path(p_path_to_bin_file.get_data()).utf8();
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_client_interface.cpp:159:33: src/ecom_interface.cpp:26:34: warning: object backing the pointer 'entries[i].OfferId' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+   26 |             entries[i].OfferId = VARIANT_TO_CHARerror: no matching function for call to 'eosg_string_to_product_user_id'
+  159 |     options.PeSTRING(p_entries[i].get("offer_id")).get_data();
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'erProductUserId = eosg_string_to_product_user_id(p_
+   22 | #depeer_product_user_id);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fine VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~src/utils.h
+:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/anticheat_server_interface.cpp:17:31: error: no matching function for call to 'eosg_string_to_product_user_id'
+   17 |         options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+3 errors generated.
+src/ecom_interface.cpp:408:35: warning: object backing the pointer 'entitlementNames[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  408 |             entitsrc/anticheat_server_interface.cpp:47:22: error: no matching function for call to 'eosg_string_to_product_user_id'
+   47 |     options.UserId = eosg_string_to_product_user_id(p_user_id);
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+lementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:470:35: warning: object backing the pointer 'catalog_item_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  470 |             catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/anticheat_server_interface.cpp:258:43: warning: object backing the pointer 'params[i].ParamValue.String' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  258 |             params[i].ParamValue.String = VARIANT_TO_CHARSTRING(param).get_data();
+      |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:517:35: warning: object backing the pointer 'catalog_item_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  517 |             catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catascons: *** [src/anticheat_client_interface.os] Error 1
+log_item_ids[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:551:34: warning: object backing the pointer 'entitlement_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  551 |             entitlement_ids[i] = VARIANT_TO_CHARSTRING(p_entitlement_ids[i]).get_data();
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+Compiling shared src/eosg_lobby_details.cpp ...
+src/ecom_interface.cpp:619:35: warning: object backing the pointer 'entitlementNames[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  619 |             entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:652:30: warning: object backing the pointer 'sandbox_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  652 |             sandbox_ids[i] = VARIANT_TO_CHARSTRING(p_sandbox_ids[i]).get_data();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning and 2 errors generated.
+scons: *** [src/anticheat_server_interface.os] Error 1
+Compiling shared src/eosg_lobby_modification.cpp ...
+7 warnings generated.
+src/ecom_interface.cpp:26:34: warning: object backing the pointer 'entries[i].OfferId' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+   26 |             entries[i].OfferId = VARIANT_TO_CHARSTRING(p_entries[i].get("offer_id")).get_data();
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:408:35: warning: object backing the pointer 'entitlementNames[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  408 |             entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:470:35: warning: object backing the pointer 'catalog_item_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  470 |             catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:517:35: warning: object backing the pointer 'catalog_item_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  517 |             catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:551:34: warning: object backing the pointer 'entitlement_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  551 |             entitlement_ids[i] = VARIANT_TO_CHARSTRING(p_entitlement_ids[i]).get_data();
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:619:35: warning: object backing the pointer 'entitlementNames[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  619 |             entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+src/ecom_interface.cpp:652:30: warning: object backing the pointer 'sandbox_ids[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+  652 |             sandbox_ids[i] = VARIANT_TO_CHARSTRING(p_sandbox_ids[i]).get_data();
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+7 warnings generated.
+Compiling shared src/eosg_lobby_search.cpp ...
+Compiling shared src/eosg_multiplayer_peer.cpp ...
+Compiling shared src/eosg_packet_peer_mediator.cpp ...
+Compiling shared src/eosg_playerdatastorage_file_transfer_request.cpp ...
+Compiling shared src/eosg_presence_modification.cpp ...
+Compiling shared src/eosg_session_details.cpp ...
+Compiling shared src/eosg_session_modification.cpp ...
+In file included from src/eosg_multiplayer_peer.cpp:20:
+src/eosg_multiplayer_peer.h:188:13: error: no matching function for call to 'strncpy'
+  188 |             STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:31:45: note: expanded from macro 'STRNCPY_S'
+   31 | #define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
+      |                                             ^~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_string.h:104:3: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 2nd argument
+  104 |                 strncpy(char *_LIBC_COUNT(__n) __dst,
+      |                 ^
+  105 |         const char *_LIBC_UNSAFE_INDEXABLE __src, size_t __n)
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_multiplayer_peer.cpp:136:29: error: no matching function for call to 'eosg_string_to_product_user_id'
+  136 |     Error result = _send_to(eosg_string_to_product_user_id(remote_user_id.utf8()), packet);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_multiplayer_peer.cpp:199:14: error: no matching function for call to 'eosg_string_to_product_user_id'
+  199 |     _send_to(eosg_string_to_product_user_id(remote_user_id.utf8()), packet);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_multiplayer_peer.cpp:490:56: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  490 |     ERR_FAIL_COND_V_MSG(target_peer != 0 && !peers.has(ABS(target_peer)), ERR_INVALID_PARAMETER, vformat("Invalid target peer: %d", target_peer));
+      |                                                        ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+src/eosg_multiplayer_peer.cpp:532:27: warning: 'ABS<int>' is deprecated: Use Math::abs instead [-Wdeprecated-declarations]
+  532 |             int exclude = ABS(target_peer);
+      |                           ^
+godot-cpp/include/godot_cpp/core/math.compat.inc:40:3: note: 'ABS<int>' has been explicitly marked deprecated here
+   40 | [[deprecated("Use Math::abs instead")]]
+      |   ^
+src/eosg_multiplayer_peer.cpp:720:49: error: no matching function for call to 'eosg_string_to_product_user_id'
+  720 |                 EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_multiplayer_peer.cpp:846:23: error: no matching function for call to 'eosg_string_to_product_user_id'
+  846 |     s_local_user_id = eosg_string_to_product_user_id(local_user_id);
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_multiplayer_peer.cpp:1128:40: error: no matching function for call to 'eosg_string_to_product_user_id'
+ 1128 |     EOS_ProductUserId remote_user_id = eosg_string_to_product_user_id(data.remote_user_id.utf8());
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/eosg_packet_peer_mediator.cpp:20:
+In file included from src/eosg_packet_peer_mediator.h:2:
+src/eosg_multiplayer_peer.h:188:13: error: no matching function for call to 'strncpy'
+  188 |             STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:31:45: note: expanded from macro 'STRNCPY_S'
+   31 | #define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
+      |                                             ^~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_string.h:104:3: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 2nd argument
+  104 |                 strncpy(char *_LIBC_COUNT(__n) __dst,
+      |                 ^
+  105 |         const char *_LIBC_UNSAFE_INDEXABLE __src, size_t __n)
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling shared src/eosg_session_search.cpp ...
+src/eosg_packet_peer_mediator.cpp:61:39: error: no matching function for call to 'eosg_string_to_product_user_id'
+   61 |     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_packet_peer_mediator.cpp:411:39: error: no matching function for call to 'eosg_string_to_product_user_id'
+  411 |     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_packet_peer_mediator.cpp:429:39: error: no matching function for call to 'eosg_string_to_product_user_id'
+  429 |     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_packet_peer_mediator.cpp:447:39: error: no matching function for call to 'eosg_string_to_product_user_id'
+  447 |     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+src/eosg_packet_peer_mediator.cpp:465:39: error: no matching function for call to 'eosg_string_to_product_user_id'
+  465 |     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:60:26: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 1st argument
+   60 | static EOS_ProductUserId eosg_string_to_product_user_id(const char *p_account_id) {
+      |                          ^                              ~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings and 6 errors generated.
+scons: *** [src/eosg_multiplayer_peer.os] Error 1
+Compiling shared src/eosg_titlestorage_file_transfer_request.cpp ...
+6 errors generated.
+scons: *** [src/eosg_packet_peer_mediator.os] Error 1
+Compiling shared src/eosg_transaction.cpp ...
+Compiling shared src/friends_interface.cpp ...
+Compiling shared src/ieos.cpp ...
+Compiling shared src/kws_interface.cpp ...
+Compiling shared src/leaderboards_interface.cpp ...
+Compiling shared src/lobby_interface.cpp ...
+Compiling shared src/logging_interface.cpp ...
+Compiling shared src/metrics_interface.cpp ...
+Compiling shared src/mods_interface.cpp ...
+Compiling shared src/p2p_interface.cpp ...
+Compiling shared src/platform_interface.cpp ...
+Compiling shared src/playerdatastorage_interface.cpp ...
+Compiling shared src/presence_interface.cpp ...
+Compiling shared src/progression_snapshot_interface.cpp ...
+Compiling shared src/register_types.cpp ...
+Compiling shared src/reports_interface.cpp ...
+Compiling shared src/rtc_audio_interface.cpp ...
+Compiling shared src/rtc_data_interface.cpp ...
+In file included from src/register_types.cpp:9:
+src/eosg_multiplayer_peer.h:188:13: error: no matching function for call to 'strncpy'
+  188 |             STRNCPY_S(socket.SocketName, EOS_P2P_SOCKETID_SOCKETNAME_SIZE, socket_name.utf8(), socket_name.length());
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:31:45: note: expanded from macro 'STRNCPY_S'
+   31 | #define STRNCPY_S(dest, destsz, src, count) strncpy(dest, src, count)
+      |                                             ^~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_string.h:104:3: note: candidate function not viable: no known conversion from 'CharString' (aka 'CharStringT<char>') to 'const char *' for 2nd argument
+  104 |                 strncpy(char *_LIBC_COUNT(__n) __dst,
+      |                 ^
+  105 |         const char *_LIBC_UNSAFE_INDEXABLE __src, size_t __n)
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+scons: *** [src/register_types.os] Error 1
+Compiling shared src/rtc_interface.cpp ...
+Compiling shared src/sanctions_interface.cpp ...
+Compiling shared src/sessions_interface.cpp ...
+Compiling shared src/stats_interface.cpp ...
+Compiling shared src/titlestorage_interface.cpp ...
+Compiling shared src/ui_interface.cpp ...
+Compiling shared src/user_info_interface.cpp ...
+src/titlestorage_interface.cpp:43:25: warning: object backing the pointer 'listOfTags[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+   43 |         listOfTags[i] = VARIANT_TO_CHARSTRING(list_of_tags[i]).get_data();
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+Compiling shared src/utils.cpp ...
+Compiling shared src/version_interface.cpp ...
+src/titlestorage_interface.cpp:43:25: warning: object backing the pointer 'listOfTags[i]' will be destroyed at the end of the full-expression [-Wdangling-assignment]
+   43 |         listOfTags[i] = VARIANT_TO_CHARSTRING(list_of_tags[i]).get_data();
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/utils.h:22:36: note: expanded from macro 'VARIANT_TO_CHARSTRING'
+   22 | #define VARIANT_TO_CHARSTRING(str) ((String)str).utf8()
+      |                                    ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+scons: done building targets (errors occurred during build).
+
+EXIT_CODE=2

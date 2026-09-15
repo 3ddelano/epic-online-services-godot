@@ -1,0 +1,15 @@
+$ python3 tests/run_runtime_smoke.py /Applications/godot42.app/Contents/MacOS/Godot
+Godot Engine v4.2.stable.official.46dc27791 - https://godotengine.org
+ 
+Engine: 4.2-stable (official)
+PASS: IEOS native singleton loaded
+PASS: P2P mediator registered
+PASS: Multiplayer peer registered
+PASS: Native multiplayer peer starts disconnected
+PASS: EOS SDK initialize returns EOS_Success (0)
+PASS: EOS SDK shutdown returns EOS_Success (0)
+SMOKE_RESULT=PASS
+2026-09-15 12:25:06.649 Godot[9426:21739329] [UE4] Shutdown handler: initialize.
+2026-09-15 12:25:07.777 Godot[9426:21739329] [UE4] Shutdown handler: cleanup.
+
+EXIT_CODE=0
