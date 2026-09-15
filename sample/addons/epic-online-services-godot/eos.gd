@@ -358,7 +358,7 @@ class Connect:
 		static func get_logged_in_users_count() -> int:
 			return IEOS.connect_interface_get_logged_in_users_count()
 
-		static func get_login_status(local_user_id := EOSGRuntime.local_product_user_id) -> LoginStatus:
+		static func get_login_status(local_user_id: String = EOSGRuntime.local_product_user_id) -> LoginStatus:
 			return IEOS.connect_interface_get_login_status(local_user_id)
 
 		static func get_product_user_external_account_count(options: GetProductUserExternalAccountCountOptions = GetProductUserExternalAccountCountOptions.new()) -> int:
@@ -528,7 +528,7 @@ class Auth:
 		static func copy_id_token(options: CopyIdTokenOptions) -> Dictionary:
 			return IEOS.auth_interface_copy_id_token(options)
 
-		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func copy_user_auth_token(options: CopyUserAuthTokenOptions, local_user_id: String = EOSGRuntime.local_epic_account_id) -> Dictionary:
 			var func_result: Dictionary = IEOS.auth_interface_copy_user_auth_token(
 				options, local_user_id
 			)
@@ -557,16 +557,16 @@ class Auth:
 		static func get_logged_in_accounts_count() -> int:
 			return IEOS.auth_interface_get_logged_in_accounts_count()
 
-		static func get_login_status(local_user_id := EOSGRuntime.local_epic_account_id) -> LoginStatus:
+		static func get_login_status(local_user_id: String = EOSGRuntime.local_epic_account_id) -> LoginStatus:
 			return IEOS.auth_interface_get_login_status(local_user_id)
 
 		static func get_merged_account_by_index(local_user_id: String, index: int) -> String:
 			return IEOS.auth_interface_get_merged_account_by_index(local_user_id, index)
 
-		static func get_merged_accounts_count(local_user_id := EOSGRuntime.local_epic_account_id) -> int:
+		static func get_merged_accounts_count(local_user_id: String = EOSGRuntime.local_epic_account_id) -> int:
 			return IEOS.auth_interface_get_merged_accounts_count(local_user_id)
 
-		static func get_selected_account_id(local_user_id := EOSGRuntime.local_epic_account_id) -> Dictionary:
+		static func get_selected_account_id(local_user_id: String = EOSGRuntime.local_epic_account_id) -> Dictionary:
 			return IEOS.auth_interface_get_selected_account_id(local_user_id)
 
 		static func link_account(options: LinkAccountOptions) -> void:
@@ -1548,7 +1548,7 @@ class Lobby:
 
 		var allow_invites := true
 		var enable_join_by_id := true
-		var local_user_id := EOSGRuntime.local_product_user_id
+		var local_user_id: String = EOSGRuntime.local_product_user_id
 		var permission_level: LobbyPermissionLevel = LobbyPermissionLevel.PublicAdvertised
 		var presence_enabled := true
 
