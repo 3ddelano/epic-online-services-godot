@@ -133,7 +133,7 @@ Error EOSGMultiplayerPeer::create_client(const String &socket_id, const String &
     packet.prepare();
 
     //send peer id to the server
-    Error result = _send_to(eosg_string_to_product_user_id(remote_user_id.utf8()), packet);
+    Error result = _send_to(eosg_string_to_product_user_id(remote_user_id.utf8().get_data()), packet);
 
     if (result != OK) {
         _close();
@@ -196,7 +196,7 @@ Error EOSGMultiplayerPeer::add_mesh_peer(const String &remote_user_id) {
     packet.set_sender(unique_id);
     packet.prepare();
 
-    _send_to(eosg_string_to_product_user_id(remote_user_id.utf8()), packet);
+    _send_to(eosg_string_to_product_user_id(remote_user_id.utf8().get_data()), packet);
 
     return OK;
 }
@@ -717,7 +717,7 @@ void EOSGMultiplayerPeer::_poll() {
                     ERR_FAIL_MSG("Failed to connect. Instance is not a server.");
                 }
 
-                EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8());
+                EOS_ProductUserId remote_user = eosg_string_to_product_user_id(packet_data.get_sender().utf8().get_data());
                 if (peer_id < 1 || peers.has(peer_id) || unique_id == peer_id) {
                     _disconnect_remote_user(remote_user); //Invalid peer id. reject the peer.
                     break;
@@ -843,7 +843,7 @@ MultiplayerPeer::ConnectionStatus EOSGMultiplayerPeer::_get_connection_status() 
  ****************************************/
 void EOSGMultiplayerPeer::set_local_user_id(const String &p_local_user_id) {
     CharString local_user_id = p_local_user_id.utf8();
-    s_local_user_id = eosg_string_to_product_user_id(local_user_id);
+    s_local_user_id = eosg_string_to_product_user_id(local_user_id.get_data());
 }
 
 /****************************************
@@ -1125,7 +1125,7 @@ void EOSGMultiplayerPeer::connection_request_callback(const ConnectionRequestDat
     if (active_mode == MODE_CLIENT || is_refusing_new_connections())
         return;
 
-    EOS_ProductUserId remote_user_id = eosg_string_to_product_user_id(data.remote_user_id.utf8());
+    EOS_ProductUserId remote_user_id = eosg_string_to_product_user_id(data.remote_user_id.utf8().get_data());
 
     pending_connection_requests.push_back(remote_user_id);
 

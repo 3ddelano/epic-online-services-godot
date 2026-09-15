@@ -58,7 +58,7 @@ void EOSGPacketPeerMediator::_on_process_frame() {
         return;
 
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
-    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_GetNextReceivedPacketSizeOptions packet_size_options;
     packet_size_options.ApiVersion = EOS_P2P_GETNEXTRECEIVEDPACKETSIZE_API_LATEST;
     packet_size_options.LocalUserId = local_user_id;
@@ -408,7 +408,7 @@ void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
  ****************************************/
 bool EOSGPacketPeerMediator::_add_connection_established_callback() {
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
-    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_AddNotifyPeerConnectionEstablishedOptions connection_established_options;
     connection_established_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONESTABLISHED_API_LATEST;
     connection_established_options.LocalUserId = local_user_id;
@@ -426,7 +426,7 @@ bool EOSGPacketPeerMediator::_add_connection_established_callback() {
  ****************************************/
 bool EOSGPacketPeerMediator::_add_connection_interrupted_callback() {
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
-    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_AddNotifyPeerConnectionInterruptedOptions connection_interrupted_options;
     connection_interrupted_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONINTERRUPTED_API_LATEST;
     connection_interrupted_options.LocalUserId = local_user_id;
@@ -444,7 +444,7 @@ bool EOSGPacketPeerMediator::_add_connection_interrupted_callback() {
  ****************************************/
 bool EOSGPacketPeerMediator::_add_connection_closed_callback() {
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
-    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_AddNotifyPeerConnectionClosedOptions connection_closed_options;
     connection_closed_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONCLOSED_API_LATEST;
     connection_closed_options.LocalUserId = local_user_id;
@@ -462,7 +462,7 @@ bool EOSGPacketPeerMediator::_add_connection_closed_callback() {
  ****************************************/
 bool EOSGPacketPeerMediator::_add_connection_request_callback() {
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
-    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8());
+    EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_AddNotifyPeerConnectionRequestOptions connection_request_options;
     connection_request_options.ApiVersion = EOS_P2P_ADDNOTIFYPEERCONNECTIONREQUEST_API_LATEST;
     connection_request_options.LocalUserId = local_user_id;

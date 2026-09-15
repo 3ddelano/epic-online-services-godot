@@ -10,7 +10,7 @@ int IEOS::anticheat_client_interface_begin_session(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_BEGINSESSION_API_LATEST;
     options.Mode = static_cast<EOS_EAntiCheatClientMode>(p_mode);
-    options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id);
+    options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id.get_data());
 
     return static_cast<int>(EOS_AntiCheatClient_BeginSession(s_antiCheatClientInterface, &options));
 };
@@ -30,7 +30,8 @@ int IEOS::anticheat_client_interface_add_external_integrity_catalog(Ref<RefCount
     EOS_AntiCheatClient_AddExternalIntegrityCatalogOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATCLIENT_ADDEXTERNALINTEGRITYCATALOG_API_LATEST;
-    options.PathToBinFile = ProjectSettings::get_singleton()->globalize_path(p_path_to_bin_file.get_data()).utf8();
+    CharString path_to_bin_file = ProjectSettings::get_singleton()->globalize_path(p_path_to_bin_file.get_data()).utf8();
+    options.PathToBinFile = path_to_bin_file.get_data();
 
     return static_cast<int>(EOS_AntiCheatClient_AddExternalIntegrityCatalog(s_antiCheatClientInterface, &options));
 }
@@ -156,7 +157,7 @@ int IEOS::anticheat_client_interface_register_peer(Ref<RefCounted> p_options) {
     if (p_ip_address.size() > 1) {
         options.IpAddress = p_ip_address.get_data();
     }
-    options.PeerProductUserId = eosg_string_to_product_user_id(p_peer_product_user_id);
+    options.PeerProductUserId = eosg_string_to_product_user_id(p_peer_product_user_id.get_data());
 
     return static_cast<int>(EOS_AntiCheatClient_RegisterPeer(s_antiCheatClientInterface, &options));
 }
