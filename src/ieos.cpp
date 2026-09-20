@@ -172,8 +172,10 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(lobby_interface_is_rtc_room_connected);
     IEOS_BIND_METHOD(lobby_interface_join_lobby);
     IEOS_BIND_METHOD(lobby_interface_join_lobby_by_id);
+    IEOS_BIND_METHOD(lobby_interface_join_rtc_room);
     IEOS_BIND_METHOD(lobby_interface_kick_member);
     IEOS_BIND_METHOD(lobby_interface_leave_lobby);
+    IEOS_BIND_METHOD(lobby_interface_leave_rtc_room);
     IEOS_BIND_METHOD(lobby_interface_parse_connect_string);
     IEOS_BIND_METHOD(lobby_interface_promote_member);
     IEOS_BIND_METHOD(lobby_interface_query_invites);
