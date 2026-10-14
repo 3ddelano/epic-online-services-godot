@@ -85,6 +85,7 @@ protected:
 
 public:
     bool isEOSValid = false; // is true if EOS Platform is initialized
+    bool isEOSInitialized = false;
 
     static IEOS *get_singleton();
 

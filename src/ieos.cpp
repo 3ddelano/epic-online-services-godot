@@ -557,6 +557,9 @@ IEOS::~IEOS() {
     if (s_platformInterface != nullptr) {
         platform_interface_release();
     }
+    if (isEOSInitialized) {
+        platform_interface_shutdown();
+    }
 
     for (auto const &[key, val] : anticheat_client_map) {
         memfree(val);
