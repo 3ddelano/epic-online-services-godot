@@ -788,7 +788,6 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
     }
 
     EOS_EResult setCallbackResult = EOS_Logging_SetCallback([](const EOS_LogMessage *logMessage) {
-        // EOS_Shutdown can log while IEOS is being torn down
         if (IEOS::get_singleton() == nullptr || !IEOS::get_singleton()->isEOSInitialized) {
             return;
         }

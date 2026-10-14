@@ -557,8 +557,6 @@ IEOS::~IEOS() {
     if (s_platformInterface != nullptr) {
         platform_interface_release();
     }
-    // Without EOS_Shutdown, the SDK's own static destructors tear it down at process exit
-    // while its websocket thread is still running, which crashes on quit.
     if (isEOSInitialized) {
         platform_interface_shutdown();
     }

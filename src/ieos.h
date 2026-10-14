@@ -85,7 +85,7 @@ protected:
 
 public:
     bool isEOSValid = false; // is true if EOS Platform is initialized
-    bool isEOSInitialized = false; // is true between a successful EOS_Initialize and EOS_Shutdown
+    bool isEOSInitialized = false;
 
     static IEOS *get_singleton();
 
