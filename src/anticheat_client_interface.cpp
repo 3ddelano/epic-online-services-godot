@@ -86,22 +86,20 @@ Dictionary IEOS::anticheat_client_interface_protect_message(Ref<RefCounted> p_op
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = memalloc(out_buffer_size_bytes);
+    PackedByteArray outBuffer;
+    outBuffer.resize(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatClient_ProtectMessage(s_antiCheatClientInterface, &options, outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatClient_ProtectMessage(s_antiCheatClientInterface, &options, outBuffer.ptrw(), &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
-        PackedByteArray buffer;
-        buffer.resize(outBytesWritten);
-        memcpy(buffer.ptrw(), outBuffer, outBytesWritten);
-        ret["out_buffer"] = buffer;
+        outBuffer.resize(outBytesWritten);
+        ret["out_buffer"] = outBuffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
-    memfree(outBuffer);
     return ret;
 }
 
@@ -119,22 +117,20 @@ Dictionary IEOS::anticheat_client_interface_unprotect_message(Ref<RefCounted> p_
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = memalloc(out_buffer_size_bytes);
+    PackedByteArray outBuffer;
+    outBuffer.resize(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatClient_UnprotectMessage(s_antiCheatClientInterface, &options, outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatClient_UnprotectMessage(s_antiCheatClientInterface, &options, outBuffer.ptrw(), &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
-        PackedByteArray buffer;
-        buffer.resize(outBytesWritten);
-        memcpy(buffer.ptrw(), outBuffer, outBytesWritten);
-        ret["out_buffer"] = buffer;
+        outBuffer.resize(outBytesWritten);
+        ret["out_buffer"] = outBuffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
-    memfree(outBuffer);
     return ret;
 }
 

@@ -68,19 +68,17 @@ int IEOS::rtc_audio_interface_send_audio(const Ref<RefCounted> &p_options) {
     const int frames_count = frames_array.size();
 
     // Allocate and copy frame data
-    int16_t *frames_data = nullptr;
-    if (frames_count > 0) {
-        frames_data = (int16_t *)memalloc(sizeof(int16_t) * frames_count);
-        for (int i = 0; i < frames_count; i++) {
-            frames_data[i] = static_cast<int16_t>(static_cast<int>(frames_array[i]));
-        }
+    LocalVector<int16_t> frames_data;
+    frames_data.resize(frames_count);
+    for (int i = 0; i < frames_count; i++) {
+        frames_data[i] = static_cast<int16_t>(static_cast<int>(frames_array[i]));
     }
 
     // Setup audio buffer
     EOS_RTCAudio_AudioBuffer audio_buffer;
     memset(&audio_buffer, 0, sizeof(audio_buffer));
     audio_buffer.ApiVersion = EOS_RTCAUDIO_AUDIOBUFFER_API_LATEST;
-    audio_buffer.Frames = frames_data;
+    audio_buffer.Frames = frames_data.ptr();
     audio_buffer.FramesCount = static_cast<uint32_t>(frames_count);
     audio_buffer.SampleRate = static_cast<uint32_t>(sample_rate);
     audio_buffer.Channels = static_cast<uint32_t>(channels);
@@ -94,11 +92,6 @@ int IEOS::rtc_audio_interface_send_audio(const Ref<RefCounted> &p_options) {
     options.Buffer = &audio_buffer;
 
     EOS_EResult result = EOS_RTCAudio_SendAudio(s_rtcAudioInterface, &options);
-
-    // Free allocated memory
-    if (frames_data != nullptr) {
-        memfree(frames_data);
-    }
 
     return static_cast<int>(result);
 }

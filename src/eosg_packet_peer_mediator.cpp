@@ -50,14 +50,14 @@ void EOSGPacketPeerMediator::_bind_methods() {
  * stop being polled if the queue size limit is reached.
  ****************************************/
 void EOSGPacketPeerMediator::_on_process_frame() {
-    if (EOSGMultiplayerPeer::get_local_user_id().is_empty())
-        return;
     if (socket_packet_queues.size() == 0)
         return;
     if (get_total_packet_count() >= max_queue_size)
         return;
 
     String local_user_id_str = EOSGMultiplayerPeer::get_local_user_id();
+    if (local_user_id_str.is_empty())
+        return;
     EOS_ProductUserId local_user_id = eosg_string_to_product_user_id(local_user_id_str.utf8().get_data());
     EOS_P2P_GetNextReceivedPacketSizeOptions packet_size_options;
     packet_size_options.ApiVersion = EOS_P2P_GETNEXTRECEIVEDPACKETSIZE_API_LATEST;

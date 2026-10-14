@@ -155,13 +155,13 @@ int EOSGLobbyModification::set_allowed_platform_ids(const TypedArray<int> &p_pla
     options.ApiVersion = EOS_LOBBYMODIFICATION_SETALLOWEDPLATFORMIDS_API_LATEST;
     options.AllowedPlatformIdsCount = p_platform_ids.size();
 
-    uint32_t *platform_ids_array = (uint32_t *)memalloc(sizeof(uint32_t) * options.AllowedPlatformIdsCount);
+    LocalVector<uint32_t> platform_ids_array;
+    platform_ids_array.resize(options.AllowedPlatformIdsCount);
     for (int i = 0; i < options.AllowedPlatformIdsCount; i++) {
         platform_ids_array[i] = static_cast<uint32_t>(p_platform_ids[i]);
     }
-    options.AllowedPlatformIds = platform_ids_array;
+    options.AllowedPlatformIds = platform_ids_array.ptr();
 
     int result = static_cast<int>(EOS_LobbyModification_SetAllowedPlatformIds(m_internal, &options));
-    memfree(platform_ids_array);
     return result;
 }

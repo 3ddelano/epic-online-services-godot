@@ -18,16 +18,16 @@ void IEOS::ecom_interface_checkout(Ref<RefCounted> p_options) {
 
     TypedArray<Dictionary> p_entries = p_options->get("entries");
     options.EntryCount = static_cast<uint32_t>(p_entries.size());
-    EOS_Ecom_CheckoutEntry *entries = nullptr;
-    if (options.EntryCount > 0) {
-        entries = (EOS_Ecom_CheckoutEntry *)memalloc(sizeof(EOS_Ecom_CheckoutEntry) * options.EntryCount);
-        for (int i = 0; i < options.EntryCount; i++) {
-            entries[i].ApiVersion = EOS_ECOM_CHECKOUTENTRY_API_LATEST;
-            entries[i].OfferId = VARIANT_TO_CHARSTRING(p_entries[i].get("offer_id")).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(offer_ids, offer_ids_charstrings, options.EntryCount)
+    LocalVector<EOS_Ecom_CheckoutEntry> entries;
+    entries.resize(options.EntryCount);
+    for (int i = 0; i < options.EntryCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(offer_ids, offer_ids_charstrings, i, p_entries[i].get("offer_id"));
+        entries[i].ApiVersion = EOS_ECOM_CHECKOUTENTRY_API_LATEST;
+        entries[i].OfferId = offer_ids[i];
     }
 
-    options.Entries = entries;
+    options.Entries = entries.ptr();
 
     p_options->reference();
 
@@ -400,15 +400,11 @@ void IEOS::ecom_interface_query_entitlements(Ref<RefCounted> p_options) {
 
     TypedArray<String> p_entitlement_names = p_options->get("entitlement_names");
     options.EntitlementNameCount = static_cast<uint32_t>(p_entitlement_names.size());
-    EOS_Ecom_EntitlementName *entitlementNames = nullptr;
-    if (options.EntitlementNameCount > 0) {
-        entitlementNames = (EOS_Ecom_EntitlementName *)memalloc(sizeof(EOS_Ecom_EntitlementName) * p_entitlement_names.size());
-
-        for (int i = 0; i < options.EntitlementNameCount; i++) {
-            entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(entitlement_names, entitlement_names_charstrings, options.EntitlementNameCount)
+    for (int i = 0; i < options.EntitlementNameCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(entitlement_names, entitlement_names_charstrings, i, p_entitlement_names[i]);
     }
-    options.EntitlementNames = entitlementNames;
+    options.EntitlementNames = entitlement_names;
     options.bIncludeRedeemed = VARIANT_TO_EOS_BOOL(p_options->get("include_redeemed"));
     p_options->reference();
 
@@ -463,12 +459,9 @@ void IEOS::ecom_interface_query_ownership(Ref<RefCounted> p_options) {
 
     TypedArray<String> p_catalog_item_ids = p_options->get("catalog_item_ids");
     options.CatalogItemIdCount = static_cast<uint32_t>(p_catalog_item_ids.size());
-    EOS_Ecom_CatalogItemId *catalog_item_ids = nullptr;
-    if (options.CatalogItemIdCount > 0) {
-        catalog_item_ids = (EOS_Ecom_CatalogItemId *)memalloc(sizeof(EOS_Ecom_CatalogItemId) * p_catalog_item_ids.size());
-        for (int i = 0; i < options.CatalogItemIdCount; i++) {
-            catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(catalog_item_ids, catalog_item_ids_charstrings, options.CatalogItemIdCount)
+    for (int i = 0; i < options.CatalogItemIdCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(catalog_item_ids, catalog_item_ids_charstrings, i, p_catalog_item_ids[i]);
     }
     options.CatalogItemIds = catalog_item_ids;
 
@@ -501,7 +494,6 @@ void IEOS::ecom_interface_query_ownership_token(Ref<RefCounted> p_options) {
     CharString catalog_namespace = VARIANT_TO_CHARSTRING(p_options->get("catalog_namespace"));
 
     TypedArray<String> p_catalog_item_ids = p_options->get("catalog_item_ids");
-    EOS_Ecom_CatalogItemId *catalog_item_ids = nullptr;
 
     EOS_Ecom_QueryOwnershipTokenOptions options;
     memset(&options, 0, sizeof(options));
@@ -511,11 +503,9 @@ void IEOS::ecom_interface_query_ownership_token(Ref<RefCounted> p_options) {
         options.CatalogNamespace = catalog_namespace.get_data();
     }
     options.CatalogItemIdCount = static_cast<uint32_t>(p_catalog_item_ids.size());
-    if (options.CatalogItemIdCount > 0) {
-        catalog_item_ids = (EOS_Ecom_CatalogItemId *)memalloc(sizeof(EOS_Ecom_CatalogItemId) * options.CatalogItemIdCount);
-        for (int i = 0; i < options.CatalogItemIdCount; i++) {
-            catalog_item_ids[i] = VARIANT_TO_CHARSTRING(p_catalog_item_ids[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(catalog_item_ids, catalog_item_ids_charstrings, options.CatalogItemIdCount)
+    for (int i = 0; i < options.CatalogItemIdCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(catalog_item_ids, catalog_item_ids_charstrings, i, p_catalog_item_ids[i]);
     }
     options.CatalogItemIds = catalog_item_ids;
 
@@ -538,18 +528,14 @@ void IEOS::ecom_interface_redeem_entitlements(Ref<RefCounted> p_options) {
     CharString local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     TypedArray<String> p_entitlement_ids = p_options->get("entitlement_ids");
 
-    EOS_Ecom_EntitlementId *entitlement_ids = nullptr;
-
     EOS_Ecom_RedeemEntitlementsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ECOM_REDEEMENTITLEMENTS_API_LATEST;
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.EntitlementIdCount = static_cast<uint32_t>(p_entitlement_ids.size());
-    if (options.EntitlementIdCount > 0) {
-        entitlement_ids = (EOS_Ecom_EntitlementId *)memalloc(sizeof(EOS_Ecom_EntitlementId) * p_entitlement_ids.size());
-        for (int i = 0; i < options.EntitlementIdCount; i++) {
-            entitlement_ids[i] = VARIANT_TO_CHARSTRING(p_entitlement_ids[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(entitlement_ids, entitlement_ids_charstrings, options.EntitlementIdCount)
+    for (int i = 0; i < options.EntitlementIdCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(entitlement_ids, entitlement_ids_charstrings, i, p_entitlement_ids[i]);
     }
     options.EntitlementIds = entitlement_ids;
     p_options->reference();
@@ -590,8 +576,8 @@ Dictionary IEOS::ecom_interface_copy_last_redeemed_entitlement_by_index(Ref<RefC
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.RedeemedEntitlementIndex = static_cast<uint32_t>(p_options->get("redeemed_entitlement_index"));
 
-    char *outEntitlementId = (char *)memalloc(EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1);
-    int outEntitlementIdLength = EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1;
+    char outEntitlementId[EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1] = {};
+    int32_t outEntitlementIdLength = sizeof(outEntitlementId);
     EOS_EResult res = EOS_Ecom_CopyLastRedeemedEntitlementByIndex(s_ecomInterface, &options, outEntitlementId, &outEntitlementIdLength);
 
     Dictionary ret;
@@ -611,15 +597,11 @@ void IEOS::ecom_interface_query_entitlement_token(Ref<RefCounted> p_options) {
 
     TypedArray<String> p_entitlement_names = p_options->get("entitlement_names");
     options.EntitlementNameCount = static_cast<uint32_t>(p_entitlement_names.size());
-    EOS_Ecom_EntitlementName *entitlementNames = nullptr;
-    if (options.EntitlementNameCount > 0) {
-        entitlementNames = (EOS_Ecom_EntitlementName *)memalloc(sizeof(EOS_Ecom_EntitlementName) * p_entitlement_names.size());
-
-        for (int i = 0; i < options.EntitlementNameCount; i++) {
-            entitlementNames[i] = VARIANT_TO_CHARSTRING(p_entitlement_names[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(entitlement_names, entitlement_names_charstrings, options.EntitlementNameCount)
+    for (int i = 0; i < options.EntitlementNameCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(entitlement_names, entitlement_names_charstrings, i, p_entitlement_names[i]);
     }
-    options.EntitlementNames = entitlementNames;
+    options.EntitlementNames = entitlement_names;
     p_options->reference();
 
     EOS_Ecom_QueryEntitlementToken(s_ecomInterface, &options, (void *)*p_options, [](const EOS_Ecom_QueryEntitlementTokenCallbackInfo *data) {
@@ -645,12 +627,9 @@ void IEOS::ecom_interface_query_ownership_by_sandbox_ids(Ref<RefCounted> p_optio
 
     TypedArray<String> p_sandbox_ids = p_options->get("sandbox_ids");
     options.SandboxIdsCount = static_cast<uint32_t>(p_sandbox_ids.size());
-    EOS_Ecom_SandboxId *sandbox_ids = nullptr;
-    if (options.SandboxIdsCount > 0) {
-        sandbox_ids = (EOS_Ecom_SandboxId *)memalloc(sizeof(EOS_Ecom_SandboxId) * p_sandbox_ids.size());
-        for (int i = 0; i < options.SandboxIdsCount; i++) {
-            sandbox_ids[i] = VARIANT_TO_CHARSTRING(p_sandbox_ids[i]).get_data();
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(sandbox_ids, sandbox_ids_charstrings, options.SandboxIdsCount)
+    for (int i = 0; i < options.SandboxIdsCount; i++) {
+        PERSISTENT_CHAR_ARRAY_SET(sandbox_ids, sandbox_ids_charstrings, i, p_sandbox_ids[i]);
     }
     options.SandboxIds = sandbox_ids;
     p_options->reference();
@@ -712,8 +691,8 @@ Dictionary IEOS::ecom_interface_copy_last_redeem_entitlements_result_by_index(Re
     options.ResultType = static_cast<EOS_ERedeemEntitlementsResultListType>(result_type);
     options.EntitlementIndex = static_cast<uint32_t>(entitlement_index);
 
-    char *outEntitlementId = (char *)memalloc(EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1);
-    int32_t outEntitlementIdLength = EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1;
+    char outEntitlementId[EOS_ECOM_ENTITLEMENTID_MAX_LENGTH + 1] = {};
+    int32_t outEntitlementIdLength = sizeof(outEntitlementId);
     EOS_EResult res = EOS_Ecom_CopyLastRedeemEntitlementsResultByIndex(s_ecomInterface, &options, outEntitlementId, &outEntitlementIdLength);
 
     Dictionary ret;

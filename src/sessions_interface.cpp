@@ -152,13 +152,13 @@ Dictionary IEOS::sessions_interface_get_invite_id_by_index(Ref<RefCounted> p_opt
     options.ApiVersion = EOS_SESSIONS_GETINVITEIDBYINDEX_API_LATEST;
     options.Index = static_cast<uint32_t>(index);
 
-    char *outBuffer = (char *)memalloc(sizeof(char) * (EOS_SESSIONS_INVITEID_MAX_LENGTH + 1));
-    int32_t outBufferLength = 0;
+    char outBuffer[EOS_SESSIONS_INVITEID_MAX_LENGTH + 1] = {};
+    int32_t outBufferLength = sizeof(outBuffer);
     EOS_EResult res = EOS_Sessions_GetInviteIdByIndex(s_sessionsInterface, &options, outBuffer, &outBufferLength);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["invite_id"] = String(outBuffer);
+    ret["invite_id"] = EOSG_GET_STRING(outBuffer);
     return ret;
 }
 

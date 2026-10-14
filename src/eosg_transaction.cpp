@@ -12,8 +12,8 @@ void EOSGTransaction::_bind_methods() {
 
 String EOSGTransaction::get_id() {
     ERR_FAIL_NULL_V(m_internal, "");
-    char *outBuffer = (char *)memalloc(256);
-    int32_t outLength = 0;
+    char outBuffer[EOS_ECOM_TRANSACTIONID_MAX_LENGTH + 1] = {};
+    int32_t outLength = sizeof(outBuffer);
     EOS_Ecom_Transaction_GetTransactionId(m_internal, outBuffer, &outLength);
     return String(outBuffer);
 }

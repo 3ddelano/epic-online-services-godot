@@ -19,13 +19,12 @@ int EOSGTitleStorageFileTransferRequest::get_file_request_state() {
 
 Dictionary EOSGTitleStorageFileTransferRequest::get_filename() {
     ERR_FAIL_NULL_V(m_internal, {});
-    char *outBuffer = (char *)(memalloc(EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1));
-    int outBufferLength = EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1;
-    EOS_EResult result = EOS_TitleStorageFileTransferRequest_GetFilename(m_internal, EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1, outBuffer, &outBufferLength);
+    char outBuffer[EOS_TITLESTORAGE_FILENAME_MAX_LENGTH_BYTES + 1] = {};
+    int32_t outBufferLength = 0;
+    EOS_EResult result = EOS_TitleStorageFileTransferRequest_GetFilename(m_internal, sizeof(outBuffer), outBuffer, &outBufferLength);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(result);
     ret["filename"] = EOSG_GET_STRING(outBuffer);
-    memfree(outBuffer);
     return ret;
 }
 

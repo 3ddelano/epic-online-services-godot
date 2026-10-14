@@ -189,18 +189,18 @@ void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> 
     Array p_user_ids = p_options->get("user_ids");
     int p_user_ids_size = p_user_ids.size();
 
-    EOS_ProductUserId *user_ids = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * p_user_ids_size);
-	PERSISTENT_CHAR_ARRAY_CREATE(user_ids_cstr, user_ids_cstr_charstrings, p_user_ids_size)
+    LocalVector<EOS_ProductUserId> user_ids;
+    user_ids.resize(p_user_ids_size);
     for (int i = 0; i < p_user_ids_size; i++) {
-		PERSISTENT_CHAR_ARRAY_SET(user_ids_cstr, user_ids_cstr_charstrings, i, p_user_ids[i]);
-        user_ids[i] = eosg_string_to_product_user_id(user_ids_cstr[i]);
+        user_ids[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(p_user_ids[i]).get_data());
     }
 
     Array p_stat_info = p_options->get("stat_info");
     int p_stat_info_size = p_stat_info.size();
 
-    EOS_Leaderboards_UserScoresQueryStatInfo *statInfo = (EOS_Leaderboards_UserScoresQueryStatInfo *)memalloc(sizeof(EOS_Leaderboards_UserScoresQueryStatInfo) * p_stat_info_size);
-	PERSISTENT_CHAR_ARRAY_CREATE(stat_name_cstr, stat_name_cstr_charstrings, p_stat_info_size)
+    LocalVector<EOS_Leaderboards_UserScoresQueryStatInfo> statInfo;
+    statInfo.resize(p_stat_info_size);
+    PERSISTENT_CHAR_ARRAY_CREATE(stat_name_cstr, stat_name_cstr_charstrings, p_stat_info_size)
     for (int i = 0; i < p_stat_info_size; i++) {
 		PERSISTENT_CHAR_ARRAY_SET(stat_name_cstr, stat_name_cstr_charstrings, i, p_stat_info[i].get("stat_name"));
         int aggregation = static_cast<int>(p_stat_info[i].get("aggregation"));
@@ -213,9 +213,9 @@ void IEOS::leaderboards_interface_query_leaderboard_user_scores(Ref<RefCounted> 
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_LEADERBOARDS_QUERYLEADERBOARDUSERSCORES_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.UserIds = user_ids;
+    options.UserIds = user_ids.ptr();
     options.UserIdsCount = p_user_ids_size;
-    options.StatInfo = statInfo;
+    options.StatInfo = statInfo.ptr();
     options.StatInfoCount = p_stat_info_size;
     options.StartTime = static_cast<int64_t>(p_options->get("start_time"));
     options.EndTime = static_cast<int64_t>(p_options->get("end_time"));

@@ -38,9 +38,9 @@ void IEOS::titlestorage_interface_query_file_list(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_TITLESTORAGE_QUERYFILELIST_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.ListOfTagsCount = static_cast<uint32_t>(list_of_tags.size());
-    const char **listOfTags = (const char **)memalloc(sizeof(const char *) * options.ListOfTagsCount);
+    PERSISTENT_CHAR_ARRAY_CREATE(listOfTags, list_of_tags_charstrings, options.ListOfTagsCount)
     for (int i = 0; i < options.ListOfTagsCount; i++) {
-        listOfTags[i] = VARIANT_TO_CHARSTRING(list_of_tags[i]).get_data();
+        PERSISTENT_CHAR_ARRAY_SET(listOfTags, list_of_tags_charstrings, i, list_of_tags[i]);
     }
     options.ListOfTags = listOfTags;
     p_options->reference();

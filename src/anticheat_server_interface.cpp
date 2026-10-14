@@ -66,15 +66,12 @@ int IEOS::anticheat_server_interface_receive_message_from_client(Ref<RefCounted>
     CharString p_client_handle = VARIANT_TO_CHARSTRING(p_options->get("client_handle"));
     PackedByteArray p_data = p_options->get("data");
 
-    void *data = memalloc(p_data.size());
-    std::memcpy(data, p_data.ptr(), p_data.size());
-
     EOS_AntiCheatServer_ReceiveMessageFromClientOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_ANTICHEATSERVER_RECEIVEMESSAGEFROMCLIENT_API_LATEST;
     options.ClientHandle = _anticheat_player_id_to_handle(p_client_handle);
     options.DataLengthBytes = static_cast<uint32_t>(p_data.size());
-    options.Data = data;
+    options.Data = p_data.ptr();
 
     return static_cast<int>(EOS_AntiCheatServer_ReceiveMessageFromClient(s_antiCheatServerInterface, &options));
 }
@@ -148,8 +145,6 @@ Dictionary IEOS::anticheat_server_interface_protect_message(Ref<RefCounted> p_op
     CharString p_client_handle = VARIANT_TO_CHARSTRING(p_options->get("client_handle"));
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
-    void *data = memalloc(data_length_bytes);
-    std::memcpy(data, p_data.ptr(), data_length_bytes);
     int out_buffer_size_bytes = p_options->get("out_buffer_size_bytes");
 
     EOS_AntiCheatServer_ProtectMessageOptions options;
@@ -157,19 +152,21 @@ Dictionary IEOS::anticheat_server_interface_protect_message(Ref<RefCounted> p_op
     options.ApiVersion = EOS_ANTICHEATSERVER_PROTECTMESSAGE_API_LATEST;
     options.ClientHandle = _anticheat_player_id_to_handle(p_client_handle);
     options.DataLengthBytes = static_cast<uint32_t>(data_length_bytes);
-    options.Data = data;
+    options.Data = p_data.ptr();
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = (void *)memalloc(out_buffer_size_bytes + 1);
+    PackedByteArray outBuffer;
+    outBuffer.resize(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatServer_ProtectMessage(s_antiCheatServerInterface, &options, &outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatServer_ProtectMessage(s_antiCheatServerInterface, &options, outBuffer.ptrw(), &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
+        outBuffer.resize(outBytesWritten);
         ret["out_buffer"] = outBuffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
@@ -181,8 +178,6 @@ Dictionary IEOS::anticheat_server_interface_unprotect_message(Ref<RefCounted> p_
     CharString p_client_handle = VARIANT_TO_CHARSTRING(p_options->get("client_handle"));
     PackedByteArray p_data = p_options->get("data");
     int data_length_bytes = p_data.size();
-    void *data = memalloc(data_length_bytes);
-    std::memcpy(data, p_data.ptr(), data_length_bytes);
 
     int out_buffer_size_bytes = p_options->get("out_buffer_size_bytes");
 
@@ -191,19 +186,21 @@ Dictionary IEOS::anticheat_server_interface_unprotect_message(Ref<RefCounted> p_
     options.ApiVersion = EOS_ANTICHEATSERVER_UNPROTECTMESSAGE_API_LATEST;
     options.ClientHandle = _anticheat_player_id_to_handle(p_client_handle);
     options.DataLengthBytes = static_cast<uint32_t>(data_length_bytes);
-    options.Data = data;
+    options.Data = p_data.ptr();
     options.OutBufferSizeBytes = static_cast<uint32_t>(out_buffer_size_bytes);
 
     uint32_t outBytesWritten = 0;
-    void *outBuffer = (void *)memalloc(out_buffer_size_bytes + 1);
+    PackedByteArray outBuffer;
+    outBuffer.resize(out_buffer_size_bytes);
 
-    EOS_EResult res = EOS_AntiCheatServer_UnprotectMessage(s_antiCheatServerInterface, &options, &outBuffer, &outBytesWritten);
+    EOS_EResult res = EOS_AntiCheatServer_UnprotectMessage(s_antiCheatServerInterface, &options, outBuffer.ptrw(), &outBytesWritten);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
     ret["out_buffer"] = Variant();
     ret["out_bytes_written"] = 0;
     if (res == EOS_EResult::EOS_Success) {
+        outBuffer.resize(outBytesWritten);
         ret["out_buffer"] = outBuffer;
         ret["out_bytes_written"] = outBytesWritten;
     }
@@ -218,7 +215,8 @@ int IEOS::anticheat_server_interface_register_event(Ref<RefCounted> p_options) {
     Array p_param_defs = p_options->get("param_defs");
 
     PERSISTENT_CHAR_ARRAY_CREATE(param_names, param_names_charstrings, p_param_defs.size());
-    EOS_AntiCheatCommon_RegisterEventParamDef *paramDefs = (EOS_AntiCheatCommon_RegisterEventParamDef *)memalloc(sizeof(EOS_AntiCheatCommon_RegisterEventParamDef) * p_param_defs.size());
+    LocalVector<EOS_AntiCheatCommon_RegisterEventParamDef> paramDefs;
+    paramDefs.resize(p_param_defs.size());
     for (int i = 0; i < p_param_defs.size(); i++) {
         Dictionary paramDef = p_param_defs[i];
         int param_type = paramDef["param_type"];
@@ -234,7 +232,7 @@ int IEOS::anticheat_server_interface_register_event(Ref<RefCounted> p_options) {
     options.EventName = p_event_name.get_data();
     options.EventType = static_cast<EOS_EAntiCheatCommonEventType>(p_event_type);
     options.ParamDefsCount = p_param_defs.size();
-    options.ParamDefs = paramDefs;
+    options.ParamDefs = paramDefs.ptr();
 
     return static_cast<int>(EOS_AntiCheatServer_RegisterEvent(s_antiCheatServerInterface, &options));
 }
@@ -246,7 +244,10 @@ int IEOS::anticheat_server_interface_log_event(Ref<RefCounted> p_options) {
     Array p_params = p_options->get("params");
 
     int params_count = p_params.size();
-    EOS_AntiCheatCommon_LogEventParamPair *params = (EOS_AntiCheatCommon_LogEventParamPair *)memalloc(sizeof(EOS_AntiCheatCommon_LogEventParamPair) * params_count);
+    LocalVector<EOS_AntiCheatCommon_LogEventParamPair> params;
+    params.resize(params_count);
+    Vector<CharString> param_strings;
+    param_strings.resize(params_count);
     for (int i = 0; i < params_count; i++) {
         Variant param = p_params[i];
 
@@ -255,19 +256,17 @@ int IEOS::anticheat_server_interface_log_event(Ref<RefCounted> p_options) {
             params[i].ParamValue.Int64 = param;
         } else if (param.get_type() == Variant::STRING) {
             params[i].ParamValueType = EOS_EAntiCheatCommonEventParamType::EOS_ACCEPT_String;
-            params[i].ParamValue.String = VARIANT_TO_CHARSTRING(param).get_data();
-            break;
+            param_strings.write[i] = VARIANT_TO_CHARSTRING(param);
+            params[i].ParamValue.String = param_strings[i].get_data();
         } else if (param.get_type() == Variant::VECTOR3) {
             params[i].ParamValueType = EOS_EAntiCheatCommonEventParamType::EOS_ACCEPT_Vector3f;
             Vector3 vec = param;
             params[i].ParamValue.Vec3f.x = vec.x;
             params[i].ParamValue.Vec3f.y = vec.y;
             params[i].ParamValue.Vec3f.z = vec.z;
-            break;
         } else if (param.get_type() == Variant::FLOAT) {
             params[i].ParamValueType = EOS_EAntiCheatCommonEventParamType::EOS_ACCEPT_Float;
             params[i].ParamValue.Float = param;
-            break;
         } else if (param.get_type() == Variant::QUATERNION) {
             Quaternion quat = param;
             params[i].ParamValueType = EOS_EAntiCheatCommonEventParamType::EOS_ACCEPT_Quat;
@@ -275,7 +274,6 @@ int IEOS::anticheat_server_interface_log_event(Ref<RefCounted> p_options) {
             params[i].ParamValue.Quat.y = quat.y;
             params[i].ParamValue.Quat.z = quat.z;
             params[i].ParamValue.Quat.w = quat.w;
-            break;
         } else {
             ERR_FAIL_V_MSG(static_cast<int>(EOS_EResult::EOS_InvalidParameters), "Invalid param type provided.");
         }
@@ -287,7 +285,7 @@ int IEOS::anticheat_server_interface_log_event(Ref<RefCounted> p_options) {
     options.ClientHandle = _anticheat_player_id_to_handle(p_client_handle);
     options.EventId = static_cast<uint32_t>(p_event_id);
     options.ParamsCount = params_count;
-    options.Params = params;
+    options.Params = params.ptr();
 
     return static_cast<int>(EOS_AntiCheatServer_LogEvent(s_antiCheatServerInterface, &options));
 }

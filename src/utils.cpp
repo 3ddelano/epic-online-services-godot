@@ -5,8 +5,8 @@ String eosg_epic_account_id_to_string(EOS_EpicAccountId accountId) {
         return String("");
     }
 
-    char *tempBuffer = (char *)memalloc(EOS_EPICACCOUNTID_MAX_LENGTH + 1);
-    int32_t tempBufferSize = EOS_EPICACCOUNTID_MAX_LENGTH + 1;
+    char tempBuffer[EOS_EPICACCOUNTID_MAX_LENGTH + 1];
+    int32_t tempBufferSize = sizeof(tempBuffer);
     EOS_EResult Result = EOS_EpicAccountId_ToString(accountId, tempBuffer, &tempBufferSize);
 
     if (Result == EOS_EResult::EOS_Success) {
@@ -25,8 +25,8 @@ String eosg_product_user_id_to_string(EOS_ProductUserId localUserId) {
         return String("");
     }
 
-    char *tempBuffer = (char *)memalloc(EOS_PRODUCTUSERID_MAX_LENGTH + 1);
-    int32_t tempBufferSize = EOS_PRODUCTUSERID_MAX_LENGTH + 1;
+    char tempBuffer[EOS_PRODUCTUSERID_MAX_LENGTH + 1];
+    int32_t tempBufferSize = sizeof(tempBuffer);
     EOS_EResult Result = EOS_ProductUserId_ToString(localUserId, tempBuffer, &tempBufferSize);
 
     if (Result == EOS_EResult::EOS_Success) {
