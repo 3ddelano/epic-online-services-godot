@@ -688,8 +688,8 @@ Dictionary IEOS::platform_interface_get_active_country_code(const String &p_loca
     ERR_FAIL_NULL_V(s_platformInterface, {});
     CharString user_id = p_local_user_id.utf8();
     EOS_EpicAccountId localUserId = EOS_EpicAccountId_FromString(user_id.get_data());
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH + 1);
-    int OutBufferLength = 0;
+    char OutBuffer[EOS_COUNTRYCODE_MAX_LENGTH + 1] = {};
+    int32_t OutBufferLength = sizeof(OutBuffer);
     EOS_EResult res = EOS_Platform_GetActiveCountryCode(s_platformInterface, localUserId, OutBuffer, &OutBufferLength);
 
     Dictionary ret;
@@ -698,7 +698,6 @@ Dictionary IEOS::platform_interface_get_active_country_code(const String &p_loca
     if (res == EOS_EResult::EOS_Success) {
         ret["country_code"] = String(OutBuffer);
     }
-    memfree(OutBuffer);
     return ret;
 }
 
@@ -706,8 +705,8 @@ Dictionary IEOS::platform_interface_get_active_locale_code(const String &p_user_
     ERR_FAIL_NULL_V(s_platformInterface, {});
     CharString user_id = p_user_id.utf8();
     EOS_EpicAccountId LocalUserId = EOS_EpicAccountId_FromString(user_id.get_data());
-    char *OutBuffer = (char *)memalloc(EOS_LOCALECODE_MAX_LENGTH + 1);
-    int OutBufferLength = 0;
+    char OutBuffer[EOS_LOCALECODE_MAX_LENGTH + 1] = {};
+    int32_t OutBufferLength = sizeof(OutBuffer);
     EOS_EResult res = EOS_Platform_GetActiveLocaleCode(s_platformInterface, LocalUserId, OutBuffer, &OutBufferLength);
 
     Dictionary ret;
@@ -716,15 +715,14 @@ Dictionary IEOS::platform_interface_get_active_locale_code(const String &p_user_
     if (res == EOS_EResult::EOS_Success) {
         ret["locale_code"] = String(OutBuffer);
     }
-    memfree(OutBuffer);
     return ret;
 }
 
 Dictionary IEOS::platform_interface_get_override_country_code() {
     ERR_FAIL_NULL_V(s_platformInterface, {});
-    char *OutBuffer = (char *)memalloc(EOS_COUNTRYCODE_MAX_LENGTH + 1);
-    int32_t *OutBufferLength = (int32_t *)memalloc(sizeof(int32_t));
-    EOS_EResult res = EOS_Platform_GetOverrideCountryCode(s_platformInterface, OutBuffer, OutBufferLength);
+    char OutBuffer[EOS_COUNTRYCODE_MAX_LENGTH + 1] = {};
+    int32_t OutBufferLength = sizeof(OutBuffer);
+    EOS_EResult res = EOS_Platform_GetOverrideCountryCode(s_platformInterface, OutBuffer, &OutBufferLength);
 
     Dictionary dict;
     dict["result_code"] = static_cast<int>(res);
@@ -732,16 +730,14 @@ Dictionary IEOS::platform_interface_get_override_country_code() {
     if (res == EOS_EResult::EOS_Success) {
         dict["country_code"] = String(OutBuffer);
     }
-    memfree(OutBuffer);
-    memfree(OutBufferLength);
     return dict;
 }
 
 Dictionary IEOS::platform_interface_get_override_locale_code() {
     ERR_FAIL_NULL_V(s_platformInterface, {});
-    char *OutBuffer = (char *)memalloc(EOS_LOCALECODE_MAX_LENGTH + 1);
-    int32_t *OutBufferLength = (int32_t *)memalloc(sizeof(int32_t));
-    EOS_EResult res = EOS_Platform_GetOverrideLocaleCode(s_platformInterface, OutBuffer, OutBufferLength);
+    char OutBuffer[EOS_LOCALECODE_MAX_LENGTH + 1] = {};
+    int32_t OutBufferLength = sizeof(OutBuffer);
+    EOS_EResult res = EOS_Platform_GetOverrideLocaleCode(s_platformInterface, OutBuffer, &OutBufferLength);
 
     Dictionary dict;
     dict["result_code"] = static_cast<int>(res);
@@ -749,8 +745,6 @@ Dictionary IEOS::platform_interface_get_override_locale_code() {
     if (res == EOS_EResult::EOS_Success) {
         dict["locale_code"] = String(OutBuffer);
     }
-    memfree(OutBuffer);
-    memfree(OutBufferLength);
     return dict;
 }
 

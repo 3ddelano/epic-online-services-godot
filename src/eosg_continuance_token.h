@@ -1,6 +1,7 @@
 #pragma once
 #include "eos_common.h"
 #include "godot_cpp/classes/ref_counted.hpp"
+#include "godot_cpp/templates/local_vector.hpp"
 
 namespace godot {
 
@@ -28,12 +29,13 @@ public:
         EOS_ContinuanceToken_ToString(m_internal, nullptr, &outBufferLength);
 
         // outBufferLength is set to required length
-        char *outBuffer = (char *)(memalloc(outBufferLength + 1));
+        LocalVector<char> outBuffer;
+        outBuffer.resize(outBufferLength + 1);
 
-        EOS_EResult res = EOS_ContinuanceToken_ToString(m_internal, outBuffer, &outBufferLength);
+        EOS_EResult res = EOS_ContinuanceToken_ToString(m_internal, outBuffer.ptr(), &outBufferLength);
 
         if (res == EOS_EResult::EOS_Success) {
-            return String("ContinuanceToken[") + String(outBuffer) + String("]");
+            return String("ContinuanceToken[") + String(outBuffer.ptr()) + String("]");
         }
 
         return "ContinuanceToken[to_string failed]";

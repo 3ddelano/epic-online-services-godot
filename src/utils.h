@@ -12,6 +12,7 @@
 #include "eosg_titlestorage_file_transfer_request.h"
 #include "eosg_transaction.h"
 #include "godot_cpp/core/memory.hpp"
+#include "godot_cpp/templates/local_vector.hpp"
 #include "godot_cpp/templates/vector.hpp"
 #include "godot_cpp/variant/char_string.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
@@ -42,7 +43,9 @@ using namespace godot;
 #define PERSISTENT_CHAR_ARRAY_CREATE(array_name, storage_vector, count) \
     Vector<CharString> storage_vector;                                  \
     storage_vector.resize(count);                                       \
-    const char **array_name = (const char **)memalloc(sizeof(char *) * (count));
+    LocalVector<const char *> array_name##_storage;                     \
+    array_name##_storage.resize(count);                                 \
+    const char **array_name = array_name##_storage.ptr();
 
 #define PERSISTENT_CHAR_ARRAY_SET(array_name, storage_vector, index, variant_value) \
     storage_vector.write[index] = VARIANT_TO_CHARSTRING(variant_value);             \

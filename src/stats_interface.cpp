@@ -59,7 +59,8 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
     Array p_stats = p_options->get("stats");
     int stats_count = p_stats.size();
 
-    EOS_Stats_IngestData *stats = (EOS_Stats_IngestData *)memalloc(sizeof(EOS_Stats_IngestData) * stats_count);
+    LocalVector<EOS_Stats_IngestData> stats;
+    stats.resize(stats_count);
     PERSISTENT_CHAR_ARRAY_CREATE(stat_names, stat_names_charstrings, stats_count)
     for (int i = 0; i < stats_count; i++) {
         Dictionary p_stat = p_stats[i];
@@ -75,7 +76,7 @@ void IEOS::stats_interface_ingest_stat(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_product_user_id(target_user_id.get_data());
     options.StatsCount = stats_count;
-    options.Stats = stats;
+    options.Stats = stats.ptr();
     p_options->reference();
 
     EOS_Stats_IngestStat(s_statsInterface, &options, (void *)*p_options, [](const EOS_Stats_IngestStatCompleteCallbackInfo *data) {
@@ -97,11 +98,9 @@ void IEOS::stats_interface_query_stats(Ref<RefCounted> p_options) {
     Array p_stat_names = p_options->get("stat_names");
     int stat_names_count = p_stat_names.size();
 
-    const char **stat_names = (const char **)memalloc(sizeof(const char *) * stat_names_count);
-	PERSISTENT_CHAR_ARRAY_CREATE(stat_names_cstr, stat_names_cstr_charstrings, stat_names_count)
+    PERSISTENT_CHAR_ARRAY_CREATE(stat_names, stat_names_charstrings, stat_names_count)
     for (int i = 0; i < stat_names_count; i++) {
-		PERSISTENT_CHAR_ARRAY_SET(stat_names_cstr, stat_names_cstr_charstrings, i, p_stat_names[i]);
-        stat_names[i] = stat_names_cstr[i];
+        PERSISTENT_CHAR_ARRAY_SET(stat_names, stat_names_charstrings, i, p_stat_names[i]);
     }
 
     EOS_Stats_QueryStatsOptions options;

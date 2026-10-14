@@ -442,8 +442,8 @@ Dictionary IEOS::lobby_interface_get_invite_id_by_index(Ref<RefCounted> p_option
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.Index = static_cast<uint32_t>(static_cast<int>(p_options->get("index")));
 
-    char *outBuffer = (char *)memalloc(EOS_LOBBY_INVITEID_MAX_LENGTH + 1);
-    int outBufferSize = EOS_LOBBY_INVITEID_MAX_LENGTH + 1;
+    char outBuffer[EOS_LOBBY_INVITEID_MAX_LENGTH + 1] = {};
+    int32_t outBufferSize = sizeof(outBuffer);
     EOS_EResult result = EOS_Lobby_GetInviteIdByIndex(s_lobbyInterface, &options, outBuffer, &outBufferSize);
 
     Dictionary ret;
@@ -535,13 +535,19 @@ Dictionary IEOS::lobby_interface_get_rtc_room_name(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.LobbyId = lobby_id.get_data();
 
-    char *outBuffer = (char *)memalloc(256); // TODO: what is the actual max size for the outBuffer?
-    uint32_t outBufferSize = 256;
-    EOS_EResult res = EOS_Lobby_GetRTCRoomName(s_lobbyInterface, &options, outBuffer, &outBufferSize);
+    // EOS does not define a max RTC room name length; retry with the required size on EOS_LimitExceeded
+    LocalVector<char> outBuffer;
+    outBuffer.resize(256);
+    uint32_t outBufferSize = outBuffer.size();
+    EOS_EResult res = EOS_Lobby_GetRTCRoomName(s_lobbyInterface, &options, outBuffer.ptr(), &outBufferSize);
+    if (res == EOS_EResult::EOS_LimitExceeded) {
+        outBuffer.resize(outBufferSize);
+        res = EOS_Lobby_GetRTCRoomName(s_lobbyInterface, &options, outBuffer.ptr(), &outBufferSize);
+    }
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["rtc_room_name"] = EOSG_GET_STRING(outBuffer);
+    ret["rtc_room_name"] = res == EOS_EResult::EOS_Success ? String::utf8(outBuffer.ptr()) : String("");
 
     return ret;
 }
@@ -577,8 +583,8 @@ Dictionary IEOS::lobby_interface_get_connect_string(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
     options.LobbyId = lobby_id.get_data();
 
-    char *OutBuffer = (char *)memalloc(EOS_LOBBY_GETCONNECTSTRING_BUFFER_SIZE + 1);
-    uint32_t OutBufferLength = 0;
+    char OutBuffer[EOS_LOBBY_GETCONNECTSTRING_BUFFER_SIZE + 1] = {};
+    uint32_t OutBufferLength = sizeof(OutBuffer);
     EOS_EResult res = EOS_Lobby_GetConnectString(s_lobbyInterface, &options, OutBuffer, &OutBufferLength);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
@@ -600,8 +606,8 @@ Dictionary IEOS::lobby_interface_parse_connect_string(Ref<RefCounted> p_options)
     options.ApiVersion = EOS_LOBBY_PARSECONNECTSTRING_API_LATEST;
     options.ConnectString = connect_string.get_data();
 
-    char *OutBuffer = (char *)memalloc(EOS_LOBBY_PARSECONNECTSTRING_BUFFER_SIZE + 1);
-    uint32_t OutBufferLength = 0;
+    char OutBuffer[EOS_LOBBY_PARSECONNECTSTRING_BUFFER_SIZE + 1] = {};
+    uint32_t OutBufferLength = sizeof(OutBuffer);
     EOS_EResult res = EOS_Lobby_ParseConnectString(s_lobbyInterface, &options, OutBuffer, &OutBufferLength);
 
     Dictionary ret;

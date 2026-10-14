@@ -307,8 +307,8 @@ Dictionary IEOS::connect_interface_get_product_user_id_mapping(Ref<RefCounted> p
     options.AccountIdType = static_cast<EOS_EExternalAccountType>(account_id_type);
     options.TargetProductUserId = eosg_string_to_product_user_id(target_product_user_id.get_data());
 
-    char *outAccountId = (char *)memalloc(EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1);
-    int outAccountIdLength = EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1;
+    char outAccountId[EOS_CONNECT_EXTERNAL_ACCOUNT_ID_MAX_LENGTH + 1] = {};
+    int32_t outAccountIdLength = sizeof(outAccountId);
     EOS_EResult res = EOS_Connect_GetProductUserIdMapping(s_connectInterface, &options, outAccountId, &outAccountIdLength);
 
     Dictionary ret;
@@ -322,21 +322,17 @@ void IEOS::connect_interface_query_product_user_id_mappings(Ref<RefCounted> p_op
     CharString p_local_user_id = VARIANT_TO_CHARSTRING(p_options->get("local_user_id"));
     TypedArray<String> p_product_user_ids = p_options->get("product_user_ids");
 
-    EOS_ProductUserId *product_user_ids = nullptr;
-	PERSISTENT_CHAR_ARRAY_CREATE(product_user_ids_cstr, product_user_ids_cstr_charstrings, p_product_user_ids.size());
-    if (p_product_user_ids.size() > 0) {
-        product_user_ids = (EOS_ProductUserId *)memalloc(sizeof(EOS_ProductUserId) * p_product_user_ids.size());
-        for (int i = 0; i < p_product_user_ids.size(); i++) {
-			PERSISTENT_CHAR_ARRAY_SET(product_user_ids_cstr, product_user_ids_cstr_charstrings, i, p_product_user_ids[i]);
-            product_user_ids[i] = eosg_string_to_product_user_id(product_user_ids_cstr[i]);
-        }
+    LocalVector<EOS_ProductUserId> product_user_ids;
+    product_user_ids.resize(p_product_user_ids.size());
+    for (int i = 0; i < p_product_user_ids.size(); i++) {
+        product_user_ids[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(p_product_user_ids[i]).get_data());
     }
 
     EOS_Connect_QueryProductUserIdMappingsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_QUERYPRODUCTUSERIDMAPPINGS_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(p_local_user_id.get_data());
-    options.ProductUserIds = product_user_ids;
+    options.ProductUserIds = product_user_ids.ptr();
     options.ProductUserIdCount = p_product_user_ids.size();
     p_options->reference();
 
@@ -357,14 +353,9 @@ void IEOS::connect_interface_query_external_account_mappings(Ref<RefCounted> p_o
     int p_account_id_type = p_options->get("account_id_type");
     TypedArray<String> p_external_account_ids = p_options->get("external_account_ids");
 
-    const char **external_account_ids = nullptr;
-	PERSISTENT_CHAR_ARRAY_CREATE(external_account_ids_cstr, external_account_ids_cstr_charstrings, p_external_account_ids.size());
-    if (p_external_account_ids.size() > 0) {
-        external_account_ids = (const char **)memalloc(sizeof(const char *) * p_external_account_ids.size());
-        for (int i = 0; i < p_external_account_ids.size(); i++) {
-			PERSISTENT_CHAR_ARRAY_SET(external_account_ids_cstr, external_account_ids_cstr_charstrings, i, p_external_account_ids[i]);
-			external_account_ids[i] = external_account_ids_cstr[i];
-        }
+    PERSISTENT_CHAR_ARRAY_CREATE(external_account_ids, external_account_ids_charstrings, p_external_account_ids.size())
+    for (int i = 0; i < p_external_account_ids.size(); i++) {
+        PERSISTENT_CHAR_ARRAY_SET(external_account_ids, external_account_ids_charstrings, i, p_external_account_ids[i]);
     }
 
     EOS_Connect_QueryExternalAccountMappingsOptions options;

@@ -37,7 +37,8 @@ int EOSGPresenceModification::set_raw_rich_text(const String &p_raw_rich_text) {
 int EOSGPresenceModification::set_data(Dictionary p_data) {
 	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int records_count = p_data.keys().size();
-    EOS_Presence_DataRecord *records = (EOS_Presence_DataRecord *)memalloc(sizeof(EOS_Presence_DataRecord) * records_count);
+    LocalVector<EOS_Presence_DataRecord> records;
+    records.resize(records_count);
 
     PERSISTENT_CHAR_ARRAY_CREATE(data_keys, data_keys_charstrings, records_count);
     PERSISTENT_CHAR_ARRAY_CREATE(data_values, data_values_charstrings, records_count);
@@ -54,7 +55,7 @@ int EOSGPresenceModification::set_data(Dictionary p_data) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PRESENCEMODIFICATION_SETDATA_API_LATEST;
     options.RecordsCount = static_cast<int32_t>(records_count);
-    options.Records = records;
+    options.Records = records.ptr();
 
     return static_cast<int>(EOS_PresenceModification_SetData(m_internal, &options));
 }
@@ -62,7 +63,8 @@ int EOSGPresenceModification::set_data(Dictionary p_data) {
 int EOSGPresenceModification::delete_data(Array p_keys) {
 	ERR_FAIL_NULL_V(m_internal, static_cast<int>(EOS_EResult::EOS_InvalidState));
     int records_count = p_keys.size();
-    EOS_PresenceModification_DataRecordId *records = (EOS_PresenceModification_DataRecordId *)memalloc(sizeof(EOS_PresenceModification_DataRecordId) * records_count);
+    LocalVector<EOS_PresenceModification_DataRecordId> records;
+    records.resize(records_count);
 
     PERSISTENT_CHAR_ARRAY_CREATE(data_keys, data_keys_charstrings, records_count)
     for (int i = 0; i < records_count; i++) {
@@ -76,7 +78,7 @@ int EOSGPresenceModification::delete_data(Array p_keys) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_PRESENCE_DELETEDATA_API_LATEST;
     options.RecordsCount = records_count;
-    options.Records = records;
+    options.Records = records.ptr();
 
     return static_cast<int>(EOS_PresenceModification_DeleteData(m_internal, &options));
 }

@@ -128,18 +128,16 @@ void IEOS::kws_interface_request_permissions(Ref<RefCounted> p_options) {
     Array p_permission_keys = p_options->get("permission_keys");
     int p_permission_keys_size = p_permission_keys.size();
 
-    const char **permissionsKeys = (const char **)memalloc(sizeof(char *) * p_permission_keys_size);
-	PERSISTENT_CHAR_ARRAY_CREATE(permissions_keys, permissions_keys_charstrings, p_permission_keys_size)
+    PERSISTENT_CHAR_ARRAY_CREATE(permissions_keys, permissions_keys_charstrings, p_permission_keys_size)
     for (int i = 0; i < p_permission_keys_size; i++) {
-		PERSISTENT_CHAR_ARRAY_SET(permissions_keys, permissions_keys_charstrings, i, p_permission_keys[i]);
-        permissionsKeys[i] = permissions_keys[i];
+        PERSISTENT_CHAR_ARRAY_SET(permissions_keys, permissions_keys_charstrings, i, p_permission_keys[i]);
     }
 
     EOS_KWS_RequestPermissionsOptions options;
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_KWS_REQUESTPERMISSIONS_API_LATEST;
     options.LocalUserId = eosg_string_to_product_user_id(local_user_id.get_data());
-    options.PermissionKeys = permissionsKeys;
+    options.PermissionKeys = permissions_keys;
     options.PermissionKeyCount = p_permission_keys_size;
     p_options->reference();
 

@@ -50,14 +50,14 @@ Dictionary IEOS::presence_interface_get_join_info(Ref<RefCounted> p_options) {
     options.LocalUserId = eosg_string_to_epic_account_id(local_user_id.get_data());
     options.TargetUserId = eosg_string_to_epic_account_id(target_user_id.get_data());
 
-    char *outBuffer = (char *)memalloc(EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1);
-    int outBufferLength = EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1;
+    char outBuffer[EOS_PRESENCEMODIFICATION_JOININFO_MAX_LENGTH + 1] = {};
+    int32_t outBufferLength = sizeof(outBuffer);
 
     EOS_EResult res = EOS_Presence_GetJoinInfo(s_presenceInterface, &options, outBuffer, &outBufferLength);
 
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    ret["join_info"] = outBuffer;
+    ret["join_info"] = EOSG_GET_STRING(outBuffer);
     return ret;
 }
 
