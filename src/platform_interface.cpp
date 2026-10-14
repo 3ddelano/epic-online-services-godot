@@ -783,8 +783,15 @@ int IEOS::platform_interface_initialize(Ref<RefCounted> p_options) {
     initOptions.OverrideThreadAffinity = nullptr;
 
     EOS_EResult res = EOS_Initialize(&initOptions);
+    if (res == EOS_EResult::EOS_Success) {
+        isEOSInitialized = true;
+    }
 
     EOS_EResult setCallbackResult = EOS_Logging_SetCallback([](const EOS_LogMessage *logMessage) {
+        // EOS_Shutdown can log while IEOS is being torn down
+        if (IEOS::get_singleton() == nullptr || !IEOS::get_singleton()->isEOSInitialized) {
+            return;
+        }
         Dictionary logMsg;
         logMsg["category"] = logMessage->Category;
         logMsg["message"] = logMessage->Message;
@@ -881,6 +888,7 @@ void IEOS::platform_interface_release() {
 
 int IEOS::platform_interface_shutdown() {
     isEOSValid = false;
+    isEOSInitialized = false;
     EOS_EResult res = EOS_Shutdown();
     return static_cast<int>(res);
 }
