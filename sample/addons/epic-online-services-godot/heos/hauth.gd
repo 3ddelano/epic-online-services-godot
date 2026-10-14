@@ -306,25 +306,23 @@ func delete_persistent_auth_async(refresh_token: String = "") -> bool:
 
 
 ## Login to Epic Game Services without any credentials.
-## You must provide a user display name.
+## You must provide a user display name.[br]
+## The same Product User ID is used on every login from this device, until the device id is deleted with [method delete_device_id_async].
 func login_anonymous_async(p_user_display_name: String) -> bool:
 	var user_display_name: String = p_user_display_name.strip_edges()
-	if not p_user_display_name:
+	if not user_display_name:
 		_log.error("User display name is empty")
 		return false
 	_log.debug("Logging in anonymously...")
 
-	EOS.Connect.ConnectInterface.delete_device_id(EOS.Connect.DeleteDeviceIdOptions.new())
-	var delete_ret = await IEOS.connect_interface_delete_device_id_callback
-	if not EOS.is_success(delete_ret):
-		_log.debug("Failed to delete device id: result_code=%s" % EOS.result_str(delete_ret))
-	
 	var opts = EOS.Connect.CreateDeviceIdOptions.new()
 	opts.device_model = " ".join(PackedStringArray([OS.get_name(), OS.get_model_name()]))
 	EOS.Connect.ConnectInterface.create_device_id(opts)
 
-	var create_ret = await IEOS.connect_interface_create_device_id_callback
-	if not EOS.is_success(create_ret):
+	var create_ret: Dictionary = await IEOS.connect_interface_create_device_id_callback
+	if create_ret.result_code == EOS.Result.DuplicateNotAllowed:
+		_log.debug("Device id already exists. Using existing device id")
+	elif not EOS.is_success(create_ret):
 		_log.error("Failed to create device id: result_code=%s" % EOS.result_str(create_ret))
 		return false
 	
@@ -338,6 +336,20 @@ func login_anonymous_async(p_user_display_name: String) -> bool:
 	display_name_changed.emit()
 	
 	return await login_game_services_async(login_opts)
+
+
+## Delete the device id stored on this device.
+## The next [method login_anonymous_async] will create a new device id and a new Product User ID.
+func delete_device_id_async() -> bool:
+	_log.debug("Deleting device id...")
+	EOS.Connect.ConnectInterface.delete_device_id(EOS.Connect.DeleteDeviceIdOptions.new())
+
+	var ret: Dictionary = await IEOS.connect_interface_delete_device_id_callback
+	if not EOS.is_success(ret):
+		_log.error("Failed to delete device id: result_code=%s" % EOS.result_str(ret))
+		return false
+
+	return true
 
 
 ## Get the user info from epic account id.[br]

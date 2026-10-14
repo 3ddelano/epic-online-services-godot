@@ -49,8 +49,8 @@ func _ready() -> void:
     # During development use the devauth tool to login
     HAuth.login_devtool_async("localhost:4545", "CREDENTIAL_NAME_HERE")
 
-    # Only on mobile device (Login without any credentials)
-    # await HAuth.login_anonymous_async()
+    # Login without any credentials. The same Product User ID is reused on this device
+    # await HAuth.login_anonymous_async("DISPLAY_NAME_HERE")
 
 
 func _on_logged_in():
