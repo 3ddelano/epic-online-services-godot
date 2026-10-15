@@ -35,7 +35,7 @@ var rtc_state = {
 
 var _attributes_to_add = []
 
-var _lobby: HLobby
+var _lobby_ref: WeakRef
 
 var _log = HLog.logger("HLobbyMember")
 
@@ -47,7 +47,7 @@ var _log = HLog.logger("HLobbyMember")
 func _init(p_lobby: HLobby) -> void:
 	super._init("HLobbyMember")
 
-	_lobby = p_lobby
+	_lobby_ref = weakref(p_lobby)
 
 #endregion
 
@@ -77,7 +77,8 @@ func is_hard_muted() -> bool:
 
 ## Returns true if this member is the lobby owner
 func is_owner() -> bool:
-	return _lobby.owner_product_user_id == product_user_id
+	var lobby := _get_lobby()
+	return lobby != null and lobby.owner_product_user_id == product_user_id
 
 
 ## Mute/Unmute this member.
@@ -87,7 +88,8 @@ func toggle_mute_member_async() -> bool:
 	var _is_muted = is_muted()
 	var action = "Unmuting" if _is_muted else "Muting"
 
-	if not _lobby or not _lobby.rtc_room_name:
+	var lobby := _get_lobby()
+	if not lobby or not lobby.rtc_room_name:
 		return false
 	
 	if HAuth.product_user_id == product_user_id:
@@ -95,7 +97,7 @@ func toggle_mute_member_async() -> bool:
 		_log.debug("%s ourself" % action)
 		
 		var opts: EOS.RTCAudio.UpdateSendingOptions = EOS.RTCAudio.UpdateSendingOptions.new()
-		opts.room_name = _lobby.rtc_room_name
+		opts.room_name = lobby.rtc_room_name
 		opts.audio_status = EOS.RTCAudio.AudioStatus.Enabled if _is_muted else EOS.RTCAudio.AudioStatus.Disabled
 		
 		EOS.RTCAudio.RTCAudioInterface.update_sending(opts)
@@ -107,14 +109,14 @@ func toggle_mute_member_async() -> bool:
 		var did_update = HLog._check_diff_and_set_dict(rtc_state, "is_audio_output_disabled", ret.audio_status == EOS.RTCAudio.AudioStatus.Disabled, "member:" + product_user_id)
 		if did_update:
 			rtc_state_updated.emit()
-			_lobby.lobby_updated.emit()
+			lobby.lobby_updated.emit()
 
 		return true
 	else:
 		_log.debug("%s member: product_user_id=%s" % [action, product_user_id])
 		# Locally mute the remote user's audio
 		var opts: EOS.RTCAudio.UpdateReceivingOptions = EOS.RTCAudio.UpdateReceivingOptions.new()
-		opts.room_name = _lobby.rtc_room_name
+		opts.room_name = lobby.rtc_room_name
 		opts.participant_id = product_user_id
 		opts.audio_enabled = _is_muted
 
@@ -127,21 +129,22 @@ func toggle_mute_member_async() -> bool:
 		var did_update = HLog._check_diff_and_set_dict(rtc_state, "is_locally_muted", ret.audio_enabled == false, "member:" + product_user_id)
 		if did_update:
 			rtc_state_updated.emit()
-			_lobby.lobby_updated.emit()
+			lobby.lobby_updated.emit()
 	
 	return true
 
 
 ## Hard mute this member in the lobby, can't speak but can hear other members of the lobby
 func toggle_hard_mute_member_async() -> bool:
-	if not _lobby.is_owner():
+	var lobby := _get_lobby()
+	if not lobby or not lobby.is_owner():
 		return false
 	var _is_hard_muted = is_hard_muted()
 	var action = "Un hard-muting" if _is_hard_muted else "Hard-muting"
 	_log.debug("%s member: product_user_id=%s" % [action, product_user_id])
 
 	var opts: EOS.Lobby.HardMuteMemberOptions = EOS.Lobby.HardMuteMemberOptions.new()
-	opts.lobby_id = _lobby.lobby_id
+	opts.lobby_id = lobby.lobby_id
 	opts.target_user_id = product_user_id
 	opts.hard_mute = not _is_hard_muted
 	EOS.Lobby.LobbyInterface.hard_mute_member(opts)
@@ -153,20 +156,21 @@ func toggle_hard_mute_member_async() -> bool:
 	
 	rtc_state.is_hard_muted = not _is_hard_muted
 	rtc_state_updated.emit()
-	_lobby.lobby_updated.emit()
+	lobby.lobby_updated.emit()
 	
 	return true
 
 
 ## Kick this member from the lobby. Only lobby owner can kick a member.
 func kick_member_async() -> bool:
-	if not _lobby.is_owner():
+	var lobby := _get_lobby()
+	if not lobby or not lobby.is_owner():
 		return false
 	
 	_log.debug("Kicking member: product_user_id=%s" % product_user_id)
 
 	var opts = EOS.Lobby.KickMemberOptions.new()
-	opts.lobby_id = _lobby.lobby_id
+	opts.lobby_id = lobby.lobby_id
 	opts.target_user_id = product_user_id
 
 	EOS.Lobby.LobbyInterface.kick_member(opts)
@@ -182,13 +186,14 @@ func kick_member_async() -> bool:
 
 ## Promote another member to the lobby owner. Only the lobby owner can promote a member.
 func promote_member_async() -> bool:
-	if not _lobby.is_owner():
+	var lobby := _get_lobby()
+	if not lobby or not lobby.is_owner():
 		return false
 	
 	_log.debug("Promoting member: product_user_id=%s" % product_user_id)
 
 	var opts = EOS.Lobby.PromoteMemberOptions.new()
-	opts.lobby_id = _lobby.lobby_id
+	opts.lobby_id = lobby.lobby_id
 	opts.target_user_id = product_user_id
 	EOS.Lobby.LobbyInterface.promote_member(opts)
 
@@ -205,5 +210,13 @@ func promote_member_async() -> bool:
 ## Returns true if the member is the current logged in user
 func is_self() -> bool:
 	return product_user_id == HAuth.product_user_id
+
+#endregion
+
+
+#region Private methods
+
+func _get_lobby() -> HLobby:
+	return _lobby_ref.get_ref() as HLobby
 
 #endregion
