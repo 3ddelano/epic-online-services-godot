@@ -654,7 +654,7 @@ func _on_rtc_data_data_received(p_data: Dictionary):
 
 
 func _disconnect_from_signals() -> void:
-	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_update_received_callback", _on_lobby_interface_lobby_member_update_received_callback)
+	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_update_received_callback", _on_lobby_update_received_callback)
 	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_member_update_received_callback", _on_lobby_interface_lobby_member_update_received_callback)
 	_disconnect_signal_if_connected(IEOS, "lobby_interface_lobby_member_status_received_callback", _on_lobby_member_status_received_callback)
 	_disconnect_signal_if_connected(IEOS, "lobby_interface_rtc_room_connection_changed_callback", _on_lobby_interface_rtc_room_connection_changed_callback)
