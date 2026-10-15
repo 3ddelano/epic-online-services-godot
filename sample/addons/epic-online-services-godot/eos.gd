@@ -1538,6 +1538,8 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbyOptions")
 
+		## [Array] of [enum EOS.OnlinePlatformType] that can join the lobby. Leave empty to allow all platforms.[br]
+		## If not empty, it must include the local platform from [method EOS.UserInfo.UserInfoInterface.get_local_platform_type], otherwise creating the lobby fails with [constant EOS.Result.LobbyInvalidSession]
 		var allowed_platform_ids = [] # Array[int]
 		var bucket_id: String
 		var lobby_id: String
