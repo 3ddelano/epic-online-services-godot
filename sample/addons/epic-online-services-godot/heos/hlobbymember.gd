@@ -77,7 +77,7 @@ func is_hard_muted() -> bool:
 
 ## Returns true if this member is the lobby owner
 func is_owner() -> bool:
-	var lobby := _get_lobby()
+	var lobby := get_lobby()
 	return lobby != null and lobby.owner_product_user_id == product_user_id
 
 
@@ -88,7 +88,7 @@ func toggle_mute_member_async() -> bool:
 	var _is_muted = is_muted()
 	var action = "Unmuting" if _is_muted else "Muting"
 
-	var lobby := _get_lobby()
+	var lobby := get_lobby()
 	if not lobby or not lobby.rtc_room_name:
 		return false
 	
@@ -136,7 +136,7 @@ func toggle_mute_member_async() -> bool:
 
 ## Hard mute this member in the lobby, can't speak but can hear other members of the lobby
 func toggle_hard_mute_member_async() -> bool:
-	var lobby := _get_lobby()
+	var lobby := get_lobby()
 	if not lobby or not lobby.is_owner():
 		return false
 	var _is_hard_muted = is_hard_muted()
@@ -163,7 +163,7 @@ func toggle_hard_mute_member_async() -> bool:
 
 ## Kick this member from the lobby. Only lobby owner can kick a member.
 func kick_member_async() -> bool:
-	var lobby := _get_lobby()
+	var lobby := get_lobby()
 	if not lobby or not lobby.is_owner():
 		return false
 	
@@ -186,7 +186,7 @@ func kick_member_async() -> bool:
 
 ## Promote another member to the lobby owner. Only the lobby owner can promote a member.
 func promote_member_async() -> bool:
-	var lobby := _get_lobby()
+	var lobby := get_lobby()
 	if not lobby or not lobby.is_owner():
 		return false
 	
@@ -211,12 +211,9 @@ func promote_member_async() -> bool:
 func is_self() -> bool:
 	return product_user_id == HAuth.product_user_id
 
-#endregion
 
-
-#region Private methods
-
-func _get_lobby() -> HLobby:
+## Returns the [HLobby] this member belongs to, or [code]null[/code] if the lobby no longer exists
+func get_lobby() -> HLobby:
 	return _lobby_ref.get_ref() as HLobby
 
 #endregion
