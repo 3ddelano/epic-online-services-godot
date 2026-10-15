@@ -1,4 +1,6 @@
 
+#pragma once
+
 #include "eosg_multiplayer_peer.h"
 #include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/classes/ref_counted.hpp"
