@@ -1538,6 +1538,7 @@ class Lobby:
 		func _init():
 			super._init("CreateLobbyOptions")
 
+		var allowed_platform_ids = [] # Array[int]
 		var bucket_id: String
 		var lobby_id: String
 		var disable_host_migration: bool

@@ -73,12 +73,12 @@ Dictionary IEOS::p2p_interface_get_port_range() {
     EOS_P2P_GetPortRangeOptions options = { 0 };
     options.ApiVersion = EOS_P2P_GETPORTRANGE_API_LATEST;
 
-    uint16_t port;
-    uint16_t max_additional_ports_to_try;
+    uint16_t port = 0;
+    uint16_t max_additional_ports_to_try = 0;
     EOS_EResult res = EOS_P2P_GetPortRange(s_p2pInterface, &options, &port, &max_additional_ports_to_try);
     Dictionary ret;
     ret["result_code"] = static_cast<int>(res);
-    if (res != EOS_EResult::EOS_Success) {
+    if (res == EOS_EResult::EOS_Success) {
         ret["port"] = port;
         ret["max_additional_ports_to_try"] = max_additional_ports_to_try;
     } else {
