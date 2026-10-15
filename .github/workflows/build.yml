@@ -125,13 +125,18 @@ jobs:
         with:
           submodules: false
 
+      - name: Get godot-cpp submodule commit
+        id: godot_cpp
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD:godot-cpp)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout godot-cpp
         uses: actions/checkout@v4
         with:
           repository: godotengine/godot-cpp
           path: godot-cpp
           submodules: recursive
-          ref: ${{ matrix.godot_cpp_ref || 'godot-4.2-stable' }}
+          ref: ${{ matrix.godot_cpp_ref || steps.godot_cpp.outputs.sha }}
 
       - name: Checkout private EOS SDK mirror repo
         uses: actions/checkout@v4
