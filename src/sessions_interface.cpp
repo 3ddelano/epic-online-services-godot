@@ -95,13 +95,14 @@ Dictionary IEOS::sessions_interface_create_session_modification(Ref<RefCounted> 
     options.bPresenceEnabled = presence_enabled ? EOS_TRUE : EOS_FALSE;
     options.SessionId = session_id.get_data();
     options.bSanctionsEnabled = sanctions_enabled ? EOS_TRUE : EOS_FALSE;
-    options.AllowedPlatformIdsCount = allowed_platform_ids.size();
-    if (allowed_platform_ids.size() > 0) {
-        uint32_t *allowed_platform_ids_array = (uint32_t *)malloc(sizeof(uint32_t) * allowed_platform_ids.size());
-        for (int i = 0; i < allowed_platform_ids.size(); i++) {
-            allowed_platform_ids_array[i] = allowed_platform_ids[i];
-        }
-        options.AllowedPlatformIds = allowed_platform_ids_array;
+    LocalVector<uint32_t> allowedPlatformIds;
+    allowedPlatformIds.resize(allowed_platform_ids.size());
+    for (int i = 0; i < allowed_platform_ids.size(); i++) {
+        allowedPlatformIds[i] = static_cast<uint32_t>(allowed_platform_ids[i]);
+    }
+    if (allowedPlatformIds.size() > 0) {
+        options.AllowedPlatformIdsCount = allowedPlatformIds.size();
+        options.AllowedPlatformIds = allowedPlatformIds.ptr();
     }
 
     EOS_HSessionModification outSessionModificationHandle = nullptr;
@@ -304,11 +305,12 @@ void IEOS::sessions_interface_register_players(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_SESSIONS_REGISTERPLAYERS_API_LATEST;
     options.SessionName = session_name.get_data();
     options.PlayersToRegisterCount = players_to_register.size();
-    EOS_ProductUserId *players_to_register_array = (EOS_ProductUserId *)malloc(sizeof(EOS_ProductUserId) * players_to_register.size());
+    LocalVector<EOS_ProductUserId> playersToRegister;
+    playersToRegister.resize(players_to_register.size());
     for (int i = 0; i < players_to_register.size(); i++) {
-        players_to_register_array[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(players_to_register[i]).get_data());
+        playersToRegister[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(players_to_register[i]).get_data());
     }
-    options.PlayersToRegister = players_to_register_array;
+    options.PlayersToRegister = playersToRegister.ptr();
     p_options->reference();
 
     EOS_Sessions_RegisterPlayers(s_sessionsInterface, &options, (void *)*p_options, [](const EOS_Sessions_RegisterPlayersCallbackInfo *data) {
@@ -410,11 +412,12 @@ void IEOS::sessions_interface_unregister_players(Ref<RefCounted> p_options) {
     options.ApiVersion = EOS_SESSIONS_UNREGISTERPLAYERS_API_LATEST;
     options.SessionName = session_name.get_data();
     options.PlayersToUnregisterCount = players_to_unregister.size();
-    EOS_ProductUserId *players_to_unregister_array = (EOS_ProductUserId *)malloc(sizeof(EOS_ProductUserId) * players_to_unregister.size());
+    LocalVector<EOS_ProductUserId> playersToUnregister;
+    playersToUnregister.resize(players_to_unregister.size());
     for (int i = 0; i < players_to_unregister.size(); i++) {
-        players_to_unregister_array[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(players_to_unregister[i]).get_data());
+        playersToUnregister[i] = eosg_string_to_product_user_id(VARIANT_TO_CHARSTRING(players_to_unregister[i]).get_data());
     }
-    options.PlayersToUnregister = players_to_unregister_array;
+    options.PlayersToUnregister = playersToUnregister.ptr();
     p_options->reference();
 
     EOS_Sessions_UnregisterPlayers(s_sessionsInterface, &options, (void *)*p_options, [](const EOS_Sessions_UnregisterPlayersCallbackInfo *data) {
