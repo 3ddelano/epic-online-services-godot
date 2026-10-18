@@ -654,21 +654,23 @@ bool IEOS::platform_interface_create(Ref<RefCounted> p_options) {
         EOS_AntiCheatClient_AddNotifyPeerActionRequiredOptions notifyPeerActionRequiredOptions;
         notifyPeerActionRequiredOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYPEERACTIONREQUIRED_API_LATEST;
         EOS_AntiCheatClient_AddNotifyPeerActionRequired(s_antiCheatClientInterface, &notifyPeerActionRequiredOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientActionRequiredCallbackInfo *data) {
-            String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+            String client_handle = IEOS::get_singleton()->_anticheat_peer_handle_to_id(data->ClientHandle);
             Dictionary ret;
             ret["client_handle"] = client_handle;
             ret["client_action"] = static_cast<int>(data->ClientAction);
             ret["action_reason_code"] = static_cast<int>(data->ActionReasonCode);
             ret["action_reason_details_string"] = EOSG_GET_STRING(data->ActionReasonDetailsString);
+            IEOS::get_singleton()->emit_signal("anticheat_client_interface_peer_action_required_callback", ret);
         });
 
         EOS_AntiCheatClient_AddNotifyPeerAuthStatusChangedOptions notifyPeerAuthStatusChangedOptions;
         notifyPeerAuthStatusChangedOptions.ApiVersion = EOS_ANTICHEATCLIENT_ADDNOTIFYPEERAUTHSTATUSCHANGED_API_LATEST;
         EOS_AntiCheatClient_AddNotifyPeerAuthStatusChanged(s_antiCheatClientInterface, &notifyPeerAuthStatusChangedOptions, nullptr, [](const EOS_AntiCheatCommon_OnClientAuthStatusChangedCallbackInfo *data) {
-            String client_handle = IEOS::get_singleton()->_anticheat_player_handle_to_id(data->ClientHandle);
+            String client_handle = IEOS::get_singleton()->_anticheat_peer_handle_to_id(data->ClientHandle);
             Dictionary ret;
             ret["client_handle"] = client_handle;
             ret["client_auth_status"] = static_cast<int>(data->ClientAuthStatus);
+            IEOS::get_singleton()->emit_signal("anticheat_client_interface_peer_auth_status_changed_callback", ret);
         });
 
         EOS_AntiCheatClient_AddNotifyClientIntegrityViolatedOptions notifyClientIntegrityViolatedOptions;

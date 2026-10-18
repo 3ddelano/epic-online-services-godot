@@ -24,6 +24,7 @@ void IEOS::_bind_methods() {
     IEOS_BIND_METHOD(anticheat_client_interface_end_session);
     IEOS_BIND_METHOD(anticheat_client_interface_get_module_build_id);
     IEOS_BIND_METHOD(anticheat_client_interface_get_protect_message_output_length);
+    IEOS_BIND_METHOD(anticheat_client_interface_is_available);
     IEOS_BIND_METHOD(anticheat_client_interface_protect_message);
     IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_peer);
     IEOS_BIND_METHOD(anticheat_client_interface_receive_message_from_server);
@@ -365,6 +366,8 @@ void IEOS::_bind_methods() {
     IEOS_BIND_SIGNAL(anticheat_client_interface_client_integrity_violated_callback);
     IEOS_BIND_SIGNAL(anticheat_client_interface_message_to_peer_callback);
     IEOS_BIND_SIGNAL(anticheat_client_interface_message_to_server_callback);
+    IEOS_BIND_SIGNAL(anticheat_client_interface_peer_action_required_callback);
+    IEOS_BIND_SIGNAL(anticheat_client_interface_peer_auth_status_changed_callback);
     IEOS_BIND_SIGNAL(anticheatserver_interface_client_action_required_callback);
     IEOS_BIND_SIGNAL(anticheatserver_interface_client_auth_status_changed_callback);
     IEOS_BIND_SIGNAL(anticheatserver_interface_message_to_client_callback);

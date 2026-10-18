@@ -185,6 +185,11 @@ int IEOS::anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> p
     return static_cast<int>(EOS_AntiCheatClient_ReceiveMessageFromPeer(s_antiCheatClientInterface, &options));
 }
 
+// The SDK returns no interface when the game was not started by the anti-cheat bootstrapper.
+bool IEOS::anticheat_client_interface_is_available() {
+    return s_antiCheatClientInterface != nullptr;
+}
+
 int IEOS::anticheat_client_interface_get_module_build_id(Ref<RefCounted> p_options) {
     ERR_FAIL_NULL_V(s_antiCheatClientInterface, static_cast<int>(EOS_EResult::EOS_InvalidState));
 
