@@ -420,6 +420,7 @@ void IEOS::connect_interface_verify_id_token(Ref<RefCounted> p_options) {
     memset(&options, 0, sizeof(options));
     options.ApiVersion = EOS_CONNECT_VERIFYIDTOKEN_API_LATEST;
     options.IdToken = &idToken;
+    p_options->reference();
 
     EOS_Connect_VerifyIdToken(s_connectInterface, &options, (void *)*p_options, [](const EOS_Connect_VerifyIdTokenCallbackInfo *data) {
         Dictionary ret;
