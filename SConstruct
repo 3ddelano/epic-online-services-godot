@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
+import re
 import shutil
 
 env = SConscript("godot-cpp/SConstruct")
@@ -145,6 +146,45 @@ elif env["platform"] == "android":
 	env.Append(LIBS=["EOSSDK"])
 	# Google Play requires 16 KB page-size support (default since NDK r28; explicit for safety)
 	env.Append(LINKFLAGS=["-Wl,-z,max-page-size=16384", "-Wl,-z,common-page-size=16384"])
+
+
+if env["platform"] == "windows":
+	# Embed a version resource (ProductName/ProductVersion) in the DLL. SignPath
+	# enforces this metadata when code signing (see .github/signpath/).
+	with open("sample/addons/epic-online-services-godot/plugin.cfg") as _plugin_cfg:
+		_version_match = re.search(r'^version\s*=\s*"([^"]+)"', _plugin_cfg.read(), re.MULTILINE)
+	if not _version_match:
+		raise Exception("Could not read version from plugin.cfg")
+	plugin_version = _version_match.group(1)
+	_version_numbers = [int(part) for part in re.findall(r"\d+", plugin_version.split("-")[0])][:4]
+	_version_numbers += [0] * (4 - len(_version_numbers))
+	_dll_name = f"{lib_name}{env['suffix']}{env['SHLIBSUFFIX']}"
+	version_rc_subst = {
+		"@VERSION@": plugin_version,
+		"@VERSION_COMMA@": ",".join(str(number) for number in _version_numbers),
+		"@FILEFLAGS@": "VS_FF_DEBUG" if env["target"] == "template_debug" else "0x0L",
+		"@INTERNAL_NAME@": lib_name,
+		"@ORIGINAL_FILENAME@": _dll_name,
+	}
+
+	def generate_version_rc(target, source, env):
+		with open(str(source[0])) as template_file:
+			content = template_file.read()
+		for placeholder, value in version_rc_subst.items():
+			content = content.replace(placeholder, value)
+		with open(str(target[0]), "w") as rc_file:
+			rc_file.write(content)
+
+	version_rc = env.Command(
+		f"src/windows/eosg_version.{env['suffix'].lstrip('.')}.gen.rc",
+		["src/windows/eosg_version.rc.in", env.Value(version_rc_subst)],
+		generate_version_rc,
+	)
+	res_env = env.Clone(CPPDEFINES=[])
+	if res_env.get("use_mingw") and os.name != "nt":
+		_mingw_prefix = "i686" if env["arch"] == "x86_32" else env["arch"]
+		res_env["RC"] = f"{_mingw_prefix}-w64-mingw32-windres"
+	sources.append(res_env.RES(version_rc))
 
 
 if env["platform"] == "macos":

@@ -26,3 +26,6 @@ temp/
 compile_commands.json
 
 epic-online-services-godot-addon.zip
+# Generated Windows version resources
+src/windows/*.gen.rc
+*.res

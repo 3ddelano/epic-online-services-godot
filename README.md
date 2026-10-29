@@ -507,3 +507,20 @@ device and iOS arm64 simulator.
 
 - Not completed
   - Integrated Platform Interface
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
+
+Only the Windows GDExtension binaries built from this repository (`libeosg.windows.*.dll`) are signed. They are built and signed automatically by [GitHub Actions](.github/workflows/build.yml). Third-party binaries shipped with the plugin (the Epic Online Services SDK and its redistributables) are signed by their own publishers.
+
+Team roles:
+
+- Committers and reviewers: [Delano Lourenco (@3ddelano)](https://github.com/3ddelano)
+- Approvers: [Delano Lourenco (@3ddelano)](https://github.com/3ddelano)
+
+### Privacy policy
+
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+
+EOSG is a library for game developers. It only communicates with Epic Online Services when the game using it calls the Epic Online Services APIs. That communication is governed by [Epic Games' privacy policy](https://www.epicgames.com/site/privacypolicy) and the privacy policy of the game using it.

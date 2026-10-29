@@ -11,9 +11,12 @@ env:
   SIGNPATH_ENABLED: ${{ secrets.SIGNPATH_API_TOKEN != '' }}
   SIGNPATH_ORGANIZATION_ID: ed9e5103-3fa3-4be4-8ef3-515a5ddb03f0
   SIGNPATH_PROJECT_SLUG: epic-online-services-godot
-  # Switch to "release-signing" (repo variable) once the production certificate is issued.
-  SIGNPATH_SIGNING_POLICY_SLUG: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG || 'test-signing' }}
   SIGNPATH_ARTIFACT_CONFIGURATION_SLUG: windows-gdextension-dll
+  # Tag builds use the production certificate once the SIGNPATH_RELEASE_SIGNING_ENABLED
+  # repo variable is "true". Release signing needs manual approval in SignPath, so those
+  # builds wait up to an hour. Everything else uses the self-signed test certificate.
+  SIGNPATH_SIGNING_POLICY_SLUG: ${{ (startsWith(github.ref, 'refs/tags/') && vars.SIGNPATH_RELEASE_SIGNING_ENABLED == 'true') && 'release-signing' || 'test-signing' }}
+  SIGNPATH_WAIT_TIMEOUT_SECONDS: ${{ (startsWith(github.ref, 'refs/tags/') && vars.SIGNPATH_RELEASE_SIGNING_ENABLED == 'true') && '3600' || '600' }}
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
@@ -198,49 +201,6 @@ jobs:
         run: |
           chmod +x ./build-ios.sh && ./build-ios.sh
 
-      # Code sign our own Windows DLL via SignPath. Third-party DLLs (EOSSDK, xaudio2)
-      # are already vendor-signed. Skipped when the API token is unavailable (e.g. fork PRs).
-      - name: (Windows) Upload unsigned DLL for signing
-        id: upload-unsigned-dll
-        if: ${{ matrix.platform == 'windows' && env.SIGNPATH_ENABLED == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-${{ matrix.identifier }}-${{ github.sha }}
-          path: ${{ github.workspace }}/sample/addons/epic-online-services-godot/bin/windows/libeosg.windows.*.dll
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: (Windows) Sign DLL with SignPath
-        id: signpath
-        if: ${{ matrix.platform == 'windows' && env.SIGNPATH_ENABLED == 'true' }}
-        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ env.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ env.SIGNPATH_PROJECT_SLUG }}
-          signing-policy-slug: ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
-          artifact-configuration-slug: ${{ env.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
-          github-artifact-id: ${{ steps.upload-unsigned-dll.outputs.artifact-id }}
-          wait-for-completion: true
-          output-artifact-directory: ${{ github.workspace }}/signed-dll
-
-      - name: (Windows) Replace DLL with signed DLL
-        if: ${{ matrix.platform == 'windows' && env.SIGNPATH_ENABLED == 'true' }}
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $binDir = '${{ github.workspace }}/sample/addons/epic-online-services-godot/bin/windows'
-          $signed = @(Get-ChildItem '${{ github.workspace }}/signed-dll' -Filter 'libeosg.windows.*.dll')
-          if ($signed.Count -ne 1) { throw "Expected exactly 1 signed DLL, found $($signed.Count)" }
-          $sig = Get-AuthenticodeSignature $signed[0].FullName
-          if ($null -eq $sig.SignerCertificate) { throw "Signed DLL has no Authenticode signature" }
-          Write-Host "Signer: $($sig.SignerCertificate.Subject)"
-          Write-Host "Issuer: $($sig.SignerCertificate.Issuer)"
-          Write-Host "Thumbprint: $($sig.SignerCertificate.Thumbprint)"
-          Write-Host "Status: $($sig.Status) ($($sig.StatusMessage))"
-          Copy-Item $signed[0].FullName (Join-Path $binDir $signed[0].Name) -Force
-          "Signed ``$($signed[0].Name)`` with ``$($sig.SignerCertificate.Subject)`` (status: $($sig.Status)). [Signing request](${{ steps.signpath.outputs.signing-request-web-url }})" >> $env:GITHUB_STEP_SUMMARY
-
       - name: Copy extra files to addon folder
         shell: sh
         run: |
@@ -258,6 +218,7 @@ jobs:
 
       - name: (Windows) Delete compilation files
         if: ${{ matrix.platform == 'windows' }}
+        shell: pwsh
         run: |
           Remove-Item ${{ github.workspace }}/artifact-${{ matrix.identifier }}/${{ github.event.repository.name }}/addons/epic-online-services-godot/bin/windows/* -Include *.exp,*.lib,*.ilk -Force
 
@@ -270,9 +231,107 @@ jobs:
           compression-level: 9
           retention-days: 14
 
+  # Code signs our own Windows DLLs (debug + release) in a single SignPath signing
+  # request, then replaces them in the Windows build artifacts. Third-party DLLs
+  # (EOSSDK, xaudio2) are already vendor-signed. Skipped when the API token is
+  # unavailable (e.g. pull requests from forks).
+  sign-windows:
+    runs-on: windows-latest
+    name: 🔏 Sign Windows
+    needs: build
+    env:
+      ARTIFACT_PREFIX: ${{ github.event.repository.name }}-windows
+    steps:
+      - name: Download Windows build artifacts
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.ARTIFACT_PREFIX }}-*-${{ github.sha }}
+          path: windows-artifacts
+
+      - name: Collect unsigned DLLs
+        id: collect
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dlls = @(Get-ChildItem windows-artifacts -Recurse -Filter 'libeosg.windows.*.dll')
+          if ($dlls.Count -ne 2) { throw "Expected 2 DLLs (debug + release), found $($dlls.Count)" }
+          New-Item -ItemType Directory unsigned-dlls | Out-Null
+          Copy-Item $dlls.FullName unsigned-dlls/
+          $pluginCfg = @(Get-ChildItem windows-artifacts -Recurse -Filter 'plugin.cfg')[0]
+          $version = (Select-String -Path $pluginCfg.FullName -Pattern '^version\s*=\s*"([^"]+)"').Matches[0].Groups[1].Value
+          if (-not $version) { throw "Could not read version from $($pluginCfg.FullName)" }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Upload unsigned DLLs
+        id: upload-unsigned
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-windows-dlls-${{ github.sha }}
+          path: unsigned-dlls/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Sign DLLs with SignPath
+        id: signpath
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ env.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ env.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ env.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          parameters: |
+            version: ${{ toJSON(steps.collect.outputs.version) }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: ${{ env.SIGNPATH_WAIT_TIMEOUT_SECONDS }}
+          output-artifact-directory: signed-dlls
+
+      - name: Replace DLLs with signed DLLs
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          "Signing policy: ``$env:SIGNPATH_SIGNING_POLICY_SLUG``, [signing request](${{ steps.signpath.outputs.signing-request-web-url }})" >> $env:GITHUB_STEP_SUMMARY
+          foreach ($dll in Get-ChildItem windows-artifacts -Recurse -Filter 'libeosg.windows.*.dll') {
+            $signed = Join-Path signed-dlls $dll.Name
+            if (-not (Test-Path $signed)) { throw "Missing signed $($dll.Name)" }
+            $sig = Get-AuthenticodeSignature $signed
+            if ($null -eq $sig.SignerCertificate) { throw "$($dll.Name) has no Authenticode signature" }
+            Write-Host "$($dll.Name): $($sig.SignerCertificate.Subject) [$($sig.Status)] $($sig.SignerCertificate.Thumbprint)"
+            "- ``$($dll.Name)``: ``$($sig.SignerCertificate.Subject)`` (status: $($sig.Status))" >> $env:GITHUB_STEP_SUMMARY
+            Copy-Item $signed $dll.FullName -Force
+          }
+
+      - name: Re-upload signed Windows Debug artifact
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_PREFIX }}-debug-${{ github.sha }}
+          path: windows-artifacts/${{ env.ARTIFACT_PREFIX }}-debug-${{ github.sha }}/
+          if-no-files-found: error
+          overwrite: true
+          compression-level: 9
+          retention-days: 14
+
+      - name: Re-upload signed Windows Release artifact
+        if: ${{ env.SIGNPATH_ENABLED == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_PREFIX }}-release-${{ github.sha }}
+          path: windows-artifacts/${{ env.ARTIFACT_PREFIX }}-release-${{ github.sha }}/
+          if-no-files-found: error
+          overwrite: true
+          compression-level: 9
+          retention-days: 14
+
   merge-platforms:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, sign-windows]
     strategy:
       fail-fast: false
       matrix:

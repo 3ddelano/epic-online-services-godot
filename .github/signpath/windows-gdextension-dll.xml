@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  SignPath artifact configuration for the Windows GDExtension binary.
+  SignPath artifact configuration for the Windows GDExtension binaries.
   Keep in sync with the "windows-gdextension-dll" artifact configuration in SignPath.
 
-  The GitHub Actions artifact is a zip containing exactly one libeosg.windows.*.dll
+  The GitHub Actions artifact is a zip with the debug and release libeosg.windows.*.dll
   at its root (built by this repository). Third-party DLLs (EOSSDK, xaudio2) are
   already vendor-signed and are not submitted.
+
+  ProductName and ProductVersion come from src/windows/eosg_version.rc.in; the
+  "version" parameter is the plugin.cfg version passed by the workflow.
 -->
 <artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
   <zip-file>
-    <pe-file path="libeosg.windows.*.dll">
+    <pe-file path="libeosg.windows.template_debug.*.dll" product-name="Epic Online Services Godot" product-version="${version}">
+      <authenticode-sign/>
+    </pe-file>
+    <pe-file path="libeosg.windows.template_release.*.dll" product-name="Epic Online Services Godot" product-version="${version}">
       <authenticode-sign/>
     </pe-file>
   </zip-file>
