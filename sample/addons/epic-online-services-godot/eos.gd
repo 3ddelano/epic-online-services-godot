@@ -3996,7 +3996,7 @@ class AntiCheatClient:
 		func _init():
 			super._init("AddExternalIntegrityCatalogOptions")
 
-		var path_to_file_bin: String
+		var path_to_bin_file: String
 
 	class ReceiveMessageFromServerOptions extends BaseClass:
 		func _init():
