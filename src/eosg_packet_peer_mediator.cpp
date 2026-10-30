@@ -25,6 +25,7 @@ EOSGPacketPeerMediator *EOSGPacketPeerMediator::singleton = nullptr;
 
 void EOSGPacketPeerMediator::_bind_methods() {
     ClassDB::bind_method(D_METHOD("_on_connect_interface_login"), &EOSGPacketPeerMediator::_on_connect_interface_login);
+    ClassDB::bind_method(D_METHOD("_on_connect_interface_create_user"), &EOSGPacketPeerMediator::_on_connect_interface_create_user);
     ClassDB::bind_method(D_METHOD("_on_process_frame"), &EOSGPacketPeerMediator::_on_process_frame);
     ClassDB::bind_method(D_METHOD("get_connection_request_count"), &EOSGPacketPeerMediator::get_connection_request_count);
     ClassDB::bind_method(D_METHOD("get_packet_count_for_socket", "socket_id"), &EOSGPacketPeerMediator::get_packet_count_for_socket);
@@ -384,6 +385,8 @@ void EOS_CALL EOSGPacketPeerMediator::_on_incoming_connection_request(const EOS_
  * 	data - Contains info about the login.
  * Description: Called when the user logs into the connect interface. Sets the
  * local user id received from the login and initialized EOSGPacketPeerMediator.
+ * Also called by _on_connect_interface_create_user, since a successful
+ * create_user leaves the new user logged in.
  ****************************************/
 void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
     int result_code = data["result_code"];
@@ -397,7 +400,35 @@ void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
     } else {
         ERR_FAIL_MSG("Local user id was not set on connect interface login.");
     }
-    IEOS::get_singleton()->disconnect("connect_interface_login_callback", connect_interface_login_callback);
+    _stop_listening_for_login();
+}
+
+/****************************************
+ * _on_connect_interface_create_user
+ * Parameters:
+ * 	data - Contains info about the created user.
+ * Description: Called when a product user is created for an external account
+ * that had none (connect login answered EOS_InvalidUser). A successful
+ * create_user logs that user in, so the local user id is set the same way as
+ * after a successful login.
+ ****************************************/
+void EOSGPacketPeerMediator::_on_connect_interface_create_user(Dictionary data) {
+    _on_connect_interface_login(data);
+}
+
+/****************************************
+ * _stop_listening_for_login
+ * Description: Disconnects the login and create_user callbacks once the local
+ * user id is set, whichever of the two set it.
+ ****************************************/
+void EOSGPacketPeerMediator::_stop_listening_for_login() {
+    IEOS *ieos = IEOS::get_singleton();
+    if (ieos->is_connected("connect_interface_login_callback", connect_interface_login_callback)) {
+        ieos->disconnect("connect_interface_login_callback", connect_interface_login_callback);
+    }
+    if (ieos->is_connected("connect_interface_create_user_callback", connect_interface_create_user_callback)) {
+        ieos->disconnect("connect_interface_create_user_callback", connect_interface_create_user_callback);
+    }
 }
 
 /****************************************
@@ -503,8 +534,8 @@ void EOSGPacketPeerMediator::_forward_pending_connection_requests(EOSGMultiplaye
 /****************************************
  * EOSGPacketPeerMediator
  * Description: Default constructor. Sets the singleton. Connects
- * to the connect interface login callback so that the class knows
- * when to initialize.
+ * to the connect interface login and create_user callbacks so that
+ * the class knows when to initialize.
  ****************************************/
 EOSGPacketPeerMediator::EOSGPacketPeerMediator() {
     ERR_FAIL_COND_MSG(singleton != nullptr, "EOSGPacketPeerMediator already initialized");
@@ -514,6 +545,9 @@ EOSGPacketPeerMediator::EOSGPacketPeerMediator() {
 
     connect_interface_login_callback = Callable(this, "_on_connect_interface_login");
     IEOS::get_singleton()->connect("connect_interface_login_callback", connect_interface_login_callback);
+
+    connect_interface_create_user_callback = Callable(this, "_on_connect_interface_create_user");
+    IEOS::get_singleton()->connect("connect_interface_create_user_callback", connect_interface_create_user_callback);
 }
 
 /****************************************
