@@ -573,6 +573,7 @@ public:
     int anticheat_client_interface_end_session(Ref<RefCounted> options);
     int anticheat_client_interface_get_module_build_id(Ref<RefCounted> options);
     Dictionary anticheat_client_interface_get_protect_message_output_length(Ref<RefCounted> options);
+    bool anticheat_client_interface_is_available();
     Dictionary anticheat_client_interface_protect_message(Ref<RefCounted> options);
     int anticheat_client_interface_receive_message_from_peer(Ref<RefCounted> options);
     int anticheat_client_interface_receive_message_from_server(Ref<RefCounted> options);
@@ -597,6 +598,14 @@ public:
             }
         }
         return String("");
+    }
+
+    // EOS_ANTICHEATCLIENT_PEER_SELF is never registered, so it gets a fixed id.
+    String _anticheat_peer_handle_to_id(void *p_peer_handle) {
+        if (p_peer_handle == EOS_ANTICHEATCLIENT_PEER_SELF) {
+            return String("self");
+        }
+        return _anticheat_player_handle_to_id(p_peer_handle);
     }
 };
 

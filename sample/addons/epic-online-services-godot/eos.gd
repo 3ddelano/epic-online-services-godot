@@ -4061,6 +4061,10 @@ class AntiCheatClient:
 		var reserved3: int
 
 	class AntiCheatClientInterface:
+		## False when the game was not started through the anti-cheat bootstrapper.
+		static func is_available() -> bool:
+			return IEOS.anticheat_client_interface_is_available()
+
 		static func begin_session(options: BeginSessionOptions) -> EOS.Result:
 			return IEOS.anticheat_client_interface_begin_session(options)
 
