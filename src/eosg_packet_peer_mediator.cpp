@@ -383,7 +383,10 @@ void EOS_CALL EOSGPacketPeerMediator::_on_incoming_connection_request(const EOS_
  * Parameters:
  * 	data - Contains info about the login.
  * Description: Called when the user logs into the connect interface. Sets the
- * local user id received from the login and initialized EOSGPacketPeerMediator.
+ * local user id received from the login and initializes EOSGPacketPeerMediator.
+ * If a different user logs in later (e.g. the player logs out and logs in with
+ * another account without restarting the game), the P2P notifications are
+ * re-registered for the new local user id.
  ****************************************/
 void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
     int result_code = data["result_code"];
@@ -391,13 +394,26 @@ void EOSGPacketPeerMediator::_on_connect_interface_login(Dictionary data) {
         return;
     }
     String local_user_id = data["local_user_id"];
-    if (local_user_id != "") {
-        EOSGMultiplayerPeer::set_local_user_id(local_user_id);
-        EOSGPacketPeerMediator::get_singleton()->_init();
-    } else {
-        ERR_FAIL_MSG("Local user id was not set on connect interface login.");
+    ERR_FAIL_COND_MSG(local_user_id.is_empty(), "Local user id was not set on connect interface login.");
+
+    // Same user logging in again (e.g. refreshing an expiring Connect token): nothing to do.
+    if (initialized && local_user_id == EOSGMultiplayerPeer::get_local_user_id()) {
+        return;
     }
-    IEOS::get_singleton()->disconnect("connect_interface_login_callback", connect_interface_login_callback);
+
+    // A different product user logged in. The P2P notifications (connection request,
+    // established, interrupted, closed) are added with a specific LocalUserId, so the
+    // ones registered for the previous user never fire for the new one: incoming
+    // connection requests addressed to the new user are silently missed. Remove them
+    // and add them again for the new user. Pending connection requests were addressed
+    // to the previous user and are dropped.
+    if (initialized) {
+        _terminate();
+        pending_connection_requests.clear();
+    }
+
+    EOSGMultiplayerPeer::set_local_user_id(local_user_id);
+    _init();
 }
 
 /****************************************
